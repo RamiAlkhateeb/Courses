@@ -4,7 +4,7 @@ import { currentStreak, localDay } from '../features/progress/store'
 import { useProgress } from '../features/progress/useProgress'
 import styles from './TopBar.module.css'
 
-/** Streak, XP and a link to Settings (language, theme and sound live there). */
+/** Streak, XP and a link to Settings (language and sound live there). */
 export function TopBar() {
   const { t } = useTranslation()
   const { progress } = useProgress()

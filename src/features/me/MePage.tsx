@@ -1,5 +1,6 @@
 import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { formatNumber } from '../../i18n'
 import { Card, Icon, ProgressBar, type IconName } from '../../components/ui'
 import { getCourse } from '../../content/courses'
 import { useLocalized } from '../../content/useLocalized'
@@ -24,19 +25,19 @@ export function MePage() {
 
   const stats: { icon: IconName; value: string; label: string }[] = [
     { icon: 'flag', value: String(streak), label: t('dayStreak') },
-    { icon: 'gem', value: progress.xp.toLocaleString(), label: t('totalXpShort') },
+    { icon: 'gem', value: formatNumber(progress.xp), label: t('totalXpShort') },
     { icon: 'check', value: String(progress.lessonsDone.length), label: t('lessonsDoneShort') },
   ]
   const milestones: { icon: IconName; label: string; got: boolean }[] = [
     { icon: 'flag', label: t('msFirst'), got: progress.lessonsDone.length >= 1 },
-    { icon: 'star', label: t('ms7'), got: streak >= 7 },
-    { icon: 'gem', label: t('msXp'), got: progress.xp >= 1000 },
+    { icon: 'star', label: t('msStreak', { n: 7 }), got: streak >= 7 },
+    { icon: 'gem', label: t('msXp', { n: formatNumber(1000) }), got: progress.xp >= 1000 },
   ]
 
   return (
     <div className={styles.page}>
       <header className={styles.head}>
-        <span className={styles.avatar}>M</span>
+        <span className={styles.avatar}>{t('appName').charAt(0)}</span>
         <div className={styles.who}>
           <h1>{t('meName')}</h1>
           <p>{t('walkingTrail', { trail: tc(course.title) })}</p>

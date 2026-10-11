@@ -4,7 +4,6 @@ import { RouterProvider } from 'react-router-dom'
 import './styles/tokens.css'
 import './styles/global.css'
 import './i18n'
-import './features/settings/store' // applies the saved theme before first paint
 import { Providers } from './app/providers'
 import { router } from './app/router'
 

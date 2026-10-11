@@ -52,7 +52,7 @@ function Sidebar({ courseId, moduleId }: { courseId?: string; moduleId?: string 
 }
 
 /** App-wide layout: sidebar (current week's sections, or a hint) + main content, with the
- *  language/theme toggle and the Course Contents panel fixed top. */
+ *  language toggle and the Course Contents panel fixed top. */
 export function AppShell() {
   const { t } = useTranslation()
   const [contentsOpen, setContentsOpen] = useState(false)

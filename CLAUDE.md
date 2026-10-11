@@ -36,7 +36,7 @@ The mobile UI follows the Claude Design canvas: screenshots in `design/screens/`
 - Layout: a max-width-430px column (`--app-max`); the tab bar (Path · Review · Terms · Me) shows on the four main screens, lessons are full screen.
 - RTL: set `dir` from the i18n language, use logical CSS properties (`margin-inline-start`, `inset-inline-end`, …), and mirror Rafiq and the mountain path in Arabic (`Rafiq` and `PathMap` do this via `dir`).
 - Shared UI lives in `src/components/ui/` (`Button`, `Card`, `OptionCard`, `ProgressBar`, `TabBar`, `BottomSheet`, `Rafiq`, `PathNode`); reuse it, don't restyle per screen.
-- The design is light-only: `data-theme` is always `light` (the old dark token set is unused until a dark design exists).
+- The design is light-only; there is no dark theme or theme setting.
 - Finance content keeps the "educational only, not financial advice" notice (Welcome, trail picker, results).
 - Not built (needs a backend): Weekly expedition (design 18). Don't fake friends or rankings.
 

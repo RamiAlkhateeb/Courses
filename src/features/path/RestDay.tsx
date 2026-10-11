@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Button, BottomSheet, Rafiq } from '../../components/ui'
+import { Button, BottomSheet, Icon, Rafiq } from '../../components/ui'
 import { WeekDots } from '../progress/WeekStrip'
 import { useProgress } from '../progress/useProgress'
 import { daysBetween, localDay, weekStart } from '../progress/store'
@@ -39,9 +39,7 @@ export function RestDay({ onClose }: { onClose: () => void }) {
   return (
     <div className={styles.screen}>
       <div className={styles.top}>
-        <span className={styles.flag} aria-hidden>
-          ⚑
-        </span>
+        <Icon name="flag" size={48} className={styles.flag} />
         <strong className={styles.big}>{progress.streak.count}</strong>
         <p className={styles.caption}>{t('daysOnPathBig')}</p>
         <div className={styles.week}>

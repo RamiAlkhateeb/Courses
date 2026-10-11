@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { formatNumber } from '../../i18n'
 import { BottomSheet, Button, Icon, OptionCard } from '../../components/ui'
 import { courses } from '../../content/courses'
 import { useLocalized } from '../../content/useLocalized'
@@ -40,7 +41,7 @@ export function PathPage() {
             <Icon name="flag" size={20} /> {streak}
           </span>
           <span className={styles.chip} title={t('totalXp', { xp: progress.xp })}>
-            <Icon name="gem" size={20} /> {progress.xp.toLocaleString()}
+            <Icon name="gem" size={20} /> {formatNumber(progress.xp)}
           </span>
         </span>
       </header>

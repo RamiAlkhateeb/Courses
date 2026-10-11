@@ -3,10 +3,15 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Button, Icon, OptionCard, ProgressBar, Rafiq, type IconName, type RafiqPose } from '../../components/ui'
 import { LogoMark } from '../../components/Logo'
+import { LANGUAGES } from '../../i18n'
 import { getCourse } from '../../content/courses'
 import { useLocalized } from '../../content/useLocalized'
 import { GOAL_TRAIL, updateProfile, useProfile } from '../profile/store'
 import styles from './Onboarding.module.css'
+
+/** The language that is not the current one: Welcome and the language step show both. */
+const otherLanguage = (lng: string) => LANGUAGES.find((l) => l.code !== lng)!.code
+const dirOf = (lng: string) => (lng === 'ar' ? 'rtl' : 'ltr')
 
 const STEPS = ['language', 'goal', 'trail', 'time'] as const
 type Step = (typeof STEPS)[number]
@@ -28,33 +33,33 @@ const MINUTES = [5, 10, 15, 20]
 export function Welcome() {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
+  const other = otherLanguage(i18n.language)
   return (
     <div className={styles.welcome}>
       <header className={styles.welcomeTop}>
         <span className={styles.brand}>
           <LogoMark size={44} />
           <span className={styles.brandName}>
-            Masar <span lang="ar">مسار</span>
+            {t('appName', { lng: 'en' })} <span lang="ar">{t('appName', { lng: 'ar' })}</span>
           </span>
         </span>
         <div className={styles.langSwitch} role="group" aria-label={t('language')}>
-          <button type="button" aria-pressed={i18n.language === 'en'} onClick={() => i18n.changeLanguage('en')}>
-            EN
-          </button>
-          <button type="button" aria-pressed={i18n.language === 'ar'} onClick={() => i18n.changeLanguage('ar')} lang="ar">
-            عربي
-          </button>
+          {LANGUAGES.map((l) => (
+            <button key={l.code} type="button" aria-pressed={i18n.language === l.code} onClick={() => i18n.changeLanguage(l.code)} lang={l.code}>
+              {l.short}
+            </button>
+          ))}
         </div>
       </header>
       <h1 className={styles.headline}>{t('welcomeHeadline')}</h1>
-      <p className={styles.welcomeAr} lang="ar" dir="rtl">
-        خطوات صغيرة. أهداف مالية كبيرة.
+      <p className={styles.welcomeAlt} lang={other} dir={dirOf(other)}>
+        {t('welcomeHeadline', { lng: other })}
       </p>
       <div className={styles.welcomeHero}>
         <div className={styles.bubble}>
           <span>{t('welcomeHi')}</span>
-          <span lang="ar" dir="rtl">
-            سعيد برؤيتك!
+          <span lang={other} dir={dirOf(other)}>
+            {t('welcomeHi', { lng: other })}
           </span>
         </div>
         <Rafiq pose="wave" height={260} className={styles.heroRafiq} />
@@ -88,6 +93,7 @@ export function OnboardingStep() {
   const [trail, setTrail] = useState(profile.trail ?? GOAL_TRAIL[profile.goal ?? 'invest'])
   const [minutes, setMinutes] = useState(profile.minutes)
   if (index === -1) return null
+  const other = otherLanguage(i18n.language)
 
   const back = () => (index === 0 ? navigate('/welcome') : navigate(`/welcome/${STEPS[index - 1]}`))
   const next = () => {
@@ -122,8 +128,8 @@ export function OnboardingStep() {
             <p className={styles.bubbleSm}>
               {bubble}
               {step === 'language' && (
-                <span lang="ar" dir="rtl" className={styles.bubbleAr}>
-                  أي لغة تفضّل؟
+                <span lang={other} dir={dirOf(other)} className={styles.bubbleAlt}>
+                  {t('obLangBubble', { lng: other })}
                 </span>
               )}
             </p>
@@ -134,14 +140,12 @@ export function OnboardingStep() {
 
         {step === 'language' && (
           <div className={styles.list}>
-            <OptionCard radio state={i18n.language === 'en' ? 'selected' : 'idle'} role="radio" onClick={() => i18n.changeLanguage('en')} letter="EN">
-              <strong>English</strong>
-              <small className={styles.hint}>{t('ltr')}</small>
-            </OptionCard>
-            <OptionCard radio state={i18n.language === 'ar' ? 'selected' : 'idle'} role="radio" onClick={() => i18n.changeLanguage('ar')} letter="ع">
-              <strong lang="ar">العربية</strong>
-              <small className={styles.hint}>{t('rtl')}</small>
-            </OptionCard>
+            {LANGUAGES.map((l) => (
+              <OptionCard radio key={l.code} state={i18n.language === l.code ? 'selected' : 'idle'} role="radio" onClick={() => i18n.changeLanguage(l.code)} letter={l.letter}>
+                <strong lang={l.code}>{l.name}</strong>
+                <small className={styles.hint}>{t(l.code === 'ar' ? 'rtl' : 'ltr')}</small>
+              </OptionCard>
+            ))}
           </div>
         )}
 

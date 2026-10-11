@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { daysBetween, localDay } from './store'
+import { localDay } from './store'
 import styles from './WeekStrip.module.css'
 
 /** The last 7 local days ending today: `day` ('YYYY-MM-DD'), narrow weekday `label`, XP earned and whether it is today. */
@@ -46,6 +46,3 @@ export function WeekBars({ activity }: { activity: Record<string, number> }) {
     </div>
   )
 }
-
-/** Days since `day`, for the rest-day offer. */
-export const daysAgo = (day: string) => daysBetween(day, localDay())

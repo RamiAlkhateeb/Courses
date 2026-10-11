@@ -70,9 +70,9 @@
   margin-block-start: 22px;
   border-radius: 2px;
 }
-.welcomeAr {
+.welcomeAlt {
   padding: 16px 24px 0;
-  font-family: 'Amiri', serif;
+  font-family: 'Fraunces', serif;
   font-size: 1.5rem;
   color: var(--accent-ink);
   text-align: start;
@@ -172,7 +172,10 @@
   flex: 1;
   margin-block-end: 24px;
 }
-.bubbleAr {
+.welcomeAlt:lang(ar) {
+  font-family: 'Amiri', serif;
+}
+.bubbleAlt {
   color: var(--muted);
   font-size: 1.05rem;
   margin-block-start: 2px;

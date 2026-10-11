@@ -1,12 +1,8 @@
 import { useTranslation } from 'react-i18next'
+import { LANGUAGES } from '../../i18n'
 import { playSound } from './sound'
 import { useSettings } from './useSettings'
 import styles from './SettingsPage.module.css'
-
-const LANGS = [
-  { code: 'en', label: 'English' },
-  { code: 'ar', label: 'العربية' },
-] as const
 
 /** Language and sound. Saved in this browser like progress. */
 export function SettingsPage() {
@@ -26,7 +22,7 @@ export function SettingsPage() {
       <section className={styles.group}>
         <h2>{t('language')}</h2>
         <div className={styles.segmented} role="radiogroup" aria-label={t('language')}>
-          {LANGS.map((l) => (
+          {LANGUAGES.map((l) => (
             <button
               key={l.code}
               type="button"
@@ -36,7 +32,7 @@ export function SettingsPage() {
               onClick={() => i18n.changeLanguage(l.code)}
               lang={l.code}
             >
-              {l.label}
+              {l.name}
             </button>
           ))}
         </div>

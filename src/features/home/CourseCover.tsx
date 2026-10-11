@@ -1,5 +1,5 @@
 /** A generated cover for a course card: a winding path between stops, drawn from a seed (the course id),
- *  so every course has its own picture without image files. Colours come from the theme tokens. */
+ *  so every course has its own picture without image files. Colours come from the design tokens. */
 export function CourseCover({ seed }: { seed: string }) {
   const rand = seeded(seed)
   const tones = ['var(--brand)', 'var(--accent)', 'var(--lav)', 'var(--green)']
