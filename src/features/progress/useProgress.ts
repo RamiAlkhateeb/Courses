@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from 'react'
-import { completeLesson, getSnapshot, localDay, markRead, recordAnswer, recordReview, reset, subscribe, update } from './store'
+import { applyRestDay, completeLesson, getSnapshot, localDay, markRead, recordAnswer, recordReview, reset, subscribe, update } from './store'
 
 export function useProgress() {
   const progress = useSyncExternalStore(subscribe, getSnapshot)
@@ -13,6 +13,7 @@ export function useProgress() {
     completeLesson: (correct: number, total: number, lessonKey?: string) =>
       update((p) => completeLesson(p, correct, total, localDay(), lessonKey)),
     markRead: (moduleKey: string, sectionId: string) => update((p) => markRead(p, moduleKey, sectionId)),
+    takeRestDay: () => update((p) => applyRestDay(p, localDay())),
     reset,
   }
 }

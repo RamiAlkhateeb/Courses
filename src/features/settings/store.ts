@@ -21,7 +21,6 @@ export function parseSettings(theme: string | null, sound: string | null): Setti
 }
 
 const hasDom = typeof window !== 'undefined'
-const darkQuery = hasDom ? window.matchMedia?.('(prefers-color-scheme: dark)') : undefined
 
 function read(key: string) {
   try {
@@ -34,14 +33,12 @@ function read(key: string) {
 let current = hasDom ? parseSettings(read(THEME_KEY), read(SOUND_KEY)) : parseSettings(null, null)
 const listeners = new Set<() => void>()
 
-/** Sets `data-theme` on <html> (see src/styles/tokens.css); 'system' follows the OS setting. */
+/** Sets `data-theme` on <html> (see src/styles/tokens.css). The Masar design is light-only for now, so every
+ *  preference renders light; the saved value is kept so a dark theme can come back without losing choices. */
 function applyTheme() {
-  if (!hasDom) return
-  const dark = current.theme === 'dark' || (current.theme === 'system' && darkQuery?.matches === true)
-  document.documentElement.dataset.theme = dark ? 'dark' : 'light'
+  if (hasDom) document.documentElement.dataset.theme = 'light'
 }
 applyTheme()
-darkQuery?.addEventListener?.('change', applyTheme)
 
 export function updateSettings(patch: Partial<Settings>) {
   current = { ...current, ...patch }

@@ -1,0 +1,146 @@
+.page {
+  padding: 36px 16px 0;
+}
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  padding-inline: 4px;
+}
+.head h1 {
+  font-size: 2.6rem;
+  color: var(--brand);
+}
+.sub {
+  color: var(--muted);
+  font-size: 1.1rem;
+}
+.seg {
+  display: flex;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 4px;
+  margin-block: 14px 18px;
+}
+.seg button {
+  flex: 1;
+  font: inherit;
+  font-weight: 700;
+  font-size: 1.05rem;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  padding: 12px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.seg button[aria-pressed='true'] {
+  background: var(--brand);
+  color: var(--on-brand);
+}
+.featured {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-block-size: 200px;
+  justify-content: space-between;
+}
+.fTerms {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.fTerms strong {
+  font-family: var(--font-display);
+  font-size: 2.1rem;
+  line-height: 1.1;
+  color: var(--brand);
+}
+.ar {
+  font-family: 'Amiri', serif;
+  text-align: end;
+}
+.fFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.from {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+.flip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--brand);
+  border-radius: 999px;
+  padding: 10px 18px;
+  font: inherit;
+  font-weight: 700;
+  color: var(--brand);
+  cursor: pointer;
+}
+.kicker {
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+  margin-block: 22px 10px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  text-align: start;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  font: inherit;
+  color: var(--brand);
+  cursor: pointer;
+  min-block-size: 96px;
+}
+.chip strong {
+  font-size: 1.1rem;
+  line-height: 1.2;
+}
+.chip span {
+  font-family: 'Amiri', serif;
+  font-size: 1.2rem;
+  color: var(--muted);
+}
+.chipOn {
+  background: var(--dawn);
+  border: 1.5px solid var(--brand);
+}
+.locked {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px dashed var(--locked);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  color: var(--muted);
+  font-weight: 600;
+}
+.empty {
+  color: var(--muted);
+  padding: 24px 4px;
+}

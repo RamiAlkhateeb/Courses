@@ -113,25 +113,34 @@ export type Recap = { kind: 'takeaways' | 'terms'; items: Localized[] }
 /** "What you learned" for a lesson's summary: its takeaways block if it has one, otherwise up to 6 key terms
  *  (the bold phrases of its cards, English and Arabic matched in order, deduplicated). Null if neither. */
 export function lessonRecap(lesson: Lesson): Recap | null {
+  for (const step of lesson.steps) {
+    if (step.kind !== 'content') continue
+    for (const block of step.blocks) if (block.type === 'takeaways') return { kind: 'takeaways', items: block.items }
+  }
+  const terms = lessonTerms(lesson)
+  return terms.length ? { kind: 'terms', items: terms.slice(0, 6) } : null
+}
+
+/** The key terms of a lesson: bold phrases of its cards, English and Arabic matched in order, deduplicated. */
+export function lessonTerms(lesson: Lesson): Localized[] {
   const terms: Localized[] = []
   const seen = new Set<string>()
   for (const step of lesson.steps) {
     if (step.kind !== 'content') continue
     for (const block of step.blocks) {
-      if (block.type === 'takeaways') return { kind: 'takeaways', items: block.items }
       if (block.type !== 'html' && block.type !== 'box') continue
       const en = boldTerms(block.html.en)
       const ar = block.html.ar ? boldTerms(block.html.ar) : en
       if (ar.length !== en.length) continue // can't pair them up safely
       en.forEach((term, i) => {
         const key = term.toLowerCase()
-        if (term.length > 40 || seen.has(key)) return
+        if (term.length > 40 || !/\p{L}{3}/u.test(term) || seen.has(key)) return
         seen.add(key)
         terms.push({ en: term, ar: ar[i] })
       })
     }
   }
-  return terms.length ? { kind: 'terms', items: terms.slice(0, 6) } : null
+  return terms
 }
 
 const boldTerms = (html: string) =>

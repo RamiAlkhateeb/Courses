@@ -1,0 +1,304 @@
+/* Shared UI kit — see the "Design system" section of CLAUDE.md. Flat 1px cards, no chunky shadows. */
+
+/* ---------- Button ---------- */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  inline-size: 100%;
+  min-block-size: 56px;
+  padding: 0 22px;
+  border-radius: var(--radius);
+  border: 1px solid var(--rule);
+  font: inherit;
+  font-weight: 700;
+  font-size: 1.05rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: filter 0.15s, transform 0.1s;
+}
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.primary {
+  background: var(--accent);
+  border-color: var(--brand);
+  color: var(--brand);
+}
+.secondary {
+  background: var(--surface);
+  color: var(--brand);
+}
+.ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--muted);
+  min-block-size: 44px;
+}
+.ink {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--accent);
+}
+.correct {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+}
+.oops {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+}
+
+/* ---------- Card ---------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+}
+.dawn {
+  background: var(--dawn);
+  border-color: var(--brand);
+  border-width: 1.5px;
+}
+.inkCard {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--on-brand);
+}
+.dashed {
+  background: transparent;
+  border-style: dashed;
+  color: var(--muted);
+}
+
+/* ---------- OptionCard ---------- */
+.option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  inline-size: 100%;
+  min-block-size: 64px;
+  padding: 14px 16px;
+  text-align: start;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  font: inherit;
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--brand);
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+.option:disabled {
+  cursor: default;
+}
+.badge {
+  flex-shrink: 0;
+  display: inline-grid;
+  place-items: center;
+  inline-size: 34px;
+  block-size: 34px;
+  border-radius: 10px;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.optionBody {
+  flex: 1;
+  min-inline-size: 0;
+}
+.radio {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  inline-size: 28px;
+  block-size: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--locked);
+}
+.radioOn {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--accent);
+}
+.opt_selected {
+  background: var(--dawn);
+  border: 1.5px solid var(--brand);
+}
+.opt_selected .badge {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--accent);
+}
+.opt_correct {
+  background: color-mix(in srgb, var(--green) 14%, var(--surface));
+  border: 1.5px solid var(--green);
+}
+.opt_correct .badge {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+}
+.opt_wrong {
+  background: color-mix(in srgb, var(--red) 14%, var(--surface));
+  border: 1.5px solid var(--red);
+}
+.opt_wrong .badge {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+}
+.opt_dim {
+  opacity: 0.6;
+  color: var(--muted);
+}
+
+/* ---------- ProgressBar ---------- */
+.track {
+  flex: 1;
+  block-size: 10px;
+  border-radius: 999px;
+  background: var(--paper-3);
+  overflow: hidden;
+}
+.fill {
+  block-size: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+  transition: inline-size 0.3s;
+}
+
+/* ---------- TabBar ---------- */
+.tabbar {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-around;
+  max-inline-size: var(--app-max);
+  margin-inline: auto;
+  padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+  background: var(--surface);
+  border-block-start: 1px solid var(--rule);
+}
+.tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 4px;
+  border-radius: var(--radius-lg);
+  border: 1px solid transparent;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.tabOn {
+  background: var(--dawn);
+  border-color: var(--accent);
+  color: var(--brand);
+  font-weight: 700;
+}
+
+/* ---------- BottomSheet ---------- */
+.sheet {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: 30;
+  max-inline-size: var(--app-max);
+  margin-inline: auto;
+  padding: 22px 24px calc(28px + env(safe-area-inset-bottom));
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-block-end: 0;
+  border-radius: 28px 28px 0 0;
+  animation: rise 0.22s ease-out;
+}
+.sheet_correct {
+  background: color-mix(in srgb, var(--green) 14%, var(--paper));
+  border-color: var(--green);
+  color: var(--green);
+}
+.sheet_oops {
+  background: color-mix(in srgb, var(--red) 14%, var(--paper));
+  border-color: var(--red);
+  color: var(--red);
+}
+@keyframes rise {
+  from {
+    transform: translateY(30%);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sheet {
+    animation: none;
+  }
+}
+
+/* ---------- PathNode ---------- */
+.node {
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  padding: 0;
+  font: inherit;
+}
+button.node {
+  cursor: pointer;
+}
+.node_done {
+  background: var(--brand);
+  color: var(--accent);
+}
+.node_next {
+  background: var(--accent);
+  color: var(--brand);
+  border: 3px solid var(--surface);
+  box-shadow: 0 0 0 7px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+.node_locked {
+  background: var(--paper);
+  border: 1px dashed var(--locked);
+  color: var(--muted);
+}
+.node_checkpoint {
+  background: var(--surface);
+  border-color: var(--rule);
+  color: var(--muted);
+  border-radius: 24%;
+}
+/* On the navy mountain */
+.nodeMtn.node_done {
+  background: var(--paper);
+  color: var(--brand);
+}
+.nodeMtn.node_locked {
+  background: #243566;
+  border-color: #8a96b8;
+  color: #c9d0e4;
+}
+.nodeMtn.node_checkpoint {
+  background: #243566;
+  border-color: #5b6a99;
+  color: #e6eaf2;
+}
+:global(html[dir='rtl']) :global(.rafiq) {
+  transform: scaleX(-1);
+}

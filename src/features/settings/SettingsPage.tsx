@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next'
 import { playSound } from './sound'
-import type { ThemePref } from './store'
 import { useSettings } from './useSettings'
 import styles from './SettingsPage.module.css'
 
@@ -9,13 +8,7 @@ const LANGS = [
   { code: 'ar', label: 'العربية' },
 ] as const
 
-const THEMES: { value: ThemePref; icon: string; key: string }[] = [
-  { value: 'light', icon: '☀️', key: 'themeLight' },
-  { value: 'dark', icon: '🌙', key: 'themeDark' },
-  { value: 'system', icon: '💻', key: 'themeSystem' },
-]
-
-/** Language, theme and sound. Saved in this browser like progress. */
+/** Language and sound. Saved in this browser like progress. */
 export function SettingsPage() {
   const { t, i18n } = useTranslation()
   const { settings, updateSettings } = useSettings()
@@ -44,24 +37,6 @@ export function SettingsPage() {
               lang={l.code}
             >
               {l.label}
-            </button>
-          ))}
-        </div>
-      </section>
-
-      <section className={styles.group}>
-        <h2>{t('theme')}</h2>
-        <div className={styles.segmented} role="radiogroup" aria-label={t('theme')}>
-          {THEMES.map((th) => (
-            <button
-              key={th.value}
-              type="button"
-              role="radio"
-              aria-checked={settings.theme === th.value}
-              className={settings.theme === th.value ? styles.on : undefined}
-              onClick={() => updateSettings({ theme: th.value })}
-            >
-              <span aria-hidden>{th.icon}</span> {t(th.key)}
             </button>
           ))}
         </div>

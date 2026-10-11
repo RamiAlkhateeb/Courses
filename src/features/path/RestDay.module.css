@@ -1,0 +1,65 @@
+.screen {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: var(--paper);
+  max-inline-size: var(--app-max);
+  margin-inline: auto;
+}
+.top {
+  padding-block-start: 90px;
+  text-align: center;
+}
+.flag {
+  font-size: 3rem;
+  color: var(--accent-ink);
+}
+.big {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 9rem;
+  line-height: 1;
+  color: var(--brand);
+}
+.caption {
+  font-weight: 700;
+  font-size: 1.4rem;
+  color: var(--brand);
+}
+.week {
+  padding: 40px 24px 0;
+}
+.rafiq {
+  position: absolute;
+  inset-block-start: -125px;
+  inset-inline-end: 0;
+}
+.kicker {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+.title {
+  font-size: 2.4rem;
+  line-height: 1.1;
+  color: var(--brand);
+  margin-block: 8px 12px;
+}
+.body {
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1.45;
+  margin-block-end: 14px;
+}
+.pill {
+  display: inline-block;
+  background: var(--dawn);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-weight: 600;
+  color: var(--brand);
+  margin-block-end: 14px;
+}

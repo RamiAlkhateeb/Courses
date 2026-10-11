@@ -4,62 +4,28 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { Question } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
-import { currentStreak, lessonXp, localDay } from '../progress/store'
+import { Button, BottomSheet, Card, Icon, OptionCard, ProgressBar, Rafiq, type OptionState, type RafiqPose } from '../../components/ui'
+import { currentStreak, lessonXp, localDay, XP_PER_CORRECT } from '../progress/store'
+import { WeekDots } from '../progress/WeekStrip'
 import { useProgress } from '../progress/useProgress'
 import { optionOrder } from '../quiz/optionOrder'
 import { playSound } from '../settings/sound'
 import type { Recap } from './lessons'
 import styles from './LessonPage.module.css'
 
-/** ✕ (quit), a segmented progress bar (one segment per step; question steps drawn thicker), an "n/total"
- *  counter, and optionally the lesson's title and time left underneath. */
-export function LessonTopBar({
-  quitTo,
-  done,
-  total,
-  kinds,
-  title,
-  minutesLeft,
-}: {
-  quitTo: string
-  done: number
-  total: number
-  kinds?: ('content' | 'question')[]
-  title?: string
-  minutesLeft?: number
-}) {
+/** ✕ (quit), the saffron progress bar and an "n/total" counter (designs 07–10). */
+export function LessonTopBar({ quitTo, done, total }: { quitTo: string; done: number; total: number }) {
   const { t } = useTranslation()
   return (
-    <>
-      <div className={styles.top}>
-        <Link to={quitTo} className={styles.quit} aria-label={t('lessonQuit')}>
-          ✕
-        </Link>
-        <div className={styles.progress} role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={done}>
-          {Array.from({ length: total }, (_, i) => (
-            <span
-              key={i}
-              className={[
-                styles.seg,
-                kinds?.[i] === 'question' ? styles.segQ : '',
-                i < done ? styles.segDone : i === done ? styles.segNow : '',
-              ].join(' ')}
-            />
-          ))}
-        </div>
-        <span className={styles.counter}>
-          {Math.min(done + 1, total)}/{total}
-        </span>
-      </div>
-      {title ? (
-        <p className={styles.lessonTitle}>
-          <span>{title}</span>
-          {minutesLeft !== undefined && <span>{t('minutesLeft', { n: minutesLeft })}</span>}
-        </p>
-      ) : (
-        <div style={{ height: 24 }} />
-      )}
-    </>
+    <div className={styles.top}>
+      <Link to={quitTo} className={styles.quit} aria-label={t('lessonQuit')}>
+        <Icon name="close" size={26} />
+      </Link>
+      <ProgressBar value={done} max={total} />
+      <span className={styles.counter}>
+        {Math.min(done + 1, total)}/{total}
+      </span>
+    </div>
   )
 }
 
@@ -86,28 +52,26 @@ export function QuestionCard({
       <h1 className={styles.prompt}>{t(question.prompt)}</h1>
       <div className={styles.options} role="radiogroup">
         {order.map((i, position) => {
-          const state = !checked
+          const state: OptionState = !checked
             ? selected === i
-              ? styles.selected
-              : ''
+              ? 'selected'
+              : 'idle'
             : i === question.answer
-              ? styles.right
+              ? 'correct'
               : i === selected
-                ? styles.wrong
-                : styles.dim
+                ? 'wrong'
+                : 'dim'
           return (
-            <button
+            <OptionCard
               key={i}
-              type="button"
               role="radio"
-              aria-checked={selected === i}
-              className={`${styles.option} ${state}`}
+              state={state}
+              letter={String.fromCharCode(65 + position)}
               disabled={checked}
               onClick={() => onSelect(i)}
             >
-              <span className={styles.key}>{position + 1}</span>
-              <span>{t(question.options[i])}</span>
-            </button>
+              {t(question.options[i])}
+            </OptionCard>
           )
         })}
       </div>
@@ -115,53 +79,60 @@ export function QuestionCard({
   )
 }
 
-/** Fixed bottom bar: feedback on the start side, the main action on the end side. */
+/** Bottom of a lesson screen: Rafiq beside the action while answering, or the green/red feedback sheet once checked. */
 export function LessonFooter({
   tone,
   feedback,
   action,
   disabled,
   onAction,
+  rafiq,
 }: {
   tone?: 'right' | 'wrong'
   feedback?: ReactNode
   action: string
   disabled?: boolean
   onAction: () => void
+  rafiq?: RafiqPose
 }) {
-  const toneClass = tone === 'right' ? styles.footerRight : tone === 'wrong' ? styles.footerWrong : ''
+  if (tone) {
+    const right = tone === 'right'
+    return (
+      <BottomSheet tone={right ? 'correct' : 'oops'}>
+        <div className={styles.sheetHead}>
+          <Rafiq pose={right ? 'cheer' : 'oops'} height={130} className={styles.sheetRafiq} />
+          <div className={styles.feedback}>{feedback}</div>
+        </div>
+        {/* Keyed by action so the button remounts (and autofocuses) when Check turns into Continue. */}
+        <Button key={action} variant={right ? 'correct' : 'oops'} onClick={onAction} autoFocus>
+          {action}
+        </Button>
+      </BottomSheet>
+    )
+  }
   return (
-    <div className={`${styles.footer} ${toneClass}`}>
-      <div className={styles.feedback} aria-live="polite">
-        {feedback}
-      </div>
-      {/* Keyed by action so the button remounts (and autofocuses) when Check turns into Continue. */}
-      <button key={action} type="button" className={styles.primary} disabled={disabled} onClick={onAction} autoFocus={!!tone}>
+    <div className={styles.footer}>
+      {rafiq && <Rafiq pose={rafiq} height={110} className={styles.footRafiq} />}
+      <Button key={action} disabled={disabled} onClick={onAction}>
         {action}
-      </button>
+      </Button>
     </div>
   )
 }
 
-/** "Nice!" or "Correct answer: …" for a checked question. */
+/** "Spot on! +10 XP" or "Not quite. The answer: …" for a checked question. */
 export function AnswerFeedback({ question, correct }: { question: Question; correct: boolean }) {
   const t = useLocalized()
   const { t: tUi } = useTranslation()
-  return (
+  return correct ? (
     <>
-      <span className={styles.feedbackIcon} aria-hidden>
-        <span>{correct ? '✓' : '✕'}</span>
-      </span>
-      <span className={styles.feedbackText}>
-        {correct ? (
-          <strong>{tUi('lessonCorrect')}</strong>
-        ) : (
-          <>
-            <strong>{tUi('lessonWrong')}</strong>
-            <span>{t(question.options[question.answer])}</span>
-          </>
-        )}
-      </span>
+      <strong className={styles.feedbackTitle}>{tUi('spotOn')}</strong>
+      <span className={styles.xpPill}>{tUi('plusXp', { n: XP_PER_CORRECT })}</span>
+    </>
+  ) : (
+    <>
+      <strong className={styles.feedbackTitle}>{tUi('notQuiteTitle')}</strong>
+      <span className={styles.feedbackNote}>{tUi('correctAnswerIs', { answer: t(question.options[question.answer]) })}</span>
     </>
   )
 }
@@ -203,21 +174,22 @@ export function useLessonKeys(opts: {
   }, [opts.enabled])
 }
 
-/** End screen: score (if the lesson asked anything), XP earned, streak, then the main action, an optional
- *  second one and a way back to the course. */
+/** Design 11 "Camp cleared!": Rafiq cheers, XP / accuracy / time tiles, the week's dots, then the actions. */
 export function LessonSummary({
-  courseId,
   correct,
   total,
+  seconds,
+  subtitle,
   action,
   onAction,
   secondary,
   onSecondary,
   recap,
 }: {
-  courseId: string
   correct: number
   total: number
+  seconds?: number
+  subtitle?: string
   action: string
   onAction: () => void
   secondary?: string
@@ -229,65 +201,65 @@ export function LessonSummary({
   const { t: tUi } = useTranslation()
   const { progress } = useProgress()
   const streak = currentStreak(progress.streak, localDay())
-  const perfect = total > 0 && correct === total
 
   useEffect(() => playSound('complete'), [])
+  const clock = seconds === undefined ? '' : `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`
 
   return (
     <div className={`${styles.lesson} ${styles.summary}`}>
-      <div className={styles.trophy} aria-hidden>
-        {perfect ? '★' : '✓'}
+      <div className={styles.hero}>
+        <span className={styles.sun} aria-hidden />
+        <Rafiq pose="cheer" height={250} className={styles.heroRafiq} />
       </div>
-      <h1>{perfect ? tUi('lessonPerfect') : tUi('lessonComplete')}</h1>
-      <div className={styles.stats}>
+      <h1>{tUi('campCleared')}</h1>
+      {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
+      <div className={styles.tiles}>
+        <div className={`${styles.tile} ${styles.tileXp}`}>
+          <span>{tUi('totalXpTile')}</span>
+          <strong>
+            <Icon name="gem" size={22} /> {lessonXp(correct, total)}
+          </strong>
+        </div>
         {total > 0 && (
-          <div className={styles.stat}>
-            <span className={styles.statLabel}>{tUi('lessonScore')}</span>
-            <span className={styles.statValue}>
-              {correct}/{total}
-            </span>
+          <div className={`${styles.tile} ${styles.tileAcc}`}>
+            <span>{tUi('accuracy')}</span>
+            <strong>{tUi('accuracyOf', { c: correct, t: total })}</strong>
           </div>
         )}
-        <div className={`${styles.stat} ${styles.statXp}`}>
-          <span className={styles.statLabel}>{tUi('lessonXpEarned')}</span>
-          <span className={styles.statValue}>+{lessonXp(correct, total)}</span>
-        </div>
-        <div className={styles.stat}>
-          <span className={styles.statLabel}>{tUi('streak')}</span>
-          <span className={styles.statValue}>🔥 {streak}</span>
-        </div>
+        {clock && (
+          <div className={`${styles.tile} ${styles.tileTime}`}>
+            <span>{tUi('time')}</span>
+            <strong>{clock}</strong>
+          </div>
+        )}
       </div>
+      <Card className={styles.weekCard}>
+        <p className={styles.weekTitle}>
+          <Icon name="flag" size={22} /> {tUi('daysOnPath', { count: streak })}
+        </p>
+        <WeekDots activity={progress.activity} />
+      </Card>
       {recap && (
-        <section className={styles.recap}>
-          <h2>{tUi('whatYouLearned')}</h2>
-          {recap.kind === 'takeaways' ? (
-            <ul>
-              {recap.items.map((item, k) => (
-                <li key={k}>{t(item)}</li>
-              ))}
-            </ul>
-          ) : (
-            <div className={styles.chips}>
-              {recap.items.map((item, k) => (
-                <span key={k} className={styles.chip}>
-                  {t(item)}
-                </span>
-              ))}
-            </div>
-          )}
-        </section>
+        <div className={styles.chips}>
+          {recap.items.map((item, k) => (
+            <span key={k} className={styles.chip}>
+              {t(item)}
+            </span>
+          ))}
+        </div>
       )}
       <div className={styles.actions}>
-        <button type="button" className={styles.primary} onClick={onAction} autoFocus>
+        <p className={styles.fine}>{tUi('educationalOnly')}</p>
+        <Button onClick={onAction} autoFocus>
           {action}
-        </button>
+        </Button>
         {secondary && onSecondary && (
-          <button type="button" className={styles.secondary} onClick={onSecondary}>
+          <Button variant="secondary" onClick={onSecondary}>
             {secondary}
-          </button>
+          </Button>
         )}
-        <Link className={styles.secondary} to={`/course/${courseId}`}>
-          {tUi('backToCourse')}
+        <Link className={styles.backLink} to="/">
+          {tUi('tabPath')}
         </Link>
       </div>
     </div>

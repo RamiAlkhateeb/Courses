@@ -1,0 +1,123 @@
+.page {
+  padding: 36px 16px 0;
+}
+.page h1 {
+  font-size: 2.6rem;
+  color: var(--brand);
+}
+.sub {
+  color: var(--muted);
+  font-size: 1.1rem;
+  margin-block: 4px 18px;
+}
+.hero {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding-block: 20px;
+}
+.rafiq {
+  flex-shrink: 0;
+  margin-block-end: -20px;
+}
+.heroText {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.heroText h2 {
+  font-size: 1.9rem;
+  line-height: 1.1;
+  color: var(--brand);
+}
+.heroText p {
+  color: var(--muted);
+}
+.kicker {
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+  margin-block: 22px 10px;
+}
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.topic {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-block: 14px;
+}
+.topic strong {
+  display: block;
+  font-size: 1.15rem;
+  color: var(--brand);
+}
+.topic small {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+.pills {
+  display: flex;
+  gap: 6px;
+}
+.pills i {
+  inline-size: 22px;
+  block-size: 10px;
+  border-radius: 999px;
+  background: var(--paper-3);
+}
+.pills i.pWeak {
+  background: var(--red);
+}
+.pills i.pOkay {
+  background: var(--accent);
+}
+.pills i.pStrong {
+  background: var(--green);
+}
+.empty {
+  color: var(--muted);
+}
+.practice {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.practice button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  text-align: start;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  font: inherit;
+  color: var(--brand);
+  cursor: pointer;
+  min-block-size: 140px;
+}
+.practice button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.practice strong {
+  font-size: 1.2rem;
+  margin-block-start: 6px;
+}
+.practice small {
+  color: var(--muted);
+  font-size: 0.95rem;
+}

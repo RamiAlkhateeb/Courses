@@ -43,7 +43,6 @@ function LessonRunner({ week }: { week: Week }) {
   return (
     <QuizLesson
       key={round}
-      courseId={week.courseId}
       kicker={t(week.cover.kicker)}
       quitTo={moduleHref(week.courseId, week.id)}
       questions={picks}
@@ -67,14 +66,12 @@ function pick(week: Week, boxes: Record<string, number>): Question[] {
 /** A run of questions, one at a time, then XP and the streak. Used by Practice and Review mistakes; it completes
  *  no roadmap lesson. */
 export function QuizLesson({
-  courseId,
   kicker,
   quitTo,
   questions,
   onRestart,
   againLabel,
 }: {
-  courseId: string
   kicker: string
   quitTo: string
   questions: Question[]
@@ -118,7 +115,6 @@ export function QuizLesson({
   if (done) {
     return (
       <LessonSummary
-        courseId={courseId}
         correct={correctCount}
         total={questions.length}
         action={againLabel ?? tUi('lessonAgain')}
@@ -129,11 +125,7 @@ export function QuizLesson({
 
   return (
     <div className={styles.lesson}>
-      <LessonTopBar
-        quitTo={quitTo}
-        done={index + (checked ? 1 : 0)}
-        total={questions.length}
-      />
+      <LessonTopBar quitTo={quitTo} done={index + (checked ? 1 : 0)} total={questions.length} />
       <QuestionCard
         question={question}
         kicker={kicker}
@@ -149,7 +141,7 @@ export function QuizLesson({
           onAction={next}
         />
       ) : (
-        <LessonFooter action={tUi('checkAnswer')} disabled={selected === null} onAction={check} />
+        <LessonFooter rafiq="think" action={tUi('check')} disabled={selected === null} onAction={check} />
       )}
     </div>
   )

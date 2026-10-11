@@ -18,6 +18,10 @@
 
 - Business courses (category "Business & finance" on the home page): **Investing Fundamentals** (3 modules), **Personal Finance**, **Accounting Essentials**, **Entrepreneurship**, **Marketing Fundamentals** (1 module each), with "Soon" placeholders for the rest. Shared content helpers in `src/content/helpers.ts`; per-question shuffled option order.
 
+## Design rebuild (from `design/`)
+Done: tokens + fonts, UI kit (`src/components/ui`), Welcome and onboarding (01–05), Path home with the mountain map (06, 14), card lessons, quiz, feedback sheets and results (07–11, 15), Review tab (12), Me tab (13), Terms tab (16), Summit view (17), rest-day offer (20).
+Not done: Weekly expedition (18, needs a backend), the "What would you do?" trade-off lesson type (19, needs new content type), Rafiq tip bubbles on lesson cards and the quiz hint (need content), "Try again / Re-read the card" on a wrong answer (the app still shows the right answer and continues), PWA/installable, Playwright screenshot checks.
+
 ## Next: finish the courses
 Write the "Soon" modules. Tech interview: Behavioral (STAR), Offers & negotiation, SQL (from `solutions/sql/`), JavaScript (from `solutions/javascript/`), System design, Mock-interview checklist. Business: investing (valuation, retirement accounts, investment plan), personal finance (debt, credit, insurance, goals), accounting (bookkeeping, ratios, cash management), entrepreneurship (business model, pricing, unit economics, funding, legal), marketing (branding, digital, content & SEO, sales). Use the `add-module` skill.
 

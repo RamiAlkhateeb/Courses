@@ -1,0 +1,145 @@
+.page {
+  padding: 40px 16px 0;
+}
+.head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.avatar {
+  display: grid;
+  place-items: center;
+  inline-size: 64px;
+  block-size: 64px;
+  border-radius: 50%;
+  background: var(--brand);
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+}
+.who {
+  flex: 1;
+}
+.who h1 {
+  font-size: 1.9rem;
+  color: var(--brand);
+}
+.who p {
+  color: var(--muted);
+}
+.gear {
+  display: grid;
+  place-items: center;
+  inline-size: 44px;
+  block-size: 44px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  color: var(--brand);
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-block: 20px 14px;
+}
+.stat {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.stat svg {
+  color: var(--accent-ink);
+}
+.stat strong {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  color: var(--brand);
+  margin-block-start: 6px;
+}
+.stat span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.weekHead {
+  display: flex;
+  justify-content: space-between;
+  margin-block-end: 14px;
+  color: var(--muted);
+}
+.weekHead strong {
+  font-size: 1.15rem;
+  color: var(--brand);
+}
+.kicker {
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+  margin-block: 22px 10px;
+}
+.trails {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.trail {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: start;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  font: inherit;
+  color: var(--brand);
+  cursor: pointer;
+}
+.trailOn {
+  background: var(--dawn);
+  border: 1.5px solid var(--brand);
+}
+.trailOff {
+  background: transparent;
+  border-style: dashed;
+  color: var(--muted);
+}
+.trailRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.15rem;
+}
+.miles {
+  display: flex;
+  gap: 18px;
+}
+.mile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  max-inline-size: 90px;
+  text-align: center;
+}
+.milOn,
+.milOff {
+  display: grid;
+  place-items: center;
+  inline-size: 64px;
+  block-size: 64px;
+  border-radius: 50%;
+}
+.milOn {
+  background: var(--brand);
+  color: var(--accent);
+}
+.milOff {
+  border: 1px dashed var(--locked);
+  color: var(--locked);
+}

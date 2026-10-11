@@ -60,7 +60,6 @@ function ReviewRunner({ course, questions }: { course: Course; questions: Questi
   return (
     <QuizLesson
       key={round}
-      courseId={course.id}
       kicker={t('reviewKicker')}
       quitTo={`/course/${course.id}`}
       questions={picks}

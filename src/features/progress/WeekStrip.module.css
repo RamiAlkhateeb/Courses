@@ -1,0 +1,46 @@
+.dots,
+.bars {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 8px;
+}
+.col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.dot {
+  inline-size: 28px;
+  block-size: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--rule);
+}
+.dot.on {
+  background: var(--brand);
+  border-color: var(--brand);
+}
+.dot.today {
+  background: var(--accent);
+  border-color: var(--brand);
+}
+.bar {
+  inline-size: 26px;
+  border-radius: 8px;
+  background: var(--brand);
+}
+.bar.today {
+  background: var(--accent);
+  border: 1px solid var(--brand);
+}
+.label {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.labelToday {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--brand);
+}

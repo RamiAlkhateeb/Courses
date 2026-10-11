@@ -1,0 +1,106 @@
+.map {
+  position: relative;
+  overflow: hidden;
+  margin-block-start: 8px;
+}
+.mountain {
+  position: absolute;
+  inset-block: 70px 0;
+  inset-inline: 0;
+  background: var(--brand);
+  clip-path: polygon(40% 0, 60% 0, 100% 100%, 0 100%);
+}
+.hillL,
+.hillR {
+  position: absolute;
+  inset-block-end: 0;
+  background: var(--paper-3);
+  clip-path: polygon(0 100%, 100% 100%, 50% 0);
+}
+.hillL {
+  inset-inline-start: -14%;
+  inline-size: 46%;
+  block-size: 42%;
+}
+.hillR {
+  inset-inline-end: -12%;
+  inline-size: 42%;
+  block-size: 34%;
+}
+.sun {
+  position: absolute;
+  inset-block-start: 90px;
+  inset-inline-end: 11%;
+  inline-size: 62px;
+  block-size: 62px;
+  border-radius: 50%;
+  background: var(--dawn);
+  border: 1.5px solid var(--accent);
+}
+.flag {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: calc(50% - 14px);
+  inline-size: 60px;
+  block-size: 80px;
+}
+:global(html[dir='rtl']) .flag {
+  transform: scaleX(-1);
+  inset-inline-start: calc(50% - 46px);
+}
+.lines {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  fill: none;
+}
+:global(html[dir='rtl']) .lines {
+  transform: scaleX(-1);
+}
+.lineDone {
+  stroke: var(--paper);
+  stroke-width: 7px;
+  stroke-linecap: round;
+}
+.lineTodo {
+  stroke: #8a96b8;
+  stroke-width: 5px;
+  stroke-linecap: round;
+  stroke-dasharray: 1 12;
+}
+/* Zero-width anchor so the node and its label stay centred on the point, in both directions. */
+.stop {
+  position: absolute;
+  inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.label {
+  white-space: nowrap;
+  max-inline-size: 230px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: #243566;
+  color: #fff;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.labelNext {
+  background: var(--accent);
+  color: var(--brand);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+  border-radius: 12px;
+  padding: 8px 16px;
+}
+.guide {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-end: 6%;
+}

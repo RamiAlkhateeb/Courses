@@ -1,16 +1,16 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Blocks } from '../../components/content/Blocks'
 import contentStyles from '../../components/content/content.module.css'
-import { flatNav, getCourse, moduleHref } from '../../content/courses'
+import { getCourse, moduleHref } from '../../content/courses'
 import { resolveHtmlAssetPaths } from '../../content/resolveAssetPath'
 import type { Week } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
 import { useWeek } from '../../content/useWeek'
 import { useProgress } from '../progress/useProgress'
 import { WeekQuestionsContext } from '../quiz/weekQuestions'
-import { learnHref, lessonKey, lessonMinutes, lessonRecap, lessonsFor, type Lesson } from './lessons'
+import { learnHref, lessonKey, lessonRecap, lessonsFor, type Lesson } from './lessons'
 import {
   AnswerFeedback,
   LessonFooter,
@@ -50,7 +50,7 @@ function CardRun({ week, lesson, next, onRestart }: { week: Week; lesson: Lesson
   const { markRead, recordLessonAnswer, completeLesson } = useProgress()
   const { steps } = lesson
   const total = steps.filter((s) => s.kind === 'question').length
-  const coursePath = `/course/${week.courseId}`
+  const startedAt = useRef(Date.now())
 
   const [index, setIndex] = useState(0)
   const [selected, setSelected] = useState<number | null>(null)
@@ -97,12 +97,13 @@ function CardRun({ week, lesson, next, onRestart }: { week: Week; lesson: Lesson
   if (done) {
     return (
       <LessonSummary
-        courseId={week.courseId}
         recap={lessonRecap(lesson)}
+        subtitle={tUi('lessonSummary', { n: lessonsFor(week).findIndex((l) => l.id === lesson.id) + 1, title: t(lesson.title) })}
+        seconds={Math.round((Date.now() - startedAt.current) / 1000)}
         correct={correctCount}
         total={total}
         action={tUi('lessonContinue')}
-        onAction={() => navigate(next ? learnHref(week.courseId, week.id, next.id) : coursePath)}
+        onAction={() => navigate(next ? learnHref(week.courseId, week.id, next.id) : '/')}
         secondary={tUi('lessonAgain')}
         onSecondary={onRestart}
       />
@@ -110,22 +111,11 @@ function CardRun({ week, lesson, next, onRestart }: { week: Week; lesson: Lesson
   }
 
   const continueLabel = isLast ? tUi('lessonFinish') : tUi('lessonContinue')
-  const chapter = flatNav(getCourse(week.courseId)!).find((i) => i.id === week.id)
-  const lessonTitle =
-    lesson.parts > 1 ? tUi('lessonOfParts', { title: t(lesson.title), n: lesson.part, of: lesson.parts }) : t(lesson.title)
-  const topTitle = chapter ? `${t(chapter.title)} · ${lessonTitle}` : lessonTitle
 
   return (
     <WeekQuestionsContext.Provider value={week.questions}>
       <div className={styles.lesson}>
-        <LessonTopBar
-          quitTo={coursePath}
-          done={index + (checked ? 1 : 0)}
-          total={steps.length}
-          kinds={steps.map((s) => s.kind)}
-          title={topTitle}
-          minutesLeft={lessonMinutes({ ...lesson, steps: steps.slice(index) })}
-        />
+        <LessonTopBar quitTo="/" done={index + (checked ? 1 : 0)} total={steps.length} />
 
         {step.kind === 'content' ? (
           // key: a new card replays the entrance animation.
@@ -158,12 +148,13 @@ function CardRun({ week, lesson, next, onRestart }: { week: Week; lesson: Lesson
         </p>
 
         {question && !checked ? (
-          <LessonFooter action={tUi('checkAnswer')} disabled={selected === null} onAction={check} />
+          <LessonFooter rafiq="think" action={tUi('check')} disabled={selected === null} onAction={check} />
         ) : (
           <LessonFooter
             tone={question ? (isCorrect ? 'right' : 'wrong') : undefined}
             feedback={question && <AnswerFeedback question={question} correct={isCorrect} />}
-            action={continueLabel}
+            rafiq={question ? undefined : 'point'}
+            action={question ? continueLabel : tUi('nextBtn')}
             onAction={advance}
           />
         )}

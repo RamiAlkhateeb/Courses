@@ -1,368 +1,116 @@
+/* Lesson screens (designs 07–11, 19): full-screen on paper, saffron progress, bottom sheet for feedback. */
 .lesson {
-  max-width: 660px;
-  margin: 0 auto;
-  padding-bottom: 120px; /* room for the fixed footer */
+  padding: 24px 24px 150px;
+  min-block-size: 100dvh;
 }
 
-/* ---------- Top bar: quit, segmented progress, counter; lesson title below ---------- */
+/* ---------- Top bar ---------- */
 .top {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
+  margin-block-end: 36px;
 }
 .quit {
-  color: var(--ink-faint);
-  text-decoration: none;
-  font-size: 18px;
-  line-height: 1;
+  color: var(--brand);
+  display: grid;
   padding: 4px;
 }
-.quit:hover {
-  color: var(--ink);
-}
-.progress {
-  flex: 1;
-  display: flex;
-  gap: 3px;
-  height: 6px;
-}
-/* One segment per step; question steps are drawn a little thicker so you can see where the checks are. */
-.seg {
-  flex: 1;
-  border-radius: 100px;
-  background: var(--rule);
-  transition: background-color 0.25s;
-}
-.segQ {
-  transform: scaleY(1.6);
-}
-.segDone {
-  background: var(--brand);
-}
-.segNow {
-  background: var(--accent);
-}
 .counter {
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--ink-faint);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--muted);
   font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-.lessonTitle {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  margin: 10px 0 24px 0;
-  padding-inline-start: 34px; /* line up with the bar, past the ✕ */
-  font-size: 13px;
-  color: var(--ink-soft);
-}
-.lessonTitle span:last-child {
-  color: var(--ink-faint);
   white-space: nowrap;
 }
 
 .kicker {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--accent-ink);
-  margin: 0 0 8px 0;
+  margin-block-end: 8px;
 }
 .prompt {
-  font-size: 1.45rem;
-  line-height: 1.3;
-  margin: 0 0 22px 0;
+  font-size: 1.75rem;
+  line-height: 1.22;
+  margin-block-end: 22px;
+  color: var(--brand);
 }
-
-/* ---------- Answer options ---------- */
 .options {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-}
-.option {
-  display: flex;
-  align-items: flex-start;
   gap: 12px;
-  width: 100%;
-  text-align: start;
-  background: var(--surface);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
-  padding: 13px 16px;
-  font: inherit;
-  font-size: 0.98rem;
-  color: var(--ink);
-  cursor: pointer;
-  transition:
-    border-color 0.15s,
-    background-color 0.15s;
-}
-.option:hover:not(:disabled) {
-  border-color: var(--brand);
-}
-.option:disabled {
-  cursor: default;
-}
-.key {
-  flex-shrink: 0;
-  display: inline-grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-  border: 1px solid var(--rule);
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--ink-faint);
-}
-.selected {
-  border-color: var(--brand);
-  background: var(--brand-bg);
-  box-shadow: inset 0 0 0 1px var(--brand);
-}
-.selected .key {
-  border-color: var(--brand);
-  color: var(--brand);
-}
-.right {
-  border-color: var(--green);
-  background: var(--green-bg);
-}
-.right .key {
-  border-color: var(--green);
-  color: var(--green);
-}
-.wrong {
-  border-color: var(--red);
-  background: var(--red-bg);
-}
-.wrong .key {
-  border-color: var(--red);
-  color: var(--red);
-}
-.dim {
-  opacity: 0.5;
 }
 
-/* ---------- Footer ---------- */
+/* ---------- Bottom: action beside Rafiq, or the feedback sheet ---------- */
 .footer {
   position: fixed;
-  inset-inline-start: var(--sidebar-w); /* sit under the main column, beside the sidebar */
-  inset-inline-end: 0;
-  bottom: 0;
-  z-index: 40;
+  inset-inline: 0;
+  inset-block-end: 0;
+  max-inline-size: var(--app-max);
+  margin-inline: auto;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: flex-end;
   gap: 16px;
-  padding: 16px max(20px, calc((100vw - var(--sidebar-w) - 660px) / 2));
-  background: color-mix(in srgb, var(--paper) 92%, transparent);
-  backdrop-filter: blur(6px);
-  border-top: 1px solid var(--rule);
+  padding: 16px 24px calc(20px + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, var(--paper) 70%, transparent);
+  z-index: 10;
 }
-.footerRight {
-  background: var(--green-bg);
-  border-top-color: var(--green);
-  color: var(--green);
+.footRafiq {
+  flex-shrink: 0;
+  margin-block-end: -20px;
 }
-.footerWrong {
-  background: var(--red-bg);
-  border-top-color: var(--red);
-  color: var(--red);
+.sheetHead {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  margin-block: -70px 14px;
+}
+.sheetRafiq {
+  flex-shrink: 0;
 }
 .feedback {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  min-width: 0;
-}
-.feedbackIcon {
-  flex-shrink: 0;
-  display: grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: currentColor;
-}
-.feedbackIcon span {
-  color: var(--surface);
-  font-weight: 700;
-}
-.feedbackText {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-.feedbackText strong {
-  font-size: 1.05rem;
-}
-.feedbackText span {
-  color: var(--ink);
-}
-
-/* ---------- Buttons ---------- */
-.primary {
-  flex-shrink: 0;
-  display: inline-block;
-  background: var(--brand);
-  color: var(--on-brand);
-  border: none;
-  border-radius: 10px;
-  padding: 11px 24px;
-  font: inherit;
-  font-weight: 600;
-  font-size: 0.98rem;
-  text-decoration: none;
-  cursor: pointer;
-  transition: filter 0.15s;
-}
-.primary:hover:not(:disabled) {
-  filter: brightness(1.12);
-}
-.primary:focus-visible,
-.secondary:focus-visible {
-  outline: 3px solid var(--accent);
-  outline-offset: 2px;
-}
-.primary:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
-.footerRight .primary {
-  background: var(--green);
-  color: var(--surface);
-}
-.footerWrong .primary {
-  background: var(--red);
-  color: var(--surface);
-}
-.secondary {
-  color: var(--ink-soft);
-  font: inherit;
-  font-weight: 500;
-  text-decoration: none;
-  padding: 11px 16px;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-.secondary:hover {
-  color: var(--brand);
-}
-
-/* ---------- Summary ---------- */
-.summary {
-  text-align: center;
-  padding-top: 24px;
-}
-.summary h1 {
-  font-size: 2rem;
-  margin: 12px 0 24px 0;
-}
-.trophy {
-  display: inline-grid;
-  place-items: center;
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: var(--accent-bg);
-  color: var(--accent-ink);
-  font-size: 34px;
-  line-height: 1;
-}
-.stats {
-  display: grid;
-  grid-auto-flow: column; /* 2 or 3 tiles, equal width */
-  grid-auto-columns: 1fr;
-  gap: 1px;
-  margin-bottom: 24px;
-  background: var(--rule);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-.stat {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 14px 8px;
-  background: var(--surface);
-}
-.statLabel {
-  font-size: 12px;
-  color: var(--ink-faint);
-}
-.statValue {
-  font-family: var(--font-display);
-  font-size: 1.6rem;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-.statXp .statValue {
-  color: var(--accent-ink);
-}
-.recap {
-  text-align: start;
-  background: var(--surface);
-  border: 1px solid var(--rule);
-  border-inline-start: 4px solid var(--brand);
-  border-radius: var(--radius);
-  padding: 16px 20px;
-  margin-bottom: 28px;
-}
-.recap h2 {
-  font-size: 1.1rem;
-  margin-bottom: 10px;
-}
-.recap ul {
-  margin: 0;
-  padding-inline-start: 20px;
-  display: grid;
-  gap: 6px;
-  font-size: 0.95rem;
-}
-.chips {
+  flex: 1;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-}
-.chip {
-  background: var(--brand-bg);
-  color: var(--brand);
-  border-radius: 100px;
-  padding: 4px 12px;
-  font-size: 13.5px;
-  font-weight: 500;
-}
-.actions {
-  display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
+  gap: 8px 12px;
+  padding-block-end: 8px;
 }
-.emptyNote {
-  color: var(--ink-soft);
-  margin: -12px 0 24px 0;
+.feedbackTitle {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  line-height: 1.05;
+}
+.xpPill {
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-weight: 700;
+  background: var(--surface);
+}
+.feedbackNote {
+  flex-basis: 100%;
+  font-size: 1.05rem;
+  line-height: 1.4;
 }
 
-/* ---------- Card lesson: one card per step, sliding in ---------- */
+/* ---------- Content card ---------- */
 .card {
-  background: var(--surface);
-  border: 1px solid var(--rule);
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-  padding: 26px 28px 12px 28px;
   animation: cardIn 0.25s ease-out;
 }
 .card h2 {
-  font-size: 1.6rem;
-  line-height: 1.2;
+  font-size: 2rem;
+  line-height: 1.12;
+  margin-block-end: 14px;
+  color: var(--brand);
+}
+.card > :global(p),
+.card :global(p) {
+  font-size: 1.12rem;
+  line-height: 1.55;
 }
 @keyframes cardIn {
   from {
@@ -372,30 +120,174 @@
 }
 .onePage {
   text-align: center;
-  margin: 18px 0 0 0;
-  font-size: 12.5px;
+  margin-block-start: 18px;
+  font-size: 0.85rem;
 }
 .onePage a {
-  color: var(--ink-faint);
+  color: var(--muted);
 }
 
-@media (max-width: 900px) {
-  .footer {
-    inset-inline-start: 0;
-    padding: 14px 20px;
-  }
+/* ---------- Results (Camp cleared) ---------- */
+.summary {
+  text-align: center;
+  padding-block-start: 12px;
+  padding-block-end: 40px;
+  min-block-size: 100dvh;
+  background:
+    radial-gradient(circle at 50% 22%, transparent 0 150px, var(--rule) 150px 151px, transparent 151px),
+    radial-gradient(circle at 50% 22%, transparent 0 260px, var(--rule) 260px 261px, transparent 261px);
 }
-@media (max-width: 520px) {
-  .stats {
-    grid-auto-flow: row;
-  }
-  .card {
-    padding: 18px 16px 6px 16px;
-    border-radius: 14px;
-  }
-  .lessonTitle {
-    padding-inline-start: 0;
-  }
+.hero {
+  position: relative;
+  block-size: 260px;
+  display: grid;
+  place-items: end center;
+}
+.sun {
+  position: absolute;
+  inset-block-start: 0;
+  inline-size: 220px;
+  block-size: 220px;
+  border-radius: 50%;
+  background: var(--dawn);
+  border: 2px solid var(--accent);
+}
+.heroRafiq {
+  position: relative;
+}
+.summary h1 {
+  font-size: 2.4rem;
+  margin-block: 4px 6px;
+  color: var(--brand);
+}
+.subtitle {
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.4;
+  margin-block-end: 18px;
+}
+.tiles {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 12px;
+  margin-block-end: 16px;
+}
+.tile {
+  background: var(--surface);
+  border: 2px solid var(--brand);
+  border-radius: 18px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.tile span {
+  padding: 6px 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brand);
+}
+.tile strong {
+  padding: 14px 4px;
+  font-size: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--brand);
+}
+.tileXp {
+  border-color: var(--accent);
+}
+.tileXp span {
+  background: var(--accent);
+}
+.tileAcc {
+  border-color: var(--green);
+}
+.tileAcc span {
+  background: var(--green);
+  color: #fff;
+}
+.tileAcc strong {
+  color: var(--green);
+}
+.tileTime span {
+  background: var(--brand);
+  color: #fff;
+}
+.weekCard {
+  text-align: start;
+  margin-block-end: 16px;
+}
+.weekTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-block-end: 14px;
+  color: var(--brand);
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-block-end: 16px;
+}
+.chip {
+  background: var(--dawn);
+  border: 1px solid var(--accent);
+  color: var(--brand);
+  border-radius: 999px;
+  padding: 5px 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-block-start: 8px;
+}
+.fine {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.backLink {
+  color: var(--muted);
+  font-weight: 600;
+  padding: 8px;
+}
+.emptyNote {
+  color: var(--muted);
+  margin-block: 0 24px;
+}
+.trophy {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 72px;
+  block-size: 72px;
+  border-radius: 50%;
+  background: var(--dawn);
+  color: var(--accent-ink);
+  font-size: 34px;
+  line-height: 1;
+}
+.primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 56px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  border: 1px solid var(--brand);
+  color: var(--brand);
+  font-weight: 700;
+  text-decoration: none;
 }
 @media (prefers-reduced-motion: reduce) {
   .card {

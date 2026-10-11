@@ -1,0 +1,15 @@
+.frame {
+  max-inline-size: var(--app-max);
+  min-block-size: 100dvh;
+  margin-inline: auto;
+  background: var(--paper);
+  position: relative;
+}
+@media (min-width: 431px) {
+  .frame {
+    border-inline: 1px solid var(--rule);
+  }
+}
+.tabs {
+  padding-block-end: 110px;
+}
