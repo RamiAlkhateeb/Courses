@@ -1,18 +1,20 @@
-import { Link, createBrowserRouter } from 'react-router-dom'
+import type { ComponentType } from 'react'
+import { Link, createBrowserRouter, type RouteObject } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { AppShell } from '../components/AppShell'
 import { RouteError } from './RouteError'
 import { AppFrame, TabsLayout } from '../components/AppFrame'
-import { HomePage } from '../features/home/HomePage'
-import { MePage } from '../features/me/MePage'
-import { OnboardingStep, Welcome } from '../features/onboarding/Onboarding'
 import { PathPage } from '../features/path/PathPage'
-import { SummitPage } from '../features/path/SummitPage'
-import { ReviewRun } from '../features/lesson/ReviewRun'
-import { ReviewTab } from '../features/review/ReviewTab'
-import { TermsPage } from '../features/terms/TermsPage'
 
-// Everything except the shell and home page is code-split: each route's chunk loads on first visit.
+/** A route whose screen is a named export of a feature module, loaded on first visit. */
+const page = <K extends string>(load: () => Promise<Record<K, ComponentType>>, name: K): Pick<RouteObject, 'lazy'> => ({
+  lazy: async () => {
+    const Page: ComponentType = (await load())[name]
+    return { element: <Page /> }
+  },
+})
+
+// Everything except the two shells and the Path tab (the entry screen) is code-split: each route's chunk loads on first visit.
 export const router = createBrowserRouter(
   [
     {
@@ -22,19 +24,19 @@ export const router = createBrowserRouter(
       errorElement: <RouteError />,
       hydrateFallbackElement: <p>…</p>,
       children: [
-        { path: 'welcome', element: <Welcome /> },
-        { path: 'welcome/:step', element: <OnboardingStep /> },
+        { path: 'welcome', ...page(() => import('../features/onboarding/Onboarding'), 'Welcome') },
+        { path: 'welcome/:step', ...page(() => import('../features/onboarding/Onboarding'), 'OnboardingStep') },
         {
           element: <TabsLayout />,
           children: [
             { index: true, element: <PathPage /> },
-            { path: 'review', element: <ReviewTab /> },
-            { path: 'terms', element: <TermsPage /> },
-            { path: 'me', element: <MePage /> },
+            { path: 'review', ...page(() => import('../features/review/ReviewTab'), 'ReviewTab') },
+            { path: 'terms', ...page(() => import('../features/terms/TermsPage'), 'TermsPage') },
+            { path: 'me', ...page(() => import('../features/me/MePage'), 'MePage') },
           ],
         },
-        { path: 'summit', element: <SummitPage /> },
-        { path: 'review/run', element: <ReviewRun /> },
+        { path: 'summit', ...page(() => import('../features/path/SummitPage'), 'SummitPage') },
+        { path: 'review/run', ...page(() => import('../features/lesson/ReviewRun'), 'ReviewRun') },
         {
           // A roadmap lesson: small cards from one section, then its questions.
           path: 'course/:courseId/:moduleId/learn/:lessonId',
@@ -65,7 +67,7 @@ export const router = createBrowserRouter(
       element: <AppShell />,
       errorElement: <RouteError />,
       children: [
-        { path: 'courses', element: <HomePage /> },
+        { path: 'courses', ...page(() => import('../features/home/HomePage'), 'HomePage') },
         {
           path: 'course/:courseId',
           lazy: async () => {
