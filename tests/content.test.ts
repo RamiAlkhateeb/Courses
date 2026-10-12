@@ -123,4 +123,17 @@ describe('course content', () => {
       }
     }
   })
+
+  // Course HTML is rendered with dangerouslySetInnerHTML, so what may appear in it is pinned here. Until content is
+  // sanitised at render time (needed before any community or CMS content), this test is the only gate.
+  it('content HTML has no scripts, event handlers, javascript: URLs or embeds', async () => {
+    const banned = /<\s*(script|iframe|object|embed|style|link|meta|form)\b|\son[a-z]+\s*=|javascript\s*:|data\s*:\s*text\/html/i
+    for (const mod of await allModules()) {
+      for (const text of localizedIn(mod)) {
+        for (const lang of ['en', 'ar'] as const) {
+          expect(text[lang], `${mod.courseId}/${mod.id} (${lang}): ${text[lang]?.slice(0, 60)}`).not.toMatch(banned)
+        }
+      }
+    }
+  })
 })
