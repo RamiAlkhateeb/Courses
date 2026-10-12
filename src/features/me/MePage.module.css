@@ -11,9 +11,8 @@
   place-items: center;
   inline-size: 64px;
   block-size: 64px;
-  border-radius: 50%;
-  background: var(--brand);
-  color: var(--accent);
+  border-radius: var(--radius);
+  overflow: hidden;
   font-family: var(--font);
   font-size: 2rem;
   font-weight: 700;

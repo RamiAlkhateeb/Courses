@@ -1,5 +1,6 @@
 import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { LogoMark } from '../../components/Logo'
 import { formatNumber } from '../../i18n'
 import { Card, Icon, ProgressBar, type IconName } from '../../components/ui'
 import { getCourse } from '../../content/courses'
@@ -37,7 +38,9 @@ export function MePage() {
   return (
     <div className={styles.page}>
       <header className={styles.head}>
-        <span className={styles.avatar}>{t('appName').charAt(0)}</span>
+        <span className={styles.avatar} aria-hidden>
+          <LogoMark size={64} />
+        </span>
         <div className={styles.who}>
           <h1>{t('meName')}</h1>
           <p>{t('walkingTrail', { trail: tc(course.title) })}</p>

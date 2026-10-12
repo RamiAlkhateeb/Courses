@@ -23,7 +23,6 @@ export function ModulePage() {
   useEffect(() => {
     if (mod && activeId) markRead(`${mod.courseId}/${mod.id}`, activeId)
     // markRead is a fresh closure each render; only the active section changing matters here.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mod, activeId])
 
   // Content loads asynchronously, so a #section deep link can't be scrolled to by the browser on load.

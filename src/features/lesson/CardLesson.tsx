@@ -68,7 +68,6 @@ function CardRun({ mod, lesson, next, onRestart }: { mod: Module; lesson: Lesson
     markRead(`${mod.courseId}/${mod.id}`, step.sectionId)
     window.scrollTo({ top: 0 })
     // markRead is a fresh closure each render; only the card changing matters.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index])
 
   function check() {
