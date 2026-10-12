@@ -290,3 +290,87 @@ describe('saved Playground', () => {
     expect(parsePlayground(JSON.stringify(s))).toEqual(s)
   })
 })
+
+describe('season missions and insights', () => {
+  const finish = (s: PlaygroundState) => {
+    for (let i = 0; i < WEEKS_PER_SEASON; i++) s = advance(dismissEvent(s))
+    return s
+  }
+
+  it('unlocks missions with lessons', async () => {
+    const { missionsUnlocked } = await import('../src/domain/playground/missions')
+    expect(missionsUnlocked(0)).toEqual([])
+    expect(missionsUnlocked(2)).toEqual(['rate-rise'])
+    expect(missionsUnlocked(4)).toEqual(['rate-rise', 'spread'])
+    expect(missionsUnlocked(5)).toEqual(['beat-inflation', 'rate-rise', 'spread'])
+  })
+
+  it('picks missions only before the season starts', async () => {
+    const { setMissions } = await import('../src/domain/playground/engine')
+    const idle = funded(500)
+    expect(setMissions(idle, ['spread']).missions).toEqual(['spread'])
+    const running = must(buy(idle, 'index', 100)).state
+    expect(setMissions(running, ['spread'])).toBe(running)
+  })
+
+  it('replays holdings from the trades: "spread" needs three kinds at once', async () => {
+    const { unitsAt, wasSpread } = await import('../src/domain/playground/missions')
+    let s = funded(1000)
+    s = must(buy(s, 'savings', 100)).state
+    s = must(buy(s, 'index', 100)).state
+    expect(wasSpread(s.trades)).toBe(false)
+    s = must(buy(s, 'nile', 100)).state
+    expect(wasSpread(s.trades)).toBe(true)
+    expect(Object.keys(unitsAt(s.trades, 0))).toHaveLength(3)
+    const sold = must(sell(s, 'savings', 1e9)).state
+    expect(wasSpread(sold.trades)).toBe(true) // it was true at some point
+  })
+
+  it('meets "beat inflation" when the season ends above the start in first-week dollars', async () => {
+    const { metMissions } = await import('../src/domain/playground/missions')
+    let s = { ...must(buy({ ...funded(1000, 3), missions: ['beat-inflation'] }, 'savings', 900)).state }
+    s = finish(s)
+    expect(metMissions(s)).toEqual([]) // savings pays about 2%, inflation about 3%, minus the fee
+    let t: PlaygroundState = { ...funded(1000, 3), missions: ['beat-inflation'] }
+    t = finish(must(buy(t, 'index', 900)).state)
+    const real = realHistory(t)
+    expect(metMissions(t).length).toBe(real[real.length - 1] > 1000 ? 1 : 0)
+  })
+
+  it('meets "stay through the news" only if invested when each event landed', async () => {
+    const { metMissions } = await import('../src/domain/playground/missions')
+    const base = { ...funded(1000, 9, true), missions: ['rate-rise' as const] }
+    expect(metMissions(finish(must(buy(base, 'index', 500)).state))).toEqual(['rate-rise'])
+    const cashOnly = must(buy(base, 'index', 100)).state
+    const sold = must(sell(cashOnly, 'index', 1e9)).state // out of everything before any news
+    expect(metMissions(finish(sold))).toEqual([])
+  })
+
+  it('says what helped and what hurt without ever advising', async () => {
+    const { insights } = await import('../src/domain/playground/missions')
+    let s = must(buy(funded(1000, 5, true), 'index', 800)).state
+    s = finish(s)
+    const { helped, hurt, habit } = insights(s)
+    expect(hurt.some((i) => i.key === 'fees')).toBe(true)
+    expect(helped.length).toBeLessThanOrEqual(3)
+    expect(['', 'stayed', 'spread', 'beat']).toContain(habit)
+    // an all-in single company is flagged as a big bet
+    const bet = insights(finish(must(buy(funded(1000, 5, true), 'nile', 900)).state))
+    expect(bet.hurt.some((i) => i.key === 'big_bet')).toBe(true)
+  })
+
+  it('records the missions, habit and market in the past seasons, and replays buy-and-hold as a line', async () => {
+    const { metMissions, insights } = await import('../src/domain/playground/missions')
+    const { rewindSeries } = await import('../src/domain/playground/rewind')
+    const s = finish(must(buy({ ...funded(1000, 6, true), missions: ['spread'] }, 'index', 800)).state)
+    const out = cashOut(s, 77, true, { met: metMissions(s), habit: insights(s).habit })!
+    const r = out.state.past[0]
+    expect(r).toMatchObject({ seed: 6, eventsOn: true, missions: ['spread'], met: [] })
+    expect(r.history).toHaveLength(WEEKS_PER_SEASON + 1)
+    const line = rewindSeries(6, true, 1000)
+    expect(line).toHaveLength(WEEKS_PER_SEASON + 1)
+    expect(line[0]).toBeCloseTo(1000 - 9.9, 0)
+    expect(line[WEEKS_PER_SEASON]).toBe(rewind(6, true, 1000).ended)
+    expect(out.state.missions).toEqual([])
+  })
+})

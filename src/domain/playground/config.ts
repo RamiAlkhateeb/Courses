@@ -61,6 +61,17 @@ export const CONFIG = {
   stress: { index: -0.2, bonds: -0.05, nile: -0.4, savings: 0 } as Record<AssetId, number>,
 }
 
+/** Season missions: goals picked before a season, each taught by a lesson (`unlockAfterLessons`). No rankings. */
+export type MissionId = 'beat-inflation' | 'rate-rise' | 'spread'
+export const MISSION_IDS: MissionId[] = ['beat-inflation', 'rate-rise', 'spread']
+export const MISSIONS: Record<MissionId, { unlockAfterLessons: number }> = {
+  'beat-inflation': { unlockAfterLessons: 5 },
+  'rate-rise': { unlockAfterLessons: 2 },
+  spread: { unlockAfterLessons: 4 },
+}
+/** The habit a finished season is remembered for in Past seasons ('' = none stood out). */
+export type Habit = '' | 'stayed' | 'spread' | 'beat'
+
 export const WEEKS_PER_SEASON = CONFIG.seasonYears * CONFIG.weeksPerYear
 /** Real milliseconds per simulated week at `speed` (1, 2 or 4) */
 export const tickMs = (speed: number) => (CONFIG.secondsPerYear * 1000) / CONFIG.weeksPerYear / speed

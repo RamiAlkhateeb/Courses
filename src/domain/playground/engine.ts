@@ -1,6 +1,6 @@
 // The Playground as pure functions: (state, market) → state. The UI only draws it and dispatches to it.
 // Money is play money, rounded to cents. Nothing here touches React, storage or the clock.
-import { ASSET_IDS, CONFIG, WEEKS_PER_SEASON, type AssetId } from './config'
+import { ASSET_IDS, CONFIG, WEEKS_PER_SEASON, type AssetId, type Habit, type MissionId } from './config'
 import type { EventId } from './events'
 import { buildMarket, type Market } from './market'
 
@@ -35,6 +35,15 @@ export interface SeasonResult {
   trades: number
   /** Worst fall from a peak, as a fraction (0.12 = 12%) */
   maxDrawdown: number
+  /** What is needed to replay it ("What if I waited?") and to draw it: the market's seed, whether it had news, and
+   *  the net worth each week */
+  seed: number
+  eventsOn: boolean
+  history: number[]
+  /** Missions picked, and the ones met */
+  missions: MissionId[]
+  met: MissionId[]
+  habit: Habit
 }
 
 export interface PlaygroundState {
@@ -60,6 +69,8 @@ export interface PlaygroundState {
   /** News already shown, and news waiting for the player to press Continue (time is paused until then) */
   seenEvents: number[]
   pendingEvent?: EventId
+  /** Missions picked for this season */
+  missions: MissionId[]
   past: SeasonResult[]
 }
 
@@ -78,6 +89,7 @@ export const emptyPlayground: PlaygroundState = {
   funded: 0,
   fees: 0,
   seenEvents: [],
+  missions: [],
   past: [],
 }
 
@@ -185,6 +197,9 @@ export function advance(s: PlaygroundState): PlaygroundState {
 }
 
 /** The player pressed Continue on the news: time runs again. */
+/** Pick the season's missions (before the first buy). */
+export const setMissions = (s: PlaygroundState, missions: MissionId[]): PlaygroundState => (s.status === 'idle' ? { ...s, missions } : s)
+
 export const dismissEvent = (s: PlaygroundState): PlaygroundState => (s.pendingEvent ? { ...s, pendingEvent: undefined } : s)
 
 /** Money can only leave the Playground between seasons: before the first buy, or after the season ends. */
@@ -215,7 +230,7 @@ export interface CashOut {
 
 /** Leave the Playground: everything is valued at today's prices (no fee), a finished season goes into `past`, and
  *  a new idle season starts with `nextSeed`. Only between seasons (`canWithdraw`). */
-export function cashOut(s: PlaygroundState, nextSeed: number, nextEventsOn: boolean): CashOut | null {
+export function cashOut(s: PlaygroundState, nextSeed: number, nextEventsOn: boolean, extras: { met: MissionId[]; habit: Habit } = { met: [], habit: '' }): CashOut | null {
   if (!canWithdraw(s)) return null
   const market = marketOf(s)
   const amount = netWorth(s, market)
@@ -231,6 +246,12 @@ export function cashOut(s: PlaygroundState, nextSeed: number, nextEventsOn: bool
       fees: s.fees,
       trades: s.trades.length,
       maxDrawdown: maxDrawdown(s.history).fall,
+      seed: s.seed,
+      eventsOn: s.eventsOn,
+      history: s.history,
+      missions: s.missions,
+      met: extras.met,
+      habit: extras.habit,
     })
   }
   const nextSeason = s.status === 'ended' ? s.season + 1 : s.season

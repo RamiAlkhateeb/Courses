@@ -17,10 +17,14 @@
   padding-block: 20px;
 }
 .mascot {
-  flex-shrink: 0;
   margin-block-end: -20px;
+  flex: 0 1 auto;
+  min-inline-size: 0;
+  max-inline-size: 40%;
+  block-size: auto !important;
 }
 .heroText {
+  min-inline-size: 0;
   flex: 1;
   display: flex;
   flex-direction: column;

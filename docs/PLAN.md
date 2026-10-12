@@ -3,7 +3,8 @@
 ## Money loop (in progress; the plan is in the build brief)
 Done: Phase A (mascot, tokens, Investing-only, Starting bank, Error screens) and Phase B (bank instead of XP, `progress:v2` migration, lesson payouts, Camp cleared with dollars, Lesson payout screen, Path opens at your lesson with "Back to my camp").
 Phase C (seeded simulation engine with tests, Playground, Fund, Buy/Sell, debrief, market news, risk check, unlocks, "Time stood still", Terms under Review, the "Move $100" offer).
-Next: Phase D (season missions, season summary, "What if I waited?", past seasons, Arabic QA of the summary screens).
+Phase D (season missions, season summary with what helped / what hurt, "What if I waited?", past seasons, and a 320/390 px overflow sweep in English and Arabic).
+Still open: Weekly expedition (needs a backend), the scenario lesson type (19), lesson-card tip bubbles, the quiz hint.
 
 ## Done
 - Guest-only Vite + React + TS app (no accounts, no backend), EN + AR with RTL, light/dark theme.

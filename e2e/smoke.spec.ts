@@ -72,7 +72,7 @@ test('a deep link under the base path loads (assets resolve, no error screen)', 
   expect(errors).toEqual([])
 })
 
-for (const route of ['./', 'review', 'me', 'review/terms', 'playground']) {
+for (const route of ['./', 'review', 'me', 'review/terms', 'playground', 'playground/missions', 'playground/seasons']) {
   test(`no serious accessibility violations on /${route === './' ? '' : route}`, async ({ page }) => {
     await onboarded(page)
     await page.goto(route)

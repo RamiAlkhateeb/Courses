@@ -1,9 +1,11 @@
 /* The Playground screens (designs 22–25, 27, 30–34, 37, 38, 39): flat cards, one saffron action at a time. */
 .page {
   padding: 28px 16px 230px;
+  overflow-x: clip;
 }
 .pageFull {
-  padding: 24px 24px 150px;
+  overflow-x: clip;
+  padding: 24px 24px 210px;
   min-block-size: 100dvh;
 }
 .head button {
@@ -176,6 +178,9 @@
   stroke: var(--accent-ink);
   stroke-width: 2.5px;
   stroke-dasharray: 6 5;
+}
+.realGreen {
+  stroke: var(--correct);
 }
 .marker {
   stroke: var(--locked);
@@ -601,13 +606,16 @@ button.holding {
 }
 .twoCol {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   margin-block-end: 14px;
 }
 .statCard {
   margin: 0;
   align-content: start;
+}
+.statCard .amount {
+  font-size: 2.2rem;
 }
 .alloc {
   display: flex;
@@ -895,4 +903,182 @@ button.holding {
   color: var(--brand);
   font-weight: 700;
   text-decoration: none;
+}
+
+.seasonLinks {
+  text-align: center;
+  margin: 18px 0 6px;
+  font-weight: 700;
+}
+.seasonLinks a {
+  color: var(--accent-ink);
+  text-decoration: none;
+}
+.topLinks {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.linkBtn {
+  background: none;
+  border: 0;
+  font: inherit;
+  font-weight: 700;
+  color: var(--accent-ink);
+  cursor: pointer;
+  padding: 8px 0;
+}
+.missions,
+.seasonList,
+.insightList {
+  list-style: none;
+  margin: 0 0 14px;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.mission {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  inline-size: 100%;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  font: inherit;
+  color: var(--brand);
+  text-align: start;
+  cursor: pointer;
+}
+.missionOn {
+  background: var(--dawn);
+  border: 1.5px solid var(--brand);
+}
+.missionIcon {
+  flex-shrink: 0;
+  inline-size: 52px;
+  block-size: 52px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: var(--brand);
+  color: var(--accent);
+}
+.assetLocked .missionIcon {
+  background: var(--paper-2);
+  color: var(--muted);
+}
+.score {
+  color: var(--muted);
+  white-space: nowrap;
+}
+.wide {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  inline-size: 100%;
+  padding: 16px 18px;
+  background: var(--surface);
+  border: 1px solid var(--brand);
+  border-radius: var(--radius-lg);
+  font: inherit;
+  color: var(--brand);
+  cursor: pointer;
+}
+:global(html[dir='rtl']) .wide svg {
+  transform: scaleX(-1);
+}
+.summaryPage {
+  padding-block-end: 40px;
+}
+.summaryMascot {
+  display: grid;
+  justify-items: center;
+  margin-block: -6px 10px;
+}
+.upText {
+  color: var(--correct);
+}
+.downText {
+  color: var(--oops);
+}
+.insightList li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  color: var(--brand);
+}
+.summaryPage .kicker {
+  margin-block: 14px 8px;
+}
+.summaryFoot {
+  display: grid;
+  gap: 10px;
+  margin-block-start: 22px;
+}
+.dawnBtn {
+  background: var(--dawn);
+  border-color: var(--brand);
+}
+.chartPlain {
+  margin-block: 10px 14px;
+}
+.compare {
+  display: grid;
+  gap: 12px;
+}
+.compare .fundCard {
+  margin: 0;
+}
+.bar {
+  block-size: 16px;
+  border-radius: 999px;
+  background: var(--paper-3);
+  overflow: hidden;
+  direction: ltr;
+}
+.bar span {
+  display: block;
+  block-size: 100%;
+  border-radius: 999px;
+  background: var(--brand);
+}
+.barGreen span {
+  background: var(--correct);
+}
+.seasonCard {
+  display: grid;
+  gap: 8px;
+  padding: 18px 20px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  color: var(--brand);
+}
+.seasonBtn {
+  inline-size: 100%;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.fromTo {
+  font-size: 1.9rem;
+  font-weight: 600;
+}
+.badgeNow {
+  background: var(--dawn);
+  color: var(--accent-ink);
+}
+.score,
+.badge {
+  align-self: flex-start;
+}
+
+.insightList svg {
+  flex-shrink: 0;
 }

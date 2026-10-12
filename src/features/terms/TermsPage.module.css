@@ -8,6 +8,16 @@
   gap: 8px;
   padding-inline: 4px;
 }
+.head > div {
+  flex: 1 1 0;
+  min-inline-size: 0;
+}
+.head img {
+  flex: 0 1 auto;
+  min-inline-size: 0;
+  max-inline-size: 36%;
+  block-size: auto !important;
+}
 .head h1 {
   font-size: 2.6rem;
   color: var(--brand);

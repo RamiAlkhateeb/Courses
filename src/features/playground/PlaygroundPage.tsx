@@ -164,11 +164,8 @@ export function PlaygroundPage() {
         <div className={styles.endCard}>
           <h2>{t('pg_season_complete')}</h2>
           <p>{t('pg_season_complete_body', { amount: moneyText(net) })}</p>
-          <Button
-            onClick={() => {
-              pg.cashOut()
-            }}
-          >
+          <Button onClick={() => navigate('/playground/summary')}>{t('pg_see_summary')}</Button>
+          <Button variant="secondary" onClick={() => pg.cashOut()}>
             {t('pg_cash_out')}
           </Button>
         </div>
@@ -192,6 +189,11 @@ export function PlaygroundPage() {
         </div>
       )}
 
+      <p className={styles.seasonLinks}>
+        <Link to="/playground/missions">{t('pg_missions')}</Link>
+        <span aria-hidden> · </span>
+        <Link to="/playground/seasons">{t('pg_past_seasons')}</Link>
+      </p>
       <p className={styles.fine}>{t('pg_play_money_simulated')}</p>
 
       {state.status !== 'ended' && !empty && (

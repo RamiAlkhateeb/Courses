@@ -20,6 +20,11 @@
   transform: scaleX(-1);
 }
 .pill {
+  min-inline-size: 0;
+  max-inline-size: 46%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   background: var(--surface);
   border: 1px solid var(--rule);
   border-radius: 999px;

@@ -193,7 +193,14 @@
   gap: 8px;
   margin-block-end: 18px;
 }
+.guide img {
+  flex: 0 1 auto;
+  min-inline-size: 0;
+  max-inline-size: 42%;
+  block-size: auto !important;
+}
 .bubbleSm {
+  min-inline-size: 0;
   flex: 1;
   margin-block-end: 24px;
 }

@@ -40,7 +40,7 @@ The product logic (learning pays play money, the Playground, unlocks) is in `doc
 | 24, 33, 32 | Buy, Sell, Trade debrief | Trade sheets and explanations | built |
 | 25, 34, 31 | Market news, Risk check, What unlocks | Events, risk, unlock ladder | built |
 | 37 | Time paused | "Time stood still" | built |
-| 29, 26, 35, 36 | Missions, Season summary, What if I waited, Past seasons | Seasons | phase D |
+| 29, 26, 35, 36 | Missions, Season summary, What if I waited, Past seasons | Seasons | built |
 | 27, 38, 39 | Playground / Buy / News, Arabic | RTL versions | built |
-| 40 | Season summary, Arabic | RTL version | phase D |
+| 40 | Season summary, Arabic | RTL version | built |
 | 41, 42 | Error, EN and AR | Reload and Home | built |

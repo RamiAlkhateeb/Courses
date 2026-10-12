@@ -14,6 +14,7 @@ export function Chart({
   start,
   label,
   markers = [],
+  compareTone = 'saffron',
 }: {
   nominal: number[]
   real?: number[]
@@ -22,6 +23,8 @@ export function Chart({
   label: string
   /** Positions (index into `nominal`) of news events, drawn as small ticks */
   markers?: number[]
+  /** The second line's colour: saffron text for "after inflation", green for "buy once and hold" */
+  compareTone?: 'saffron' | 'green'
 }) {
   const { t } = useTranslation()
   const all = [...nominal, ...(real ?? []), ...(start === undefined ? [] : [start])]
@@ -49,9 +52,9 @@ export function Chart({
         {markers.map((m) => (
           <line key={m} x1={x(m)} x2={x(m)} y1={PAD} y2={H - PAD} className={styles.marker} />
         ))}
-        {real && real.length > 1 && <path d={line(real)} className={styles.realLine} />}
+        {real && real.length > 1 && <path d={line(real)} className={`${styles.realLine} ${compareTone === 'green' ? styles.realGreen : ''}`} />}
         {nominal.length > 1 && <path d={line(nominal)} className={styles.nominalLine} />}
-        {nominal.length > 2 && nominal[worst] < Math.max(...nominal) * 0.97 && <circle cx={x(worst)} cy={y(nominal[worst])} r="4.5" className={styles.low} />}
+        {worst > 0 && worst < nominal.length - 1 && nominal[worst] < Math.max(...nominal) * 0.97 && <circle cx={x(worst)} cy={y(nominal[worst])} r="4.5" className={styles.low} />}
         {nominal.length > 0 && <circle cx={lastX} cy={lastY} r="5" className={styles.now} />}
       </svg>
       <span className="visually-hidden">{t('pg_chart_range', { low: formatMoney(lo), high: formatMoney(hi) })}</span>

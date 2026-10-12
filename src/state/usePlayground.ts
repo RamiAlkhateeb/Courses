@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { tickMs, type AssetId } from '../domain/playground/config'
+import { tickMs, type AssetId, type MissionId } from '../domain/playground/config'
 import {
   advance,
   buy,
@@ -7,12 +7,14 @@ import {
   dismissEvent,
   fund,
   sell,
+  setMissions,
   setSpeed,
   type PlaygroundState,
   type Speed,
   type Trade,
   type TradeResult,
 } from '../domain/playground/engine'
+import { insights, metMissions } from '../domain/playground/missions'
 import { eventsUnlocked, unlockedAssets } from '../domain/playground/unlocks'
 import { progressStore } from './progress'
 import { playgroundStore } from './playground'
@@ -57,7 +59,9 @@ export function usePlayground() {
     },
     /** Take everything out between seasons: the money goes back to the bank and a new season is set up. */
     cashOut(): number | null {
-      const out = cashOut(playgroundStore.get(), newSeed(), news)
+      const s = playgroundStore.get()
+      const extras = s.status === 'ended' ? { met: metMissions(s), habit: insights(s).habit } : undefined
+      const out = cashOut(s, newSeed(), news, extras)
       if (!out) return null
       playgroundStore.update(() => out.state)
       progressStore.update((p) => ({ ...p, bank: Math.round((p.bank + out.amount) * 100) / 100 }))
@@ -83,6 +87,7 @@ export function usePlayground() {
       }
       return r
     },
+    setMissions: (ids: MissionId[]) => playgroundStore.update((s) => setMissions(s, ids)),
     setSpeed: (speed: Speed) => playgroundStore.update((s) => setSpeed(s, speed)),
     dismissEvent: () => playgroundStore.update(dismissEvent),
   }
