@@ -48,4 +48,4 @@ Platform
 - Contributions: issue templates for "wrong answer" and "suggest a question".
 
 ## Later: accounts (optional)
-Guest mode is a deliberate choice. Optional accounts (cross-device sync) reusing the BA2 Supabase archive are planned in detail in [`docs/SUPABASE-INTEGRATION.md`](SUPABASE-INTEGRATION.md): which archived migrations and components to reuse, a new `0006` migration for lessons/XP/review boxes, the sync and merge design behind `src/features/progress/store.ts`, deploy secrets, security checklist, phases and tests.
+Guest mode is a deliberate choice. Optional accounts (cross-device sync) reusing the BA2 Supabase archive are planned in detail in [`docs/SUPABASE-INTEGRATION.md`](SUPABASE-INTEGRATION.md): which archived migrations and components to reuse, a new `0006` migration for lessons/XP/review boxes, the sync and merge design behind `src/state/progress.ts`, deploy secrets, security checklist, phases and tests.
