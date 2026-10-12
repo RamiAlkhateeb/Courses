@@ -80,7 +80,7 @@
   padding-block-end: 8px;
 }
 .feedbackTitle {
-  font-family: var(--font-display);
+  font-family: var(--font);
   font-size: 2rem;
   line-height: 1.05;
 }

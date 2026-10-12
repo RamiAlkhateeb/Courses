@@ -10,12 +10,11 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--font-ui);
+  font-family: var(--font);
   font-size: 17px;
   line-height: 1.65;
   transition: background-color 0.15s, color 0.15s;
 }
-/* Arabic UI uses IBM Plex Sans Arabic (via --font-ui in tokens.css). */
 
 h1,
 h2,
@@ -26,10 +25,9 @@ ul,
 ol {
   margin: 0;
 }
-/* Headings use the display serif (Fraunces; Amiri in Arabic — see tokens.css). */
+/* Headings use the same family as the body (one font per language, see tokens.css), just heavier. */
 h1,
 h2 {
-  font-family: var(--font-display);
   font-weight: 600;
   letter-spacing: -0.015em;
 }

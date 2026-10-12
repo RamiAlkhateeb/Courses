@@ -15,7 +15,7 @@
 }
 .big {
   display: block;
-  font-family: var(--font-display);
+  font-family: var(--font);
   font-size: 9rem;
   line-height: 1;
   color: var(--brand);

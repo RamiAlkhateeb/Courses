@@ -14,7 +14,7 @@
   border-radius: 50%;
   background: var(--brand);
   color: var(--accent);
-  font-family: var(--font-display);
+  font-family: var(--font);
   font-size: 2rem;
   font-weight: 700;
 }
@@ -54,7 +54,7 @@
   color: var(--accent-ink);
 }
 .stat strong {
-  font-family: var(--font-display);
+  font-family: var(--font);
   font-size: 1.9rem;
   color: var(--brand);
   margin-block-start: 6px;
@@ -74,7 +74,7 @@
   color: var(--brand);
 }
 .kicker {
-  font-family: var(--font-ui);
+  font-family: var(--font);
   font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.08em;

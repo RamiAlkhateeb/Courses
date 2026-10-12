@@ -93,7 +93,7 @@
 .labelNext {
   background: var(--accent);
   color: var(--brand);
-  font-family: var(--font-display);
+  font-family: var(--font);
   font-weight: 700;
   font-size: 1.15rem;
   border-radius: 12px;

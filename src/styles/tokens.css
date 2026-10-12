@@ -28,16 +28,17 @@
   --green-bg: #e5f1ea;
   --radius: 16px;
   --shadow: 0 1px 2px rgba(20, 33, 61, 0.06), 0 4px 16px rgba(20, 33, 61, 0.06);
-  --font-display: 'Fraunces', Georgia, serif;
   --dawn: #fbebcb;
   --muted: #5b6478;
   --locked: #cfc3a8;
   --radius-lg: 20px;
-  --font-ui: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  /* One family per language: Instrument Sans for English, IBM Plex Sans Arabic for Arabic (self-hosted, see
+     src/styles/fonts.css). Each lists the other as its fallback, so Latin inside Arabic text and Arabic inside
+     English text still get the right glyphs. */
+  --font: 'Instrument Sans', 'IBM Plex Sans Arabic', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --app-max: 430px;
   --sidebar-w: 260px;
 }
 html[dir='rtl'] {
-  --font-display: 'Amiri', serif;
-  --font-ui: 'IBM Plex Sans Arabic', 'Instrument Sans', sans-serif;
+  --font: 'IBM Plex Sans Arabic', 'Instrument Sans', 'Segoe UI', Tahoma, sans-serif;
 }

@@ -44,7 +44,7 @@
 }
 .stats dd {
   margin: 2px 0 0 0;
-  font-family: var(--font-display);
+  font-family: var(--font);
   font-size: 1.35rem;
   font-weight: 600;
 }
@@ -261,7 +261,7 @@ html[dir='rtl'] .started .stop {
   margin-bottom: 2px;
 }
 .chapterCard h3 {
-  font-family: var(--font-display);
+  font-family: var(--font);
   font-size: 1.25rem;
   font-weight: 600;
   line-height: 1.25;

@@ -18,7 +18,7 @@ export function Logo({ size = 32, className }: { size?: number; className?: stri
   return (
     <span className={className} style={{ display: 'inline-flex', alignItems: 'center', gap: 10 }}>
       <LogoMark size={size} />
-      <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: size * 0.68, color: 'var(--ink)' }}>
+      <span style={{ fontFamily: 'var(--font)', fontWeight: 700, fontSize: size * 0.68, color: 'var(--ink)' }}>
         {t('appName')}
       </span>
     </span>
