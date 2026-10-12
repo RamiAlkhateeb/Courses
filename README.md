@@ -48,7 +48,8 @@ Every course is tagged for one or more audiences — **Job seekers**, **Managers
 ```bash
 npm install
 npm run dev      # http://localhost:5173
-npm test         # content validation + progress logic
+npm test         # content validation, progress logic, i18n parity, architecture rules
+npm run test:e2e # browser smoke tests (needs: npx playwright install chromium)
 npm run lint
 npm run build    # type-check + production build
 ```

@@ -6,7 +6,9 @@ Vite + React + TypeScript study app (brand "Abu Shreek · أبو شريك", repo
 - `npm run dev`: dev server
 - `npm run build`: type-check + build
 - `npm run lint`: oxlint (ignores `solutions/`, `legacy/`)
-- `npm test`: vitest — validates all course content + progress helpers
+- `npm test`: vitest — content validation (incl. a ban on scripts/handlers in content HTML), progress rules, the persisted store, i18n parity (same keys, `{{vars}}` and plural forms in EN/AR), lesson-id snapshot (`tests/__snapshots__`; update with `npx vitest -u` only when you accept resetting ✓ marks), layer boundaries, and "no raw colours outside `tokens.css`"
+- `npm run test:e2e`: Playwright smoke suite (onboarding, a lesson, RTL, deep link, axe) against a production build served under the Pages base path (`e2e/`, `playwright.config.ts`). Browsers: `npx playwright install chromium`
+- `npm run check:bundle`: first-load JS budget (after a build)
 
 ## Layout
 - `src/content/courses.ts`: course registry. Each course is `src/content/courses/<id>/index.ts` + one file per module; `category` (`careers` / `business` / `management`) groups it on the home page and `audiences` (`job-seekers` / `professionals` / `entrepreneurs`, at least one) drives the Home filter and badges. A course with no `loaders` is an outline: its chapters show as "Coming soon".
@@ -18,8 +20,8 @@ Vite + React + TypeScript study app (brand "Abu Shreek · أبو شريك", repo
 - `docs/content-sources/README.ar.md`: the original Arabic README the first modules were migrated from.
 
 ## Conventions
-- Identity lives in `src/styles/tokens.css` — never raw colours. See "Design system" below.
-- Content is typed data (`Module` in `src/content/types.ts`), all text `Localized` with `en` + `ar`. UI strings go through i18next (`src/i18n/index.ts`, EN + AR); use logical CSS properties for RTL.
+- Identity lives in `src/styles/tokens.css` — never raw colours (a test enforces it; add a token instead). See "Design system" below.
+- Content is typed data (`Module` in `src/content/types.ts`), all text `Localized` with `en` + `ar`. UI strings go through i18next (`src/i18n/locales/en.ts` / `ar.ts`; keys are type-checked against `en`, so a typo fails `tsc`; for a key built at runtime cast with `as ParseKeys`, and add the key to both files — `tests/i18n.test.ts` checks the pair, including all six Arabic plural forms); use logical CSS properties for RTL.
 - Question IDs are stable (`<prefix>-qNNN`, prefix letters only, unique app-wide); saved progress references them. Never renumber.
 - Option display order is shuffled per question (`src/domain/optionOrder.ts`); stored answers are always indices into `question.options`.
 - Finance courses (investing, personal finance) are educational only: no recommendations of specific products, figures labelled as illustrations, and the course `notice` keeps the not-financial-advice disclaimer.
@@ -35,6 +37,7 @@ The mobile UI follows the Claude Design canvas: screenshots in `design/screens/`
 - Look: flat 1px-border cards, 16–20px radius (`--radius`, `--radius-lg`), no chunky 3D buttons. Saffron only for "what's next" (Continue, current node, XP progress) — selected/neutral states use dawn + ink.
 - Layout: a max-width-430px column (`--app-max`); the tab bar (Path · Review · Terms · Me) shows on the four main screens, lessons are full screen.
 - RTL: set `dir` from the i18n language, use logical CSS properties (`margin-inline-start`, `inset-inline-end`, …), and mirror Rafiq and the mountain path in Arabic (`Rafiq` and `PathMap` do this via `dir`).
+- Every button-looking control is a `Button` (or `buttonClass()` on a `<Link>`; `size="sm"` for inline ones): don't write a new `.btn` in a feature stylesheet.
 - Shared UI lives in `src/components/ui/` (`Button`, `Card`, `OptionCard`, `ProgressBar`, `TabBar`, `BottomSheet`, `Rafiq`, `PathNode`); reuse it, don't restyle per screen.
 - The design is light-only; there is no dark theme or theme setting.
 - Finance content keeps the "educational only, not financial advice" notice (Welcome, trail picker, results).
