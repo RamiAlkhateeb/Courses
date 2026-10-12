@@ -147,12 +147,12 @@ function CardRun({ mod, lesson, next, onRestart }: { mod: Module; lesson: Lesson
         </p>
 
         {question && !checked ? (
-          <LessonFooter rafiq="think" action={tUi('check')} disabled={selected === null} onAction={check} />
+          <LessonFooter mascot="think" compact action={tUi('check')} disabled={selected === null} onAction={check} />
         ) : (
           <LessonFooter
             tone={question ? (isCorrect ? 'right' : 'wrong') : undefined}
             feedback={question && <AnswerFeedback question={question} correct={isCorrect} />}
-            rafiq={question ? undefined : 'point'}
+            mascot={question ? undefined : 'point'}
             action={question ? continueLabel : tUi('nextBtn')}
             onAction={advance}
           />

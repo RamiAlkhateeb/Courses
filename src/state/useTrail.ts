@@ -1,4 +1,4 @@
-import { flatNav, getCourse, hasModule, type Course } from '../content/courses'
+import { ENABLED_COURSE_IDS, flatNav, getCourse, hasModule, type Course } from '../content/courses'
 import type { Module } from '../content/types'
 import { useModules } from '../content/useModule'
 import { unitStates, type NodeState } from '../domain/pathStates'
@@ -26,7 +26,7 @@ export const hasContent = (c: Course) => flatNav(c).some((i) => hasModule(c.id, 
 export function useTrailId(): string {
   const { trail } = useProfile()
   const course = getCourse(trail)
-  return course && hasContent(course) ? course.id : DEFAULT_TRAIL
+  return course && ENABLED_COURSE_IDS.includes(course.id) && hasContent(course) ? course.id : DEFAULT_TRAIL
 }
 
 /** A trail's written chapters with their lessons and path states, plus the chapter/lesson to continue with. */

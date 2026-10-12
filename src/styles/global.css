@@ -49,3 +49,8 @@ a {
     margin: 16mm 15mm;
   }
 }
+
+/* Arabic letters join, so tracking would break the words (kickers and eyebrows are tracked in English). */
+html[dir='rtl'] * {
+  letter-spacing: 0 !important;
+}

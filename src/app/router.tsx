@@ -25,6 +25,7 @@ export const router = createBrowserRouter(
       hydrateFallbackElement: <p>…</p>,
       children: [
         { path: 'welcome', ...page(() => import('../features/onboarding/Onboarding'), 'Welcome') },
+        { path: 'welcome/bank', ...page(() => import('../features/onboarding/Onboarding'), 'StartingBank') },
         { path: 'welcome/:step', ...page(() => import('../features/onboarding/Onboarding'), 'OnboardingStep') },
         {
           element: <TabsLayout />,

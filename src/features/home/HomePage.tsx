@@ -6,7 +6,7 @@ import { LogoMark } from '../../components/Logo'
 import { ProgressRing } from '../../components/ProgressRing'
 import {
   AUDIENCES,
-  courses,
+  appCourses as courses,
   flatNav,
   getCourse,
   hasModule,

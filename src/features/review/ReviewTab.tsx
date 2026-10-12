@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Button, Card, Icon, Rafiq } from '../../components/ui'
+import { Button, Card, Icon, AbuShreek } from '../../components/ui'
 import { useLocalized } from '../../content/useLocalized'
 import type { Question } from '../../content/types'
 import { mistakes, MAX_BOX } from '../../domain/progress'
@@ -50,11 +50,11 @@ export function ReviewTab() {
       <p className={styles.sub}>{t('reviewSub')}</p>
 
       <Card tone="dawn" className={styles.hero}>
-        <Rafiq pose="point" height={130} className={styles.rafiq} />
+        <AbuShreek pose="point" height={130} className={styles.mascot} />
         <div className={styles.heroText}>
           <h2>{due.length ? t('cardsDue', { count: due.length }) : t('nothingDue')}</h2>
           {due.length > 0 && <p>{t('aboutMin', { n: Math.max(1, Math.round(due.length * 0.5)) })}</p>}
-          <Button variant="ink" disabled={due.length === 0} onClick={() => navigate('/review/run')}>
+          <Button variant="ink" size="sm" disabled={due.length === 0} onClick={() => navigate('/review/run')}>
             {t('startReview')}
           </Button>
         </div>

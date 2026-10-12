@@ -7,7 +7,7 @@ import styles from './ui.module.css'
 
 const cx = (...c: (string | false | undefined)[]) => c.filter(Boolean).join(' ')
 
-/** `primary` (saffron: the next step), `secondary` (flat card), `ghost` (text), `correct`/`oops` (feedback sheets). */
+/** `primary` (saffron: the next step), `secondary` (flat card), `ghost` (dashed outline), `correct`/`oops` (feedback sheets). */
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'correct' | 'oops' | 'ink'
 export interface ButtonLook {
   variant?: ButtonVariant

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Card, Icon, Rafiq } from '../../components/ui'
+import { Card, Icon, AbuShreek } from '../../components/ui'
 import type { Localized } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
 import { lessonKey, lessonTerms } from '../../domain/lessons'
@@ -47,7 +47,7 @@ export function TermsPage() {
           <h1>{t('termsTitle')}</h1>
           <p className={styles.sub}>{t('termsCollected', { n: got.length, total: entries.length })}</p>
         </div>
-        <Rafiq pose="point" height={120} />
+        <AbuShreek pose="point" height={120} />
       </header>
 
       <div className={styles.seg} role="group">

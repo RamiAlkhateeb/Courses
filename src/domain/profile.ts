@@ -33,11 +33,5 @@ export function parseProfile(raw: string | null): Profile {
   }
 }
 
-/** The trail each onboarding goal points to. */
-export const GOAL_TRAIL: Record<string, string> = {
-  money: 'personal-finance',
-  invest: 'investing',
-  accounting: 'accounting',
-  business: 'marketing',
-}
+/** Every goal leads to the one trail there is for now. */
 export const DEFAULT_TRAIL = 'investing'

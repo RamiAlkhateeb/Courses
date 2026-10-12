@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Button, Icon, Rafiq } from '../../components/ui'
+import { Button, Icon, AbuShreek } from '../../components/ui'
 import { useLocalized } from '../../content/useLocalized'
 import { learnHref } from '../../domain/lessons'
 import { useTrail, useTrailId } from '../../state/useTrail'
@@ -44,7 +44,7 @@ export function SummitPage() {
             {k + 1}
           </span>
         ))}
-        <Rafiq pose="point" height={96} className={styles.guide} />
+        <AbuShreek pose="point" height={96} className={styles.guide} />
       </div>
 
       <h2 className={styles.kicker}>{t('campsOnTrail')}</h2>

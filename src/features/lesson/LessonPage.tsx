@@ -141,7 +141,7 @@ export function QuizLesson({
           onAction={next}
         />
       ) : (
-        <LessonFooter rafiq="think" action={tUi('check')} disabled={selected === null} onAction={check} />
+        <LessonFooter mascot="think" compact action={tUi('check')} disabled={selected === null} onAction={check} />
       )}
     </div>
   )

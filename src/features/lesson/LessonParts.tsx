@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { Question } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
-import { Button, BottomSheet, Card, Icon, OptionCard, ProgressBar, Rafiq, type OptionState, type RafiqPose } from '../../components/ui'
+import { Button, BottomSheet, Card, Icon, OptionCard, ProgressBar, AbuShreek, type OptionState, type MascotPose } from '../../components/ui'
 import { currentStreak, lessonXp, localDay, XP_PER_CORRECT } from '../../domain/progress'
 import { WeekDots } from '../../components/WeekStrip'
 import { useProgress } from '../../state/useProgress'
@@ -79,28 +79,31 @@ export function QuestionCard({
   )
 }
 
-/** Bottom of a lesson screen: Rafiq beside the action while answering, or the green/red feedback sheet once checked. */
+/** Bottom of a lesson screen: AbuShreek beside the action while answering, or the green/red feedback sheet once checked. */
 export function LessonFooter({
   tone,
   feedback,
   action,
   disabled,
   onAction,
-  rafiq,
+  mascot,
+  compact,
 }: {
   tone?: 'right' | 'wrong'
   feedback?: ReactNode
   action: string
   disabled?: boolean
   onAction: () => void
-  rafiq?: RafiqPose
+  mascot?: MascotPose
+  /** A compact button at the end of the row ("Check answer") instead of a full-width bar */
+  compact?: boolean
 }) {
   if (tone) {
     const right = tone === 'right'
     return (
       <BottomSheet tone={right ? 'correct' : 'oops'}>
         <div className={styles.sheetHead}>
-          <Rafiq pose={right ? 'cheer' : 'oops'} height={130} className={styles.sheetRafiq} />
+          <AbuShreek pose={right ? 'cheer' : 'oops'} height={130} className={styles.sheetMascot} />
           <div className={styles.feedback}>{feedback}</div>
         </div>
         {/* Keyed by action so the button remounts (and autofocuses) when Check turns into Continue. */}
@@ -112,8 +115,8 @@ export function LessonFooter({
   }
   return (
     <div className={styles.footer}>
-      {rafiq && <Rafiq pose={rafiq} height={110} className={styles.footRafiq} />}
-      <Button key={action} disabled={disabled} onClick={onAction}>
+      {mascot && <AbuShreek pose={mascot} height={110} className={styles.footMascot} />}
+      <Button key={action} size={compact ? 'sm' : undefined} className={compact ? styles.compactAction : undefined} disabled={disabled} onClick={onAction}>
         {action}
       </Button>
     </div>
@@ -174,7 +177,7 @@ export function useLessonKeys(opts: {
   }, [opts.enabled])
 }
 
-/** Design 11 "Camp cleared!": Rafiq cheers, XP / accuracy / time tiles, the week's dots, then the actions. */
+/** Design 11 "Camp cleared!": AbuShreek cheers, XP / accuracy / time tiles, the week's dots, then the actions. */
 export function LessonSummary({
   correct,
   total,
@@ -209,7 +212,7 @@ export function LessonSummary({
     <div className={`${styles.lesson} ${styles.summary}`}>
       <div className={styles.hero}>
         <span className={styles.sun} aria-hidden />
-        <Rafiq pose="cheer" height={250} className={styles.heroRafiq} />
+        <AbuShreek pose="cheer" height={250} className={styles.heroMascot} />
       </div>
       <h1>{tUi('campCleared')}</h1>
       {subtitle && <p className={styles.subtitle}>{subtitle}</p>}

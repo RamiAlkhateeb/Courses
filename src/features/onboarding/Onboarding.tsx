@@ -2,12 +2,15 @@ import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { ParseKeys } from 'i18next'
-import { Button, Icon, OptionCard, ProgressBar, Rafiq, type IconName, type RafiqPose } from '../../components/ui'
+import { Button, Icon, OptionCard, ProgressBar, AbuShreek, type IconName, type MascotPose } from '../../components/ui'
 import { LogoMark } from '../../components/Logo'
 import { LANGUAGES } from '../../i18n'
 import { getCourse } from '../../content/courses'
+import { START_BANK } from '../../domain/money'
+import { Money } from '../../components/Money'
+import { Coin } from '../../components/ui/Coin'
 import { useLocalized } from '../../content/useLocalized'
-import { GOAL_TRAIL } from '../../domain/profile'
+import { DEFAULT_TRAIL } from '../../domain/profile'
 import { updateProfile, useProfile } from '../../state/profile'
 import styles from './Onboarding.module.css'
 
@@ -23,15 +26,9 @@ const GOALS: { id: string; icon: IconName }[] = [
   { id: 'accounting', icon: 'calc' },
   { id: 'business', icon: 'megaphone' },
 ]
-const TRAILS: { id: string; icon: IconName }[] = [
-  { id: 'investing', icon: 'trend' },
-  { id: 'personal-finance', icon: 'coins' },
-  { id: 'accounting', icon: 'calc' },
-  { id: 'marketing', icon: 'megaphone' },
-]
 const MINUTES = [5, 10, 15, 20]
 
-/** Designs 01–05: Welcome, then Language → Goal → Trail → Daily time, ending on Path. */
+/** Designs 01–05 and 21: Welcome, then Language → Goal → Trail → Daily time → Starting bank, ending on Path. */
 export function Welcome() {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
@@ -42,7 +39,10 @@ export function Welcome() {
         <span className={styles.brand}>
           <LogoMark size={44} />
           <span className={styles.brandName}>
-            {t('appName', { lng: 'en' })} <span lang="ar">{t('appName', { lng: 'ar' })}</span>
+            {t('appName', { lng: 'en' })}
+            <span lang="ar" dir="rtl">
+              {t('appName', { lng: 'ar' })}
+            </span>
           </span>
         </span>
         <div className={styles.langSwitch} role="group" aria-label={t('language')}>
@@ -64,7 +64,7 @@ export function Welcome() {
             {t('welcomeHi', { lng: other })}
           </span>
         </div>
-        <Rafiq pose="wave" height={260} className={styles.heroRafiq} />
+        <AbuShreek pose="wave" height={260} className={styles.heroMascot} />
       </div>
       <div className={styles.welcomeSheet}>
         <Button onClick={() => navigate('/welcome/language')}>{t('startMyPath')}</Button>
@@ -88,11 +88,9 @@ export function OnboardingStep() {
   const { step } = useParams<{ step: string }>()
   const index = STEPS.indexOf(step as Step)
   const { t, i18n } = useTranslation()
-  const tc = useLocalized()
   const navigate = useNavigate()
   const profile = useProfile()
   const [goal, setGoal] = useState(profile.goal ?? 'invest')
-  const [trail, setTrail] = useState(profile.trail ?? GOAL_TRAIL[profile.goal ?? 'invest'])
   const [minutes, setMinutes] = useState(profile.minutes)
   if (index === -1) return null
   const other = otherLanguage(i18n.language)
@@ -102,17 +100,16 @@ export function OnboardingStep() {
     if (step === 'language') navigate('/welcome/goal')
     else if (step === 'goal') {
       updateProfile({ goal })
-      setTrail(GOAL_TRAIL[goal])
       navigate('/welcome/trail')
     } else if (step === 'trail') {
-      updateProfile({ trail })
+      updateProfile({ trail: DEFAULT_TRAIL })
       navigate('/welcome/time')
     } else {
-      updateProfile({ minutes, onboarded: true })
-      navigate('/')
+      updateProfile({ minutes })
+      navigate('/welcome/bank')
     }
   }
-  const pose: RafiqPose | undefined = step === 'language' ? 'wave' : step === 'goal' ? 'think' : step === 'time' ? 'point' : undefined
+  const pose: MascotPose | undefined = step === 'language' ? 'wave' : step === 'goal' ? 'think' : step === 'time' ? 'point' : undefined
   const bubble = step === 'language' ? t('obLangBubble') : step === 'goal' ? t('obGoalBubble') : step === 'time' ? t('obTimeBubble') : ''
 
   return (
@@ -126,7 +123,7 @@ export function OnboardingStep() {
       <div className={styles.stepBody}>
         {pose && (
           <div className={styles.guide}>
-            <Rafiq pose={pose} height={150} />
+            <AbuShreek pose={pose} height={150} />
             <p className={styles.bubbleSm}>
               {bubble}
               {step === 'language' && (
@@ -138,7 +135,7 @@ export function OnboardingStep() {
           </div>
         )}
         <h1 className={styles.title}>{t(`ob_${step}_title` as ParseKeys)}</h1>
-        {step !== 'goal' && step !== 'time' && <p className={styles.sub}>{t(`ob_${step}_sub` as ParseKeys)}</p>}
+        {(step === 'language' || step === 'trail') && <p className={styles.sub}>{t(`ob_${step}_sub` as ParseKeys)}</p>}
 
         {step === 'language' && (
           <div className={styles.list}>
@@ -161,39 +158,7 @@ export function OnboardingStep() {
           </div>
         )}
 
-        {step === 'trail' && (
-          <>
-            <div className={styles.trails}>
-              {TRAILS.map((tr) => {
-                const course = getCourse(tr.id)
-                if (!course) return null
-                return (
-                  <button
-                    key={tr.id}
-                    type="button"
-                    role="radio"
-                    aria-checked={trail === tr.id}
-                    className={`${styles.trail} ${trail === tr.id ? styles.trailOn : ''}`}
-                    onClick={() => setTrail(tr.id)}
-                  >
-                    {trail === tr.id && (
-                      <span className={styles.tick}>
-                        <Icon name="check" size={18} />
-                      </span>
-                    )}
-                    <span className={styles.trailIcon}>
-                      <Icon name={tr.icon} size={26} />
-                    </span>
-                    <strong>{tc(course.title)}</strong>
-                    <span className={styles.trailDesc}>{t(`trailDesc_${tr.id}` as ParseKeys)}</span>
-                    <span className={styles.level}>{t('beginner')}</span>
-                  </button>
-                )
-              })}
-            </div>
-            <p className={styles.fine}>{t('financeNotice')}</p>
-          </>
-        )}
+        {step === 'trail' && <TrailCard />}
 
         {step === 'time' && (
           <>
@@ -212,7 +177,77 @@ export function OnboardingStep() {
         )}
       </div>
       <footer className={styles.stepFoot}>
-        <Button onClick={next}>{step === 'time' ? t('startMyPath') : t('continue')}</Button>
+        <Button onClick={next}>{t('continue')}</Button>
+      </footer>
+    </div>
+  )
+}
+
+/** Design 04: Investing is the only trail for now, shown as one card. */
+function TrailCard() {
+  const { t } = useTranslation()
+  const tc = useLocalized()
+  const course = getCourse(DEFAULT_TRAIL)
+  if (!course) return null
+  return (
+    <>
+      <div className={styles.trailSolo}>
+        <span className={styles.trailIcon}>
+          <Icon name="trend" size={30} />
+        </span>
+        <strong className={styles.trailSoloName}>{tc(course.title)}</strong>
+        <span className={styles.trailDesc}>{t('trailDesc_investing')}</span>
+        <ul className={styles.bullets}>
+          <li>{t('trailBullet1')}</li>
+          <li>{t('trailBullet2')}</li>
+          <li>{t('trailBullet3')}</li>
+        </ul>
+        <AbuShreek pose="point" height={130} className={styles.trailMascot} />
+      </div>
+      <p className={styles.fine}>{t('trailFine')}</p>
+    </>
+  )
+}
+
+/** Design 21: the $1,000 play-money bank, then Path. This is where onboarding is marked finished. */
+export function StartingBank() {
+  const { t } = useTranslation()
+  const navigate = useNavigate()
+  return (
+    <div className={styles.step}>
+      <div className={styles.bankBody}>
+        <p className={styles.bankKicker}>{t('bankKicker')}</p>
+        <h1 className={styles.bankTitle}>{t('bankTitle')}</h1>
+        <div className={styles.notes} aria-hidden>
+          <span className={`${styles.note} ${styles.note500}`}>
+            <b>$500</b>
+          </span>
+          <span className={`${styles.note} ${styles.note200}`}>
+            <b>$200</b>
+          </span>
+          <span className={`${styles.note} ${styles.note100}`}>
+            <b>$100</b>
+          </span>
+        </div>
+        <p className={styles.bankTotal}>
+          <Coin size={44} /> <Money amount={START_BANK} />
+        </p>
+        <p className={styles.bankSub}>{t('bankSub')}</p>
+        <div className={styles.guide}>
+          <AbuShreek pose="wave" height={130} />
+          <p className={styles.bubbleSm}>{t('bankBubble')}</p>
+        </div>
+      </div>
+      <footer className={styles.stepFoot}>
+        <p className={styles.fine}>{t('bankFine')}</p>
+        <Button
+          onClick={() => {
+            updateProfile({ onboarded: true })
+            navigate('/')
+          }}
+        >
+          {t('startClimbing')}
+        </Button>
       </footer>
     </div>
   )

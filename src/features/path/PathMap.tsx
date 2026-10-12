@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { PathNode, Rafiq, type NodeState } from '../../components/ui'
+import { PathNode, AbuShreek, type NodeState } from '../../components/ui'
 import { practiceHref } from '../../content/courses'
 import { useLocalized } from '../../content/useLocalized'
 import { learnHref } from '../../domain/lessons'
@@ -9,7 +9,7 @@ import styles from './PathMap.module.css'
 
 const STEP = 125 // px between nodes
 const TOP = 110 // room above the checkpoint for the flag
-const BOTTOM = 120 // room below the first node for Rafiq
+const BOTTOM = 120 // room below the first node for AbuShreek
 /** Horizontal position (% from the inline-start edge) of the n-th node, bottom up: a gentle zig-zag. */
 const X = [34, 66, 40, 62]
 
@@ -65,7 +65,7 @@ export function PathMap({ chapter }: { chapter: Chapter }) {
           </div>
         )
       })}
-      <Rafiq pose="point" height={130} className={styles.guide} />
+      <AbuShreek pose="point" height={130} className={styles.guide} />
     </div>
   )
 }

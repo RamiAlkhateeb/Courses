@@ -20,8 +20,9 @@ test('a first-time visitor is sent to the welcome flow and can reach the path', 
   await page.goto('./')
   await expect(page).toHaveURL(/\/Courses\/welcome$/)
   await page.getByRole('button', { name: 'Start my path' }).click()
-  for (let i = 0; i < 3; i++) await page.getByRole('button', { name: 'Continue' }).click()
-  await page.getByRole('button', { name: 'Start my path' }).click()
+  for (let i = 0; i < 4; i++) await page.getByRole('button', { name: 'Continue' }).click() // language, goal, trail, time
+  await expect(page.getByText('$1,000')).toBeVisible() // the starting bank
+  await page.getByRole('button', { name: 'Start climbing' }).click()
   await expect(page).toHaveURL(/\/Courses\/$/)
   await expect(page.getByRole('navigation')).toBeVisible() // the tab bar
   expect(JSON.parse((await page.evaluate(() => localStorage.getItem('profile:v1')))!).onboarded).toBe(true)

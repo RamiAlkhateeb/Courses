@@ -54,7 +54,7 @@ signed in:
 | `streak` | consecutive days | derived from distinct `local_day` in `lesson_completions` (client or view) |
 | settings (`theme`, `sound`, `lang`) | per device | stay **local**; optionally add `profiles.preferences jsonb` later |
 
-### New migration (draft): `0006_masar_progress.sql`
+### New migration (draft): `0006_abu_shreek_progress.sql`
 
 ```sql
 -- Finished roadmap lessons (and Practice/Review runs, which have no lesson key) — one row per finish.

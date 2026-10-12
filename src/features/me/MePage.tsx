@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { LogoMark } from '../../components/Logo'
 import { formatNumber } from '../../i18n'
 import { Card, Icon, ProgressBar, type IconName } from '../../components/ui'
-import { getCourse } from '../../content/courses'
+import { ENABLED_COURSE_IDS, getCourse } from '../../content/courses'
 import { useLocalized } from '../../content/useLocalized'
 import { currentStreak, localDay } from '../../domain/progress'
 import { useProgress } from '../../state/useProgress'
@@ -12,7 +12,6 @@ import { updateProfile, useProfile } from '../../state/profile'
 import { useTrail, useTrailId } from '../../state/useTrail'
 import styles from './MePage.module.css'
 
-const TRAILS = ['investing', 'personal-finance', 'accounting', 'marketing']
 
 /** Design 13: streak, XP and lessons, this week's bars, trails with progress, and milestones. */
 export function MePage() {
@@ -70,7 +69,7 @@ export function MePage() {
 
       <h2 className={styles.kicker}>{t('yourTrails')}</h2>
       <div className={styles.trails}>
-        {TRAILS.map((id) => (
+        {ENABLED_COURSE_IDS.map((id) => (
           <TrailRow key={id} id={id} active={id === active} />
         ))}
       </div>
