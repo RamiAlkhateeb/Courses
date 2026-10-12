@@ -2,3 +2,4 @@ export { Button, buttonClass, Card, OptionCard, ProgressBar, TabBar, BottomSheet
 export type { OptionState, NodeState } from './ui'
 export { Icon, type IconName } from './Icon'
 export { AbuShreek, type MascotPose } from './AbuShreek'
+export { Coin } from './Coin'

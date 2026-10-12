@@ -104,3 +104,32 @@
   inset-block-end: 0;
   inset-inline-end: 6%;
 }
+/* Snow on the peak: a jagged edge hanging from the apex (the apex is 40–60% wide, so the cap fits inside the mountain). */
+.snow {
+  position: absolute;
+  inset-block-start: 70px;
+  inset-inline-start: 40%;
+  inline-size: 20%;
+  block-size: 58px;
+  background: var(--on-navy);
+  clip-path: polygon(0 0, 100% 0, 100% 50%, 82% 100%, 64% 58%, 46% 92%, 28% 56%, 10% 88%, 0 48%);
+}
+.contour {
+  fill: none;
+  stroke: var(--navy-line);
+  stroke-width: 1.5px;
+  opacity: 0.7;
+}
+/* "Back to my camp": a small pill floating above the tab bar while the current lesson is off screen. */
+.backToCamp {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 96px;
+  z-index: 15;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+.backToCamp > * {
+  pointer-events: auto;
+}

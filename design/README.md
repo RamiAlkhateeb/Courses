@@ -21,16 +21,16 @@ The product logic (learning pays play money, the Playground, unlocks) is in `doc
 | 04 | Your first trail | Onboarding 3/4: Investing, the only trail for now | built |
 | 05 | Daily time | Onboarding 4/4: 5/10/15/20 min a day | built |
 | 21 | Starting bank | $1,000 play-money bank, then Path | built |
-| 06 | Home path | Mountain path, opens at your lesson | built (auto-scroll: phase B) |
+| 06 | Home path | Mountain path, opens at your lesson, "Back to my camp" | built |
 | 07 | Lesson card | Content card, Next | built |
 | 08 | Quiz question | Options, "Check answer" | built |
-| 09 | Correct | Green sheet, mascot cheers | built (dollars: phase B) |
+| 09 | Correct | Green sheet, mascot cheers | built |
 | 10 | Not quite | Red sheet, mascot oops | built |
-| 11 | Camp cleared | Lesson results | built (dollars: phase B) |
-| 28 | Lesson payout | +$40, coin to the bank chip, "Move $100?" | phase B |
+| 11 | Camp cleared | Lesson results, earned $ | built |
+| 28 | Lesson payout | +$40, coin to the bank chip, bank before → after | built ("Move $100?" offer: phase C) |
 | 12 | Review tab | Cards due, topics, practice | built |
 | 16 | Terms collection | Word collection (inside Review) | built (move under Review: phase C) |
-| 13 | Progress (Me) | Streak, bank, week, trails, milestones | built (bank: phase B) |
+| 13 | Progress (Me) | Streak, bank, week, trails, milestones | built |
 | 14, 15 | Home / Quiz, Arabic RTL | Mirrored layouts | built |
 | 17 | Summit map | Whole trail overview | built |
 | 19 | Scenario lesson | "What would you do?" trade-offs | not built (needs a content type) |

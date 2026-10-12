@@ -4,8 +4,10 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { Question } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
-import { Button, BottomSheet, Card, Icon, OptionCard, ProgressBar, AbuShreek, type OptionState, type MascotPose } from '../../components/ui'
-import { currentStreak, lessonXp, localDay, XP_PER_CORRECT } from '../../domain/progress'
+import { Button, BottomSheet, Card, Coin, Icon, OptionCard, ProgressBar, AbuShreek, type OptionState, type MascotPose } from '../../components/ui'
+import { currentStreak, localDay } from '../../domain/progress'
+import { PAY_PER_CORRECT } from '../../domain/money'
+import { Money } from '../../components/Money'
 import { WeekDots } from '../../components/WeekStrip'
 import { useProgress } from '../../state/useProgress'
 import { optionOrder } from '../../domain/optionOrder'
@@ -123,14 +125,18 @@ export function LessonFooter({
   )
 }
 
-/** "Spot on! +10 XP" or "Not quite. The answer: …" for a checked question. */
-export function AnswerFeedback({ question, correct }: { question: Question; correct: boolean }) {
+/** "Spot on! +$10" (when this lesson pays) or "Not quite. The answer: …" for a checked question. */
+export function AnswerFeedback({ question, correct, pays }: { question: Question; correct: boolean; pays: boolean }) {
   const t = useLocalized()
   const { t: tUi } = useTranslation()
   return correct ? (
     <>
       <strong className={styles.feedbackTitle}>{tUi('spotOn')}</strong>
-      <span className={styles.xpPill}>{tUi('plusXp', { n: XP_PER_CORRECT })}</span>
+      {pays && (
+        <span className={styles.moneyPill}>
+          <Money amount={PAY_PER_CORRECT} sign />
+        </span>
+      )}
     </>
   ) : (
     <>
@@ -177,11 +183,12 @@ export function useLessonKeys(opts: {
   }, [opts.enabled])
 }
 
-/** Design 11 "Camp cleared!": AbuShreek cheers, XP / accuracy / time tiles, the week's dots, then the actions. */
+/** Design 11 "Camp cleared!": AbuShreek cheers, earned / accuracy / time tiles, the week's dots, then the actions. */
 export function LessonSummary({
   correct,
   total,
   seconds,
+  payout,
   subtitle,
   action,
   onAction,
@@ -192,6 +199,8 @@ export function LessonSummary({
   correct: number
   total: number
   seconds?: number
+  /** Dollars this lesson paid into the bank. Undefined: a replay or practice run, which pays nothing (and says so) */
+  payout?: number
   subtitle?: string
   action: string
   onAction: () => void
@@ -217,12 +226,14 @@ export function LessonSummary({
       <h1>{tUi('campCleared')}</h1>
       {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
       <div className={styles.tiles}>
-        <div className={`${styles.tile} ${styles.tileXp}`}>
-          <span>{tUi('totalXpTile')}</span>
-          <strong>
-            <Icon name="gem" size={22} /> {lessonXp(correct, total)}
-          </strong>
-        </div>
+        {payout !== undefined && payout > 0 && (
+          <div className={`${styles.tile} ${styles.tileMoney}`}>
+            <span>{tUi('earnedTile')}</span>
+            <strong>
+              <Coin size={22} /> <Money amount={payout} />
+            </strong>
+          </div>
+        )}
         {total > 0 && (
           <div className={`${styles.tile} ${styles.tileAcc}`}>
             <span>{tUi('accuracy')}</span>
@@ -252,7 +263,7 @@ export function LessonSummary({
         </div>
       )}
       <div className={styles.actions}>
-        <p className={styles.fine}>{tUi('educationalOnly')}</p>
+        <p className={styles.fine}>{payout === undefined ? tUi('practiceNoPay') : tUi('educationalOnly')}</p>
         <Button onClick={onAction} autoFocus>
           {action}
         </Button>

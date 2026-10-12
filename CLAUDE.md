@@ -26,7 +26,7 @@ Vite + React + TypeScript study app (brand "Abu Shreek · أبو شريك", repo
 - Option display order is shuffled per question (`src/domain/optionOrder.ts`); stored answers are always indices into `question.options`.
 - Finance courses (investing, personal finance) are educational only: no recommendations of specific products, figures labelled as illustrations, and the course `notice` keeps the not-financial-advice disclaimer.
 - Progress goes only through `src/state/progress.ts` (rules in `src/domain/progress.ts`), so a backend can replace it later. Every value kept in localStorage uses `createPersistedStore` (`src/state/`), which re-reads storage before each update and syncs across tabs; don't write new `localStorage` code.
-- Roadmap lessons come from `lessonsFor(mod)` (`src/domain/lessons.ts`); finished ones are saved as `course/module/lessonId` in `lessonsDone` (plus `lastLesson` for Home's Continue and per-day XP in `activity`), so changing how a section splits into parts can reset its ✓.
+- Roadmap lessons come from `lessonsFor(mod)` (`src/domain/lessons.ts`); finished ones are saved as `course/module/lessonId` in `lessonsDone` (plus `lastLesson` for Home's Continue and per-day earnings in `activity`), so changing how a section splits into parts can reset its ✓.
 - Deploy base path is `/<repo>/` (from `GITHUB_REPOSITORY`, fallback `/Courses/`) when `GITHUB_PAGES=true` (see `vite.config.ts`); use `import.meta.env.BASE_URL` / `resolveAssetPath`, never hard-code it.
 - No secrets are needed. If a backend is ever added, follow `docs/SUPABASE-INTEGRATION.md` (optional accounts on the BA2 Supabase archive; guest mode stays the default).
 
@@ -34,7 +34,7 @@ Vite + React + TypeScript study app (brand "Abu Shreek · أبو شريك", repo
 The mobile UI follows the Claude Design canvas: screenshots in `design/screens/` (flow order in `design/README.md`), the mascot PNGs in `design/abu-shreek/` (served from `public/abu-shreek/`). Build against the screenshot, then check it at 390×844 in English and Arabic.
 - Colours (tokens): ink/`--brand` `#14213D`, saffron/`--accent` `#F2A93B`, dawn/`--dawn` `#FBEBCB`, paper `#F6F1E6`, card/`--surface` `#FFFCF5`, line/`--rule` `#DDD3BF`, correct/`--green` `#1F6B4A`, oops/`--red` `#A8432B`, saffron text/`--accent-ink` `#8A5A00`, muted `#5B6478`, locked `#CFC3A8`.
 - Fonts: one family per language, used for headings and body alike (`--font`, swapped by `html[dir='rtl']`): Instrument Sans for English, IBM Plex Sans Arabic for Arabic. They are self-hosted (`src/styles/fonts.css`, files from `@fontsource/*`) with strict `unicode-range`s, so a language's files download only when its script is on screen; nothing loads from Google Fonts. Never hard-code a `font-family` in a component (code blocks keep the monospace stack).
-- Look: flat 1px-border cards, 16–20px radius (`--radius`, `--radius-lg`), no chunky 3D buttons. Saffron only for "what's next" (Continue, current node, XP progress) — selected/neutral states use dawn + ink.
+- Look: flat 1px-border cards, 16–20px radius (`--radius`, `--radius-lg`), no chunky 3D buttons. Saffron only for "what's next" (Continue, current node) — selected/neutral states use dawn + ink.
 - Layout: a max-width-430px column (`--app-max`); the tab bar (Path · Review · Terms · Me) shows on the four main screens, lessons are full screen.
 - RTL: set `dir` from the i18n language, use logical CSS properties (`margin-inline-start`, `inset-inline-end`, …), and mirror the mascot and the mountain path in Arabic (`AbuShreek` has a `flip` prop that defaults to `dir`; `PathMap` follows `dir`).
 - Every button-looking control is a `Button` (or `buttonClass()` on a `<Link>`; `size="sm"` for inline ones): don't write a new `.btn` in a feature stylesheet.
@@ -46,7 +46,7 @@ The mobile UI follows the Claude Design canvas: screenshots in `design/screens/`
 
 ## Product rules (the money loop)
 - Investing is the only course the app offers (`ENABLED_COURSE_IDS` in `src/content/courses.ts`); other course files stay in the repo, hidden.
-- One wallet of play money: the bank starts at $1,000 (`START_BANK`, `src/domain/money.ts`), lessons pay $10 per correct answer, and only money moved into the Playground can be lost. Always label it play money. Never real money, brokerage links, advice ("you should buy"), or rankings by return.
+- One wallet of play money: the bank starts at $1,000 (`START_BANK`, `src/domain/money.ts`), lessons pay $10 per correct answer (`PAY_PER_CORRECT`) the first time a roadmap lesson is finished (replays and practice pay nothing), and only money moved into the Playground can be lost. Saved progress is `progress:v2` (`bank`); `parseProgress` migrates v1 XP players to $1,000 + $10 per right answer. Always label it play money. Never real money, brokerage links, advice ("you should buy"), or rankings by return.
 - Gains and losses pair colour with an arrow and text (↑ +$486, ↓ −6%), never colour alone. Money is rendered with `<Money>` (left-to-right, Western digits, also in Arabic).
 - Fictional company names are marked "(fictional)" / "(خيالية)".
 
@@ -56,7 +56,7 @@ Dependencies point one way; `tests/architecture.test.ts` fails CI if one points 
 | --- | --- | --- |
 | `src/content/` | course data, registry, content hooks | `content`, `lib` |
 | `src/lib/` | generic helpers (`useScrollSpy`) | `lib` |
-| `src/domain/` | **pure rules**: progress/streak/XP/spaced review, lessons, chunks, path states. No React, no browser APIs | `domain`, `content`, `lib` |
+| `src/domain/` | **pure rules**: progress/streak/bank/spaced review, lessons, chunks, path states. No React, no browser APIs | `domain`, `content`, `lib` |
 | `src/state/` | persisted stores (`createPersistedStore`), hooks over them, sound, `useTrail` | `state`, `domain`, `content`, `lib` |
 | `src/i18n/` | translations and language setup | + `state` |
 | `src/components/` | shared UI | + `i18n` |
@@ -75,7 +75,7 @@ Need something from another feature? Move it down a layer (shared logic to `doma
 | **Lesson** | A short card run cut from a section, one roadmap node (`Lesson`, `lessonsFor`) | |
 | **Card** | One idea inside a lesson (`chunks.ts`) | |
 | **Question** | A multiple-choice question with a stable id | "quick check" |
-| **Week** (calendar) | Monday–Sunday, only for the XP bars and the rest day (`weekStart`, `WeekStrip`) | never a module |
+| **Week** (calendar) | Monday–Sunday, only for the earnings bars and the rest day (`weekStart`, `WeekStrip`) | never a module |
 
 ## Skills
 `add-module`, `add-course` in `.claude/skills/`.

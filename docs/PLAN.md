@@ -1,5 +1,9 @@
 # Roadmap
 
+## Money loop (in progress; the plan is in the build brief)
+Done: Phase A (mascot, tokens, Investing-only, Starting bank, Error screens) and Phase B (bank instead of XP, `progress:v2` migration, lesson payouts, Camp cleared with dollars, Lesson payout screen, Path opens at your lesson with "Back to my camp").
+Next: Phase C (simulation engine, Playground, Buy/Sell, news, risk, unlocks, paused) and Phase D (seasons, summaries, QA). The "Move $100 to the Playground?" offer on the payout screen arrives with Phase C.
+
 ## Done
 - Guest-only Vite + React + TS app (no accounts, no backend), EN + AR with RTL, light/dark theme.
 - Multi-course structure (`src/content/courses.ts`); first course: **Tech Interview Prep** (Resume & ATS, .NET Q&A, DSA patterns).

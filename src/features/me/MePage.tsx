@@ -1,8 +1,10 @@
 import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { LogoMark } from '../../components/Logo'
-import { formatNumber } from '../../i18n'
-import { Card, Icon, ProgressBar, type IconName } from '../../components/ui'
+import type { ReactNode } from 'react'
+import { formatMoney } from '../../i18n'
+import { Money } from '../../components/Money'
+import { Card, Coin, Icon, ProgressBar, type IconName } from '../../components/ui'
 import { ENABLED_COURSE_IDS, getCourse } from '../../content/courses'
 import { useLocalized } from '../../content/useLocalized'
 import { currentStreak, localDay } from '../../domain/progress'
@@ -23,15 +25,15 @@ export function MePage() {
   const streak = currentStreak(progress.streak, localDay())
   const { course } = useTrail(active)
 
-  const stats: { icon: IconName; value: string; label: string }[] = [
+  const stats: { icon?: IconName; value: ReactNode; label: string }[] = [
     { icon: 'flag', value: String(streak), label: t('dayStreak') },
-    { icon: 'gem', value: formatNumber(progress.xp), label: t('totalXpShort') },
+    { value: <Money amount={progress.bank} />, label: t('playMoneyShort') },
     { icon: 'check', value: String(progress.lessonsDone.length), label: t('lessonsDoneShort') },
   ]
   const milestones: { icon: IconName; label: string; got: boolean }[] = [
     { icon: 'flag', label: t('msFirst'), got: progress.lessonsDone.length >= 1 },
     { icon: 'star', label: t('msStreak', { n: 7 }), got: streak >= 7 },
-    { icon: 'gem', label: t('msXp', { n: formatNumber(1000) }), got: progress.xp >= 1000 },
+    { icon: 'gem', label: t('msBank', { n: formatMoney(1500) }), got: progress.bank >= 1500 },
   ]
 
   return (
@@ -52,7 +54,7 @@ export function MePage() {
       <div className={styles.stats}>
         {stats.map((s) => (
           <Card key={s.label} className={styles.stat}>
-            <Icon name={s.icon} size={22} />
+            {s.icon ? <Icon name={s.icon} size={22} /> : <Coin size={22} />}
             <strong>{s.value}</strong>
             <span>{s.label}</span>
           </Card>

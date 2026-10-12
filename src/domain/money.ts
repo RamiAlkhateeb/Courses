@@ -5,3 +5,6 @@
 export const START_BANK = 1000
 /** Paid for every correct answer in a finished lesson (5 questions: at most $50). */
 export const PAY_PER_CORRECT = 10
+
+/** What a lesson pays for `correct` right answers. */
+export const lessonPayout = (correct: number) => correct * PAY_PER_CORRECT

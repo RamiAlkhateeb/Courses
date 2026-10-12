@@ -29,7 +29,7 @@ test('a first-time visitor is sent to the welcome flow and can reach the path', 
   expect(errors).toEqual([])
 })
 
-test('finishing a lesson with the keyboard saves progress and XP', async ({ page }) => {
+test('finishing a lesson with the keyboard saves progress and pays the bank', async ({ page }) => {
   const errors = watchErrors(page)
   await onboarded(page)
   await page.goto('course/investing/basics/learn/compounding')
@@ -44,8 +44,9 @@ test('finishing a lesson with the keyboard saves progress and XP', async ({ page
     await page.waitForTimeout(150)
   }
   await expect(page).not.toHaveURL(/\/learn\//)
-  const saved = JSON.parse((await page.evaluate(() => localStorage.getItem('progress:v1')))!)
+  const saved = JSON.parse((await page.evaluate(() => localStorage.getItem('progress:v2')))!)
   expect(saved.lessonsDone).toContain('investing/basics/compounding')
+  expect(saved.bank).toBeGreaterThanOrEqual(1000)
   expect(errors).toEqual([])
 })
 

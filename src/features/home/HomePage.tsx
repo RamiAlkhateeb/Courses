@@ -1,6 +1,8 @@
 import { Link, useSearchParams } from 'react-router-dom'
 import { buttonClass } from '../../components/ui'
 import { useTranslation } from 'react-i18next'
+import { formatMoney } from '../../i18n'
+import { Money } from '../../components/Money'
 import { AudienceBadges } from '../../components/AudienceBadges'
 import { LogoMark } from '../../components/Logo'
 import { ProgressRing } from '../../components/ProgressRing'
@@ -172,27 +174,27 @@ function ContinueCard({ courseId, moduleId, lessonId }: { courseId: string; modu
   )
 }
 
-/** The last 7 days of XP as bars, plus this week's XP, the streak and total XP. */
+/** The last 7 days of earnings as bars, plus this week's earnings, the streak and the bank. */
 function WeekCard() {
   const { t: tUi, i18n } = useTranslation()
   const { progress } = useProgress()
   const today = new Date()
   const days = Array.from({ length: 7 }, (_, i) => {
     const date = new Date(today.getFullYear(), today.getMonth(), today.getDate() - (6 - i))
-    return { date, xp: progress.activity[localDay(date)] ?? 0 }
+    return { date, earned: progress.activity[localDay(date)] ?? 0 }
   })
-  const weekXp = days.reduce((n, d) => n + d.xp, 0)
-  const max = Math.max(50, ...days.map((d) => d.xp))
+  const weekEarned = days.reduce((n, d) => n + d.earned, 0)
+  const max = Math.max(50, ...days.map((d) => d.earned))
   const weekday = new Intl.DateTimeFormat(i18n.language, { weekday: 'narrow' })
 
   return (
     <div className={styles.weekCard}>
       <p className={styles.cardKicker}>{tUi('thisWeek')}</p>
-      <div className={styles.bars} role="img" aria-label={tUi('weekXp', { n: weekXp })}>
+      <div className={styles.bars} role="img" aria-label={tUi('weekEarned', { n: formatMoney(weekEarned) })}>
         {days.map((d, i) => (
           <div key={i} className={`${styles.barCol} ${i === 6 ? styles.today : ''}`}>
             <span className={styles.bar}>
-              <span style={{ height: `${(d.xp / max) * 100}%` }} />
+              <span style={{ height: `${(d.earned / max) * 100}%` }} />
             </span>
             <span className={styles.barDay}>{weekday.format(d.date)}</span>
           </div>
@@ -200,16 +202,20 @@ function WeekCard() {
       </div>
       <dl className={styles.weekStats}>
         <div>
-          <dt>{tUi('weekXpLabel')}</dt>
-          <dd>{weekXp}</dd>
+          <dt>{tUi('weekEarnedLabel')}</dt>
+          <dd>
+            <Money amount={weekEarned} />
+          </dd>
         </div>
         <div>
           <dt>{tUi('streak')}</dt>
           <dd>🔥 {currentStreak(progress.streak, localDay())}</dd>
         </div>
         <div>
-          <dt>{tUi('totalXpLabel')}</dt>
-          <dd>{progress.xp}</dd>
+          <dt>{tUi('bankLabel')}</dt>
+          <dd>
+            <Money amount={progress.bank} />
+          </dd>
         </div>
       </dl>
     </div>

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { formatNumber } from '../../i18n'
+import { MoneyChip } from '../../components/MoneyChip'
 import { Icon } from '../../components/ui'
 import { useLocalized } from '../../content/useLocalized'
 import { currentStreak, localDay } from '../../domain/progress'
@@ -11,7 +11,7 @@ import { RestDay, useRestDayOffer } from './RestDay'
 import { useTrail, useTrailId } from '../../state/useTrail'
 import styles from './PathPage.module.css'
 
-/** Home (designs 06, 14): the trail, streak and XP chips, the current camp's banner and the mountain path. */
+/** Home (designs 06, 14): the trail, streak and bank chips, the current camp's banner and the mountain path. */
 export function PathPage() {
   const { t } = useTranslation()
   const tc = useLocalized()
@@ -35,9 +35,7 @@ export function PathPage() {
           <span className={styles.chip} title={t('streakDays', { count: streak })}>
             <Icon name="flag" size={20} /> {streak}
           </span>
-          <span className={styles.chip} title={t('totalXp', { xp: progress.xp })}>
-            <Icon name="gem" size={20} /> {formatNumber(progress.xp)}
-          </span>
+          <MoneyChip amount={progress.bank} />
         </span>
       </header>
 

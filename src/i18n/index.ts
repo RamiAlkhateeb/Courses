@@ -25,6 +25,13 @@ export const LANGUAGES = [
 export const numberLocale = (lng: string) => (lng === 'ar' ? 'ar-u-nu-latn' : lng)
 export const formatNumber = (n: number, lng: string = i18n.language) => new Intl.NumberFormat(numberLocale(lng)).format(n)
 
+/** A play-money amount as text: `$1,240`, `+$486`, `−$6` (Western digits in both languages). For attributes and
+ *  sentences; screens use <Money>, which also pins the direction. */
+export const formatMoney = (amount: number, { sign = false, decimals = 0 }: { sign?: boolean; decimals?: number } = {}, lng: string = i18n.language) => {
+  const abs = new Intl.NumberFormat(numberLocale(lng), { minimumFractionDigits: decimals, maximumFractionDigits: decimals }).format(Math.abs(amount))
+  return `${amount < 0 ? '−' : sign ? '+' : ''}$${abs}`
+}
+
 const applyDir = (lng: string) => {
   document.documentElement.lang = lng
   document.documentElement.dir = RTL_LANGS.includes(lng) ? 'rtl' : 'ltr'
