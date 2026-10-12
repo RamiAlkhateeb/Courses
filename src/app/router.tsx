@@ -1,6 +1,7 @@
 import { Link, createBrowserRouter } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { AppShell } from '../components/AppShell'
+import { RouteError } from './RouteError'
 import { AppFrame, TabsLayout } from '../components/AppFrame'
 import { HomePage } from '../features/home/HomePage'
 import { MePage } from '../features/me/MePage'
@@ -18,6 +19,7 @@ export const router = createBrowserRouter(
       // The mobile app (designs in design/): onboarding, the four tabs, and full-screen lessons.
       path: '/',
       element: <AppFrame />,
+      errorElement: <RouteError />,
       hydrateFallbackElement: <p>…</p>,
       children: [
         { path: 'welcome', element: <Welcome /> },
@@ -61,6 +63,7 @@ export const router = createBrowserRouter(
     {
       // Desktop reading views: the course catalog, a course's chapter list, one-page modules and Settings.
       element: <AppShell />,
+      errorElement: <RouteError />,
       children: [
         { path: 'courses', element: <HomePage /> },
         {

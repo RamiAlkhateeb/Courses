@@ -1,0 +1,33 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
+  text-align: center;
+}
+.card {
+  max-width: 420px;
+  padding: 20px 22px;
+  display: grid;
+  gap: 10px;
+}
+.card h1 {
+  font-size: 1.4rem;
+}
+.card p {
+  color: var(--muted);
+}
+.actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 6px;
+}
+.home {
+  color: var(--ink);
+  font-weight: 600;
+}
