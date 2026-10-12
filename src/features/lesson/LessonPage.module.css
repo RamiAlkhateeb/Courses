@@ -209,14 +209,14 @@
 }
 .tileAcc span {
   background: var(--green);
-  color: #fff;
+  color: var(--on-brand);
 }
 .tileAcc strong {
   color: var(--green);
 }
 .tileTime span {
   background: var(--brand);
-  color: #fff;
+  color: var(--on-brand);
 }
 .weekCard {
   text-align: start;
@@ -276,18 +276,6 @@
   color: var(--accent-ink);
   font-size: 34px;
   line-height: 1;
-}
-.primary {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-block-size: 56px;
-  border-radius: var(--radius);
-  background: var(--accent);
-  border: 1px solid var(--brand);
-  color: var(--brand);
-  font-weight: 700;
-  text-decoration: none;
 }
 @media (prefers-reduced-motion: reduce) {
   .card {

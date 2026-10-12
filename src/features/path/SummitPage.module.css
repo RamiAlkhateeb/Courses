@@ -61,7 +61,7 @@
   transform: scaleX(-1);
 }
 .route polyline {
-  stroke: #b8c0d8;
+  stroke: var(--navy-stroke);
   stroke-width: 3px;
   stroke-dasharray: 8 10;
   stroke-linecap: round;

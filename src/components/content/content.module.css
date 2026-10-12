@@ -170,7 +170,7 @@
 
 .codeBlock {
   position: relative;
-  background: #1c2b3a;
+  background: var(--code-bg);
   border-radius: 10px;
   margin: 20px 0;
   direction: ltr;
@@ -186,7 +186,7 @@
   font-family: 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
   font-size: 0.88rem;
   line-height: 1.6;
-  color: #e3f1f3;
+  color: var(--code-fg);
   white-space: pre;
   background: none;
   padding: 0;
@@ -195,9 +195,9 @@
   position: absolute;
   top: 10px;
   inset-inline-end: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  background: rgba(255, 255, 255, 0.08);
-  color: #e3f1f3;
+  border: 1px solid var(--code-line);
+  background: var(--code-fill);
+  color: var(--code-fg);
   font-family: inherit;
   font-size: 11.5px;
   font-weight: 700;
@@ -207,7 +207,7 @@
   cursor: pointer;
 }
 .codeCopyBtn:hover {
-  background: rgba(255, 255, 255, 0.16);
+  background: var(--code-fill-hover);
 }
 .codeCopyBtn.copied {
   background: var(--brand);
@@ -216,8 +216,8 @@
 }
 
 .diagram {
-  border: 1px solid #ded6c4;
-  background: #fff;
+  border: 1px solid var(--rule);
+  background: var(--white);
   border-radius: 10px;
   padding: 20px 18px 16px 18px;
   margin: 24px 0;
@@ -228,7 +228,7 @@
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #6b4c9a;
+  color: var(--lav);
   margin-bottom: 6px;
   text-align: start;
 }
@@ -237,7 +237,7 @@
   font-size: 1.08rem;
   margin-bottom: 14px;
   text-align: start;
-  color: #1c2b3a;
+  color: var(--ink);
 }
 .diagram img {
   width: 100%;
@@ -246,8 +246,8 @@
 }
 .diagram figcaption {
   font-size: 0.95rem;
-  color: #55606e;
-  border-top: 1px solid #ded6c4;
+  color: var(--ink-soft);
+  border-top: 1px solid var(--rule);
   padding-top: 11px;
   margin-top: 14px;
   text-align: start;
@@ -297,24 +297,6 @@
   margin-top: 3px;
   accent-color: var(--brand);
   flex-shrink: 0;
-}
-.exerciseSubmit {
-  background: var(--brand);
-  color: var(--on-brand);
-  border: none;
-  padding: 9px 20px;
-  border-radius: 100px;
-  font-weight: 700;
-  font-size: 13px;
-  cursor: pointer;
-  font-family: inherit;
-}
-.exerciseSubmit:hover {
-  opacity: 0.88;
-}
-.exerciseSubmit:disabled {
-  opacity: 0.5;
-  cursor: default;
 }
 .exerciseFeedback {
   margin-top: 12px;
@@ -522,7 +504,7 @@
 .quizCta a {
   display: inline-block;
   background: var(--accent);
-  color: #1b1b1f;
+  color: var(--ink);
   font-weight: 600;
   text-decoration: none;
   padding: 11px 24px;

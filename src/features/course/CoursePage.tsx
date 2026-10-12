@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { buttonClass } from '../../components/ui'
 import { useTranslation } from 'react-i18next'
 import { AudienceBadges } from '../../components/AudienceBadges'
 import { ProgressRing } from '../../components/ProgressRing'
@@ -112,14 +113,14 @@ function CourseHeader({
 
           <div className={styles.actions}>
             {next ? (
-              <Link className={styles.cta} to={learnHref(course.id, next.mod.id, next.lesson.id)}>
+              <Link className={buttonClass({ size: 'sm' })} to={learnHref(course.id, next.mod.id, next.lesson.id)}>
                 {done > 0 ? tUi('continueCourse') : tUi('startCourse')} <span aria-hidden>→</span>
               </Link>
             ) : (
               loaded && lessons > 0 && <span className={styles.complete}>✓ {tUi('courseComplete')}</span>
             )}
             {wrong > 0 && (
-              <Link className={styles.secondaryBtn} to={`/course/${course.id}/review`}>
+              <Link className={buttonClass({ variant: 'secondary', size: 'sm' })} to={`/course/${course.id}/review`}>
                 {tUi('reviewMistakes', { n: wrong })}
               </Link>
             )}
@@ -278,7 +279,7 @@ function ChapterStop({
         {mod && (
           <div className={styles.chapterActions}>
             <Link
-              className={stage === 'done' ? styles.secondaryBtn : styles.primaryBtn}
+              className={buttonClass({ variant: stage === 'done' ? 'secondary' : 'ink', size: 'sm' })}
               to={learnHref(courseId, item.id, target.id)}
             >
               {action}

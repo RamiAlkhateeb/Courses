@@ -40,6 +40,14 @@
   color: var(--muted);
   min-block-size: 44px;
 }
+.sm {
+  display: inline-flex;
+  inline-size: auto;
+  min-block-size: 40px;
+  padding: 0 16px;
+  border-radius: 100px;
+  font-size: 0.9rem;
+}
 .ink {
   background: var(--brand);
   border-color: var(--brand);
@@ -48,12 +56,12 @@
 .correct {
   background: var(--green);
   border-color: var(--green);
-  color: #fff;
+  color: var(--on-brand);
 }
 .oops {
   background: var(--red);
   border-color: var(--red);
-  color: #fff;
+  color: var(--on-brand);
 }
 
 /* ---------- Card ---------- */
@@ -148,7 +156,7 @@
 .opt_correct .badge {
   background: var(--green);
   border-color: var(--green);
-  color: #fff;
+  color: var(--on-brand);
 }
 .opt_wrong {
   background: color-mix(in srgb, var(--red) 14%, var(--surface));
@@ -157,7 +165,7 @@
 .opt_wrong .badge {
   background: var(--red);
   border-color: var(--red);
-  color: #fff;
+  color: var(--on-brand);
 }
 .opt_dim {
   opacity: 0.6;
@@ -290,14 +298,14 @@ button.node {
   color: var(--brand);
 }
 .nodeMtn.node_locked {
-  background: #243566;
-  border-color: #8a96b8;
-  color: #c9d0e4;
+  background: var(--navy-2);
+  border-color: var(--navy-line-soft);
+  color: var(--on-navy-dim);
 }
 .nodeMtn.node_checkpoint {
-  background: #243566;
-  border-color: #5b6a99;
-  color: #e6eaf2;
+  background: var(--navy-2);
+  border-color: var(--navy-line);
+  color: var(--brand-bg);
 }
 :global(html[dir='rtl']) :global(.rafiq) {
   transform: scaleX(-1);

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { buttonClass } from '../../components/ui'
 import { useTranslation } from 'react-i18next'
 import { flatNav, getCourse, hasModule, type Course } from '../../content/courses'
 import type { Question, Module } from '../../content/types'
@@ -50,7 +51,7 @@ function ReviewRunner({ course, questions }: { course: Course; questions: Questi
         <h1>{t('noMistakes')}</h1>
         <p className={styles.emptyNote}>{t('noMistakesNote')}</p>
         <div className={styles.actions}>
-          <Link className={styles.primary} to={`/course/${course.id}`}>
+          <Link className={buttonClass()} to={`/course/${course.id}`}>
             {t('backToCourse')}
           </Link>
         </div>

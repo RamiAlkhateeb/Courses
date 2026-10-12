@@ -8,12 +8,19 @@ import styles from './ui.module.css'
 const cx = (...c: (string | false | undefined)[]) => c.filter(Boolean).join(' ')
 
 /** `primary` (saffron: the next step), `secondary` (flat card), `ghost` (text), `correct`/`oops` (feedback sheets). */
-export function Button({
-  variant = 'primary',
-  className,
-  ...rest
-}: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'secondary' | 'ghost' | 'correct' | 'oops' | 'ink' }) {
-  return <button type="button" className={cx(styles.btn, styles[variant], className)} {...rest} />
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'correct' | 'oops' | 'ink'
+export interface ButtonLook {
+  variant?: ButtonVariant
+  /** `sm`: a compact button that fits its label (inline in a header or list). Default: a full-width 56px bar. */
+  size?: 'md' | 'sm'
+}
+
+/** The class for something that looks like a Button but is not a `<button>`, e.g. `<Link className={buttonClass()} …>`. */
+export const buttonClass = ({ variant = 'primary', size = 'md' }: ButtonLook = {}, extra?: string) =>
+  cx(styles.btn, styles[variant], size === 'sm' && styles.sm, extra)
+
+export function Button({ variant, size, className, ...rest }: ButtonHTMLAttributes<HTMLButtonElement> & ButtonLook) {
+  return <button type="button" className={buttonClass({ variant, size }, className)} {...rest} />
 }
 
 /** Flat 1px-border card. `tone="dawn"` = selected/highlighted, `dashed` = not started or locked. */

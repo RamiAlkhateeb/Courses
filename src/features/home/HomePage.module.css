@@ -60,20 +60,6 @@
   align-items: center;
   gap: 10px 18px;
 }
-.cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--accent);
-  color: #1b1b1f;
-  font-weight: 600;
-  text-decoration: none;
-  padding: 10px 20px;
-  border-radius: 100px;
-}
-.cta:hover {
-  filter: brightness(1.05);
-}
 .textLink {
   font-size: 14px;
   font-weight: 500;

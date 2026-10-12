@@ -143,7 +143,7 @@
   position: relative;
 }
 .alreadyBtn {
-  border: 1px solid #44527a;
+  border: 1px solid var(--navy-line-dark);
   color: var(--on-brand);
   border-radius: var(--radius);
   min-block-size: 54px;
@@ -155,7 +155,7 @@
   line-height: 1.4;
 }
 .welcomeSheet .fine {
-  color: #b9c1d6;
+  color: var(--on-navy-faint);
 }
 
 /* ---------- steps ---------- */

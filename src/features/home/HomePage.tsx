@@ -1,4 +1,5 @@
 import { Link, useSearchParams } from 'react-router-dom'
+import { buttonClass } from '../../components/ui'
 import { useTranslation } from 'react-i18next'
 import { AudienceBadges } from '../../components/AudienceBadges'
 import { LogoMark } from '../../components/Logo'
@@ -158,7 +159,7 @@ function ContinueCard({ courseId, moduleId, lessonId }: { courseId: string; modu
         {tUi('chapterN', { n: chapter + 1 })} · {t(nav[chapter].title)} · {tUi('minutes', { n: lessonMinutes(next.lesson) })}
       </p>
       <div className={styles.cardActions}>
-        <Link className={styles.cta} to={learnHref(courseId, next.mod.id, next.lesson.id)}>
+        <Link className={buttonClass({ size: 'sm' })} to={learnHref(courseId, next.mod.id, next.lesson.id)}>
           {tUi('continueCourse')} <span aria-hidden>→</span>
         </Link>
         {wrong > 0 && (

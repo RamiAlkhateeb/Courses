@@ -54,21 +54,6 @@
   align-items: center;
   gap: 12px 16px;
 }
-.cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--accent);
-  color: #1b1b1f;
-  font-weight: 600;
-  text-decoration: none;
-  padding: 12px 22px;
-  border-radius: 100px;
-  box-shadow: var(--shadow);
-}
-.cta:hover {
-  filter: brightness(1.05);
-}
 .complete {
   font-weight: 600;
   color: var(--green);
@@ -143,29 +128,6 @@
   color: var(--red);
 }
 
-/* ---------- Buttons shared by header and chapters ---------- */
-.primaryBtn,
-.secondaryBtn {
-  display: inline-block;
-  font-size: 14px;
-  font-weight: 600;
-  text-decoration: none;
-  padding: 8px 16px;
-  border-radius: 8px;
-  border: 1px solid var(--brand);
-}
-.primaryBtn {
-  background: var(--brand);
-  color: var(--on-brand);
-}
-.secondaryBtn {
-  background: transparent;
-  color: var(--brand);
-}
-.primaryBtn:hover,
-.secondaryBtn:hover {
-  filter: brightness(1.1);
-}
 .textLink {
   font-size: 14px;
   font-weight: 500;

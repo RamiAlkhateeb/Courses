@@ -64,7 +64,7 @@
   stroke-linecap: round;
 }
 .lineTodo {
-  stroke: #8a96b8;
+  stroke: var(--navy-line-soft);
   stroke-width: 5px;
   stroke-linecap: round;
   stroke-dasharray: 1 12;
@@ -83,8 +83,8 @@
   max-inline-size: 230px;
   overflow: hidden;
   text-overflow: ellipsis;
-  background: #243566;
-  color: #fff;
+  background: var(--navy-2);
+  color: var(--on-brand);
   padding: 5px 14px;
   border-radius: 999px;
   font-weight: 600;

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useLocalized } from '../../content/useLocalized'
 import { useProgress } from '../../state/useProgress'
 import { optionOrder } from '../../domain/optionOrder'
+import { Button } from '../ui'
 import { useQuestion } from './moduleQuestions'
 import styles from './content.module.css'
 
@@ -52,14 +53,14 @@ export function Exercise({ questionId }: { questionId: string }) {
           </label>
         ))}
       </div>
-      <button
-        type="button"
-        className={styles.exerciseSubmit}
+      <Button
+        variant="ink"
+        size="sm"
         disabled={!submitted && selected === null}
         onClick={submitted ? handleRetry : handleSubmit}
       >
         {submitted ? tUi('tryAgain') : tUi('checkAnswer')}
-      </button>
+      </Button>
       {submitted && (
         <div className={`${styles.exerciseFeedback} ${isCorrect ? styles.correct : styles.incorrect}`}>
           {isCorrect ? tUi('correct') : tUi('notQuite', { answer: t(question.options[question.answer]) })}
