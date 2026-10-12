@@ -72,7 +72,7 @@ test('a deep link under the base path loads (assets resolve, no error screen)', 
   expect(errors).toEqual([])
 })
 
-for (const route of ['./', 'review', 'me', 'terms']) {
+for (const route of ['./', 'review', 'me', 'review/terms', 'playground']) {
   test(`no serious accessibility violations on /${route === './' ? '' : route}`, async ({ page }) => {
     await onboarded(page)
     await page.goto(route)
@@ -82,3 +82,21 @@ for (const route of ['./', 'review', 'me', 'terms']) {
     expect(serious.map((v) => `${v.id}: ${v.nodes[0]?.target}`)).toEqual([])
   })
 }
+
+test('fund the Playground, buy Safe Savings, and see what happened', async ({ page }) => {
+  const errors = watchErrors(page)
+  const lessons = ['investing/basics/why', 'investing/basics/compounding']
+  await onboarded(page, { 'progress:v2': JSON.stringify({ bank: 1240, lessonsDone: lessons }) })
+  await page.goto('playground/fund')
+  await page.getByRole('button', { name: '$500', exact: true }).click()
+  await page.getByRole('button', { name: /^Move/ }).first().click()
+  await expect(page).toHaveURL(/\/playground$/)
+  await page.getByRole('button', { name: 'Buy Safe Savings' }).click()
+  await page.getByRole('button', { name: '$100', exact: true }).click()
+  await page.getByRole('button', { name: /^Buy .*100/ }).click()
+  await expect(page).toHaveURL(/\/playground\/debrief$/)
+  await expect(page.getByText('Educational. Not financial advice.')).toBeVisible()
+  const bank = JSON.parse((await page.evaluate(() => localStorage.getItem('progress:v2')))!).bank
+  expect(bank).toBe(740) // $500 moved out; the bank never changes from trades
+  expect(errors).toEqual([])
+})

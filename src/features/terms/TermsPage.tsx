@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Card, Icon, AbuShreek } from '../../components/ui'
 import type { Localized } from '../../content/types'
@@ -42,6 +43,9 @@ export function TermsPage() {
 
   return (
     <div className={styles.page}>
+      <Link to="/review" className={styles.back} aria-label={t('back')}>
+        <Icon name="back" size={26} />
+      </Link>
       <header className={styles.head}>
         <div>
           <h1>{t('termsTitle')}</h1>

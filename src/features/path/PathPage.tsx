@@ -3,6 +3,10 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { MoneyChip } from '../../components/MoneyChip'
 import { Icon } from '../../components/ui'
+import { Change } from '../../components/Change'
+import { gain } from '../../domain/playground/engine'
+import { playgroundStore } from '../../state/playground'
+import { useStore } from '../../state/useStore'
 import { useLocalized } from '../../content/useLocalized'
 import { currentStreak, localDay } from '../../domain/progress'
 import { useProgress } from '../../state/useProgress'
@@ -21,6 +25,7 @@ export function PathPage() {
   const offerRest = useRestDayOffer()
   const [restClosed, setRestClosed] = useState(false)
   const streak = currentStreak(progress.streak, localDay())
+  const playground = useStore(playgroundStore)
 
   return (
     <div className={styles.page}>
@@ -50,6 +55,13 @@ export function PathPage() {
               <Icon name="mountain" size={26} />
             </Link>
           </section>
+          {playground.funded > 0 && (
+            <div className={styles.pgRow}>
+              <Link to="/playground" className={styles.pgChip}>
+                <Icon name="chart" size={20} /> {t('tabPlayground')} <Change amount={gain(playground)} />
+              </Link>
+            </div>
+          )}
           {loaded && current.mod ? <PathMap chapter={current} /> : <p className={styles.loading}>{t('loading')}</p>}
         </>
       ) : (

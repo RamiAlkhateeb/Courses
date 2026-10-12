@@ -1,6 +1,9 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Money } from '../../components/Money'
+import { moneyText } from '../../i18n'
+import { usePlayground } from '../../state/usePlayground'
+import { useNavigate } from 'react-router-dom'
 import { MoneyChip } from '../../components/MoneyChip'
 import { AbuShreek, Button, Card } from '../../components/ui'
 import { Coin } from '../../components/ui/Coin'
@@ -21,6 +24,10 @@ export function LessonPayout({
   onDone: () => void
 }) {
   const { t } = useTranslation()
+  const navigate = useNavigate()
+  const pg = usePlayground()
+  const offer = Math.min(100, Math.floor(bankAfter))
+  const canOffer = offer > 0 && pg.unlocked.includes('savings') && pg.state.status !== 'ended'
   useEffect(() => playSound('correct'), [])
   return (
     <div className={styles.page}>
@@ -58,6 +65,23 @@ export function LessonPayout({
         <AbuShreek pose="cheer" height={150} />
         <p className={styles.bubble}>{t('payoutBubble')}</p>
       </div>
+      {canOffer && (
+        <div className={styles.offer}>
+          <div>
+            <strong>{t('pg_move_offer', { amount: moneyText(offer) })}</strong>
+            <small>{t('pg_bank_stays', { amount: moneyText(bankAfter - offer) })}</small>
+          </div>
+          <Button
+            variant="ink"
+            size="sm"
+            onClick={() => {
+              if (pg.fund(offer)) navigate('/playground')
+            }}
+          >
+            {t('pg_move')}
+          </Button>
+        </div>
+      )}
       <div className={styles.foot}>
         <p className={styles.fine}>{t('playMoneyNotAdvice')}</p>
         <Button onClick={onDone} autoFocus>

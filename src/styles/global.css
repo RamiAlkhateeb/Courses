@@ -54,3 +54,14 @@ a {
 html[dir='rtl'] * {
   letter-spacing: 0 !important;
 }
+
+/* Text for screen readers only (chart summaries, arrow meanings). */
+.visually-hidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

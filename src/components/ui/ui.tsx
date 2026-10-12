@@ -91,8 +91,8 @@ export function ProgressBar({ value, max = 1, label }: { value: number; max?: nu
 
 const TABS: { to: string; icon: IconName; key: ParseKeys; end?: boolean }[] = [
   { to: '/', icon: 'path', key: 'tabPath', end: true },
+  { to: '/playground', icon: 'chart', key: 'tabPlayground' },
   { to: '/review', icon: 'review', key: 'tabReview' },
-  { to: '/terms', icon: 'book', key: 'tabTerms' },
   { to: '/me', icon: 'me', key: 'tabMe' },
 ]
 

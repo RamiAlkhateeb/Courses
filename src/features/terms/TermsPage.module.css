@@ -142,3 +142,11 @@
   color: var(--muted);
   padding: 24px 4px;
 }
+.back {
+  display: inline-grid;
+  color: var(--brand);
+  margin-block-end: 6px;
+}
+:global(html[dir='rtl']) .back svg {
+  transform: scaleX(-1);
+}

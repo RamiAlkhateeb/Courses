@@ -67,6 +67,14 @@ const PATHS = {
       <circle cx="15" cy="16" r="2.2" fill="var(--surface)" />
     </>
   ),
+  pause: <path d="M9 6v12M15 6v12" strokeWidth="3.5" />,
+  fast: <path d="M6 6l7 6-7 6zM13 6l7 6-7 6z" fill="currentColor" />,
+  faster: <path d="M3 6l6 6-6 6zM9.5 6l6 6-6 6zM16 6l6 6-6 6z" fill="currentColor" />,
+  plus: <path d="M12 5v14M5 12h14" />,
+  minus: <path d="M5 12h14" />,
+  shield: <path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z" />,
+  chart: <path d="M4 4v16h16M7 15l4-4 3 3 5-6" />,
+  arrowRight: <path d="M5 12h14M13 6l6 6-6 6" />,
   flip: <path d="M20 11a8 8 0 00-14.5-4.5L4 8M4 4v4h4M4 13a8 8 0 0014.5 4.5L20 16M20 20v-4h-4" />,
 } satisfies Record<string, ReactNode>
 

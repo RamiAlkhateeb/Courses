@@ -92,7 +92,7 @@ export function ReviewTab() {
           <strong>{t('mistakesOnly')}</strong>
           <small>{t('fixTripped')}</small>
         </button>
-        <button type="button" onClick={() => navigate('/terms')}>
+        <button type="button" onClick={() => navigate('/review/terms')}>
           <Icon name="book" size={26} />
           <strong>{t('keyTermsBtn')}</strong>
           <small>{t('flipThrough')}</small>

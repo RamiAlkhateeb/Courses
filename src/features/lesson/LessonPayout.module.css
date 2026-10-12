@@ -83,6 +83,25 @@
   color: var(--brand);
   line-height: 1.4;
 }
+.offer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-block-start: 16px;
+  padding: 16px 18px;
+  background: var(--dawn);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-lg);
+  color: var(--brand);
+}
+.offer strong {
+  display: block;
+  font-size: 1.1rem;
+}
+.offer small {
+  color: var(--muted);
+}
 .foot {
   position: fixed;
   inset-inline: 0;

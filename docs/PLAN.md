@@ -2,7 +2,8 @@
 
 ## Money loop (in progress; the plan is in the build brief)
 Done: Phase A (mascot, tokens, Investing-only, Starting bank, Error screens) and Phase B (bank instead of XP, `progress:v2` migration, lesson payouts, Camp cleared with dollars, Lesson payout screen, Path opens at your lesson with "Back to my camp").
-Next: Phase C (simulation engine, Playground, Buy/Sell, news, risk, unlocks, paused) and Phase D (seasons, summaries, QA). The "Move $100 to the Playground?" offer on the payout screen arrives with Phase C.
+Phase C (seeded simulation engine with tests, Playground, Fund, Buy/Sell, debrief, market news, risk check, unlocks, "Time stood still", Terms under Review, the "Move $100" offer).
+Next: Phase D (season missions, season summary, "What if I waited?", past seasons, Arabic QA of the summary screens).
 
 ## Done
 - Guest-only Vite + React + TS app (no accounts, no backend), EN + AR with RTL, light/dark theme.

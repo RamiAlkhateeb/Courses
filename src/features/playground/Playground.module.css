@@ -1,0 +1,898 @@
+/* The Playground screens (designs 22–25, 27, 30–34, 37, 38, 39): flat cards, one saffron action at a time. */
+.page {
+  padding: 28px 16px 230px;
+}
+.pageFull {
+  padding: 24px 24px 150px;
+  min-block-size: 100dvh;
+}
+.head button {
+  white-space: nowrap;
+}
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.head h1,
+.bigTitle {
+  font-size: 2.3rem;
+  line-height: 1.1;
+  color: var(--brand);
+}
+.bigTitle {
+  font-size: 2.3rem;
+  margin-block: 18px 6px;
+}
+.sub {
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1.4;
+  margin-block-end: 18px;
+}
+.back {
+  background: none;
+  border: 0;
+  color: var(--brand);
+  padding: 4px;
+  display: grid;
+  cursor: pointer;
+}
+:global(html[dir='rtl']) .back svg {
+  transform: scaleX(-1);
+}
+.kicker {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+.muted {
+  color: var(--muted);
+}
+.fine {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+.pinBottom {
+  margin-block-start: 28px;
+}
+.centre {
+  display: block;
+  text-align: center;
+}
+.down {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 2.2rem;
+  color: var(--oops);
+}
+
+/* ---------- net worth ---------- */
+.netRow {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-block: 14px 12px;
+}
+.netWorth {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  font-size: 3rem;
+  line-height: 1;
+  font-weight: 600;
+  color: var(--brand);
+}
+.gain {
+  font-size: 1.1rem;
+  display: inline-flex;
+  gap: 6px;
+}
+.riskLink {
+  white-space: nowrap;
+  color: var(--accent-ink);
+  font-weight: 700;
+  text-decoration: none;
+  padding: 8px 0;
+}
+:global(html[dir='rtl']) .riskLink {
+  display: inline-block;
+}
+
+/* ---------- chart ---------- */
+.chartCard {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px 10px;
+}
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--brand);
+}
+.legend i {
+  display: inline-block;
+  inline-size: 22px;
+  block-size: 0;
+  margin-inline-end: 6px;
+  vertical-align: middle;
+  border-top: 3px solid var(--brand);
+}
+.legend .keyReal {
+  border-top: 3px dashed var(--accent-ink);
+}
+.legend span:nth-child(2) {
+  color: var(--accent-ink);
+}
+.year {
+  margin-inline-start: auto;
+  color: var(--muted);
+}
+.chart svg {
+  display: block;
+  inline-size: 100%;
+  block-size: 150px;
+  overflow: visible;
+}
+.grid {
+  stroke: var(--rule);
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+.base {
+  stroke: var(--locked);
+  stroke-width: 1.5px;
+  stroke-dasharray: 3 5;
+  vector-effect: non-scaling-stroke;
+}
+.area {
+  fill: var(--paper-2);
+  opacity: 0.7;
+}
+.nominalLine,
+.realLine {
+  fill: none;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+.nominalLine {
+  stroke: var(--brand);
+  stroke-width: 3px;
+}
+.realLine {
+  stroke: var(--accent-ink);
+  stroke-width: 2.5px;
+  stroke-dasharray: 6 5;
+}
+.marker {
+  stroke: var(--locked);
+  stroke-width: 1px;
+  stroke-dasharray: 2 4;
+  vector-effect: non-scaling-stroke;
+}
+.now {
+  fill: var(--accent);
+  stroke: var(--brand);
+  stroke-width: 2px;
+}
+.low {
+  fill: var(--surface);
+  stroke: var(--oops);
+  stroke-width: 2.5px;
+}
+.emptyChart p {
+  text-align: center;
+  color: var(--muted);
+  margin-block-start: -12px;
+  padding-block-end: 8px;
+}
+
+.newsStrip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  inline-size: 100%;
+  margin-block-start: 10px;
+  padding: 12px 16px;
+  background: var(--dawn);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  color: var(--brand);
+  font: inherit;
+  font-weight: 600;
+  text-align: start;
+  cursor: pointer;
+}
+.newsStrip span {
+  flex: 1;
+}
+:global(html[dir='rtl']) .newsStrip svg {
+  transform: scaleX(-1);
+}
+.newsDot {
+  inline-size: 12px;
+  block-size: 12px;
+  border-radius: 50%;
+  background: var(--oops);
+}
+
+/* ---------- clock ---------- */
+.speed {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-block: 14px;
+}
+.speed .muted {
+  text-align: end;
+  font-size: 0.9rem;
+}
+.speedBtns {
+  display: inline-flex;
+  gap: 8px;
+}
+.speedBtns button {
+  inline-size: 52px;
+  block-size: 52px;
+  display: grid;
+  place-items: center;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  color: var(--brand);
+  cursor: pointer;
+}
+.speedBtns button[aria-pressed='true'] {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--accent);
+}
+.speedBtns button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* ---------- holdings ---------- */
+.holdings {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.holding {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  inline-size: 100%;
+  padding: 14px 18px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  font: inherit;
+  color: var(--brand);
+  text-align: start;
+}
+button.holding {
+  cursor: pointer;
+}
+.dot {
+  flex-shrink: 0;
+  inline-size: 14px;
+  block-size: 14px;
+  border-radius: 50%;
+}
+.assetText {
+  flex: 1;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+}
+.assetText strong {
+  font-size: 1.15rem;
+}
+.assetText small {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+.holdValue {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+.holdValue > :last-child {
+  font-size: 0.95rem;
+}
+.emptyCard {
+  margin-block-start: 16px;
+  padding: 18px;
+  background: var(--dawn);
+  border: 1px dashed var(--accent);
+  border-radius: var(--radius-lg);
+  display: grid;
+  gap: 12px;
+}
+.emptyRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  margin-block: 14px;
+}
+.bubble {
+  flex: 1;
+  margin-block-end: 18px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  color: var(--brand);
+  line-height: 1.4;
+}
+.endCard {
+  margin-block-start: 16px;
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  display: grid;
+  gap: 10px;
+}
+.endCard h2 {
+  font-size: 1.6rem;
+  color: var(--brand);
+}
+.endCard p {
+  color: var(--muted);
+}
+.dock {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 84px;
+  max-inline-size: var(--app-max);
+  margin-inline: auto;
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 12px 16px;
+  background: linear-gradient(to top, var(--paper) 70%, transparent);
+  z-index: 10;
+}
+.dock > :last-child {
+  flex: 1;
+}
+.dockMascot {
+  margin-block-end: -12px;
+  flex-shrink: 0;
+}
+
+/* ---------- sheet ---------- */
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 25;
+  background: var(--scrim);
+}
+.grab {
+  inline-size: 44px;
+  block-size: 5px;
+  margin: -8px auto 14px;
+  border-radius: 999px;
+  background: var(--rule);
+}
+.sheetTitle {
+  font-size: 1.6rem;
+  color: var(--brand);
+  margin-block-end: 12px;
+}
+.assetList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-block-end: 12px;
+}
+.assetRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  font: inherit;
+  color: var(--brand);
+  text-align: start;
+  cursor: pointer;
+}
+.assetLocked {
+  opacity: 0.65;
+  cursor: default;
+}
+.tradeHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+.tradeName {
+  font-size: 2rem;
+  line-height: 1.1;
+  color: var(--brand);
+}
+.priceBox {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 1.6rem;
+  color: var(--brand);
+}
+.priceBox > :last-child {
+  font-size: 0.95rem;
+}
+.riskRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-block: 8px 14px;
+}
+.seg {
+  display: flex;
+  background: var(--paper-2);
+  border-radius: 18px;
+  padding: 5px;
+  margin-block-end: 14px;
+}
+.seg button {
+  flex: 1;
+  font: inherit;
+  font-weight: 700;
+  font-size: 1.1rem;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  padding: 13px;
+  border-radius: 14px;
+  cursor: pointer;
+}
+.seg button[aria-pressed='true'] {
+  background: var(--brand);
+  color: var(--accent);
+}
+.seg button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.round {
+  inline-size: 52px;
+  block-size: 52px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  color: var(--brand);
+  cursor: pointer;
+}
+.amount {
+  font-size: 3.2rem;
+  line-height: 1.1;
+  font-weight: 600;
+  color: var(--brand);
+}
+.chips {
+  display: flex;
+  gap: 10px;
+  margin-block: 14px;
+}
+.chips button {
+  flex: 1;
+  white-space: nowrap;
+  min-block-size: 48px;
+  font: inherit;
+  font-weight: 700;
+  color: var(--brand);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.chips button.chipOn {
+  background: var(--dawn);
+  border: 1.5px solid var(--brand);
+}
+.chips button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.lines {
+  margin: 0 0 12px;
+  display: grid;
+  gap: 8px;
+}
+.lines > div {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+}
+.lines dd {
+  margin: 0;
+  font-weight: 700;
+  color: var(--brand);
+}
+.note,
+.callout {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+.callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  background: var(--dawn);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-lg);
+  color: var(--brand);
+  font-size: 1rem;
+}
+.backBtn {
+  margin-block-start: 8px;
+  margin-inline: auto;
+}
+
+/* ---------- fund, risk, unlocks, debrief ---------- */
+.fundCard,
+.statCard {
+  display: grid;
+  gap: 10px;
+  padding: 18px 20px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  margin-block-end: 14px;
+}
+.bankRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.bankAmount {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.5rem;
+  color: var(--brand);
+}
+.foot {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  max-inline-size: var(--app-max);
+  margin-inline: auto;
+  padding: 16px 24px calc(20px + env(safe-area-inset-bottom));
+  display: grid;
+  gap: 10px;
+  background: linear-gradient(to top, var(--paper) 70%, transparent);
+  z-index: 10;
+}
+.twoCol {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-block-end: 14px;
+}
+.statCard {
+  margin: 0;
+  align-content: start;
+}
+.alloc {
+  display: flex;
+  gap: 3px;
+  block-size: 16px;
+}
+.alloc span {
+  border-radius: 6px;
+  min-inline-size: 6px;
+}
+.allocList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.allocList li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.allocList li strong {
+  margin-inline-start: auto;
+}
+.points {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+}
+.points li {
+  display: flex;
+  gap: 12px;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+.points .dot {
+  margin-block-start: 6px;
+}
+.dotGood {
+  background: var(--correct);
+}
+.dotOkay {
+  background: var(--accent);
+}
+.dotBad {
+  background: var(--oops);
+}
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.timeline li {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.tlNode {
+  flex-shrink: 0;
+  inline-size: 44px;
+  block-size: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 1px dashed var(--locked);
+  color: var(--muted);
+  background: var(--surface);
+}
+.tlDone {
+  background: var(--brand);
+  border: 1px solid var(--brand);
+  color: var(--accent);
+}
+.tlCard {
+  flex: 1;
+  display: grid;
+  gap: 4px;
+  padding: 16px 18px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+}
+.tlLocked .tlCard {
+  color: var(--muted);
+}
+.tlCard strong {
+  font-size: 1.25rem;
+  color: var(--brand);
+}
+.tlLocked .tlCard strong {
+  color: var(--muted);
+}
+.tlCard small {
+  color: var(--muted);
+  font-size: 1rem;
+}
+.badge {
+  justify-self: start;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  background: var(--dawn);
+  color: var(--accent-ink);
+}
+.badgeOn {
+  background: var(--green-bg);
+  color: var(--correct);
+}
+
+/* ---------- news and paused (full screen) ---------- */
+.news {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  max-inline-size: var(--app-max);
+  margin-inline: auto;
+  padding: 22px 22px calc(20px + env(safe-area-inset-bottom));
+  background: var(--brand);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+}
+.newsTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.newsCard {
+  background: var(--paper);
+  border: 2px solid var(--accent);
+  border-radius: 32px;
+  padding: 18px 18px;
+  transform: rotate(-1.2deg);
+}
+.newsCard h1 {
+  font-size: 1.9rem;
+  line-height: 1.1;
+  color: var(--brand);
+  margin-block: 4px 10px;
+}
+.newsBody {
+  color: var(--ink-soft);
+  font-size: 1rem;
+  line-height: 1.4;
+  margin-block-end: 12px;
+}
+.effects {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.effects li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+.arrow {
+  inline-size: 38px;
+  block-size: 38px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--white);
+}
+:global(html[dir='rtl']) .arrow_flat svg {
+  transform: scaleX(-1);
+}
+.arrow_up {
+  background: var(--correct);
+}
+.arrow_down {
+  background: var(--oops);
+}
+.arrow_flat {
+  background: var(--ink-soft);
+}
+.newsGuide {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  margin-block-start: auto;
+}
+.newsGuide .bubble {
+  margin-block-end: 28px;
+}
+.newsFoot {
+  display: grid;
+  gap: 10px;
+}
+.news .newsFoot .fine {
+  color: var(--on-navy-dim);
+}
+.paused {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  max-inline-size: var(--app-max);
+  margin-inline: auto;
+  padding: 80px 24px calc(24px + env(safe-area-inset-bottom));
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  overflow-y: auto;
+}
+.pauseTop {
+  text-align: center;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+}
+.pauseTop h1 {
+  font-size: 2.6rem;
+  color: var(--brand);
+}
+.pauseDisc {
+  inline-size: 72px;
+  block-size: 72px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--brand);
+  color: var(--accent);
+}
+.pauseCard {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+}
+.pauseCard .amount {
+  font-size: 2rem;
+}
+.pauseSpeed {
+  text-align: end;
+  color: var(--brand);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .newsCard {
+    transform: none;
+  }
+}
+
+.unlockLink {
+  display: block;
+  margin-block: 4px 12px;
+  color: var(--accent-ink);
+  font-weight: 700;
+  text-decoration: none;
+}
+.chipRow {
+  display: flex;
+  margin-block: 10px 0;
+}
+.pgChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  color: var(--brand);
+  font-weight: 700;
+  text-decoration: none;
+}
