@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Blocks } from '../../components/content/Blocks'
 import contentStyles from '../../components/content/content.module.css'
-import { getCourse, moduleHref } from '../../content/courses'
+import { getCourse } from '../../content/courses'
 import { resolveHtmlAssetPaths } from '../../content/resolveAssetPath'
 import type { Week } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
@@ -142,10 +142,6 @@ function CardRun({ week, lesson, next, onRestart }: { week: Week; lesson: Lesson
             />
           </div>
         )}
-
-        <p className={styles.onePage}>
-          <Link to={moduleHref(week.courseId, week.id)}>{tUi('viewAsPage')}</Link>
-        </p>
 
         {question && !checked ? (
           <LessonFooter rafiq="think" action={tUi('check')} disabled={selected === null} onAction={check} />

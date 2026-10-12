@@ -35,7 +35,6 @@
   --radius-lg: 20px;
   --font-ui: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --app-max: 430px;
-  --sidebar-w: 260px;
 }
 html[dir='rtl'] {
   --font-display: 'Amiri', serif;

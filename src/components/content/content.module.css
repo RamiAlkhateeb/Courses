@@ -1,28 +1,10 @@
 /* Content typography + block styling — ported from ../../../../course/_shared/styles/week.css.
-   Scoped under .content so tag selectors (h2, p, ul…) don't leak past the week page. */
+   Scoped under .content so tag selectors (h2, p, ul…) don't leak past the lesson card. */
 
 .content section {
   margin-bottom: 52px;
   scroll-margin-top: 24px;
   max-width: 720px;
-}
-.secHead {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 14px;
-}
-.secNum {
-  display: inline-block;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--brand);
-  background: var(--brand-bg);
-  padding: 4px 12px;
-  border-radius: 100px;
 }
 .timeEst {
   font-size: 12px;
@@ -335,72 +317,6 @@
   color: var(--red);
 }
 
-.cover {
-  padding-bottom: 36px;
-  border-bottom: 2px solid var(--rule);
-  margin-bottom: 36px;
-}
-.cover .kicker {
-  color: var(--brand);
-  font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-bottom: 12px;
-}
-.cover h1 {
-  font-size: 2.6rem;
-  line-height: 1.15;
-  font-weight: 800;
-  margin: 0 0 14px 0;
-  letter-spacing: -0.02em;
-}
-.cover h1 em {
-  font-style: normal;
-  color: var(--brand);
-  display: block;
-}
-.cover :global(.lede) {
-  font-size: 1.1rem;
-  color: var(--ink-soft);
-  max-width: 640px;
-  margin: 0;
-}
-.totalTime {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--ink-soft);
-  padding: 8px 4px;
-}
-.coverTools {
-  display: flex;
-  gap: 10px;
-  margin-top: 18px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-.toolBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  border: 1px solid var(--rule);
-  background: var(--surface);
-  color: var(--ink);
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 700;
-  text-decoration: none;
-  padding: 8px 14px;
-  border-radius: 100px;
-  cursor: pointer;
-}
-.toolBtn:hover {
-  border-color: var(--brand);
-  color: var(--brand);
-}
 
 /* ---------- FORMULA (no equivalent in the original CSS — new, styled to match the code/box family) ---------- */
 .formula {
@@ -490,7 +406,6 @@
 }
 
 @media print {
-  .coverTools,
   .tabHeads,
   .codeCopyBtn {
     display: none;
@@ -514,23 +429,3 @@
   }
 }
 
-/* "Take the quiz" at the end of a one-page module: finishing it marks the module done on the skill path. */
-.quizCta {
-  text-align: center;
-  margin: 8px 0 32px 0;
-}
-.quizCta a {
-  display: inline-block;
-  background: var(--accent);
-  color: #1b1b1f;
-  font-weight: 600;
-  text-decoration: none;
-  padding: 11px 24px;
-  border-radius: 100px;
-  box-shadow: var(--shadow);
-}
-@media print {
-  .quizCta {
-    display: none;
-  }
-}

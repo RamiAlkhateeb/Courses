@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { getCourse, moduleHref } from '../../content/courses'
+import { getCourse } from '../../content/courses'
 import type { Question, Week } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
 import { useWeek } from '../../content/useWeek'
@@ -44,7 +44,7 @@ function LessonRunner({ week }: { week: Week }) {
     <QuizLesson
       key={round}
       kicker={t(week.cover.kicker)}
-      quitTo={moduleHref(week.courseId, week.id)}
+      quitTo="/"
       questions={picks}
       onRestart={() => {
         setPicks(pick(week, progress.boxes))

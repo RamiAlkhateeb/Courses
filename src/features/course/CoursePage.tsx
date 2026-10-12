@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { AudienceBadges } from '../../components/AudienceBadges'
 import { ProgressRing } from '../../components/ProgressRing'
-import { flatNav, getCourse, hasWeek, moduleHref, practiceHref, type Course, type NavItem } from '../../content/courses'
+import { flatNav, getCourse, hasWeek, practiceHref, type Course, type NavItem } from '../../content/courses'
 import type { Localized, Week } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
 import { useWeeks } from '../../content/useWeek'
@@ -282,9 +282,6 @@ function ChapterStop({
               to={learnHref(courseId, item.id, target.id)}
             >
               {action}
-            </Link>
-            <Link className={styles.textLink} to={moduleHref(courseId, item.id)}>
-              {tUi('readModule')}
             </Link>
             {week.questions.length > 0 && (
               <Link className={styles.textLink} to={practiceHref(courseId, item.id)}>

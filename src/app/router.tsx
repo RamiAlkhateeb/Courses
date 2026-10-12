@@ -49,7 +49,6 @@ export const router = createBrowserRouter(
           },
         },
         {
-          // `moduleId`, not `id`: AppShell keys the sidebar's section list off `id`, and a lesson has no sections.
           path: 'course/:courseId/:moduleId/lesson',
           lazy: async () => {
             const { LessonPage } = await import('../features/lesson/LessonPage')
@@ -59,7 +58,7 @@ export const router = createBrowserRouter(
       ],
     },
     {
-      // Desktop reading views: the course catalog, a course's chapter list, one-page modules and Settings.
+      // Desktop views: the course catalog, a course's chapter list and Settings.
       element: <AppShell />,
       children: [
         { path: 'courses', element: <HomePage /> },
@@ -68,13 +67,6 @@ export const router = createBrowserRouter(
           lazy: async () => {
             const { CoursePage } = await import('../features/course/CoursePage')
             return { element: <CoursePage /> }
-          },
-        },
-        {
-          path: 'course/:courseId/:id',
-          lazy: async () => {
-            const { WeekPage } = await import('../features/weeks/WeekPage')
-            return { element: <WeekPage /> }
           },
         },
         {
