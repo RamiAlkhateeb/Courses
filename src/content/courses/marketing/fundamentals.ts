@@ -1,5 +1,5 @@
 // Original course content. The LTV:CAC ≈ 3:1 benchmark is a common rule of thumb, mostly from subscription businesses.
-import type { Week } from '../../types'
+import type { Module } from '../../types'
 import { L, box, cover, exercise, formula, html, mcq, objectives, section, table, takeaways } from '../../helpers'
 
 const W = 'fundamentals'
@@ -26,7 +26,7 @@ const questions = [
     [L('Acquisition is too expensive for the value — barely break-even', 'الاكتساب مكلف جدًا مقارنة بالقيمة — بالكاد تعادل'), L('A very healthy business', 'عمل صحي جدًا'), L('Spend more on ads immediately', 'زِد الإنفاق الإعلاني فورًا')], 0),
 ]
 
-export const fundamentals: Week = {
+export const fundamentals: Module = {
   id: W,
   courseId: 'marketing',
   order: 1,

@@ -1,4 +1,4 @@
-import type { Localized, Week } from './types'
+import type { Localized, Module } from './types'
 import { techInterview } from './courses/tech-interview'
 import { investing } from './courses/investing'
 import { personalFinance } from './courses/personal-finance'
@@ -45,7 +45,7 @@ export interface Course {
   groups: NavGroup[]
   /** One dynamic import per module so each lands in its own chunk. A nav item without a loader
    *  shows a "soon" badge automatically. */
-  loaders: Record<string, () => Promise<Week>>
+  loaders: Record<string, () => Promise<Module>>
 }
 
 // Add a course: create src/content/courses/<id>/index.ts exporting a `Course`, then list it here.
@@ -76,9 +76,9 @@ export const practiceHref = (courseId: string, moduleId: string) => `${moduleHre
  *  in the list so a "coming soon" nav button can still show their title. */
 export const flatNav = (course: Course) => course.groups.flatMap((g) => g.items)
 
-export const hasWeek = (courseId: string, moduleId: string) => {
+export const hasModule = (courseId: string, moduleId: string) => {
   const course = getCourse(courseId)
   return Boolean(course && moduleId in course.loaders)
 }
 
-export const loadWeek = (courseId: string, moduleId: string) => getCourse(courseId)!.loaders[moduleId]()
+export const loadModule = (courseId: string, moduleId: string) => getCourse(courseId)!.loaders[moduleId]()

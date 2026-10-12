@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react'
 import { Link, Outlet, useMatches } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useWeek } from '../content/useWeek'
+import { useModule } from '../content/useModule'
 import { getCourse } from '../content/courses'
 import { useLocalized } from '../content/useLocalized'
-import { useScrollSpy } from '../features/weeks/useScrollSpy'
+import { useScrollSpy } from '../features/modules/useScrollSpy'
 import { Logo } from './Logo'
 import { TopBar } from './TopBar'
 import { TopbarStart } from './TopbarStart'
@@ -22,8 +22,8 @@ function Sidebar({ courseId, moduleId }: { courseId?: string; moduleId?: string 
   const { t: tUi } = useTranslation()
   const t = useLocalized()
   const course = getCourse(courseId)
-  const { week } = useWeek(courseId, moduleId)
-  const sectionIds = useMemo(() => week?.sections.map((s) => s.id) ?? [], [week])
+  const { mod } = useModule(courseId, moduleId)
+  const sectionIds = useMemo(() => mod?.sections.map((s) => s.id) ?? [], [mod])
   const activeId = useScrollSpy(sectionIds)
 
   return (
@@ -32,9 +32,9 @@ function Sidebar({ courseId, moduleId }: { courseId?: string; moduleId?: string 
         <Logo size={30} />
       </Link>
       <div className={styles.brandSub}>{course ? t(course.title) : tUi('appTagline')}</div>
-      {week ? (
+      {mod ? (
         <nav>
-          {week.sections.map((section) => (
+          {mod.sections.map((section) => (
             <a
               key={section.id}
               href={`#${section.id}`}
@@ -51,7 +51,7 @@ function Sidebar({ courseId, moduleId }: { courseId?: string; moduleId?: string 
   )
 }
 
-/** App-wide layout: sidebar (current week's sections, or a hint) + main content, with the
+/** App-wide layout: sidebar (current module's sections, or a hint) + main content, with the
  *  language toggle and the Course Contents panel fixed top. */
 export function AppShell() {
   const { t } = useTranslation()

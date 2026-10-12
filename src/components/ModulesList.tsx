@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { hasWeek, moduleHref, type Course } from '../content/courses'
+import { hasModule, moduleHref, type Course } from '../content/courses'
 import { useLocalized } from '../content/useLocalized'
-import styles from './WeeksList.module.css'
+import styles from './ModulesList.module.css'
 
 /** A course's modules grouped by topic, linking to `/course/:courseId/:id`; modules not written yet show a
  *  "soon" badge. Shared by the course page and the Course Contents panel — one implementation. */
-export function WeeksList({ course, onNavigate }: { course: Course; onNavigate?: () => void }) {
+export function ModulesList({ course, onNavigate }: { course: Course; onNavigate?: () => void }) {
   const t = useLocalized()
   const { t: tUi } = useTranslation()
 
@@ -17,7 +17,7 @@ export function WeeksList({ course, onNavigate }: { course: Course; onNavigate?:
           <div className={styles.groupLabel}>{t(group.label)}</div>
           <ul className={styles.list}>
             {group.items.map((item) => {
-              const written = hasWeek(course.id, item.id)
+              const written = hasModule(course.id, item.id)
               return (
                 <li key={item.id}>
                   {written ? (

@@ -8,14 +8,14 @@ import {
   courses,
   flatNav,
   getCourse,
-  hasWeek,
+  hasModule,
   type AudienceId,
   type Course,
   type CourseCategory,
 } from '../../content/courses'
-import type { Week } from '../../content/types'
+import type { Module } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
-import { useWeeks } from '../../content/useWeek'
+import { useModules } from '../../content/useModule'
 import {
   formatDuration,
   learnHref,
@@ -102,12 +102,12 @@ export function HomePage() {
 }
 
 /** Written modules of a course, loaded, in course order (empty until all have loaded). */
-function useCourseWeeks(course: Course): Week[] {
+function useCourseModules(course: Course): Module[] {
   const ids = flatNav(course)
     .map((i) => i.id)
-    .filter((id) => hasWeek(course.id, id))
-  const weeks: Record<string, Week> = useWeeks(course.id, ids)
-  return ids.every((id) => weeks[id]) ? ids.map((id) => weeks[id]) : []
+    .filter((id) => hasModule(course.id, id))
+  const mods: Record<string, Module> = useModules(course.id, ids)
+  return ids.every((id) => mods[id]) ? ids.map((id) => mods[id]) : []
 }
 
 /** "Continue": the lesson after the one finished last, else the course's next unfinished lesson. */
@@ -116,16 +116,16 @@ function ContinueCard({ courseId, moduleId, lessonId }: { courseId: string; modu
   const { t: tUi } = useTranslation()
   const { progress } = useProgress()
   const course = getCourse(courseId)!
-  const weeks = useCourseWeeks(course)
-  if (weeks.length === 0) return <div className={styles.continueCard} aria-busy />
+  const mods = useCourseModules(course)
+  if (mods.length === 0) return <div className={styles.continueCard} aria-busy />
 
-  const isDone = (week: Week, lesson: Lesson) => progress.lessonsDone.includes(lessonKey(courseId, week.id, lesson.id))
-  const week = weeks.find((w) => w.id === moduleId)
-  const lessons = week ? lessonsFor(week) : []
-  const after = lessons.slice(lessons.findIndex((l) => l.id === lessonId) + 1).find((l) => week && !isDone(week, l))
-  const next = week && after ? { week, lesson: after } : nextInCourse(courseId, weeks, progress.lessonsDone)
+  const isDone = (mod: Module, lesson: Lesson) => progress.lessonsDone.includes(lessonKey(courseId, mod.id, lesson.id))
+  const mod = mods.find((w) => w.id === moduleId)
+  const lessons = mod ? lessonsFor(mod) : []
+  const after = lessons.slice(lessons.findIndex((l) => l.id === lessonId) + 1).find((l) => mod && !isDone(mod, l))
+  const next = mod && after ? { mod, lesson: after } : nextInCourse(courseId, mods, progress.lessonsDone)
   const wrong = mistakes(
-    weeks.flatMap((w) => w.questions.map((q) => q.id)),
+    mods.flatMap((w) => w.questions.map((q) => q.id)),
     progress.answers,
   ).length
 
@@ -142,7 +142,7 @@ function ContinueCard({ courseId, moduleId, lessonId }: { courseId: string; modu
   }
 
   const nav = flatNav(course)
-  const chapter = nav.findIndex((i) => i.id === next.week.id)
+  const chapter = nav.findIndex((i) => i.id === next.mod.id)
   const title =
     next.lesson.parts > 1
       ? tUi('lessonOfParts', { title: t(next.lesson.title), n: next.lesson.part, of: next.lesson.parts })
@@ -158,7 +158,7 @@ function ContinueCard({ courseId, moduleId, lessonId }: { courseId: string; modu
         {tUi('chapterN', { n: chapter + 1 })} · {t(nav[chapter].title)} · {tUi('minutes', { n: lessonMinutes(next.lesson) })}
       </p>
       <div className={styles.cardActions}>
-        <Link className={styles.cta} to={learnHref(courseId, next.week.id, next.lesson.id)}>
+        <Link className={styles.cta} to={learnHref(courseId, next.mod.id, next.lesson.id)}>
           {tUi('continueCourse')} <span aria-hidden>→</span>
         </Link>
         {wrong > 0 && (
@@ -219,11 +219,11 @@ function CourseCard({ course }: { course: Course }) {
   const t = useLocalized()
   const { t: tUi } = useTranslation()
   const { progress } = useProgress()
-  const weeks = useCourseWeeks(course)
-  const lessons = weeks.flatMap((w) => lessonsFor(w).map((l) => ({ w, l })))
+  const mods = useCourseModules(course)
+  const lessons = mods.flatMap((w) => lessonsFor(w).map((l) => ({ w, l })))
   const done = lessons.filter(({ w, l }) => progress.lessonsDone.includes(lessonKey(course.id, w.id, l.id))).length
-  const minutes = weeks.reduce((n, w) => n + moduleMinutes(lessonsFor(w)), 0)
-  const chapters = flatNav(course).filter((i) => hasWeek(course.id, i.id)).length
+  const minutes = mods.reduce((n, w) => n + moduleMinutes(lessonsFor(w)), 0)
+  const chapters = flatNav(course).filter((i) => hasModule(course.id, i.id)).length
 
   return (
     <Link to={`/course/${course.id}`} className={styles.card}>
@@ -234,7 +234,7 @@ function CourseCard({ course }: { course: Course }) {
           {chapters === 0 ? (
             <span className={styles.soonBadge}>{tUi('comingSoon')}</span>
           ) : (
-            weeks.length > 0 && <ProgressRing done={done} total={lessons.length} size={40} />
+            mods.length > 0 && <ProgressRing done={done} total={lessons.length} size={40} />
           )}
         </div>
         <AudienceBadges audiences={course.audiences} />
@@ -243,7 +243,7 @@ function CourseCard({ course }: { course: Course }) {
           {chapters === 0
             ? tUi('plannedChapters', { count: flatNav(course).length })
             : tUi('nChapters', { count: chapters })}
-          {weeks.length > 0 && ` · ${tUi('nLessons', { count: lessons.length })} · ${formatDuration(minutes, tUi)}`}
+          {mods.length > 0 && ` · ${tUi('nLessons', { count: lessons.length })} · ${formatDuration(minutes, tUi)}`}
         </span>
       </div>
     </Link>

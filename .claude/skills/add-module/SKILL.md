@@ -5,10 +5,10 @@ description: Add a new module (lesson page) to an existing course in src/content
 
 # Add a module to a course
 
-Modules are typed TypeScript files (`Week` in `src/content/types.ts`). All text is `Localized` — **English and Arabic live inline**; there is no separate locale folder.
+Modules are typed TypeScript files (`Module` in `src/content/types.ts`). All text is `Localized` — **English and Arabic live inline**; there is no separate locale folder.
 
 ## Steps
-1. Create `src/content/courses/<course>/<module-id>.ts` exporting a `Week`. Copy the shape of `investing/basics.ts` (compact, uses the shared helpers) or `tech-interview/dsa.ts` (code tabs). Use the builders in `src/content/helpers.ts`: `L(en, ar)`, `cover`, `section`, `html`, `box`, `table`, `formula`, `objectives`, `takeaways`, `exercise`, `mcq`.
+1. Create `src/content/courses/<course>/<module-id>.ts` exporting a `Module`. Copy the shape of `investing/basics.ts` (compact, uses the shared helpers) or `tech-interview/dsa.ts` (code tabs). Use the builders in `src/content/helpers.ts`: `L(en, ar)`, `cover`, `section`, `html`, `box`, `table`, `formula`, `objectives`, `takeaways`, `exercise`, `mcq`.
 2. Question IDs are **stable**: `<prefix>-qNNN` (e.g. `sql-q003`), zero-padded, never renumbered or reused — saved progress in readers' browsers references them. `mcq()` builds the ID for you. Prefixes are letters only and unique across the whole app. Options are shown in a shuffled (stable) order, so you can write the correct answer anywhere.
 3. Every `Section` needs a short `navLabel` (sidebar text) and a unique `id` (used for `#deep-links` and progress).
 4. Reuse the existing `Block` variants before inventing one: `html`, `objectives`, `takeaways`, `box` (analogy / mistake / keypoint / example), `code`, `formula`, `table`, `tabs` (e.g. Python / C# / JS), `exercise`, `diagram`.

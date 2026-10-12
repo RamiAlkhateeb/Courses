@@ -1,5 +1,5 @@
 /* Ported from ../../../../course/_shared/styles/week.css's .week-nav rules. */
-.weekNav {
+.moduleNav {
   display: flex;
   justify-content: space-between;
   gap: 14px;
@@ -44,7 +44,7 @@ a.btn:hover {
 }
 
 @media print {
-  .weekNav {
+  .moduleNav {
     display: none;
   }
 }

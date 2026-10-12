@@ -1,5 +1,5 @@
 // Original course content. Portfolio mixes and fee figures are illustrative examples, not recommendations.
-import type { Week } from '../../types'
+import type { Module } from '../../types'
 import { L, box, cover, exercise, html, mcq, objectives, section, table, takeaways } from '../../helpers'
 
 const W = 'diversification'
@@ -29,7 +29,7 @@ const questions = [
     [L('Chasing performance', 'مطاردة الأداء'), L('Rebalancing', 'إعادة التوازن'), L('Hedging', 'التحوط')], 0),
 ]
 
-export const diversification: Week = {
+export const diversification: Module = {
   id: W,
   courseId: 'investing',
   order: 3,

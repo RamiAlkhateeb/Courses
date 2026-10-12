@@ -73,8 +73,8 @@ export const router = createBrowserRouter(
         {
           path: 'course/:courseId/:id',
           lazy: async () => {
-            const { WeekPage } = await import('../features/weeks/WeekPage')
-            return { element: <WeekPage /> }
+            const { ModulePage } = await import('../features/modules/ModulePage')
+            return { element: <ModulePage /> }
           },
         },
         {

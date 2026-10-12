@@ -1,5 +1,5 @@
 // Original course content. The coffee-cart numbers are a made-up worked example; tax is ignored to keep it simple.
-import type { Week } from '../../types'
+import type { Module } from '../../types'
 import { L, box, cover, exercise, formula, html, mcq, objectives, section, table, takeaways } from '../../helpers'
 
 const W = 'statements'
@@ -26,7 +26,7 @@ const questions = [
     [L('Spreading the cost of a long-lived asset over its useful life — an expense that uses no cash that month', 'توزيع تكلفة أصل طويل الأجل على عمره الإنتاجي — مصروف لا يستهلك نقدًا في ذلك الشهر'), L('A cash payment to the tax office', 'دفعة نقدية لمصلحة الضرائب'), L('Money owed by customers', 'مال مستحق على العملاء')], 0),
 ]
 
-export const statements: Week = {
+export const statements: Module = {
   id: W,
   courseId: 'accounting',
   order: 1,

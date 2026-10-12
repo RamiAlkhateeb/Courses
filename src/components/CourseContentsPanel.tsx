@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { getCourse } from '../content/courses'
-import { WeeksList } from './WeeksList'
+import { ModulesList } from './ModulesList'
 import styles from './CourseContentsPanel.module.css'
 
 export function CourseContentsPanel({ courseId, onClose }: { courseId?: string; onClose: () => void }) {
@@ -16,7 +16,7 @@ export function CourseContentsPanel({ courseId, onClose }: { courseId?: string; 
             ×
           </button>
         </div>
-        {course && <WeeksList course={course} onNavigate={onClose} />}
+        {course && <ModulesList course={course} onNavigate={onClose} />}
       </div>
     </>
   )

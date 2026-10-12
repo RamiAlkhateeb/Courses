@@ -1,5 +1,5 @@
 // Original course content. Describes how asset classes work in general; no products are recommended.
-import type { Week } from '../../types'
+import type { Module } from '../../types'
 import { L, box, cover, exercise, html, mcq, objectives, section, table, takeaways } from '../../helpers'
 
 const W = 'asset-classes'
@@ -26,7 +26,7 @@ const questions = [
     [L('It is highly volatile and speculative; only risk money you can afford to lose', 'شديدة التقلب ومضاربية؛ لا تخاطر إلا بمال يمكنك تحمّل خسارته'), L('It is a safe replacement for savings', 'بديل آمن للمدخرات'), L('Its returns are guaranteed by governments', 'عوائدها مضمونة من الحكومات')], 0),
 ]
 
-export const assetClasses: Week = {
+export const assetClasses: Module = {
   id: W,
   courseId: 'investing',
   order: 2,

@@ -53,11 +53,11 @@ export function PathMap({ chapter }: { chapter: Chapter }) {
         const label = isCheckpoint ? tUi('pathUnitCheckpoint') : t(lesson.title)
         const go = isCheckpoint
           ? allDone
-            ? () => navigate(practiceHref(chapter.week!.courseId, chapter.week!.id))
+            ? () => navigate(practiceHref(chapter.mod!.courseId, chapter.mod!.id))
             : undefined
           : state === 'locked'
             ? undefined
-            : () => navigate(learnHref(chapter.week!.courseId, chapter.week!.id, lesson.id))
+            : () => navigate(learnHref(chapter.mod!.courseId, chapter.mod!.id, lesson.id))
         return (
           <div key={k} className={styles.stop} style={{ insetInlineStart: `${p.x}%`, insetBlockStart: p.y - (state === 'next' ? 40 : 30) }}>
             <PathNode state={state} size={state === 'next' ? 80 : 60} onMountain onClick={go} label={label} />

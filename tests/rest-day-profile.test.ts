@@ -33,8 +33,8 @@ describe('rest day', () => {
 
 describe('lesson terms', () => {
   it('skips bold phrases that are only numbers', async () => {
-    const week = await investing.loaders.basics()
-    for (const lesson of lessonsFor(week)) {
+    const mod = await investing.loaders.basics()
+    for (const lesson of lessonsFor(mod)) {
       for (const term of lessonTerms(lesson)) expect(term.en).toMatch(/\p{L}{3}/u)
     }
   })

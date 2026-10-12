@@ -70,7 +70,7 @@ export function SummitPage() {
       </ul>
       {next && (
         <div className={styles.foot}>
-          <Button onClick={() => navigate(learnHref(course.id, next.week.id, next.lesson.id))}>
+          <Button onClick={() => navigate(learnHref(course.id, next.mod.id, next.lesson.id))}>
             {t('continueCamp', { n: (current?.camp ?? 1) })}
           </Button>
         </div>

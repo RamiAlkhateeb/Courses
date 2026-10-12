@@ -2,54 +2,54 @@ import { useEffect, useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { practiceHref } from '../../content/courses'
-import { useWeek } from '../../content/useWeek'
+import { useModule } from '../../content/useModule'
 import { Cover } from '../../components/content/Cover'
 import { SectionView } from '../../components/content/SectionView'
-import { WeekNav } from '../../components/content/WeekNav'
+import { ModuleNav } from '../../components/content/ModuleNav'
 import contentStyles from '../../components/content/content.module.css'
 import { useProgress } from '../progress/useProgress'
-import { WeekQuestionsContext } from '../quiz/weekQuestions'
+import { ModuleQuestionsContext } from '../quiz/moduleQuestions'
 import { useScrollSpy } from './useScrollSpy'
 
-export function WeekPage() {
+export function ModulePage() {
   const { courseId, id } = useParams<{ courseId: string; id: string }>()
   const { t } = useTranslation()
-  const { week, loading, notFound } = useWeek(courseId, id)
+  const { mod, loading, notFound } = useModule(courseId, id)
   const { markRead } = useProgress()
 
-  const sectionIds = useMemo(() => week?.sections.map((s) => s.id) ?? [], [week])
+  const sectionIds = useMemo(() => mod?.sections.map((s) => s.id) ?? [], [mod])
   const activeId = useScrollSpy(sectionIds)
 
   useEffect(() => {
-    if (week && activeId) markRead(`${week.courseId}/${week.id}`, activeId)
+    if (mod && activeId) markRead(`${mod.courseId}/${mod.id}`, activeId)
     // markRead is a fresh closure each render; only the active section changing matters here.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [week, activeId])
+  }, [mod, activeId])
 
   // Content loads asynchronously, so a #section deep link can't be scrolled to by the browser on load.
   useEffect(() => {
-    if (week && window.location.hash) {
+    if (mod && window.location.hash) {
       document.getElementById(decodeURIComponent(window.location.hash.slice(1)))?.scrollIntoView()
     }
-  }, [week])
+  }, [mod])
 
   if (loading) return <p>{t('loading')}</p>
-  if (notFound || !week) return <p>{t('moduleNotFound')}</p>
+  if (notFound || !mod) return <p>{t('moduleNotFound')}</p>
 
   return (
-    <WeekQuestionsContext.Provider value={week.questions}>
+    <ModuleQuestionsContext.Provider value={mod.questions}>
       <div className={contentStyles.content}>
-        <Cover week={week} />
-        {week.sections.map((section) => (
+        <Cover mod={mod} />
+        {mod.sections.map((section) => (
           <SectionView key={section.id} section={section} />
         ))}
-        {week.questions.length > 0 && (
+        {mod.questions.length > 0 && (
           <p className={contentStyles.quizCta}>
-            <Link to={practiceHref(week.courseId, week.id)}>{t('takeQuiz')} →</Link>
+            <Link to={practiceHref(mod.courseId, mod.id)}>{t('takeQuiz')} →</Link>
           </p>
         )}
-        <WeekNav courseId={week.courseId} weekId={week.id} />
+        <ModuleNav courseId={mod.courseId} moduleId={mod.id} />
       </div>
-    </WeekQuestionsContext.Provider>
+    </ModuleQuestionsContext.Provider>
   )
 }

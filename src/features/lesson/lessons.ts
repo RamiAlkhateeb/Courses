@@ -1,4 +1,4 @@
-import type { Block, Localized, Question, Week } from '../../content/types'
+import type { Block, Localized, Question, Module } from '../../content/types'
 import { toCards } from './chunks'
 
 /** Most content cards in one lesson; a longer section is split into balanced parts. */
@@ -27,9 +27,9 @@ export interface Lesson {
 }
 
 /** Every lesson of a module, in reading order. */
-export function lessonsFor(week: Week): Lesson[] {
+export function lessonsFor(mod: Module): Lesson[] {
   const lessons: Lesson[] = []
-  for (const section of week.sections) {
+  for (const section of mod.sections) {
     const { cards, exercises } = toCards(section.blocks)
     if (cards.length === 0) cards.push([]) // heading-only section: still one card to show the heading
     const parts = Math.ceil(cards.length / MAX_CARDS)
@@ -45,7 +45,7 @@ export function lessonsFor(week: Week): Lesson[] {
       }))
       for (const ex of exercises) {
         if (partOf(ex.afterCard) !== p) continue
-        const question = week.questions.find((q) => q.id === ex.questionId)
+        const question = mod.questions.find((q) => q.id === ex.questionId)
         if (question) steps.push({ kind: 'question', sectionId: section.id, question })
       }
       lessons.push({
@@ -147,21 +147,21 @@ const boldTerms = (html: string) =>
   [...html.matchAll(/<strong>(.*?)<\/strong>/g)].map((m) => strip(m[1]).replace(/\s+/g, ' ').trim()).filter(Boolean)
 
 /** Where "Continue" goes in a course: the first unfinished lesson of the first chapter already started but not
- *  finished, else of the first chapter not finished. `weeks` holds the loaded modules, in course order. */
+ *  finished, else of the first chapter not finished. `mods` holds the loaded modules, in course order. */
 export function nextInCourse(
   courseId: string,
-  weeks: Week[],
+  mods: Module[],
   lessonsDone: string[],
-): { week: Week; lesson: Lesson } | null {
-  const chapters = weeks.map((week) => {
-    const lessons = lessonsFor(week)
-    const done = lessons.filter((l) => lessonsDone.includes(lessonKey(courseId, week.id, l.id)))
-    return { week, lessons, done: done.length }
+): { mod: Module; lesson: Lesson } | null {
+  const chapters = mods.map((mod) => {
+    const lessons = lessonsFor(mod)
+    const done = lessons.filter((l) => lessonsDone.includes(lessonKey(courseId, mod.id, l.id)))
+    return { mod, lessons, done: done.length }
   })
   const pick = chapters.find((c) => c.done > 0 && c.done < c.lessons.length) ?? chapters.find((c) => c.done < c.lessons.length)
   if (!pick) return null
-  const lesson = pick.lessons.find((l) => !lessonsDone.includes(lessonKey(courseId, pick.week.id, l.id)))!
-  return { week: pick.week, lesson }
+  const lesson = pick.lessons.find((l) => !lessonsDone.includes(lessonKey(courseId, pick.mod.id, l.id)))!
+  return { mod: pick.mod, lesson }
 }
 
 /** "≈ 25 min" or "≈ 1 h 40 min". */

@@ -1,5 +1,5 @@
 // Original course content, drawing on widely taught lean-startup practice (customer interviews, MVPs).
-import type { Week } from '../../types'
+import type { Module } from '../../types'
 import { L, box, cover, exercise, html, mcq, objectives, section, table, takeaways } from '../../helpers'
 
 const W = 'validation'
@@ -26,7 +26,7 @@ const questions = [
     [L('Customers pre-paying or signing a letter of intent', 'دفع العملاء مسبقًا أو توقيعهم خطاب نوايا'), L('Many likes on social media', 'إعجابات كثيرة على وسائل التواصل'), L('Positive comments in a survey', 'تعليقات إيجابية في استبيان')], 0),
 ]
 
-export const validation: Week = {
+export const validation: Module = {
   id: W,
   courseId: 'entrepreneurship',
   order: 1,

@@ -57,7 +57,7 @@ export function PathPage() {
               <Icon name="mountain" size={26} />
             </Link>
           </section>
-          {loaded && current.week ? <PathMap chapter={current} /> : <p className={styles.loading}>{t('loading')}</p>}
+          {loaded && current.mod ? <PathMap chapter={current} /> : <p className={styles.loading}>{t('loading')}</p>}
         </>
       ) : (
         <p className={styles.loading}>{t('contentComing')}</p>

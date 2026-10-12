@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { flatNav, getCourse, hasWeek, type Course } from '../../content/courses'
-import type { Question, Week } from '../../content/types'
-import { useWeeks } from '../../content/useWeek'
+import { flatNav, getCourse, hasModule, type Course } from '../../content/courses'
+import type { Question, Module } from '../../content/types'
+import { useModules } from '../../content/useModule'
 import { mistakes } from '../progress/store'
 import { useProgress } from '../progress/useProgress'
 import { QuizLesson } from './LessonPage'
@@ -23,11 +23,11 @@ function Review({ course }: { course: Course }) {
   const { t } = useTranslation()
   const ids = flatNav(course)
     .map((i) => i.id)
-    .filter((id) => hasWeek(course.id, id))
-  const weeks: Record<string, Week> = useWeeks(course.id, ids)
-  const loaded = ids.every((id) => weeks[id])
+    .filter((id) => hasModule(course.id, id))
+  const mods: Record<string, Module> = useModules(course.id, ids)
+  const loaded = ids.every((id) => mods[id])
   if (!loaded) return <p>{t('loading')}</p>
-  return <ReviewRunner course={course} questions={ids.flatMap((id) => weeks[id].questions)} />
+  return <ReviewRunner course={course} questions={ids.flatMap((id) => mods[id].questions)} />
 }
 
 function ReviewRunner({ course, questions }: { course: Course; questions: Question[] }) {

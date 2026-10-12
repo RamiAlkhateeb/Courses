@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useLocalized } from '../../content/useLocalized'
 import { useProgress } from '../progress/useProgress'
 import { optionOrder } from './optionOrder'
-import { useQuestion } from './weekQuestions'
+import { useQuestion } from './moduleQuestions'
 import styles from '../../components/content/content.module.css'
 
 /** One multiple-choice exercise, graded locally. The latest answer is saved in this browser

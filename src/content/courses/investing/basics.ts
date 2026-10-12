@@ -1,5 +1,5 @@
 // Original course content. Figures are illustrative examples, not forecasts.
-import type { Week } from '../../types'
+import type { Module } from '../../types'
 import { L, box, cover, exercise, formula, html, mcq, objectives, section, table, takeaways } from '../../helpers'
 
 const W = 'basics'
@@ -26,7 +26,7 @@ const questions = [
     [L('Building an emergency fund and paying off high-interest debt', 'بناء صندوق طوارئ وسداد الديون ذات الفائدة المرتفعة'), L('Taking a loan to invest more', 'أخذ قرض لاستثمار المزيد'), L('Waiting for the market to crash', 'انتظار انهيار السوق')], 0),
 ]
 
-export const basics: Week = {
+export const basics: Module = {
   id: W,
   courseId: 'investing',
   order: 1,
