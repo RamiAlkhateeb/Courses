@@ -165,7 +165,7 @@ export function nextInCourse(
 }
 
 /** "≈ 25 min" or "≈ 1 h 40 min". */
-export function formatDuration(minutes: number, tUi: (key: string, opts?: Record<string, unknown>) => string) {
+export function formatDuration(minutes: number, tUi: (key: 'minutes' | 'hoursMinutes' | 'hours', opts: Record<string, number>) => string) {
   if (minutes < 60) return tUi('minutes', { n: minutes })
   const h = Math.floor(minutes / 60)
   const m = minutes % 60

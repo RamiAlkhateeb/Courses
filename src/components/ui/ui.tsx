@@ -1,6 +1,7 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import type { ParseKeys } from 'i18next'
 import { Icon, type IconName } from './Icon'
 import styles from './ui.module.css'
 
@@ -81,7 +82,7 @@ export function ProgressBar({ value, max = 1, label }: { value: number; max?: nu
   )
 }
 
-const TABS: { to: string; icon: IconName; key: string; end?: boolean }[] = [
+const TABS: { to: string; icon: IconName; key: ParseKeys; end?: boolean }[] = [
   { to: '/', icon: 'path', key: 'tabPath', end: true },
   { to: '/review', icon: 'review', key: 'tabReview' },
   { to: '/terms', icon: 'book', key: 'tabTerms' },

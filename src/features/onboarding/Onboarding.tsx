@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import type { ParseKeys } from 'i18next'
 import { Button, Icon, OptionCard, ProgressBar, Rafiq, type IconName, type RafiqPose } from '../../components/ui'
 import { LogoMark } from '../../components/Logo'
 import { LANGUAGES } from '../../i18n'
@@ -136,8 +137,8 @@ export function OnboardingStep() {
             </p>
           </div>
         )}
-        <h1 className={styles.title}>{t(`ob_${step}_title`)}</h1>
-        {step !== 'goal' && step !== 'time' && <p className={styles.sub}>{t(`ob_${step}_sub`)}</p>}
+        <h1 className={styles.title}>{t(`ob_${step}_title` as ParseKeys)}</h1>
+        {step !== 'goal' && step !== 'time' && <p className={styles.sub}>{t(`ob_${step}_sub` as ParseKeys)}</p>}
 
         {step === 'language' && (
           <div className={styles.list}>
@@ -154,7 +155,7 @@ export function OnboardingStep() {
           <div className={styles.list}>
             {GOALS.map((g) => (
               <OptionCard radio key={g.id} role="radio" icon={g.icon} state={goal === g.id ? 'selected' : 'idle'} onClick={() => setGoal(g.id)}>
-                {t(`goal_${g.id}`)}
+                {t(`goal_${g.id}` as ParseKeys)}
               </OptionCard>
             ))}
           </div>
@@ -184,7 +185,7 @@ export function OnboardingStep() {
                       <Icon name={tr.icon} size={26} />
                     </span>
                     <strong>{tc(course.title)}</strong>
-                    <span className={styles.trailDesc}>{t(`trailDesc_${tr.id}`)}</span>
+                    <span className={styles.trailDesc}>{t(`trailDesc_${tr.id}` as ParseKeys)}</span>
                     <span className={styles.level}>{t('beginner')}</span>
                   </button>
                 )
@@ -201,7 +202,7 @@ export function OnboardingStep() {
                 <OptionCard radio key={m} role="radio" state={minutes === m ? 'selected' : 'idle'} onClick={() => setMinutes(m)}>
                   <span className={styles.minutes}>
                     <strong className={styles.minNum}>{t('minShort', { n: m })}</strong>
-                    <span className={styles.hint}>{t(`pace_${m}`)}</span>
+                    <span className={styles.hint}>{t(`pace_${m}` as ParseKeys)}</span>
                   </span>
                 </OptionCard>
               ))}
