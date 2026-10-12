@@ -1,6 +1,6 @@
 export type RafiqPose = 'wave' | 'think' | 'cheer' | 'oops' | 'point'
 
-/** Rafiq (رفيق), Masar's guide. `public/rafiq/rafiq-<pose>.png`; mirrored in RTL (see ui.module.css). */
+/** Rafiq (رفيق), Abu Shreek's guide. `public/rafiq/rafiq-<pose>.png`; mirrored in RTL (see ui.module.css). */
 export function Rafiq({ pose, height = 140, className }: { pose: RafiqPose; height?: number; className?: string }) {
   return (
     <img

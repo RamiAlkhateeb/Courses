@@ -5,8 +5,8 @@ import { initReactI18next } from 'react-i18next'
 const resources = {
   en: {
     translation: {
-      appName: 'Masar',
-      docTitle: 'Masar · مسار — learn the way forward',
+      appName: 'Abu Shreek',
+      docTitle: 'Abu Shreek · أبو شريك — learn the way forward',
       appTagline: 'Learn the way forward',
       heroTitle: 'Learn the way forward.',
       homeIntro: 'Free, bite-size courses for your career and your money: interview prep, investing, personal finance and more. No account needed — your progress stays in this browser.',
@@ -109,7 +109,7 @@ const resources = {
       "obTimeBubble": "Steady beats fast. Pick a pace you can keep walking.",
       "ob_language_title": "Choose your language",
       "ob_language_sub": "Every lesson works fully in both, including right-to-left.",
-      "ob_goal_title": "What brings you to Masar?",
+      "ob_goal_title": "What brings you to Abu\u00A0Shreek?",
       "ob_trail_title": "Pick your first trail",
       "ob_trail_sub": "Each trail is a path of short lessons. Add more any time.",
       "ob_time_title": "How long each day?",
@@ -206,8 +206,8 @@ const resources = {
   },
   ar: {
     translation: {
-      appName: 'مسار',
-      docTitle: 'مسار · Masar — تعلّم طريقك إلى الأمام',
+      appName: 'أبو شريك',
+      docTitle: 'أبو شريك · Abu Shreek — تعلّم طريقك إلى الأمام',
       appTagline: 'تعلّم طريقك إلى الأمام',
       heroTitle: 'تعلّم طريقك إلى الأمام.',
       homeIntro: 'دورات مجانية قصيرة لمسارك المهني وأموالك: التحضير للمقابلات والاستثمار والتمويل الشخصي وغيرها. لا حاجة لحساب — يبقى تقدمك في هذا المتصفح.',
@@ -323,7 +323,7 @@ const resources = {
       "obTimeBubble": "الاستمرار أهم من السرعة. اختر وتيرة تقدر على مواصلتها.",
       "ob_language_title": "اختر لغتك",
       "ob_language_sub": "كل الدروس تعمل بالكامل باللغتين، من اليمين إلى اليسار أيضًا.",
-      "ob_goal_title": "ما الذي أتى بك إلى مسار؟",
+      "ob_goal_title": "ما الذي أتى بك إلى أبي\u00A0شريك؟",
       "ob_trail_title": "اختر مسارك الأول",
       "ob_trail_sub": "كل مسار سلسلة دروس قصيرة. يمكنك إضافة المزيد في أي وقت.",
       "ob_time_title": "كم من الوقت كل يوم؟",

@@ -1,4 +1,4 @@
-/* Design tokens — the "Masar · مسار" identity: deep navy brand, warm saffron accent, soft paper.
+/* Design tokens — the "Abu Shreek · أبو شريك" identity: deep navy brand, warm saffron accent, soft paper.
    Components use these names only (no raw colours), so a theme is just a different set of values. */
 :root {
   --paper: #f6f1e6;

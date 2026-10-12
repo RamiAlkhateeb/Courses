@@ -1,4 +1,4 @@
-# Masar · مسار
+# Abu Shreek · أبو شريك
 
 *Learn the way forward.* Free, bite-size courses for careers and business — English and Arabic, light and dark mode. Each course is a journey of chapters and short card lessons with quick checks, time estimates, a recap, XP and streaks, plus a dashboard and "review mistakes". No account needed; progress is saved in your browser.
 

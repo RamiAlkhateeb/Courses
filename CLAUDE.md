@@ -1,6 +1,6 @@
-# Masar (مسار): working conventions
+# Abu Shreek (أبو شريك): working conventions
 
-Vite + React + TypeScript study app (brand "Masar · مسار", repo `Courses`) with free courses for careers (tech interview prep) and business (investing, personal finance, accounting, entrepreneurship, marketing). Open to guests: **no accounts, no backend**. Progress lives in the browser's localStorage. Pattern borrowed from the BA2 course app (`../BA2`), minus Supabase/auth/submissions.
+Vite + React + TypeScript study app (brand "Abu Shreek · أبو شريك", repo `Courses`) with free courses for careers (tech interview prep) and business (investing, personal finance, accounting, entrepreneurship, marketing). Open to guests: **no accounts, no backend**. Progress lives in the browser's localStorage. Pattern borrowed from the BA2 course app (`../BA2`), minus Supabase/auth/submissions.
 
 ## Commands
 - `npm run dev`: dev server

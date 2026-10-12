@@ -1,4 +1,7 @@
-# Masar design handoff
+# Abu Shreek design handoff
+
+> The app was renamed from "Masar" to "Abu Shreek" (أبو شريك) after these screens were drawn, so the images (and
+> `screens/masar-style-guide.png`) still show the old name. The layouts, colours and Rafiq are unchanged.
 
 Source: the Claude Design canvas "App Flow". Screens are 390×844 (shown at 2x). Mobile-first: the app is a
 max-width-430px column, with a tab bar (Path · Review · Terms · Me) on the four main screens.

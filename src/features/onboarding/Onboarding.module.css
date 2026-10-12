@@ -22,16 +22,42 @@
   align-items: center;
   gap: 12px;
 }
+/* English name over the Arabic one: "Abu Shreek" / "أبو شريك" are each two words, so side by side they wrap
+   mid-name next to the language switch on a phone. Stacked, neither can break. */
 .brandName {
+  display: flex;
+  flex-direction: column;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1.5rem;
+  line-height: 1.1;
   color: var(--brand);
+  white-space: nowrap;
 }
 .brandName span {
   color: var(--accent-ink);
   font-family: 'Amiri', serif;
-  margin-inline-start: 4px;
+  font-size: 1.15rem;
+  line-height: 1.2;
+}
+/* Very small phones (320px): the two-line name plus the language switch no longer fit at full size. */
+@media (max-width: 360px) {
+  .welcomeTop {
+    padding-inline: 16px;
+  }
+  .brand {
+    gap: 8px;
+  }
+  .brand svg {
+    width: 36px;
+    height: 36px;
+  }
+  .brandName {
+    font-size: 1.2rem;
+  }
+  .brandName span {
+    font-size: 1rem;
+  }
 }
 .langSwitch {
   display: flex;

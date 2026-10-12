@@ -7,7 +7,8 @@
 - Content validation tests (unique question IDs, answer ranges, every exercise resolves, Arabic present everywhere).
 - GitHub Actions: CI (PRs/branches) and Pages deploy from `master`; Dependabot; PR template.
 - Duolingo-style **Lesson mode** (`/course/:courseId/:moduleId/lesson`): 8 questions one at a time, instant feedback, score screen; XP (10 per correct, +20 perfect), daily streak (local midnight), Leitner boxes that make lessons favour unseen/missed questions. Streak + XP shown in the top bar.
-- **Masar identity**: navy + saffron on paper, Fraunces/Amiri display type, flat cards, generated course covers, new logo/favicon (`src/components/Logo.tsx`).
+- **Renamed to Abu Shreek (أبو شريك)**: the app was first called Masar. Brand strings live in `src/i18n/index.ts` (`appName`, `docTitle`, `ob_goal_title`) and `index.html`; every other Arabic "مسار" in the UI is the ordinary word "path" and stays. localStorage keys, the repo name `Courses` and the Pages URL are unchanged.
+- **Abu Shreek identity** (first named Masar): navy + saffron on paper, Fraunces/Amiri display type, flat cards, generated course covers, new logo/favicon (`src/components/Logo.tsx`).
 - **Journey course page**: overview header (stats, what you'll learn, who it's for, Start/Continue, Review mistakes) and a timeline of chapters (modules) that open into lesson rows with status and minutes. Lessons unlock in order within a chapter; chapters are independent. Finished lessons: `progress.lessonsDone`.
 - **Home dashboard**: Continue card (from `progress.lastLesson`), 7-day XP strip (`progress.activity`), course cards with cover, chapters/lessons/time and a progress ring.
 - **Review mistakes** (`/course/:c/review`): replays questions whose latest answer was wrong. Lesson summary has a "What you learned" recap (takeaways or key terms).
