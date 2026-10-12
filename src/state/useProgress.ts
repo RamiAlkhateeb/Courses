@@ -1,8 +1,11 @@
-import { useSyncExternalStore } from 'react'
-import { applyRestDay, completeLesson, getSnapshot, localDay, markRead, recordAnswer, recordReview, reset, subscribe, update } from './store'
+import { applyRestDay, completeLesson, localDay, markRead, recordAnswer, recordReview } from '../domain/progress'
+import { progressStore } from './progress'
+import { useStore } from './useStore'
+
+const { update, reset } = progressStore
 
 export function useProgress() {
-  const progress = useSyncExternalStore(subscribe, getSnapshot)
+  const progress = useStore(progressStore)
   return {
     progress,
     recordAnswer: (questionId: string, selected: number, correct: boolean) =>

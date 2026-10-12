@@ -7,9 +7,9 @@ import { Cover } from '../../components/content/Cover'
 import { SectionView } from '../../components/content/SectionView'
 import { ModuleNav } from '../../components/content/ModuleNav'
 import contentStyles from '../../components/content/content.module.css'
-import { useProgress } from '../progress/useProgress'
-import { ModuleQuestionsContext } from '../quiz/moduleQuestions'
-import { useScrollSpy } from './useScrollSpy'
+import { useProgress } from '../../state/useProgress'
+import { ModuleQuestionsContext } from '../../components/content/moduleQuestions'
+import { useScrollSpy } from '../../lib/useScrollSpy'
 
 export function ModulePage() {
   const { courseId, id } = useParams<{ courseId: string; id: string }>()

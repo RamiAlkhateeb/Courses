@@ -6,7 +6,8 @@ import { LogoMark } from '../../components/Logo'
 import { LANGUAGES } from '../../i18n'
 import { getCourse } from '../../content/courses'
 import { useLocalized } from '../../content/useLocalized'
-import { GOAL_TRAIL, updateProfile, useProfile } from '../profile/store'
+import { GOAL_TRAIL } from '../../domain/profile'
+import { updateProfile, useProfile } from '../../state/profile'
 import styles from './Onboarding.module.css'
 
 /** The language that is not the current one: Welcome and the language step show both. */

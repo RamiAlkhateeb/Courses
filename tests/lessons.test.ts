@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { courses } from '../src/content/courses'
 import type { Module } from '../src/content/types'
-import { lessonsFor, MAX_CARDS } from '../src/features/lesson/lessons'
+import { lessonsFor, MAX_CARDS } from '../src/domain/lessons'
 
 async function allModules() {
   const mods: Module[] = []
@@ -69,7 +69,7 @@ describe('roadmap lessons (every module)', () => {
 
 describe('lesson time, recap and next lesson', () => {
   it('estimates at least a minute per lesson, more for longer ones', async () => {
-    const { lessonMinutes } = await import('../src/features/lesson/lessons')
+    const { lessonMinutes } = await import('../src/domain/lessons')
     for (const mod of await allModules()) {
       for (const lesson of lessonsFor(mod)) expect(lessonMinutes(lesson), `${mod.id}/${lesson.id}`).toBeGreaterThanOrEqual(1)
     }
@@ -80,7 +80,7 @@ describe('lesson time, recap and next lesson', () => {
   })
 
   it('recaps with the takeaways block if a lesson has one, else its bold terms (deduped, at most 6)', async () => {
-    const { lessonRecap } = await import('../src/features/lesson/lessons')
+    const { lessonRecap } = await import('../src/domain/lessons')
     const lesson = (blocks: import('../src/content/types').Block[]) => ({
       id: 'a', sectionId: 's', part: 1, parts: 1, title: { en: '' },
       steps: [{ kind: 'content' as const, sectionId: 's', blocks }],
@@ -96,7 +96,7 @@ describe('lesson time, recap and next lesson', () => {
   })
 
   it('continues a course in the chapter already started, else the first unfinished one', async () => {
-    const { nextInCourse, lessonKey } = await import('../src/features/lesson/lessons')
+    const { nextInCourse, lessonKey } = await import('../src/domain/lessons')
     const mods = (await allModules()).filter((w) => w.courseId === 'tech-interview')
     expect(nextInCourse('tech-interview', mods, [])).toMatchObject({ mod: { id: 'resume' }, lesson: { id: 'overview' } })
     const started = [lessonKey('tech-interview', 'dsa', 'approach')]

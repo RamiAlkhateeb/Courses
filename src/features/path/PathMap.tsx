@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { PathNode, Rafiq, type NodeState } from '../../components/ui'
 import { practiceHref } from '../../content/courses'
 import { useLocalized } from '../../content/useLocalized'
-import { learnHref } from '../lesson/lessons'
-import type { Chapter } from './useTrail'
+import { learnHref } from '../../domain/lessons'
+import type { Chapter } from '../../state/useTrail'
 import styles from './PathMap.module.css'
 
 const STEP = 125 // px between nodes

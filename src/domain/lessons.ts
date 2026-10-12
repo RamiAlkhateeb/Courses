@@ -1,4 +1,4 @@
-import type { Block, Localized, Question, Module } from '../../content/types'
+import type { Block, Localized, Question, Module } from '../content/types'
 import { toCards } from './chunks'
 
 /** Most content cards in one lesson; a longer section is split into balanced parts. */
@@ -61,7 +61,7 @@ export function lessonsFor(mod: Module): Lesson[] {
   return lessons
 }
 
-/** Progress key of a lesson (see `lessonsDone` in src/features/progress/store.ts). */
+/** Progress key of a lesson (see `lessonsDone` in src/domain/progress.ts). */
 export const lessonKey = (courseId: string, moduleId: string, lessonId: string) => `${courseId}/${moduleId}/${lessonId}`
 
 /** URL of a roadmap lesson (the quiz-only practice run is `practiceHref` in src/content/courses.ts). */

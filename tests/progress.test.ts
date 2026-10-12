@@ -14,7 +14,7 @@ import {
   pickLessonQuestions,
   recordAnswer,
   recordReview,
-} from '../src/features/progress/store'
+} from '../src/domain/progress'
 
 const EMPTY = { answers: {}, sectionsRead: {}, xp: 0, streak: { count: 0, lastDay: '' }, boxes: {}, lessonsDone: [], activity: {} }
 

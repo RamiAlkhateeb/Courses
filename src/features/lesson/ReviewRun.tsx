@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Question } from '../../content/types'
-import { QuizLesson } from '../lesson/LessonPage'
-import { useTrail, useTrailId } from '../path/useTrail'
-import { useProgress } from '../progress/useProgress'
+import { QuizLesson } from './LessonPage'
+import { useTrail, useTrailId } from '../../state/useTrail'
+import { useProgress } from '../../state/useProgress'
 
 const RUN_SIZE = 6
 

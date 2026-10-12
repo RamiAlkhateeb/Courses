@@ -1,6 +1,6 @@
-// Guest-mode progress, kept in this browser's localStorage. No account, no backend.
-// Every reader/writer goes through this file so a real backend can replace it later
-// without touching the components (see docs/PLAN.md).
+// Learner progress: the shape, how it is read from saved text, and every rule that changes it (streaks, XP,
+// spaced review, rest day, activity). Pure functions only: no React, no storage, no clock unless passed in, so
+// everything here is unit-tested directly. Saving and subscribing live in src/state/progress.ts.
 
 export interface Streak {
   /** Consecutive days with at least one finished lesson, as of `lastDay` */
@@ -19,7 +19,7 @@ export interface Progress {
   streak: Streak
   /** questionId -> Leitner box (1 = shaky … MAX_BOX = known); lessons favour low boxes */
   boxes: Record<string, number>
-  /** `${courseId}/${moduleId}/${lessonId}` of every finished roadmap lesson (see src/features/lesson/lessons.ts) */
+  /** `${courseId}/${moduleId}/${lessonId}` of every finished roadmap lesson (see src/domain/lessons.ts) */
   lessonsDone: string[]
   /** Key of the roadmap lesson finished most recently: Home's "Continue" starts from the lesson after it */
   lastLesson?: string
@@ -27,9 +27,8 @@ export interface Progress {
   activity: Record<string, number>
 }
 
-// Still v1: the lesson fields were added with defaults, so older saved progress parses unchanged.
-const STORAGE_KEY = 'progress:v1'
-const empty: Progress = {
+/** Nothing learned yet. Also what unreadable saved text parses to. */
+export const emptyProgress: Progress = {
   answers: {},
   sectionsRead: {},
   xp: 0,
@@ -48,7 +47,7 @@ export const XP_PERFECT_BONUS = 20
 const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
 
 export function parseProgress(raw: string | null): Progress {
-  if (!raw) return empty
+  if (!raw) return emptyProgress
   try {
     const data = JSON.parse(raw) as Record<string, unknown>
     const streak: Record<string, unknown> = isRecord(data.streak) ? data.streak : {}
@@ -66,7 +65,7 @@ export function parseProgress(raw: string | null): Progress {
       activity: isRecord(data.activity) ? (data.activity as Progress['activity']) : {},
     }
   } catch {
-    return empty
+    return emptyProgress
   }
 }
 
@@ -181,38 +180,3 @@ export function pickLessonQuestions(
     .slice(0, size)
     .map((q) => q.id)
 }
-
-// useSyncExternalStore needs a stable snapshot between changes, so parse once and cache.
-let cache: Progress | undefined
-const listeners = new Set<() => void>()
-
-function load(): Progress {
-  if (!cache) {
-    try {
-      cache = parseProgress(localStorage.getItem(STORAGE_KEY))
-    } catch {
-      cache = empty // localStorage unavailable (private mode) — progress lasts for this page view only
-    }
-  }
-  return cache
-}
-
-export function update(fn: (p: Progress) => Progress) {
-  const next = fn(load())
-  if (next === cache) return
-  cache = next
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
-  } catch {
-    // ignore
-  }
-  listeners.forEach((l) => l())
-}
-
-export const reset = () => update(() => empty)
-
-export const subscribe = (listener: () => void) => {
-  listeners.add(listener)
-  return () => listeners.delete(listener)
-}
-export const getSnapshot = load

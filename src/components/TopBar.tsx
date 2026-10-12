@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { currentStreak, localDay } from '../features/progress/store'
-import { useProgress } from '../features/progress/useProgress'
+import { currentStreak, localDay } from '../domain/progress'
+import { useProgress } from '../state/useProgress'
 import styles from './TopBar.module.css'
 
 /** Streak, XP and a link to Settings (language and sound live there). */

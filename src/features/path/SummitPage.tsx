@@ -2,8 +2,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Button, Icon, Rafiq } from '../../components/ui'
 import { useLocalized } from '../../content/useLocalized'
-import { learnHref } from '../lesson/lessons'
-import { useTrail, useTrailId } from './useTrail'
+import { learnHref } from '../../domain/lessons'
+import { useTrail, useTrailId } from '../../state/useTrail'
 import styles from './SummitPage.module.css'
 
 /** Design 17: the whole trail as one mountain with numbered camps, and the camp list under it. */

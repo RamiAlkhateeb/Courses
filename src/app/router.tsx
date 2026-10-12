@@ -7,7 +7,7 @@ import { MePage } from '../features/me/MePage'
 import { OnboardingStep, Welcome } from '../features/onboarding/Onboarding'
 import { PathPage } from '../features/path/PathPage'
 import { SummitPage } from '../features/path/SummitPage'
-import { ReviewRun } from '../features/review/ReviewRun'
+import { ReviewRun } from '../features/lesson/ReviewRun'
 import { ReviewTab } from '../features/review/ReviewTab'
 import { TermsPage } from '../features/terms/TermsPage'
 

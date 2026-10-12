@@ -7,10 +7,10 @@ import { flatNav, getCourse, hasModule, moduleHref, practiceHref, type Course, t
 import type { Localized, Module } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
 import { useModules } from '../../content/useModule'
-import { formatDuration, learnHref, lessonMinutes, lessonsFor, moduleMinutes, nextInCourse, type Lesson } from '../lesson/lessons'
-import { mistakes } from '../progress/store'
-import { useProgress } from '../progress/useProgress'
-import { unitStates, type NodeState } from './pathStates'
+import { formatDuration, learnHref, lessonMinutes, lessonsFor, moduleMinutes, nextInCourse, type Lesson } from '../../domain/lessons'
+import { mistakes } from '../../domain/progress'
+import { useProgress } from '../../state/useProgress'
+import { unitStates, type NodeState } from '../../domain/pathStates'
 import styles from './CoursePage.module.css'
 
 interface Chapter {

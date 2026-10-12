@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parseSettings } from '../src/features/settings/store'
+import { parseSettings } from '../src/domain/settings'
 
 describe('settings', () => {
   it('defaults to sound on', () => {

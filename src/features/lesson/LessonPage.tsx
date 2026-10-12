@@ -5,8 +5,8 @@ import { getCourse, moduleHref } from '../../content/courses'
 import type { Question, Module } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
 import { useModule } from '../../content/useModule'
-import { pickLessonQuestions } from '../progress/store'
-import { useProgress } from '../progress/useProgress'
+import { pickLessonQuestions } from '../../domain/progress'
+import { useProgress } from '../../state/useProgress'
 import {
   AnswerFeedback,
   LessonFooter,

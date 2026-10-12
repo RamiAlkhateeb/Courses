@@ -1,5 +1,6 @@
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
+import { languageStore } from '../state/language'
 
 // English + Arabic. Course content carries its own `Localized` text (src/content); these are UI strings only.
 const resources = {
@@ -422,7 +423,7 @@ const resources = {
 
 i18n.use(initReactI18next).init({
   resources,
-  lng: localStorage.getItem('lang') === 'ar' ? 'ar' : 'en',
+  lng: languageStore.get(),
   fallbackLng: 'en',
   interpolation: { escapeValue: false },
 })
@@ -443,9 +444,13 @@ const applyDir = (lng: string) => {
   document.documentElement.lang = lng
   document.documentElement.dir = RTL_LANGS.includes(lng) ? 'rtl' : 'ltr'
   document.title = i18n.t('docTitle')
-  localStorage.setItem('lang', lng)
+  languageStore.update(() => (lng === 'ar' ? 'ar' : 'en'))
 }
 applyDir(i18n.language)
 i18n.on('languageChanged', applyDir)
+// Another tab switched language: follow it. (A no-op when this tab made the change: the value is already equal.)
+languageStore.subscribe(() => {
+  if (i18n.language !== languageStore.get()) void i18n.changeLanguage(languageStore.get())
+})
 
 export default i18n

@@ -16,11 +16,14 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
+    /* Strictness: stated, not left to compiler defaults */
+    "strict": true,
+
     /* Linting */
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "tests"]
+  "include": ["src"]
 }

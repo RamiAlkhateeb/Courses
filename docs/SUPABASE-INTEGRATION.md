@@ -1,7 +1,7 @@
 # Plan: optional accounts with the BA2 Supabase backend
 
 Status: **planned, not started.** Abu Shreek is guest-only today: progress lives in this browser's
-localStorage (`src/features/progress/store.ts`). This document says how to add **optional** accounts,
+localStorage (`src/state/progress.ts`, rules in `src/domain/progress.ts`). This document says how to add **optional** accounts,
 so progress follows a learner across devices, by reusing the Supabase backend archived in BA2:
 <https://github.com/PA-WiT/BA2/tree/main/supabase-archive>.
 
@@ -10,7 +10,7 @@ Guiding rules:
   An account only adds sync.
 - **The app must build and run with no Supabase env vars.** Then it's exactly today's guest
   app, for local dev, forks and CI.
-- **Progress keeps going only through `src/features/progress/store.ts`.** Components don't
+- **Progress keeps going only through `src/state/progress.ts`.** Components don't
   change; only the store learns to sync.
 - **The frontend gets the anon key only.** Every table has RLS. The `service_role` key is never
   in the app or the repo.
@@ -40,7 +40,7 @@ the same key the local store already uses for `sectionsRead`. That lets 0001/000
 
 ## 2. Mapping Abu Shreek's local progress to tables
 
-The local `Progress` shape (`src/features/progress/store.ts`) and where each part lives once
+The local `Progress` shape (`src/domain/progress.ts`) and where each part lives once
 signed in:
 
 | Local field | Meaning | Server source of truth |
@@ -145,7 +145,7 @@ calculation into a `complete_lesson` RPC.
 
 ## 4. Client design
 
-1. **Remote adapter** (`src/features/progress/remote.ts`):
+1. **Remote adapter** (`src/state/remote.ts`):
    - `load(): Promise<Progress>` calls `my_progress()`.
    - Event writers: `recordAnswer`, `recordReview`, `markRead`, `completeLesson`, mapped to
      `question_attempts` inserts, `review_boxes` upserts, `mark_section_read`, and

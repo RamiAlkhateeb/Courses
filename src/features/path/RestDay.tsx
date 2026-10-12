@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next'
 import { Button, BottomSheet, Icon, Rafiq } from '../../components/ui'
-import { WeekDots } from '../progress/WeekStrip'
-import { useProgress } from '../progress/useProgress'
-import { daysBetween, localDay, weekStart } from '../progress/store'
-import { updateProfile, useProfile } from '../profile/store'
+import { WeekDots } from '../../components/WeekStrip'
+import { useProgress } from '../../state/useProgress'
+import { daysBetween, localDay, weekStart } from '../../domain/progress'
+import { updateProfile, useProfile } from '../../state/profile'
 import styles from './RestDay.module.css'
 
 const SEEN = 'restDayDismissed'

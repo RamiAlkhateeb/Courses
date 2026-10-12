@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { unitStates } from '../src/features/course/pathStates'
+import { unitStates } from '../src/domain/pathStates'
 
 describe('roadmap', () => {
   const ids = ['overview', 'template', 'content', 'keywords']

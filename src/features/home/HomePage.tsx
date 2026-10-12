@@ -25,9 +25,9 @@ import {
   moduleMinutes,
   nextInCourse,
   type Lesson,
-} from '../lesson/lessons'
-import { currentStreak, localDay, mistakes } from '../progress/store'
-import { useProgress } from '../progress/useProgress'
+} from '../../domain/lessons'
+import { currentStreak, localDay, mistakes } from '../../domain/progress'
+import { useProgress } from '../../state/useProgress'
 import { CourseCover } from './CourseCover'
 import styles from './HomePage.module.css'
 

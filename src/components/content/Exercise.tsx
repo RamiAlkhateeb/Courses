@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocalized } from '../../content/useLocalized'
-import { useProgress } from '../progress/useProgress'
-import { optionOrder } from './optionOrder'
+import { useProgress } from '../../state/useProgress'
+import { optionOrder } from '../../domain/optionOrder'
 import { useQuestion } from './moduleQuestions'
-import styles from '../../components/content/content.module.css'
+import styles from './content.module.css'
 
 /** One multiple-choice exercise, graded locally. The latest answer is saved in this browser
- *  (see src/features/progress/store.ts) and restored on the next visit. */
+ *  (see src/state/progress.ts) and restored on the next visit. */
 export function Exercise({ questionId }: { questionId: string }) {
   const question = useQuestion(questionId)
   const t = useLocalized()

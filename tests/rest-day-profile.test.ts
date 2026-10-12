@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { parseProfile } from '../src/features/profile/store'
-import { applyRestDay, bumpStreak, currentStreak, parseProgress, weekStart } from '../src/features/progress/store'
-import { lessonTerms, lessonsFor } from '../src/features/lesson/lessons'
+import { parseProfile } from '../src/domain/profile'
+import { applyRestDay, bumpStreak, currentStreak, parseProgress, weekStart } from '../src/domain/progress'
+import { lessonTerms, lessonsFor } from '../src/domain/lessons'
 import { investing } from '../src/content/courses/investing'
 
 describe('profile', () => {

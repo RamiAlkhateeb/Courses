@@ -1,10 +1,11 @@
-import { flatNav, getCourse, hasModule, type Course } from '../../content/courses'
-import type { Module } from '../../content/types'
-import { useModules } from '../../content/useModule'
-import { unitStates, type NodeState } from '../course/pathStates'
-import { lessonsFor, nextInCourse, type Lesson } from '../lesson/lessons'
-import { useProgress } from '../progress/useProgress'
-import { DEFAULT_TRAIL, useProfile } from '../profile/store'
+import { flatNav, getCourse, hasModule, type Course } from '../content/courses'
+import type { Module } from '../content/types'
+import { useModules } from '../content/useModule'
+import { unitStates, type NodeState } from '../domain/pathStates'
+import { lessonsFor, nextInCourse, type Lesson } from '../domain/lessons'
+import { useProgress } from './useProgress'
+import { DEFAULT_TRAIL } from '../domain/profile'
+import { useProfile } from './profile'
 
 export interface Chapter {
   id: string

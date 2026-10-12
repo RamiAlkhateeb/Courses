@@ -1,5 +1,5 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
-import { useProfile } from '../features/profile/store'
+import { useProfile } from '../state/profile'
 import { TabBar } from './ui'
 import styles from './AppFrame.module.css'
 

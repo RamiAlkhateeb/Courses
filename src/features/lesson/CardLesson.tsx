@@ -8,9 +8,9 @@ import { resolveHtmlAssetPaths } from '../../content/resolveAssetPath'
 import type { Module } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
 import { useModule } from '../../content/useModule'
-import { useProgress } from '../progress/useProgress'
-import { ModuleQuestionsContext } from '../quiz/moduleQuestions'
-import { learnHref, lessonKey, lessonRecap, lessonsFor, type Lesson } from './lessons'
+import { useProgress } from '../../state/useProgress'
+import { ModuleQuestionsContext } from '../../components/content/moduleQuestions'
+import { learnHref, lessonKey, lessonRecap, lessonsFor, type Lesson } from '../../domain/lessons'
 import {
   AnswerFeedback,
   LessonFooter,

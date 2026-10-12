@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next'
 import { Button, Card, Icon, Rafiq } from '../../components/ui'
 import { useLocalized } from '../../content/useLocalized'
 import type { Question } from '../../content/types'
-import { mistakes, MAX_BOX } from '../progress/store'
-import { useProgress } from '../progress/useProgress'
-import { useTrail, useTrailId } from '../path/useTrail'
+import { mistakes, MAX_BOX } from '../../domain/progress'
+import { useProgress } from '../../state/useProgress'
+import { useTrail, useTrailId } from '../../state/useTrail'
 import styles from './ReviewTab.module.css'
 
 /** A card is due while its question is still shaky (Leitner box 1–2). */

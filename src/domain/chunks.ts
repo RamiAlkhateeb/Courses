@@ -1,6 +1,6 @@
 // Cuts a section's content into bite-size cards (one idea each) for the lesson flow. Pure, no DOM:
 // course HTML is author-controlled and simple, so a small tag scanner is enough (and runs in tests).
-import type { Block, Localized } from '../../content/types'
+import type { Block, Localized } from '../content/types'
 
 /** Block-level tags that start a new piece of a split html block. Inline tags (strong, code…) never split. */
 const BLOCK_TAGS = new Set(['p', 'ul', 'ol', 'h3', 'h4', 'table', 'pre', 'div', 'blockquote'])

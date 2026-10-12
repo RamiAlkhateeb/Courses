@@ -1,4 +1,4 @@
-import { getSettings } from './store'
+import { getSettings } from './settings'
 
 export type SoundKind = 'correct' | 'wrong' | 'complete'
 
