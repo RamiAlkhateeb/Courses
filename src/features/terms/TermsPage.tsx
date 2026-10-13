@@ -19,11 +19,11 @@ interface Entry {
 
 /** Design 16: the key words of the trail, collected as their lessons are finished. */
 export function TermsPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const tc = useLocalized()
   const { progress } = useProgress()
   const { course, chapters } = useTrail(useTrailId())
-  const [mode, setMode] = useState<Mode>('both')
+  const [mode, setMode] = useState<Mode>(i18n.language === 'ar' ? 'ar' : 'en') // one language unless the learner asks for both
   const [picked, setPicked] = useState(0)
   const [flipped, setFlipped] = useState(false)
 
@@ -56,7 +56,7 @@ export function TermsPage() {
 
       <div className={styles.seg} role="group">
         {(['en', 'ar', 'both'] as Mode[]).map((m) => (
-          <button key={m} type="button" aria-pressed={mode === m} onClick={() => setMode(m)} lang={m === 'ar' ? 'ar' : undefined}>
+          <button key={m} type="button" aria-pressed={mode === m} onClick={() => setMode(m)} lang={m === 'both' ? undefined : m}>
             {t(m === 'en' ? 'termsEnglish' : m === 'ar' ? 'termsArabic' : 'termsBoth')}
           </button>
         ))}

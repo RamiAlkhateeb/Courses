@@ -1,5 +1,6 @@
 import type { Block } from '../../content/types'
-import { resolveAssetPath, resolveHtmlAssetPaths } from '../../content/resolveAssetPath'
+import { resolveAssetPath } from '../../content/resolveAssetPath'
+import { safeHtml } from './safeHtml'
 import { useLocalized } from '../../content/useLocalized'
 import { Exercise } from './Exercise'
 import { CodeBlock } from './CodeBlock'
@@ -17,7 +18,7 @@ export function Blocks({ blocks }: { blocks: Block[] }) {
             return null
 
           case 'html':
-            return <div key={i} dangerouslySetInnerHTML={{ __html: resolveHtmlAssetPaths(t(block.html)) }} />
+            return <div key={i} dangerouslySetInnerHTML={safeHtml(t(block.html))} />
 
           case 'objectives':
             return (
@@ -35,7 +36,7 @@ export function Blocks({ blocks }: { blocks: Block[] }) {
             return (
               <div key={i} className={`${styles.box} ${styles[block.variant]}`}>
                 <span className={styles.boxLabel}>{t(block.label)}</span>
-                <div dangerouslySetInnerHTML={{ __html: resolveHtmlAssetPaths(t(block.html)) }} />
+                <div dangerouslySetInnerHTML={safeHtml(t(block.html))} />
               </div>
             )
 
@@ -90,7 +91,7 @@ export function Blocks({ blocks }: { blocks: Block[] }) {
                     {block.rows.map((row, r) => (
                       <tr key={r}>
                         {row.map((cell, c) => (
-                          <td key={c} dangerouslySetInnerHTML={{ __html: t(cell) }} />
+                          <td key={c} dangerouslySetInnerHTML={safeHtml(t(cell))} />
                         ))}
                       </tr>
                     ))}

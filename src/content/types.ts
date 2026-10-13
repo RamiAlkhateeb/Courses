@@ -41,6 +41,10 @@ export interface Section {
   /** Heading + standfirst markup, e.g. "<h2>...</h2><p class='standfirst'>...</p>" */
   headingHtml: Localized
   blocks: Block[]
+  /** The roadmap lesson ids this section is cut into, fixed by the author. Finished lessons are saved by id, so
+   *  with this set, editing the text never moves or drops a learner's ✓: the number of lessons is the number of
+   *  ids and the cards are shared out between them. Without it, ids come from how the cards happen to split. */
+  lessonIds?: string[]
 }
 
 /** One module of a course (the type keeps its original "Module" name; a course is free to call them modules). */

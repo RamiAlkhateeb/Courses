@@ -10,9 +10,8 @@ function* files(dir: string): Generator<string> {
   }
 }
 
-// Colours are defined once, in src/styles/tokens.css; components use `var(--…)`. (The logo and mascot are drawings
-// with their own fixed palette, so they are exempt.)
-const EXEMPT = ['src/styles/tokens.css', 'src/components/Logo.tsx']
+// Colours are defined once, in src/styles/tokens.css; components use `var(--…)`.
+const EXEMPT = ['src/styles/tokens.css']
 const RAW_COLOUR = /#[0-9a-fA-F]{3,8}\b|\brgba?\(|\bhsla?\(/
 
 describe('design tokens', () => {

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Blocks } from '../../components/content/Blocks'
 import contentStyles from '../../components/content/content.module.css'
 import { getCourse } from '../../content/courses'
-import { resolveHtmlAssetPaths } from '../../content/resolveAssetPath'
+import { safeHtml } from '../../components/content/safeHtml'
 import type { Module } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
 import { useModule } from '../../content/useModule'
@@ -146,7 +146,7 @@ function CardRun({ mod, lesson, next, onRestart }: { mod: Module; lesson: Lesson
               </p>
             )}
             {step.heading?.html && (
-              <div dangerouslySetInnerHTML={{ __html: resolveHtmlAssetPaths(t(step.heading.html)) }} />
+              <div dangerouslySetInnerHTML={safeHtml(t(step.heading.html))} />
             )}
             <Blocks blocks={step.blocks} />
           </div>

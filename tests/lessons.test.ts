@@ -105,3 +105,35 @@ describe('lesson time, recap and next lesson', () => {
     expect(nextInCourse('tech-interview', mods, all)).toBeNull()
   })
 })
+
+describe('fixed lesson ids', () => {
+  const para = (n: number) => ({ type: 'html' as const, html: { en: `<p>Card ${n}</p>`, ar: `<p>بطاقة ${n}</p>` } })
+  const mod = (lessonIds?: string[]): Module =>
+    ({
+      id: 'm',
+      courseId: 'c',
+      cover: { kicker: { en: '', ar: '' }, titleHtml: { en: '', ar: '' } },
+      questions: [],
+      sections: [
+        {
+          id: 's',
+          navLabel: { en: 'S', ar: 'س' },
+          sectionLabel: { en: 'S', ar: 'س' },
+          headingHtml: { en: '<h2>S</h2>', ar: '<h2>س</h2>' },
+          blocks: [1, 2, 3, 4, 5].map(para),
+          ...(lessonIds ? { lessonIds } : {}),
+        },
+      ],
+    }) as unknown as Module
+
+  it('use the author ids and share the cards out between them', () => {
+    const lessons = lessonsFor(mod(['intro', 'deeper']))
+    expect(lessons.map((l) => l.id)).toEqual(['intro', 'deeper'])
+    expect(lessons.map((l) => l.steps.length)).toEqual([3, 2])
+  })
+
+  it('keep the ids when the text grows (no split, no reset)', () => {
+    expect(lessonsFor(mod(['only'])).map((l) => l.id)).toEqual(['only'])
+    expect(lessonsFor(mod()).map((l) => l.id)).toEqual(['s'])
+  })
+})

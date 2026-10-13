@@ -32,8 +32,9 @@ export function lessonsFor(mod: Module): Lesson[] {
   for (const section of mod.sections) {
     const { cards, exercises } = toCards(section.blocks)
     if (cards.length === 0) cards.push([]) // heading-only section: still one card to show the heading
-    const parts = Math.ceil(cards.length / MAX_CARDS)
-    const size = Math.ceil(cards.length / parts) // balanced, e.g. 9 cards → 5 + 4, not 7 + 2
+    const fixed = section.lessonIds
+    const parts = fixed?.length || Math.ceil(cards.length / MAX_CARDS)
+    const size = Math.max(1, Math.ceil(cards.length / parts)) // balanced, e.g. 9 cards → 5 + 4, not 7 + 2
     const partOf = (card: number) => Math.min(Math.floor(Math.max(card, 0) / size), parts - 1)
 
     for (let p = 0; p < parts; p++) {
@@ -49,7 +50,7 @@ export function lessonsFor(mod: Module): Lesson[] {
         if (question) steps.push({ kind: 'question', sectionId: section.id, question })
       }
       lessons.push({
-        id: parts === 1 ? section.id : `${section.id}-${p + 1}`,
+        id: fixed ? fixed[p]! : parts === 1 ? section.id : `${section.id}-${p + 1}`,
         sectionId: section.id,
         part: p + 1,
         parts,

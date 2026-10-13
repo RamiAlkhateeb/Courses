@@ -6,8 +6,11 @@ Phase C (seeded simulation engine with tests, Playground, Fund, Buy/Sell, debrie
 Phase D (season missions, season summary with what helped / what hurt, "What if I waited?", past seasons, and a 320/390 px overflow sweep in English and Arabic).
 Still open: Weekly expedition (needs a backend), the scenario lesson type (19), lesson-card tip bubbles, the quiz hint.
 
+## Current scope (October 2026)
+Investing only (`ENABLED_COURSE_IDS`), money loop instead of XP, light theme only, one language on screen at a time, mascot-face app icon, onboarding Language → Daily time → Starting bank. The items below are history: some describe screens that were later removed (the catalog/Home dashboard at `/courses`, the one-page reading view, dark mode, XP).
+
 ## Done
-- Guest-only Vite + React + TS app (no accounts, no backend), EN + AR with RTL, light/dark theme.
+- Guest-only Vite + React + TS app (no accounts, no backend), EN + AR with RTL (dark theme later removed).
 - Multi-course structure (`src/content/courses.ts`); first course: **Tech Interview Prep** (Resume & ATS, .NET Q&A, DSA patterns).
 - Local progress (sections read, quiz answers) in localStorage, shown on each course page, with reset.
 - Content validation tests (unique question IDs, answer ranges, every exercise resolves, Arabic present everywhere).
@@ -21,7 +24,7 @@ Still open: Weekly expedition (needs a backend), the scenario lesson type (19), 
 - **Audiences**: every course is tagged for Job seekers / Managers & professionals / Entrepreneurs (`Course.audiences`); Home has a shareable filter (`?for=`), cards and course headers show badges. Third category: Management & decision science.
 - **Outlined courses** (titles, descriptions, planned chapters; no lessons yet): Data Analysis, Accounting and Cost Analysis, Financial Management & Feasibility Study, Introduction to Economics, Fundamentals of Management and Theories of Organizations, Operations and Supply Chain Management, Decision Theory, Game Theory, Modeling Procedures in Decision Support Systems. Write chapters with the `add-module` skill (add a loader to make a chapter live).
 - **Bite-size lessons** for every module (`/course/:c/:m/learn/:lessonId`): content is cut automatically into one-idea cards (`src/domain/chunks.ts`: each paragraph, list, box, table, code sample; headings and lead-ins ending in ":" stay with what follows; `cardBreak` forces a cut), then the questions on what that lesson showed. Finishing gives XP (5 + 10/correct + 20 perfect) and the streak; "Continue" opens the next lesson.
-- **Settings** page (`/settings`, ⚙ in the top bar): language, theme (light/dark/system), sound effects (synthesised with Web Audio, no files).
+- **Settings** page (`/settings`, ⚙ in the top bar): language, sound effects (synthesised with Web Audio, no files).
 
 - Business courses (category "Business & finance" on the home page): **Investing Fundamentals** (3 modules), **Personal Finance**, **Accounting Essentials**, **Entrepreneurship**, **Marketing Fundamentals** (1 module each), with "Soon" placeholders for the rest. Shared content helpers in `src/content/helpers.ts`; per-question shuffled option order.
 
@@ -43,13 +46,13 @@ Learning experience
 - **Search** across modules (Pagefind or MiniSearch, built at deploy time).
 - **Per-question explanations** shown after answering; **bookmarks / notes** per section.
 - **Runnable code**: in-browser Python (Pyodide) / JS for the DSA samples; syntax highlighting (shiki).
-- **Printable cheat sheets** per module (print CSS already exists via "Save as PDF").
+- **Printable cheat sheets** per module.
 
 Platform
 - **PWA / offline** (service worker) so modules can be read without a connection.
 - **Analytics** (privacy-friendly: Plausible/Umami) to see which modules are used.
 - **Lighthouse CI** + link checker in CI; **i18n check** that every UI string has `en` and `ar`.
-- Component tests for `Exercise` (Testing Library) and a Playwright smoke test of EN/AR + dark mode.
+- Component tests for `Exercise` (Testing Library). (The Playwright smoke suite exists: `e2e/`.)
 - Code-split by course once there are several (already one chunk per module).
 - Contributions: issue templates for "wrong answer" and "suggest a question".
 

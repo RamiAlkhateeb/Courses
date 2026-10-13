@@ -71,7 +71,8 @@ export const courses: Course[] = [
 export const ENABLED_COURSE_IDS = ['investing']
 export const appCourses = courses.filter((c) => ENABLED_COURSE_IDS.includes(c.id))
 
-export const getCourse = (id: string | undefined) => courses.find((c) => c.id === id)
+/** An offered course by id. Hidden courses are not found, so their URLs show "not found" like any unknown id. */
+export const getCourse = (id: string | undefined) => appCourses.find((c) => c.id === id)
 
 export const moduleHref = (courseId: string, moduleId: string) => `/course/${courseId}/${moduleId}`
 export const practiceHref = (courseId: string, moduleId: string) => `${moduleHref(courseId, moduleId)}/lesson`

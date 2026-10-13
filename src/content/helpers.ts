@@ -53,6 +53,8 @@ export const section = (s: {
   title: Localized
   standfirst?: Localized
   time?: Localized
+  /** Fixed roadmap lesson ids (see `Section.lessonIds`) */
+  lessons?: string[]
   blocks: Block[]
 }): Section => ({
   id: s.id,
@@ -61,6 +63,7 @@ export const section = (s: {
   timeEst: s.time,
   headingHtml: heading(s.title, s.standfirst),
   blocks: s.blocks,
+  ...(s.lessons ? { lessonIds: s.lessons } : {}),
 })
 
 /** Multiple-choice question with stable id `<prefix>-qNNN`; `answer` is the index into `options`. */

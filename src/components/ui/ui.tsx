@@ -52,7 +52,7 @@ export function OptionCard({
   radio,
 }: {
   state?: OptionState
-  letter?: string
+  letter?: ReactNode
   /** Leading icon tile instead of a letter (onboarding choices) */
   icon?: IconName
   children: ReactNode
