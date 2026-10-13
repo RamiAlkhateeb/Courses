@@ -13,8 +13,8 @@ Vite + React + TypeScript study app (brand "Abu Shreek · أبو شريك", repo
 ## Layout
 - `src/content/courses.ts`: course registry. Each course is `src/content/courses/<id>/index.ts` + one file per module; `category` (`careers` / `business` / `management`) groups it on the home page and `audiences` (`job-seekers` / `professionals` / `entrepreneurs`, at least one) drives the Home filter and badges. A course with no `loaders` is an outline: its chapters show as "Coming soon".
 - `src/content/helpers.ts`: shared content builders (`L`, `section`, `mcq`, `box`, `table`, …).
-- `src/features/<name>/`: feature code. Mobile app screens: `onboarding` (Welcome + 4 steps), `path` (Home mountain, Summit, rest-day offer), `lesson` (card lessons, quiz, results), `review`, `terms`, `me`, `profile` (onboarding choices, active trail). Desktop reading views: `course`, `modules` (the one-page reading view), `home` (the catalog, now at `/courses`), `settings`. Shared UI in `src/components/` (`ui/` is the design kit).
-- Routes (`src/app/router.tsx`): the mobile column (`AppFrame`, redirects first-timers to `/welcome`) holds `/` (Path), `/review`, `/terms`, `/me`, `/summit`, lessons and quizzes; the desktop `AppShell` keeps `/courses`, `/course/:id`, one-page modules and `/settings`.
+- `src/features/<name>/`: feature code. Mobile app screens: `onboarding` (Welcome + 4 steps), `path` (Home mountain, Summit, rest-day offer), `lesson` (card lessons, quiz, results), `review`, `terms`, `me`, `profile` (onboarding choices, active trail). Desktop views: `course`, `home` (the catalog, now at `/courses`), `settings`. Shared UI in `src/components/` (`ui/` is the design kit).
+- Routes (`src/app/router.tsx`): the mobile column (`AppFrame`, redirects first-timers to `/welcome`) holds `/` (Path), `/review`, `/terms`, `/me`, `/summit`, lessons and quizzes; the desktop `AppShell` keeps `/courses`, `/course/:id` and `/settings`.
 - `solutions/`: the author's practice solutions (C#/Python/JS/SQL/Java). Not part of the app build.
 - `legacy/`: old unrelated backend files, kept for reference only.
 - `docs/content-sources/README.ar.md`: the original Arabic README the first modules were migrated from.
@@ -48,7 +48,7 @@ Dependencies point one way; `tests/architecture.test.ts` fails CI if one points 
 | Folder | What lives there | May import |
 | --- | --- | --- |
 | `src/content/` | course data, registry, content hooks | `content`, `lib` |
-| `src/lib/` | generic helpers (`useScrollSpy`) | `lib` |
+| `src/lib/` | generic helpers (none yet) | `lib` |
 | `src/domain/` | **pure rules**: progress/streak/XP/spaced review, lessons, chunks, path states. No React, no browser APIs | `domain`, `content`, `lib` |
 | `src/state/` | persisted stores (`createPersistedStore`), hooks over them, sound, `useTrail` | `state`, `domain`, `content`, `lib` |
 | `src/i18n/` | translations and language setup | + `state` |
@@ -63,7 +63,7 @@ Need something from another feature? Move it down a layer (shared logic to `doma
 | --- | --- | --- |
 | **Course** | A subject, e.g. Investing Fundamentals (`Course`, `src/content/courses/<id>/`) | "trail" in the mobile UI |
 | **Group** | A labelled run of modules inside a course (`NavGroup`) | "unit" / "part" |
-| **Module** | One content file of a course (`Module`, `useModule`, `moduleId`, `ModulePage`) | "chapter" / "camp" in the UI; was `Week` (BA2 legacy) before the rename |
+| **Module** | One content file of a course (`Module`, `useModule`, `moduleId`) | "chapter" / "camp" in the UI; was `Week` (BA2 legacy) before the rename |
 | **Section** | One heading's worth of a module (`Section`) | |
 | **Lesson** | A short card run cut from a section, one roadmap node (`Lesson`, `lessonsFor`) | |
 | **Card** | One idea inside a lesson (`chunks.ts`) | |

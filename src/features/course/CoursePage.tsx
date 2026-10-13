@@ -4,7 +4,7 @@ import { buttonClass } from '../../components/ui'
 import { useTranslation } from 'react-i18next'
 import { AudienceBadges } from '../../components/AudienceBadges'
 import { ProgressRing } from '../../components/ProgressRing'
-import { flatNav, getCourse, hasModule, moduleHref, practiceHref, type Course, type NavItem } from '../../content/courses'
+import { flatNav, getCourse, hasModule, practiceHref, type Course, type NavItem } from '../../content/courses'
 import type { Localized, Module } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
 import { useModules } from '../../content/useModule'
@@ -283,9 +283,6 @@ function ChapterStop({
               to={learnHref(courseId, item.id, target.id)}
             >
               {action}
-            </Link>
-            <Link className={styles.textLink} to={moduleHref(courseId, item.id)}>
-              {tUi('readModule')}
             </Link>
             {mod.questions.length > 0 && (
               <Link className={styles.textLink} to={practiceHref(courseId, item.id)}>

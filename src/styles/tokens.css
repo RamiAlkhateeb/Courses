@@ -56,7 +56,6 @@
      English text still get the right glyphs. */
   --font: 'Instrument Sans', 'IBM Plex Sans Arabic', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --app-max: 430px;
-  --sidebar-w: 260px;
 }
 html[dir='rtl'] {
   --font: 'IBM Plex Sans Arabic', 'Instrument Sans', 'Segoe UI', Tahoma, sans-serif;

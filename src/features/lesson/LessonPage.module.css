@@ -118,14 +118,6 @@
     transform: translateY(10px);
   }
 }
-.onePage {
-  text-align: center;
-  margin-block-start: 18px;
-  font-size: 0.85rem;
-}
-.onePage a {
-  color: var(--muted);
-}
 
 /* ---------- Results (Camp cleared) ---------- */
 .summary {
