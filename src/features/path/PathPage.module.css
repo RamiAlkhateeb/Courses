@@ -1,128 +1,62 @@
 .page {
-  padding: 24px 16px 0;
+  padding: 48px 16px 24px;
 }
 .top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-}
-.trailBtn,
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--surface);
-  border: 1px solid var(--rule);
-  border-radius: 999px;
-  color: var(--brand);
-  font: inherit;
-  font-weight: 700;
-}
-.trailBtn {
-  padding: 6px 14px 6px 6px;
-  cursor: pointer;
-  min-inline-size: 0;
-}
-:global(html[dir='rtl']) .trailBtn {
-  padding: 6px 6px 6px 14px;
-}
-.trailName {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-inline-size: 165px;
-  font-size: 1.1rem;
-}
-.trailIcon {
-  display: grid;
-  place-items: center;
-  inline-size: 38px;
-  block-size: 38px;
-  border-radius: 50%;
-  background: var(--brand);
-  color: var(--accent);
-}
-.chips {
-  display: flex;
-  gap: 8px;
-}
-.chip {
-  padding: 8px 12px;
-  font-size: 1.05rem;
-}
-.chip svg {
-  color: var(--accent-ink);
-}
-.banner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-block-start: 14px;
-  padding: 16px 20px;
-  background: var(--brand);
-  color: var(--on-brand);
-  border-radius: var(--radius-lg);
-}
-.bannerKicker {
-  color: var(--accent);
-  font-weight: 700;
-  font-size: 0.85rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-.bannerTitle {
-  font-size: 1.8rem;
-  line-height: 1.1;
-  color: var(--on-brand);
-}
-.summitBtn {
-  flex-shrink: 0;
-  display: grid;
-  place-items: center;
-  inline-size: 52px;
-  block-size: 52px;
-  border-radius: 50%;
-  border: 1px solid var(--navy-line);
-  color: var(--on-brand);
 }
 .loading {
   padding: 40px 8px;
   color: var(--muted);
 }
-.scrim {
-  position: fixed;
-  inset: 0;
-  z-index: 25;
-  background: var(--scrim);
+.section {
+  position: relative;
 }
-.sheetTitle {
-  font-size: 1.6rem;
-  margin-block-end: 14px;
-  color: var(--brand);
-}
-.trailList {
+/* Pinned under the top edge while you scroll through the unit; the next unit's banner then takes over. */
+.banner {
+  position: sticky;
+  inset-block-start: 12px;
+  z-index: 5;
+  min-block-size: 84px;
+  margin-block-start: 16px;
+  box-sizing: border-box;
+  padding: 12px 16px 12px 20px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(120deg, var(--indigo) 0%, var(--blue) 140%);
+  box-shadow: 0 8px 0 var(--indigo-edge), var(--shadow-banner);
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-block-size: 50dvh;
-  overflow-y: auto;
-  margin-block-end: 14px;
-}
-.pgRow {
-  display: flex;
-  margin-block-start: 12px;
-}
-.pgChip {
-  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  background: var(--surface);
-  border: 1px solid var(--rule);
-  border-radius: 999px;
-  color: var(--brand);
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--on-indigo);
+}
+:global(html[dir='rtl']) .banner {
+  padding: 12px 20px 12px 16px;
+  background: linear-gradient(240deg, var(--indigo) 0%, var(--blue) 140%);
+}
+.kicker {
+  font-size: 0.6875rem;
   font-weight: 700;
-  text-decoration: none;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sky);
+}
+.bannerTitle {
+  font-size: 1.4375rem;
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-block-start: 4px;
+  color: var(--on-indigo);
+}
+.guide {
+  flex-shrink: 0;
+  inline-size: 46px;
+  block-size: 46px;
+  border-radius: 16px;
+  border: 2px solid var(--indigo-line-strong);
+  display: grid;
+  place-items: center;
+  color: var(--mist);
 }

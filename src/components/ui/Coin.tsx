@@ -1,9 +1,9 @@
-/** The play-money coin: saffron disc, ink rim, a dollar stroke. A drawing with the design tokens as colours. */
+/** The play-money coin: a sky disc with an indigo rim and a dollar stroke. Drawn with the design tokens as colours. */
 export function Coin({ size = 24 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden focusable="false">
-      <circle cx="12" cy="12" r="10.5" fill="var(--accent)" stroke="var(--ink)" strokeWidth="1.5" />
-      <path d="M14.5 8.5c-.6-.8-1.5-1.2-2.600-1.2-1.500 0-2.500.8-2.500 1.900 0 2.800 5.300 1.400 5.300 4.100 0 1.2-1.100 2-2.700 2-1.2 0-2.200-.5-2.800-1.400M12 5.500v13" fill="none" stroke="var(--ink)" strokeWidth="1.6" strokeLinecap="round" />
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden focusable="false">
+      <circle cx="12" cy="12" r="9" fill="var(--sky)" stroke="var(--indigo)" strokeWidth="1.6" />
+      <path d="M12 7v10M9.6 9.6c0-1 1-1.6 2.4-1.6s2.4.6 2.4 1.6-1 1.4-2.4 1.7-2.4.7-2.4 1.8 1 1.5 2.4 1.5 2.4-.5 2.4-1.5" stroke="var(--indigo)" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   )
 }

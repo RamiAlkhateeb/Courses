@@ -1,0 +1,63 @@
+.unit {
+  position: relative;
+  margin-block-start: 20px;
+}
+/* The connector is a fixed 390px canvas centred on the column, so it lines up with the 50% ± offset nodes. In RTL it
+   is mirrored around the centre, like the nodes. */
+.lines {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 50%;
+  margin-inline-start: -195px;
+  pointer-events: none;
+}
+:global(html[dir='rtl']) .lines {
+  transform: scaleX(-1);
+}
+.mascot {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+}
+/* A zero-width anchor on the node's centre line: the node is centred on it, in both directions. */
+.stop {
+  position: absolute;
+  inline-size: 0;
+  display: flex;
+  justify-content: center;
+  z-index: 2;
+}
+.start {
+  position: absolute;
+  inset-block-end: calc(100% + 12px);
+  min-inline-size: 88px;
+  block-size: 36px;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--card);
+  border: 2px solid var(--line);
+  box-shadow: 0 4px 0 var(--line);
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.08em;
+  color: var(--blue);
+  white-space: nowrap;
+}
+.start::after {
+  content: '';
+  position: absolute;
+  inset-block-end: -9px;
+  inline-size: 12px;
+  block-size: 12px;
+  background: var(--card);
+  border-inline-end: 2px solid var(--line);
+  border-block-end: 2px solid var(--line);
+  transform: rotate(45deg);
+  box-sizing: border-box;
+}
+
+.stop > * {
+  flex: none;
+}
