@@ -34,6 +34,7 @@ export const assetClasses: Module = {
   sections: [
     section({
       id: 'overview',
+      lessons: ['overview'],
       label: L('Intro', 'مقدمة'),
       nav: L('Overview', 'نظرة عامة'),
       title: L('What can you invest in?', 'في ماذا يمكنك أن تستثمر؟'),
@@ -50,6 +51,7 @@ export const assetClasses: Module = {
     }),
     section({
       id: 'stocks',
+      lessons: ['stocks'],
       label: L('Part 1', 'الجزء ١'),
       nav: L('Stocks', 'الأسهم'),
       title: L('Stocks: owning part of a business', 'الأسهم: امتلاك جزء من شركة'),
@@ -69,6 +71,7 @@ export const assetClasses: Module = {
     }),
     section({
       id: 'bonds',
+      lessons: ['bonds'],
       label: L('Part 2', 'الجزء ٢'),
       nav: L('Bonds', 'السندات'),
       title: L('Bonds: lending your money', 'السندات: إقراض مالك'),
@@ -96,6 +99,7 @@ export const assetClasses: Module = {
     }),
     section({
       id: 'cash',
+      lessons: ['cash'],
       label: L('Part 3', 'الجزء ٣'),
       nav: L('Cash', 'النقد'),
       title: L('Cash and cash equivalents', 'النقد وما يعادله'),
@@ -109,6 +113,7 @@ export const assetClasses: Module = {
     }),
     section({
       id: 'funds',
+      lessons: ['funds'],
       label: L('Part 4', 'الجزء ٤'),
       nav: L('Funds and ETFs', 'الصناديق وصناديق المؤشرات المتداولة'),
       title: L('Funds: buying many investments at once', 'الصناديق: شراء استثمارات كثيرة دفعة واحدة'),
@@ -132,6 +137,7 @@ export const assetClasses: Module = {
     }),
     section({
       id: 'alternatives',
+      lessons: ['alternatives'],
       label: L('Part 5', 'الجزء ٥'),
       nav: L('Real estate, gold, crypto', 'العقار والذهب والعملات المشفرة'),
       title: L('Alternatives', 'البدائل'),

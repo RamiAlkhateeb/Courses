@@ -41,6 +41,7 @@ export const diversification: Module = {
   sections: [
     section({
       id: 'diversify',
+      lessons: ['diversify'],
       label: L('Part 1', 'الجزء ١'),
       nav: L('Diversification', 'التنويع'),
       title: L('Don’t put all your eggs in one basket', 'لا تضع كل البيض في سلة واحدة'),
@@ -62,6 +63,7 @@ export const diversification: Module = {
     }),
     section({
       id: 'allocation',
+      lessons: ['allocation'],
       label: L('Part 2', 'الجزء ٢'),
       nav: L('Asset allocation', 'توزيع الأصول'),
       title: L('Asset allocation: the biggest decision', 'توزيع الأصول: القرار الأكبر'),
@@ -88,6 +90,7 @@ export const diversification: Module = {
     }),
     section({
       id: 'fees',
+      lessons: ['fees'],
       label: L('Part 3', 'الجزء ٣'),
       nav: L('Costs and fees', 'التكاليف والرسوم'),
       title: L('Small fees, big difference', 'رسوم صغيرة وفرق كبير'),
@@ -110,6 +113,7 @@ export const diversification: Module = {
     }),
     section({
       id: 'habits',
+      lessons: ['habits'],
       label: L('Part 4', 'الجزء ٤'),
       nav: L('Regular investing & rebalancing', 'الاستثمار الدوري وإعادة التوازن'),
       title: L('Habits that help', 'عادات مفيدة'),
@@ -125,6 +129,7 @@ export const diversification: Module = {
     }),
     section({
       id: 'behaviour',
+      lessons: ['behaviour'],
       label: L('Part 5', 'الجزء ٥'),
       nav: L('Behaviour mistakes', 'الأخطاء السلوكية'),
       title: L('Your biggest risk is often you', 'أكبر خطر عليك غالبًا هو أنت'),

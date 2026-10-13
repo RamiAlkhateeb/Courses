@@ -34,6 +34,7 @@ export const basics: Module = {
   sections: [
     section({
       id: 'why',
+      lessons: ['why'],
       label: L('Intro', 'مقدمة'),
       nav: L('Saving vs investing', 'الادخار مقابل الاستثمار'),
       title: L('Saving vs investing', 'الادخار مقابل الاستثمار'),
@@ -62,6 +63,7 @@ export const basics: Module = {
     }),
     section({
       id: 'compounding',
+      lessons: ['compounding'],
       label: L('Part 1', 'الجزء ١'),
       nav: L('Compounding', 'الفائدة المركبة'),
       title: L('Compounding: returns on your returns', 'الفائدة المركبة: عوائد على عوائدك'),
@@ -95,6 +97,7 @@ export const basics: Module = {
     }),
     section({
       id: 'risk-return',
+      lessons: ['risk-return'],
       label: L('Part 2', 'الجزء ٢'),
       nav: L('Risk and return', 'المخاطرة والعائد'),
       title: L('Risk and return go together', 'المخاطرة والعائد متلازمان'),
@@ -123,6 +126,7 @@ export const basics: Module = {
     }),
     section({
       id: 'ready',
+      lessons: ['ready'],
       label: L('Part 3', 'الجزء ٣'),
       nav: L('Are you ready to invest?', 'هل أنت جاهز للاستثمار؟'),
       title: L('Before you invest', 'قبل أن تستثمر'),
