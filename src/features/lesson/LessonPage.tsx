@@ -2,11 +2,11 @@ import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { getCourse } from '../../content/courses'
-import type { Question, Week } from '../../content/types'
+import type { Question, Module } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
-import { useWeek } from '../../content/useWeek'
-import { pickLessonQuestions } from '../progress/store'
-import { useProgress } from '../progress/useProgress'
+import { useModule } from '../../content/useModule'
+import { pickLessonQuestions } from '../../domain/progress'
+import { useProgress } from '../../state/useProgress'
 import {
   AnswerFeedback,
   LessonFooter,
@@ -25,42 +25,42 @@ const LESSON_SIZE = 8
 export function LessonPage() {
   const { courseId, moduleId } = useParams<{ courseId: string; moduleId: string }>()
   const { t: tUi } = useTranslation()
-  const { week, loading, notFound } = useWeek(courseId, moduleId)
+  const { mod, loading, notFound } = useModule(courseId, moduleId)
 
   if (!getCourse(courseId) || notFound) return <p>{tUi('moduleNotFound')}</p>
-  if (loading || !week) return <p>{tUi('loading')}</p>
-  if (week.questions.length === 0) return <p>{tUi('lessonNoQuestions')}</p>
-  return <LessonRunner week={week} />
+  if (loading || !mod) return <p>{tUi('loading')}</p>
+  if (mod.questions.length === 0) return <p>{tUi('lessonNoQuestions')}</p>
+  return <LessonRunner mod={mod} />
 }
 
-function LessonRunner({ week }: { week: Week }) {
+function LessonRunner({ mod }: { mod: Module }) {
   const t = useLocalized()
   const { progress } = useProgress()
   const [round, setRound] = useState(0)
   // Picked once per round: later box changes must not reshuffle the lesson mid-way.
-  const [picks, setPicks] = useState(() => pick(week, progress.boxes))
+  const [picks, setPicks] = useState(() => pick(mod, progress.boxes))
   // Keyed by round so "Practice again" remounts a fresh lesson with a new pick of questions.
   return (
     <QuizLesson
       key={round}
-      kicker={t(week.cover.kicker)}
+      kicker={t(mod.cover.kicker)}
       quitTo="/"
       questions={picks}
       onRestart={() => {
-        setPicks(pick(week, progress.boxes))
+        setPicks(pick(mod, progress.boxes))
         setRound((r) => r + 1)
       }}
     />
   )
 }
 
-function pick(week: Week, boxes: Record<string, number>): Question[] {
+function pick(mod: Module, boxes: Record<string, number>): Question[] {
   const ids = pickLessonQuestions(
-    week.questions.map((q) => q.id),
+    mod.questions.map((q) => q.id),
     boxes,
     LESSON_SIZE,
   )
-  return ids.map((id) => week.questions.find((q) => q.id === id)!)
+  return ids.map((id) => mod.questions.find((q) => q.id === id)!)
 }
 
 /** A run of questions, one at a time, then XP and the streak. Used by Practice and Review mistakes; it completes
@@ -101,7 +101,7 @@ export function QuizLesson({
 
   function next() {
     if (isLast) {
-      completeLesson(correctCount, questions.length)
+      completeLesson(correctCount)
       setDone(true)
       return
     }
@@ -136,12 +136,12 @@ export function QuizLesson({
       {checked ? (
         <LessonFooter
           tone={isCorrect ? 'right' : 'wrong'}
-          feedback={<AnswerFeedback question={question} correct={isCorrect} />}
+          feedback={<AnswerFeedback question={question} correct={isCorrect} pays={false} />}
           action={isLast ? tUi('lessonFinish') : tUi('lessonContinue')}
           onAction={next}
         />
       ) : (
-        <LessonFooter rafiq="think" action={tUi('check')} disabled={selected === null} onAction={check} />
+        <LessonFooter mascot="think" compact action={tUi('check')} disabled={selected === null} onAction={check} />
       )}
     </div>
   )

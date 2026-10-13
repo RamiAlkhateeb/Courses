@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Block } from '../src/content/types'
-import { splitHtml, splitLocalized, toCards } from '../src/features/lesson/chunks'
+import { splitHtml, splitLocalized, toCards } from '../src/domain/chunks'
 
 const html = (en: string, ar = en): Block => ({ type: 'html', html: { en, ar } })
 

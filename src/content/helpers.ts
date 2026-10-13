@@ -66,12 +66,12 @@ export const section = (s: {
 /** Multiple-choice question with stable id `<prefix>-qNNN`; `answer` is the index into `options`. */
 export function mcq(
   prefix: string,
-  weekId: string,
+  moduleId: string,
   n: number,
   topic: string,
   prompt: Localized,
   options: Localized[],
   answer: number,
 ): Question {
-  return { id: `${prefix}-q${String(n).padStart(3, '0')}`, weekId, topic, prompt, options, answer }
+  return { id: `${prefix}-q${String(n).padStart(3, '0')}`, moduleId, topic, prompt, options, answer }
 }

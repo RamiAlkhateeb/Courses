@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next'
-import { Button, BottomSheet, Icon, Rafiq } from '../../components/ui'
-import { WeekDots } from '../progress/WeekStrip'
-import { useProgress } from '../progress/useProgress'
-import { daysBetween, localDay, weekStart } from '../progress/store'
-import { updateProfile, useProfile } from '../profile/store'
+import { Button, BottomSheet, Icon, AbuShreek } from '../../components/ui'
+import { WeekDots } from '../../components/WeekStrip'
+import { useProgress } from '../../state/useProgress'
+import { daysBetween, localDay, weekStart } from '../../domain/progress'
+import { updateProfile, useProfile } from '../../state/profile'
 import styles from './RestDay.module.css'
 
 const SEEN = 'restDayDismissed'
@@ -47,7 +47,7 @@ export function RestDay({ onClose }: { onClose: () => void }) {
         </div>
       </div>
       <BottomSheet>
-        <Rafiq pose="think" height={150} className={styles.rafiq} />
+        <AbuShreek pose="think" height={150} className={styles.mascot} />
         <p className={styles.kicker}>{t('restAvailable')}</p>
         <h1 className={styles.title}>{t('missedYesterday')}</h1>
         <p className={styles.body}>{t('restBody', { n: progress.streak.count })}</p>

@@ -1,7 +1,7 @@
 import type { Block } from '../../content/types'
 import { resolveAssetPath, resolveHtmlAssetPaths } from '../../content/resolveAssetPath'
 import { useLocalized } from '../../content/useLocalized'
-import { Exercise } from '../../features/quiz/Exercise'
+import { Exercise } from './Exercise'
 import { CodeBlock } from './CodeBlock'
 import { Tabs } from './Tabs'
 import styles from './content.module.css'

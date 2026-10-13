@@ -1,9 +1,9 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Button, Icon, Rafiq } from '../../components/ui'
+import { Button, Icon, AbuShreek } from '../../components/ui'
 import { useLocalized } from '../../content/useLocalized'
-import { learnHref } from '../lesson/lessons'
-import { useTrail, useTrailId } from './useTrail'
+import { learnHref } from '../../domain/lessons'
+import { useTrail, useTrailId } from '../../state/useTrail'
 import styles from './SummitPage.module.css'
 
 /** Design 17: the whole trail as one mountain with numbered camps, and the camp list under it. */
@@ -44,7 +44,7 @@ export function SummitPage() {
             {k + 1}
           </span>
         ))}
-        <Rafiq pose="point" height={96} className={styles.guide} />
+        <AbuShreek pose="point" height={96} className={styles.guide} />
       </div>
 
       <h2 className={styles.kicker}>{t('campsOnTrail')}</h2>
@@ -70,7 +70,7 @@ export function SummitPage() {
       </ul>
       {next && (
         <div className={styles.foot}>
-          <Button onClick={() => navigate(learnHref(course.id, next.week.id, next.lesson.id))}>
+          <Button onClick={() => navigate(learnHref(course.id, next.mod.id, next.lesson.id))}>
             {t('continueCamp', { n: (current?.camp ?? 1) })}
           </Button>
         </div>

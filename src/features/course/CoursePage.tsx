@@ -1,22 +1,23 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { buttonClass } from '../../components/ui'
 import { useTranslation } from 'react-i18next'
 import { AudienceBadges } from '../../components/AudienceBadges'
 import { ProgressRing } from '../../components/ProgressRing'
-import { flatNav, getCourse, hasWeek, practiceHref, type Course, type NavItem } from '../../content/courses'
-import type { Localized, Week } from '../../content/types'
+import { flatNav, getCourse, hasModule, practiceHref, type Course, type NavItem } from '../../content/courses'
+import type { Localized, Module } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
-import { useWeeks } from '../../content/useWeek'
-import { formatDuration, learnHref, lessonMinutes, lessonsFor, moduleMinutes, nextInCourse, type Lesson } from '../lesson/lessons'
-import { mistakes } from '../progress/store'
-import { useProgress } from '../progress/useProgress'
-import { unitStates, type NodeState } from './pathStates'
+import { useModules } from '../../content/useModule'
+import { formatDuration, learnHref, lessonMinutes, lessonsFor, moduleMinutes, nextInCourse, type Lesson } from '../../domain/lessons'
+import { mistakes } from '../../domain/progress'
+import { useProgress } from '../../state/useProgress'
+import { unitStates, type NodeState } from '../../domain/pathStates'
 import styles from './CoursePage.module.css'
 
 interface Chapter {
   item: NavItem
   number: number
-  week?: Week
+  mod?: Module
   lessons: Lesson[]
   states: NodeState[]
   done: number
@@ -29,25 +30,25 @@ export function CoursePage() {
   const { t: tUi } = useTranslation()
   const course = getCourse(courseId)
   const ids = course ? flatNav(course).map((i) => i.id) : []
-  const weeks: Record<string, Week> = useWeeks(courseId ?? '', ids)
+  const mods: Record<string, Module> = useModules(courseId ?? '', ids)
   const { progress } = useProgress()
 
   if (!course) return <p>{tUi('pageNotFound')}</p>
 
   const chapters: Chapter[] = flatNav(course).map((item, i) => {
-    const week = weeks[item.id]
-    const lessons = week ? lessonsFor(week) : []
+    const mod = mods[item.id]
+    const lessons = mod ? lessonsFor(mod) : []
     const states = unitStates(lessons.map((l) => l.id), progress.lessonsDone, `${course.id}/${item.id}`)
-    return { item, number: i + 1, week, lessons, states, done: states.filter((s) => s === 'done').length }
+    return { item, number: i + 1, mod, lessons, states, done: states.filter((s) => s === 'done').length }
   })
-  const written = chapters.filter((c) => hasWeek(course.id, c.item.id))
-  const loaded = written.every((c) => c.week)
-  const next = loaded ? nextInCourse(course.id, written.map((c) => c.week!), progress.lessonsDone) : null
+  const written = chapters.filter((c) => hasModule(course.id, c.item.id))
+  const loaded = written.every((c) => c.mod)
+  const next = loaded ? nextInCourse(course.id, written.map((c) => c.mod!), progress.lessonsDone) : null
 
   return (
     <div className={styles.page}>
       <CourseHeader course={course} chapters={written} loaded={loaded} next={next} />
-      <Timeline course={course} chapters={chapters} currentId={next?.week.id} />
+      <Timeline course={course} chapters={chapters} currentId={next?.mod.id} />
     </div>
   )
 }
@@ -66,13 +67,13 @@ function CourseHeader({
   const t = useLocalized()
   const { t: tUi } = useTranslation()
   const { progress, reset } = useProgress()
-  const weeks = chapters.flatMap((c) => (c.week ? [c.week] : []))
+  const mods = chapters.flatMap((c) => (c.mod ? [c.mod] : []))
   const lessons = chapters.reduce((n, c) => n + c.lessons.length, 0)
   const done = chapters.reduce((n, c) => n + c.done, 0)
   const minutes = chapters.reduce((n, c) => n + moduleMinutes(c.lessons), 0)
-  const questionIds = weeks.flatMap((w) => w.questions.map((q) => q.id))
+  const questionIds = mods.flatMap((w) => w.questions.map((q) => q.id))
   const wrong = mistakes(questionIds, progress.answers).length
-  const learn = whatYouLearn(weeks)
+  const learn = whatYouLearn(mods)
 
   function handleReset() {
     if (window.confirm(tUi('resetConfirm'))) reset()
@@ -112,14 +113,14 @@ function CourseHeader({
 
           <div className={styles.actions}>
             {next ? (
-              <Link className={styles.cta} to={learnHref(course.id, next.week.id, next.lesson.id)}>
+              <Link className={buttonClass({ size: 'sm' })} to={learnHref(course.id, next.mod.id, next.lesson.id)}>
                 {done > 0 ? tUi('continueCourse') : tUi('startCourse')} <span aria-hidden>→</span>
               </Link>
             ) : (
               loaded && lessons > 0 && <span className={styles.complete}>✓ {tUi('courseComplete')}</span>
             )}
             {wrong > 0 && (
-              <Link className={styles.secondaryBtn} to={`/course/${course.id}/review`}>
+              <Link className={buttonClass({ variant: 'secondary', size: 'sm' })} to={`/course/${course.id}/review`}>
                 {tUi('reviewMistakes', { n: wrong })}
               </Link>
             )}
@@ -170,8 +171,8 @@ function CourseHeader({
 
 /** Up to 6 learning goals: the first `objectives` block of each module, taken round-robin so every
  *  chapter is represented. */
-function whatYouLearn(weeks: Week[]): Localized[] {
-  const lists = weeks.map((w) => {
+function whatYouLearn(mods: Module[]): Localized[] {
+  const lists = mods.map((w) => {
     for (const s of w.sections) for (const b of s.blocks) if (b.type === 'objectives') return b.items
     return []
   })
@@ -237,9 +238,9 @@ function ChapterStop({
 }) {
   const t = useLocalized()
   const { t: tUi } = useTranslation()
-  const { item, number, week, lessons, states, done } = chapter
+  const { item, number, mod, lessons, states, done } = chapter
 
-  if (!hasWeek(courseId, item.id)) {
+  if (!hasModule(courseId, item.id)) {
     return (
       <li className={`${styles.chapter} ${styles.soon}`}>
         <span className={styles.stop} aria-hidden />
@@ -253,7 +254,7 @@ function ChapterStop({
   }
 
   const total = lessons.length
-  const stage = !week ? 'new' : done === total ? 'done' : done > 0 ? 'started' : 'new'
+  const stage = !mod ? 'new' : done === total ? 'done' : done > 0 ? 'started' : 'new'
   const target = lessons.find((_, i) => states[i] === 'current') ?? lessons[0]
   const action = stage === 'done' ? tUi('chapterReview') : stage === 'started' ? tUi('chapterContinue') : tUi('chapterStart')
   const listId = `lessons-${item.id}`
@@ -266,24 +267,24 @@ function ChapterStop({
           <div>
             <p className={styles.chapterNo}>{tUi('chapterN', { n: number })}</p>
             <h3>{t(item.title)}</h3>
-            {week && (
+            {mod && (
               <p className={styles.chapterMeta}>
                 {formatDuration(moduleMinutes(lessons), tUi)} · {tUi('nLessons', { count: total })}
               </p>
             )}
           </div>
-          {week && <ProgressRing done={done} total={total} />}
+          {mod && <ProgressRing done={done} total={total} />}
         </div>
 
-        {week && (
+        {mod && (
           <div className={styles.chapterActions}>
             <Link
-              className={stage === 'done' ? styles.secondaryBtn : styles.primaryBtn}
+              className={buttonClass({ variant: stage === 'done' ? 'secondary' : 'ink', size: 'sm' })}
               to={learnHref(courseId, item.id, target.id)}
             >
               {action}
             </Link>
-            {week.questions.length > 0 && (
+            {mod.questions.length > 0 && (
               <Link className={styles.textLink} to={practiceHref(courseId, item.id)}>
                 {tUi('practice')}
               </Link>
@@ -303,7 +304,7 @@ function ChapterStop({
           </div>
         )}
 
-        {week && open && (
+        {mod && open && (
           <ol id={listId} className={styles.lessons}>
             {lessons.map((lesson, i) => (
               <LessonRow

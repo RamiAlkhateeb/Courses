@@ -1,0 +1,86 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`lesson ids > stay the same unless the change is deliberate 1`] = `
+{
+  "accounting/statements": [
+    "overview",
+    "income-statement",
+    "balance-sheet",
+    "cash-flow",
+    "connections",
+  ],
+  "entrepreneurship/validation": [
+    "problem",
+    "interviews",
+    "mvp",
+    "signals",
+  ],
+  "investing/asset-classes": [
+    "overview",
+    "stocks",
+    "bonds",
+    "cash",
+    "funds",
+    "alternatives",
+  ],
+  "investing/basics": [
+    "why",
+    "compounding",
+    "risk-return",
+    "ready",
+  ],
+  "investing/diversification": [
+    "diversify",
+    "allocation",
+    "fees",
+    "habits",
+    "behaviour",
+  ],
+  "marketing/fundamentals": [
+    "stp",
+    "mix",
+    "funnel",
+    "metrics",
+  ],
+  "personal-finance/budgeting": [
+    "cash-flow",
+    "plan",
+    "automate",
+    "emergency",
+  ],
+  "tech-interview/dotnet": [
+    "how-to-use",
+    "fundamentals-1",
+    "fundamentals-2",
+    "fundamentals-3",
+    "fundamentals-4",
+    "async-perf-1",
+    "async-perf-2",
+    "async-perf-3",
+    "web-arch-1",
+    "web-arch-2",
+    "web-arch-3",
+    "web-arch-4",
+  ],
+  "tech-interview/dsa": [
+    "approach",
+    "big-o",
+    "hash-map",
+    "two-pointers",
+    "stack",
+    "linked-list",
+    "binary-search",
+    "trees",
+    "dp",
+    "cheatsheet",
+  ],
+  "tech-interview/resume": [
+    "overview",
+    "template",
+    "content",
+    "keywords",
+    "experience",
+    "tools",
+  ],
+}
+`;

@@ -20,6 +20,11 @@
   transform: scaleX(-1);
 }
 .pill {
+  min-inline-size: 0;
+  max-inline-size: 46%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   background: var(--surface);
   border: 1px solid var(--rule);
   border-radius: 999px;
@@ -61,7 +66,7 @@
   transform: scaleX(-1);
 }
 .route polyline {
-  stroke: #b8c0d8;
+  stroke: var(--navy-stroke);
   stroke-width: 3px;
   stroke-dasharray: 8 10;
   stroke-linecap: round;

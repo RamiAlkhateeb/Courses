@@ -1,11 +1,12 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Card, Icon, Rafiq } from '../../components/ui'
+import { Card, Icon, AbuShreek } from '../../components/ui'
 import type { Localized } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
-import { lessonKey, lessonTerms } from '../lesson/lessons'
-import { useProgress } from '../progress/useProgress'
-import { useTrail, useTrailId } from '../path/useTrail'
+import { lessonKey, lessonTerms } from '../../domain/lessons'
+import { useProgress } from '../../state/useProgress'
+import { useTrail, useTrailId } from '../../state/useTrail'
 import styles from './TermsPage.module.css'
 
 type Mode = 'en' | 'ar' | 'both'
@@ -42,12 +43,15 @@ export function TermsPage() {
 
   return (
     <div className={styles.page}>
+      <Link to="/review" className={styles.back} aria-label={t('back')}>
+        <Icon name="back" size={26} />
+      </Link>
       <header className={styles.head}>
         <div>
           <h1>{t('termsTitle')}</h1>
           <p className={styles.sub}>{t('termsCollected', { n: got.length, total: entries.length })}</p>
         </div>
-        <Rafiq pose="point" height={120} />
+        <AbuShreek pose="point" height={120} />
       </header>
 
       <div className={styles.seg} role="group">

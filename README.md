@@ -1,4 +1,4 @@
-# Masar · مسار
+# Abu Shreek · أبو شريك
 
 *Learn the way forward.* Free, bite-size courses for careers and business — English and Arabic, light and dark mode. Each course is a journey of chapters and short card lessons with quick checks, time estimates, a recap, XP and streaks, plus a dashboard and "review mistakes". No account needed; progress is saved in your browser.
 
@@ -48,7 +48,8 @@ Every course is tagged for one or more audiences — **Job seekers**, **Managers
 ```bash
 npm install
 npm run dev      # http://localhost:5173
-npm test         # content validation + progress logic
+npm test         # content validation, progress logic, i18n parity, architecture rules
+npm run test:e2e # browser smoke tests (needs: npx playwright install chromium)
 npm run lint
 npm run build    # type-check + production build
 ```

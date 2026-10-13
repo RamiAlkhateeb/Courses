@@ -22,16 +22,41 @@
   align-items: center;
   gap: 12px;
 }
+/* English name over the Arabic one: "Abu Shreek" / "أبو شريك" are each two words, so side by side they wrap
+   mid-name next to the language switch on a phone. Stacked, neither can break. */
 .brandName {
-  font-family: var(--font-display);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font);
   font-weight: 700;
   font-size: 1.5rem;
+  line-height: 1.1;
   color: var(--brand);
+  white-space: nowrap;
 }
 .brandName span {
   color: var(--accent-ink);
-  font-family: 'Amiri', serif;
-  margin-inline-start: 4px;
+  font-size: 1.05rem;
+  line-height: 1.2;
+}
+/* Very small phones (320px): the two-line name plus the language switch no longer fit at full size. */
+@media (max-width: 360px) {
+  .welcomeTop {
+    padding-inline: 16px;
+  }
+  .brand {
+    gap: 8px;
+  }
+  .brand svg {
+    width: 36px;
+    height: 36px;
+  }
+  .brandName {
+    font-size: 1.2rem;
+  }
+  .brandName span {
+    font-size: 1rem;
+  }
 }
 .langSwitch {
   display: flex;
@@ -72,7 +97,6 @@
 }
 .welcomeAlt {
   padding: 16px 24px 0;
-  font-family: 'Fraunces', serif;
   font-size: 1.5rem;
   color: var(--accent-ink);
   text-align: start;
@@ -84,6 +108,7 @@
 }
 .bubble,
 .bubbleSm {
+  z-index: 1;
   background: var(--surface);
   border: 1px solid var(--rule);
   border-radius: var(--radius-lg);
@@ -99,13 +124,13 @@
   inset-block-start: 10px;
   inset-inline-end: 20px;
 }
-.heroRafiq {
+.heroMascot {
   position: absolute;
   inset-block-end: -4px;
   inset-inline-start: 50%;
   translate: -50% 0;
 }
-:global(html[dir='rtl']) .heroRafiq {
+:global(html[dir='rtl']) .heroMascot {
   translate: 50% 0;
 }
 .welcomeSheet {
@@ -119,7 +144,7 @@
   position: relative;
 }
 .alreadyBtn {
-  border: 1px solid #44527a;
+  border: 1px solid var(--navy-line-dark);
   color: var(--on-brand);
   border-radius: var(--radius);
   min-block-size: 54px;
@@ -131,7 +156,7 @@
   line-height: 1.4;
 }
 .welcomeSheet .fine {
-  color: #b9c1d6;
+  color: var(--on-navy-faint);
 }
 
 /* ---------- steps ---------- */
@@ -168,12 +193,16 @@
   gap: 8px;
   margin-block-end: 18px;
 }
+.guide img {
+  flex: 0 1 auto;
+  min-inline-size: 0;
+  max-inline-size: 42%;
+  block-size: auto !important;
+}
 .bubbleSm {
+  min-inline-size: 0;
   flex: 1;
   margin-block-end: 24px;
-}
-.welcomeAlt:lang(ar) {
-  font-family: 'Amiri', serif;
 }
 .bubbleAlt {
   color: var(--muted);
@@ -208,80 +237,160 @@
   gap: 18px;
 }
 .minNum {
-  font-family: var(--font-display);
+  font-family: var(--font);
   font-size: 1.5rem;
   min-inline-size: 5.5rem;
   white-space: nowrap;
 }
-.trails {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-}
-.trail {
+.trailSolo {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
-  text-align: start;
-  background: var(--surface);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius-lg);
-  padding: 18px;
-  font: inherit;
-  color: var(--brand);
-  cursor: pointer;
-  min-block-size: 220px;
-}
-.trail strong {
-  font-family: var(--font-display);
-  font-size: 1.35rem;
-  line-height: 1.1;
-}
-.trailOn {
+  gap: 10px;
+  min-block-size: 420px;
+  padding: 22px;
   background: var(--dawn);
   border: 1.5px solid var(--brand);
+  border-radius: 28px;
 }
-.tick {
-  position: absolute;
-  inset-block-start: 14px;
-  inset-inline-end: 14px;
-  display: grid;
-  place-items: center;
-  inline-size: 30px;
-  block-size: 30px;
-  border-radius: 50%;
-  background: var(--brand);
-  color: var(--accent);
+.trailSoloName {
+  font-size: 2rem;
+  line-height: 1.1;
+  color: var(--brand);
+  margin-block-start: 6px;
 }
 .trailIcon {
   display: grid;
   place-items: center;
-  inline-size: 48px;
-  block-size: 48px;
-  border-radius: 14px;
-  background: var(--paper-2);
-}
-.trailOn .trailIcon {
+  inline-size: 52px;
+  block-size: 52px;
+  border-radius: 16px;
   background: var(--brand);
   color: var(--accent);
 }
 .trailDesc {
   color: var(--muted);
-  font-size: 0.95rem;
-  line-height: 1.35;
+  font-size: 1.05rem;
+  line-height: 1.4;
+  max-inline-size: 52%;
+}
+.bullets {
+  position: relative;
+  z-index: 1;
+  list-style: none;
+  margin: auto 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-weight: 600;
+  color: var(--brand);
+}
+.bullets li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.bullets li::before {
+  content: '';
+  inline-size: 10px;
+  block-size: 10px;
+  border-radius: 50%;
+  background: var(--brand);
+  flex-shrink: 0;
+}
+.trailMascot {
+  position: absolute;
+  inset-block-start: 150px;
+  inset-inline-end: 6px;
+  z-index: 0;
+}
+
+/* ---------- Starting bank (design 21) ---------- */
+.bankBody {
   flex: 1;
+  padding: 36px 24px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
 }
-.level {
-  font-size: 0.78rem;
+.bankKicker {
+  font-size: 0.85rem;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--muted);
-}
-.trailOn .level {
   color: var(--accent-ink);
+}
+.bankTitle {
+  font-size: 2.3rem;
+  line-height: 1.1;
+  color: var(--brand);
+}
+.notes {
+  position: relative;
+  inline-size: 260px;
+  block-size: 190px;
+  margin-block: 18px 6px;
+}
+.note {
+  position: absolute;
+  inline-size: 190px;
+  block-size: 110px;
+  border: 1px solid var(--brand);
+  border-radius: 18px;
+  display: flex;
+  align-items: flex-end;
+  padding: 14px 18px;
+  text-align: start;
+}
+.note b {
+  font-size: 1.9rem;
+  color: var(--brand);
+}
+.note500 {
+  background: var(--green);
+  inset-inline-start: 4px;
+  inset-block-start: 0;
+  transform: rotate(-9deg);
+}
+.note200 {
+  background: var(--brand);
+  inset-inline-start: 56px;
+  inset-block-start: 34px;
+  transform: rotate(4deg);
+}
+.note200 b {
+  color: var(--accent);
+}
+.note100 {
+  background: var(--accent);
+  inset-inline-start: 24px;
+  inset-block-start: 74px;
+  transform: rotate(-3deg);
+}
+.bankTotal {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 3.4rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--brand);
+}
+.bankSub {
+  color: var(--muted);
+  font-size: 1.1rem;
+  margin-block-end: 18px;
+}
+.bankBody .guide {
+  align-self: stretch;
+  text-align: start;
+}
+.stepFoot .fine {
+  margin-block-end: 12px;
 }
 .stepFoot {
   padding: 16px 24px calc(24px + env(safe-area-inset-bottom));

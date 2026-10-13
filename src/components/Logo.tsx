@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
-/** The Masar mark: a winding path from a start dot to a saffron goal. Same drawing as public/favicon.svg. */
+/** The Abu Shreek mark: a winding path from a start dot to a saffron goal. Same drawing as public/favicon.svg. */
 export function LogoMark({ size = 32 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden focusable="false">
@@ -12,13 +12,13 @@ export function LogoMark({ size = 32 }: { size?: number }) {
   )
 }
 
-/** Mark + wordmark ("Masar" / "مسار"). */
+/** Mark + wordmark ("Abu Shreek" / "أبو شريك"). */
 export function Logo({ size = 32, className }: { size?: number; className?: string }) {
   const { t } = useTranslation()
   return (
     <span className={className} style={{ display: 'inline-flex', alignItems: 'center', gap: 10 }}>
       <LogoMark size={size} />
-      <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: size * 0.68, color: 'var(--ink)' }}>
+      <span style={{ fontFamily: 'var(--font)', fontWeight: 700, fontSize: size * 0.68, color: 'var(--ink)' }}>
         {t('appName')}
       </span>
     </span>

@@ -1,17 +1,19 @@
 import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { formatNumber } from '../../i18n'
-import { Card, Icon, ProgressBar, type IconName } from '../../components/ui'
-import { getCourse } from '../../content/courses'
+import { LogoMark } from '../../components/Logo'
+import type { ReactNode } from 'react'
+import { formatMoney } from '../../i18n'
+import { Money } from '../../components/Money'
+import { Card, Coin, Icon, ProgressBar, type IconName } from '../../components/ui'
+import { ENABLED_COURSE_IDS, getCourse } from '../../content/courses'
 import { useLocalized } from '../../content/useLocalized'
-import { currentStreak, localDay } from '../progress/store'
-import { useProgress } from '../progress/useProgress'
-import { WeekBars } from '../progress/WeekStrip'
-import { updateProfile, useProfile } from '../profile/store'
-import { useTrail, useTrailId } from '../path/useTrail'
+import { currentStreak, localDay } from '../../domain/progress'
+import { useProgress } from '../../state/useProgress'
+import { WeekBars } from '../../components/WeekStrip'
+import { updateProfile, useProfile } from '../../state/profile'
+import { useTrail, useTrailId } from '../../state/useTrail'
 import styles from './MePage.module.css'
 
-const TRAILS = ['investing', 'personal-finance', 'accounting', 'marketing']
 
 /** Design 13: streak, XP and lessons, this week's bars, trails with progress, and milestones. */
 export function MePage() {
@@ -23,21 +25,23 @@ export function MePage() {
   const streak = currentStreak(progress.streak, localDay())
   const { course } = useTrail(active)
 
-  const stats: { icon: IconName; value: string; label: string }[] = [
+  const stats: { icon?: IconName; value: ReactNode; label: string }[] = [
     { icon: 'flag', value: String(streak), label: t('dayStreak') },
-    { icon: 'gem', value: formatNumber(progress.xp), label: t('totalXpShort') },
+    { value: <Money amount={progress.bank} />, label: t('playMoneyShort') },
     { icon: 'check', value: String(progress.lessonsDone.length), label: t('lessonsDoneShort') },
   ]
   const milestones: { icon: IconName; label: string; got: boolean }[] = [
     { icon: 'flag', label: t('msFirst'), got: progress.lessonsDone.length >= 1 },
     { icon: 'star', label: t('msStreak', { n: 7 }), got: streak >= 7 },
-    { icon: 'gem', label: t('msXp', { n: formatNumber(1000) }), got: progress.xp >= 1000 },
+    { icon: 'gem', label: t('msBank', { n: formatMoney(1500) }), got: progress.bank >= 1500 },
   ]
 
   return (
     <div className={styles.page}>
       <header className={styles.head}>
-        <span className={styles.avatar}>{t('appName').charAt(0)}</span>
+        <span className={styles.avatar} aria-hidden>
+          <LogoMark size={64} />
+        </span>
         <div className={styles.who}>
           <h1>{t('meName')}</h1>
           <p>{t('walkingTrail', { trail: tc(course.title) })}</p>
@@ -50,7 +54,7 @@ export function MePage() {
       <div className={styles.stats}>
         {stats.map((s) => (
           <Card key={s.label} className={styles.stat}>
-            <Icon name={s.icon} size={22} />
+            {s.icon ? <Icon name={s.icon} size={22} /> : <Coin size={22} />}
             <strong>{s.value}</strong>
             <span>{s.label}</span>
           </Card>
@@ -67,7 +71,7 @@ export function MePage() {
 
       <h2 className={styles.kicker}>{t('yourTrails')}</h2>
       <div className={styles.trails}>
-        {TRAILS.map((id) => (
+        {ENABLED_COURSE_IDS.map((id) => (
           <TrailRow key={id} id={id} active={id === active} />
         ))}
       </div>

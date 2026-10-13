@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { buttonClass } from '../../components/ui'
 import { useTranslation } from 'react-i18next'
-import { flatNav, getCourse, hasWeek, type Course } from '../../content/courses'
-import type { Question, Week } from '../../content/types'
-import { useWeeks } from '../../content/useWeek'
-import { mistakes } from '../progress/store'
-import { useProgress } from '../progress/useProgress'
+import { flatNav, getCourse, hasModule, type Course } from '../../content/courses'
+import type { Question, Module } from '../../content/types'
+import { useModules } from '../../content/useModule'
+import { mistakes } from '../../domain/progress'
+import { useProgress } from '../../state/useProgress'
 import { QuizLesson } from './LessonPage'
 import styles from './LessonPage.module.css'
 
@@ -23,11 +24,11 @@ function Review({ course }: { course: Course }) {
   const { t } = useTranslation()
   const ids = flatNav(course)
     .map((i) => i.id)
-    .filter((id) => hasWeek(course.id, id))
-  const weeks: Record<string, Week> = useWeeks(course.id, ids)
-  const loaded = ids.every((id) => weeks[id])
+    .filter((id) => hasModule(course.id, id))
+  const mods: Record<string, Module> = useModules(course.id, ids)
+  const loaded = ids.every((id) => mods[id])
   if (!loaded) return <p>{t('loading')}</p>
-  return <ReviewRunner course={course} questions={ids.flatMap((id) => weeks[id].questions)} />
+  return <ReviewRunner course={course} questions={ids.flatMap((id) => mods[id].questions)} />
 }
 
 function ReviewRunner({ course, questions }: { course: Course; questions: Question[] }) {
@@ -50,7 +51,7 @@ function ReviewRunner({ course, questions }: { course: Course; questions: Questi
         <h1>{t('noMistakes')}</h1>
         <p className={styles.emptyNote}>{t('noMistakesNote')}</p>
         <div className={styles.actions}>
-          <Link className={styles.primary} to={`/course/${course.id}`}>
+          <Link className={buttonClass()} to={`/course/${course.id}`}>
             {t('backToCourse')}
           </Link>
         </div>

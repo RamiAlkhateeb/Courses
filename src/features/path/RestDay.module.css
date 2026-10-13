@@ -15,7 +15,7 @@
 }
 .big {
   display: block;
-  font-family: var(--font-display);
+  font-family: var(--font);
   font-size: 9rem;
   line-height: 1;
   color: var(--brand);
@@ -28,7 +28,7 @@
 .week {
   padding: 40px 24px 0;
 }
-.rafiq {
+.mascot {
   position: absolute;
   inset-block-start: -125px;
   inset-inline-end: 0;

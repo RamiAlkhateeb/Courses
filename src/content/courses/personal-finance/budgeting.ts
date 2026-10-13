@@ -1,5 +1,5 @@
 // Original course content. The 50/30/20 split and the 3–6 month buffer are common rules of thumb, not rules.
-import type { Week } from '../../types'
+import type { Module } from '../../types'
 import { L, box, cover, exercise, formula, html, mcq, objectives, section, table, takeaways } from '../../helpers'
 
 const W = 'budgeting'
@@ -26,7 +26,7 @@ const questions = [
     [L('A separate, easy-to-reach savings account', 'حساب توفير منفصل يسهل الوصول إليه'), L('Individual stocks', 'أسهم منفردة'), L('A long-term fixed deposit you cannot withdraw', 'وديعة طويلة الأجل لا يمكن سحبها')], 0),
 ]
 
-export const budgeting: Week = {
+export const budgeting: Module = {
   id: W,
   courseId: 'personal-finance',
   order: 1,

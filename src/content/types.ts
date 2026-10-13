@@ -9,7 +9,7 @@ export interface Localized {
 export interface Question {
   /** Stable ID, e.g. "w01-q003". Never change once shipped: progress rows reference it. */
   id: string
-  weekId: string
+  moduleId: string
   topic?: string
   prompt: Localized
   options: Localized[]
@@ -29,7 +29,7 @@ export type Block =
   | { type: 'table'; headers: Localized[]; rows: Localized[][] }
   | { type: 'tabs'; tabs: { label: Localized; blocks: Block[] }[] }
   /** Lessons only: forces a new card here (cards are otherwise cut automatically, see
-   *  src/features/lesson/chunks.ts). The one-page view ignores it. */
+   *  src/domain/chunks.ts). The one-page view ignores it. */
   | { type: 'cardBreak' }
 
 export interface Section {
@@ -43,8 +43,8 @@ export interface Section {
   blocks: Block[]
 }
 
-/** One module of a course (the type keeps its original "Week" name; a course is free to call them modules). */
-export interface Week {
+/** One module of a course (the type keeps its original "Module" name; a course is free to call them modules). */
+export interface Module {
   id: string
   courseId: string
   order: number

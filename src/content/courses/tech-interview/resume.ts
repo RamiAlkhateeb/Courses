@@ -1,6 +1,6 @@
 // Source: the resume section of the original Arabic README (docs/content-sources/README.ar.md).
 // English is a translation of that text plus a few examples added for the course.
-import type { Week } from '../../types'
+import type { Module } from '../../types'
 import { COURSE_ID, cover, heading, html, mcq } from './helpers'
 
 const W = 'resume'
@@ -68,7 +68,7 @@ const questions = [
   ),
 ]
 
-export const resume: Week = {
+export const resume: Module = {
   id: W,
   courseId: COURSE_ID,
   order: 1,

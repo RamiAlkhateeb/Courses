@@ -10,12 +10,11 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--font-ui);
+  font-family: var(--font);
   font-size: 17px;
   line-height: 1.65;
   transition: background-color 0.15s, color 0.15s;
 }
-/* Arabic UI uses IBM Plex Sans Arabic (via --font-ui in tokens.css). */
 
 h1,
 h2,
@@ -26,10 +25,9 @@ ul,
 ol {
   margin: 0;
 }
-/* Headings use the display serif (Fraunces; Amiri in Arabic — see tokens.css). */
+/* Headings use the same family as the body (one font per language, see tokens.css), just heavier. */
 h1,
 h2 {
-  font-family: var(--font-display);
   font-weight: 600;
   letter-spacing: -0.015em;
 }
@@ -50,4 +48,20 @@ a {
     size: A4;
     margin: 16mm 15mm;
   }
+}
+
+/* Arabic letters join, so tracking would break the words (kickers and eyebrows are tracked in English). */
+html[dir='rtl'] * {
+  letter-spacing: 0 !important;
+}
+
+/* Text for screen readers only (chart summaries, arrow meanings). */
+.visually-hidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }

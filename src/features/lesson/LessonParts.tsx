@@ -4,13 +4,15 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { Question } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
-import { Button, BottomSheet, Card, Icon, OptionCard, ProgressBar, Rafiq, type OptionState, type RafiqPose } from '../../components/ui'
-import { currentStreak, lessonXp, localDay, XP_PER_CORRECT } from '../progress/store'
-import { WeekDots } from '../progress/WeekStrip'
-import { useProgress } from '../progress/useProgress'
-import { optionOrder } from '../quiz/optionOrder'
-import { playSound } from '../settings/sound'
-import type { Recap } from './lessons'
+import { Button, BottomSheet, Card, Coin, Icon, OptionCard, ProgressBar, AbuShreek, type OptionState, type MascotPose } from '../../components/ui'
+import { currentStreak, localDay } from '../../domain/progress'
+import { PAY_PER_CORRECT } from '../../domain/money'
+import { Money } from '../../components/Money'
+import { WeekDots } from '../../components/WeekStrip'
+import { useProgress } from '../../state/useProgress'
+import { optionOrder } from '../../domain/optionOrder'
+import { playSound } from '../../state/sound'
+import type { Recap } from '../../domain/lessons'
 import styles from './LessonPage.module.css'
 
 /** ✕ (quit), the saffron progress bar and an "n/total" counter (designs 07–10). */
@@ -79,28 +81,31 @@ export function QuestionCard({
   )
 }
 
-/** Bottom of a lesson screen: Rafiq beside the action while answering, or the green/red feedback sheet once checked. */
+/** Bottom of a lesson screen: AbuShreek beside the action while answering, or the green/red feedback sheet once checked. */
 export function LessonFooter({
   tone,
   feedback,
   action,
   disabled,
   onAction,
-  rafiq,
+  mascot,
+  compact,
 }: {
   tone?: 'right' | 'wrong'
   feedback?: ReactNode
   action: string
   disabled?: boolean
   onAction: () => void
-  rafiq?: RafiqPose
+  mascot?: MascotPose
+  /** A compact button at the end of the row ("Check answer") instead of a full-width bar */
+  compact?: boolean
 }) {
   if (tone) {
     const right = tone === 'right'
     return (
       <BottomSheet tone={right ? 'correct' : 'oops'}>
         <div className={styles.sheetHead}>
-          <Rafiq pose={right ? 'cheer' : 'oops'} height={130} className={styles.sheetRafiq} />
+          <AbuShreek pose={right ? 'cheer' : 'oops'} height={130} className={styles.sheetMascot} />
           <div className={styles.feedback}>{feedback}</div>
         </div>
         {/* Keyed by action so the button remounts (and autofocuses) when Check turns into Continue. */}
@@ -112,22 +117,26 @@ export function LessonFooter({
   }
   return (
     <div className={styles.footer}>
-      {rafiq && <Rafiq pose={rafiq} height={110} className={styles.footRafiq} />}
-      <Button key={action} disabled={disabled} onClick={onAction}>
+      {mascot && <AbuShreek pose={mascot} height={110} className={styles.footMascot} />}
+      <Button key={action} size={compact ? 'sm' : undefined} className={compact ? styles.compactAction : undefined} disabled={disabled} onClick={onAction}>
         {action}
       </Button>
     </div>
   )
 }
 
-/** "Spot on! +10 XP" or "Not quite. The answer: …" for a checked question. */
-export function AnswerFeedback({ question, correct }: { question: Question; correct: boolean }) {
+/** "Spot on! +$10" (when this lesson pays) or "Not quite. The answer: …" for a checked question. */
+export function AnswerFeedback({ question, correct, pays }: { question: Question; correct: boolean; pays: boolean }) {
   const t = useLocalized()
   const { t: tUi } = useTranslation()
   return correct ? (
     <>
       <strong className={styles.feedbackTitle}>{tUi('spotOn')}</strong>
-      <span className={styles.xpPill}>{tUi('plusXp', { n: XP_PER_CORRECT })}</span>
+      {pays && (
+        <span className={styles.moneyPill}>
+          <Money amount={PAY_PER_CORRECT} sign />
+        </span>
+      )}
     </>
   ) : (
     <>
@@ -174,11 +183,12 @@ export function useLessonKeys(opts: {
   }, [opts.enabled])
 }
 
-/** Design 11 "Camp cleared!": Rafiq cheers, XP / accuracy / time tiles, the week's dots, then the actions. */
+/** Design 11 "Camp cleared!": AbuShreek cheers, earned / accuracy / time tiles, the week's dots, then the actions. */
 export function LessonSummary({
   correct,
   total,
   seconds,
+  payout,
   subtitle,
   action,
   onAction,
@@ -189,6 +199,8 @@ export function LessonSummary({
   correct: number
   total: number
   seconds?: number
+  /** Dollars this lesson paid into the bank. Undefined: a replay or practice run, which pays nothing (and says so) */
+  payout?: number
   subtitle?: string
   action: string
   onAction: () => void
@@ -209,17 +221,19 @@ export function LessonSummary({
     <div className={`${styles.lesson} ${styles.summary}`}>
       <div className={styles.hero}>
         <span className={styles.sun} aria-hidden />
-        <Rafiq pose="cheer" height={250} className={styles.heroRafiq} />
+        <AbuShreek pose="cheer" height={250} className={styles.heroMascot} />
       </div>
       <h1>{tUi('campCleared')}</h1>
       {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
       <div className={styles.tiles}>
-        <div className={`${styles.tile} ${styles.tileXp}`}>
-          <span>{tUi('totalXpTile')}</span>
-          <strong>
-            <Icon name="gem" size={22} /> {lessonXp(correct, total)}
-          </strong>
-        </div>
+        {payout !== undefined && payout > 0 && (
+          <div className={`${styles.tile} ${styles.tileMoney}`}>
+            <span>{tUi('earnedTile')}</span>
+            <strong>
+              <Coin size={22} /> <Money amount={payout} />
+            </strong>
+          </div>
+        )}
         {total > 0 && (
           <div className={`${styles.tile} ${styles.tileAcc}`}>
             <span>{tUi('accuracy')}</span>
@@ -249,7 +263,7 @@ export function LessonSummary({
         </div>
       )}
       <div className={styles.actions}>
-        <p className={styles.fine}>{tUi('educationalOnly')}</p>
+        <p className={styles.fine}>{payout === undefined ? tUi('practiceNoPay') : tUi('educationalOnly')}</p>
         <Button onClick={onAction} autoFocus>
           {action}
         </Button>

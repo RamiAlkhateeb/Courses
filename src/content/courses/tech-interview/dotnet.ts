@@ -1,7 +1,7 @@
 // Source: the ".NET FAQ" of the original Arabic README (docs/content-sources/README.ar.md), questions 1–35.
 // Arabic text is the original; English is a translation. Question numbers match the README so they stay
 // traceable. Each entry renders as a heading + official answer + an analogy box.
-import type { Block, Localized, Section, Week } from '../../types'
+import type { Block, Localized, Section, Module } from '../../types'
 import { COURSE_ID, cover, heading, mcq } from './helpers'
 
 const W = 'dotnet'
@@ -539,7 +539,7 @@ const section = (
   blocks: blocksFor(numbers, quiz),
 })
 
-export const dotnet: Week = {
+export const dotnet: Module = {
   id: W,
   courseId: COURSE_ID,
   order: 2,

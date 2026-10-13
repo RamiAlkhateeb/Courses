@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { courses } from '../src/content/courses'
-import { optionOrder } from '../src/features/quiz/optionOrder'
+import { optionOrder } from '../src/domain/optionOrder'
 
 describe('optionOrder', () => {
   it('is a stable permutation', () => {

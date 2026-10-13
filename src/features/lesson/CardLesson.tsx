@@ -5,12 +5,14 @@ import { Blocks } from '../../components/content/Blocks'
 import contentStyles from '../../components/content/content.module.css'
 import { getCourse } from '../../content/courses'
 import { resolveHtmlAssetPaths } from '../../content/resolveAssetPath'
-import type { Week } from '../../content/types'
+import type { Module } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
-import { useWeek } from '../../content/useWeek'
-import { useProgress } from '../progress/useProgress'
-import { WeekQuestionsContext } from '../quiz/weekQuestions'
-import { learnHref, lessonKey, lessonRecap, lessonsFor, type Lesson } from './lessons'
+import { useModule } from '../../content/useModule'
+import { useProgress } from '../../state/useProgress'
+import { ModuleQuestionsContext } from '../../components/content/moduleQuestions'
+import { payoutFor } from '../../domain/progress'
+import { LessonPayout } from './LessonPayout'
+import { learnHref, lessonKey, lessonRecap, lessonsFor, type Lesson } from '../../domain/lessons'
 import {
   AnswerFeedback,
   LessonFooter,
@@ -26,37 +28,41 @@ import styles from './LessonPage.module.css'
 export function LessonRoute() {
   const { courseId, moduleId, lessonId } = useParams<{ courseId: string; moduleId: string; lessonId: string }>()
   const { t } = useTranslation()
-  const { week, loading, notFound } = useWeek(courseId, moduleId)
-  const lessons = useMemo(() => (week ? lessonsFor(week) : []), [week])
+  const { mod, loading, notFound } = useModule(courseId, moduleId)
+  const lessons = useMemo(() => (mod ? lessonsFor(mod) : []), [mod])
   const index = lessons.findIndex((l) => l.id === lessonId)
 
   if (!getCourse(courseId) || notFound) return <p>{t('moduleNotFound')}</p>
-  if (loading || !week) return <p>{t('loading')}</p>
+  if (loading || !mod) return <p>{t('loading')}</p>
   if (index === -1) return <p>{t('pageNotFound')}</p>
   // Keyed by lesson so "Continue" to the next lesson starts fresh.
-  return <CardLesson key={lessonId} week={week} lesson={lessons[index]} next={lessons[index + 1]} />
+  return <CardLesson key={lessonId} mod={mod} lesson={lessons[index]} next={lessons[index + 1]} />
 }
 
 /** A lesson run: its small content cards, then its questions; "Practice again" restarts it via the key. */
-function CardLesson({ week, lesson, next }: { week: Week; lesson: Lesson; next?: Lesson }) {
+function CardLesson({ mod, lesson, next }: { mod: Module; lesson: Lesson; next?: Lesson }) {
   const [round, setRound] = useState(0)
-  return <CardRun key={round} week={week} lesson={lesson} next={next} onRestart={() => setRound((r) => r + 1)} />
+  return <CardRun key={round} mod={mod} lesson={lesson} next={next} onRestart={() => setRound((r) => r + 1)} />
 }
 
-function CardRun({ week, lesson, next, onRestart }: { week: Week; lesson: Lesson; next?: Lesson; onRestart: () => void }) {
+function CardRun({ mod, lesson, next, onRestart }: { mod: Module; lesson: Lesson; next?: Lesson; onRestart: () => void }) {
   const t = useLocalized()
   const { t: tUi } = useTranslation()
   const navigate = useNavigate()
-  const { markRead, recordLessonAnswer, completeLesson } = useProgress()
+  const { progress, markRead, recordLessonAnswer, completeLesson } = useProgress()
   const { steps } = lesson
   const total = steps.filter((s) => s.kind === 'question').length
   const startedAt = useRef(Date.now())
+  // Does finishing this lesson pay? Decided once, on arrival: finishing it marks it done.
+  const [pays] = useState(() => payoutFor(progress, 1, lessonKey(mod.courseId, mod.id, lesson.id)) > 0)
 
   const [index, setIndex] = useState(0)
   const [selected, setSelected] = useState<number | null>(null)
   const [checked, setChecked] = useState(false)
   const [correctCount, setCorrectCount] = useState(0)
   const [done, setDone] = useState(false)
+  const [paid, setPaid] = useState(0)
+  const [stage, setStage] = useState<'summary' | 'payout'>('summary')
 
   const step = steps[index]
   const isLast = index === steps.length - 1
@@ -65,10 +71,9 @@ function CardRun({ week, lesson, next, onRestart }: { week: Week; lesson: Lesson
 
   // A content card counts its section as read, which keeps the one-page view's progress in step.
   useEffect(() => {
-    markRead(`${week.courseId}/${week.id}`, step.sectionId)
+    markRead(`${mod.courseId}/${mod.id}`, step.sectionId)
     window.scrollTo({ top: 0 })
     // markRead is a fresh closure each render; only the card changing matters.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index])
 
   function check() {
@@ -82,7 +87,9 @@ function CardRun({ week, lesson, next, onRestart }: { week: Week; lesson: Lesson
 
   function advance() {
     if (isLast) {
-      completeLesson(correctCount, total, lessonKey(week.courseId, week.id, lesson.id))
+      const key = lessonKey(mod.courseId, mod.id, lesson.id)
+      setPaid(payoutFor(progress, correctCount, key))
+      completeLesson(correctCount, key)
       setDone(true)
       return
     }
@@ -94,16 +101,28 @@ function CardRun({ week, lesson, next, onRestart }: { week: Week; lesson: Lesson
   const onEnter = question && !checked ? check : advance
   useLessonKeys({ enabled: !done, onEnter, question, checked, onPick: setSelected })
 
+  if (done && stage === 'payout') {
+    return (
+      <LessonPayout
+        payout={paid}
+        bankAfter={progress.bank}
+        subtitle={tUi('payoutSub', { title: t(lesson.title), c: correctCount, t: total })}
+        onDone={() => navigate('/')}
+      />
+    )
+  }
+
   if (done) {
     return (
       <LessonSummary
         recap={lessonRecap(lesson)}
-        subtitle={tUi('lessonSummary', { n: lessonsFor(week).findIndex((l) => l.id === lesson.id) + 1, title: t(lesson.title) })}
+        subtitle={tUi('lessonSummary', { n: lessonsFor(mod).findIndex((l) => l.id === lesson.id) + 1, title: t(lesson.title) })}
         seconds={Math.round((Date.now() - startedAt.current) / 1000)}
+        payout={pays ? paid : undefined}
         correct={correctCount}
         total={total}
         action={tUi('lessonContinue')}
-        onAction={() => navigate(next ? learnHref(week.courseId, week.id, next.id) : '/')}
+        onAction={() => (paid > 0 ? setStage('payout') : navigate(next ? learnHref(mod.courseId, mod.id, next.id) : '/'))}
         secondary={tUi('lessonAgain')}
         onSecondary={onRestart}
       />
@@ -113,7 +132,7 @@ function CardRun({ week, lesson, next, onRestart }: { week: Week; lesson: Lesson
   const continueLabel = isLast ? tUi('lessonFinish') : tUi('lessonContinue')
 
   return (
-    <WeekQuestionsContext.Provider value={week.questions}>
+    <ModuleQuestionsContext.Provider value={mod.questions}>
       <div className={styles.lesson}>
         <LessonTopBar quitTo="/" done={index + (checked ? 1 : 0)} total={steps.length} />
 
@@ -144,17 +163,17 @@ function CardRun({ week, lesson, next, onRestart }: { week: Week; lesson: Lesson
         )}
 
         {question && !checked ? (
-          <LessonFooter rafiq="think" action={tUi('check')} disabled={selected === null} onAction={check} />
+          <LessonFooter mascot="think" compact action={tUi('check')} disabled={selected === null} onAction={check} />
         ) : (
           <LessonFooter
             tone={question ? (isCorrect ? 'right' : 'wrong') : undefined}
-            feedback={question && <AnswerFeedback question={question} correct={isCorrect} />}
-            rafiq={question ? undefined : 'point'}
+            feedback={question && <AnswerFeedback question={question} correct={isCorrect} pays={pays} />}
+            mascot={question ? undefined : 'point'}
             action={question ? continueLabel : tUi('nextBtn')}
             onAction={advance}
           />
         )}
       </div>
-    </WeekQuestionsContext.Provider>
+    </ModuleQuestionsContext.Provider>
   )
 }

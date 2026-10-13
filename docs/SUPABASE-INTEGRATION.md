@@ -1,7 +1,7 @@
 # Plan: optional accounts with the BA2 Supabase backend
 
-Status: **planned, not started.** Masar is guest-only today: progress lives in this browser's
-localStorage (`src/features/progress/store.ts`). This document says how to add **optional** accounts,
+Status: **planned, not started.** Abu Shreek is guest-only today: progress lives in this browser's
+localStorage (`src/state/progress.ts`, rules in `src/domain/progress.ts`). This document says how to add **optional** accounts,
 so progress follows a learner across devices, by reusing the Supabase backend archived in BA2:
 <https://github.com/PA-WiT/BA2/tree/main/supabase-archive>.
 
@@ -10,7 +10,7 @@ Guiding rules:
   An account only adds sync.
 - **The app must build and run with no Supabase env vars.** Then it's exactly today's guest
   app, for local dev, forks and CI.
-- **Progress keeps going only through `src/features/progress/store.ts`.** Components don't
+- **Progress keeps going only through `src/state/progress.ts`.** Components don't
   change; only the store learns to sync.
 - **The frontend gets the anon key only.** Every table has RLS. The `service_role` key is never
   in the app or the repo.
@@ -19,7 +19,7 @@ Guiding rules:
 
 ## 1. What the BA2 archive gives us
 
-| Archive path | What it is | Use in Masar |
+| Archive path | What it is | Use in Abu Shreek |
 |---|---|---|
 | `migrations/0001_init.sql` | `profiles` (role `student`/`admin`, auto-created on sign-up), `quiz_sessions`, `question_attempts` (append-only), `week_progress` (`sections_read[]`), `bookmarks`, all with own-row RLS | **Reuse as is** |
 | `migrations/0002_progress_rpc.sql` | `mark_section_read(week_id, section_id)`: race-safe upsert into `week_progress` | **Reuse as is** |
@@ -28,19 +28,19 @@ Guiding rules:
 | `migrations/0005_homework_links_and_deadlines.sql` | Drive links, deadlines, late flag | **Skip** (homework only) |
 | `lib/supabase.ts` | Client from `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` (throws if missing) | Reuse, but make it **optional**: return `null` when the vars are missing |
 | `lib/auth.ts` | Sign up / in / out, change email or password, reset email | Reuse |
-| `features/auth/*` | `AuthProvider` + `useAuth`, Login, ResetPassword, Settings, ChangePassword, `RequireAuth`, `RequireAdmin` | Reuse the provider and pages, restyled with Masar tokens; merge the account settings into our Settings page |
+| `features/auth/*` | `AuthProvider` + `useAuth`, Login, ResetPassword, Settings, ChangePassword, `RequireAuth`, `RequireAdmin` | Reuse the provider and pages, restyled with Abu Shreek tokens; merge the account settings into our Settings page |
 | `features/progress/api.ts`, `features/quiz/api.ts` | TanStack Query mutations: mark section read, record attempt | Fold into the store's remote adapter (§4) |
 | `components/LockedSection.tsx`, `content/access.ts` | "First 2 sections free" paywall-style gate | **Don't use**: it conflicts with guest-first |
 | `features/submissions/*` | Student and admin homework pages | Later, only with homework (§8) |
 | `i18n-keys.ts` | EN/AR/FA strings for the auth UI | Merge the EN + AR keys into `src/i18n/index.ts` |
 | `skills/supabase-setup`, `skills/add-progress-feature` | Claude Code skills | Copy `supabase-setup` into `.claude/skills/` (update paths) |
 
-BA2 calls a module a `week` (`week_id`). Masar has courses, so **use `week_id = '<courseId>/<moduleId>'`**,
+BA2 calls a module a `week` (`week_id`). Abu Shreek has courses, so **use `week_id = '<courseId>/<moduleId>'`**,
 the same key the local store already uses for `sectionsRead`. That lets 0001/0002 run unchanged.
 
-## 2. Mapping Masar's local progress to tables
+## 2. Mapping Abu Shreek's local progress to tables
 
-The local `Progress` shape (`src/features/progress/store.ts`) and where each part lives once
+The local `Progress` shape (`src/domain/progress.ts`) and where each part lives once
 signed in:
 
 | Local field | Meaning | Server source of truth |
@@ -54,7 +54,7 @@ signed in:
 | `streak` | consecutive days | derived from distinct `local_day` in `lesson_completions` (client or view) |
 | settings (`theme`, `sound`, `lang`) | per device | stay **local**; optionally add `profiles.preferences jsonb` later |
 
-### New migration (draft): `0006_masar_progress.sql`
+### New migration (draft): `0006_abu_shreek_progress.sql`
 
 ```sql
 -- Finished roadmap lessons (and Practice/Review runs, which have no lesson key) — one row per finish.
@@ -145,7 +145,7 @@ calculation into a `complete_lesson` RPC.
 
 ## 4. Client design
 
-1. **Remote adapter** (`src/features/progress/remote.ts`):
+1. **Remote adapter** (`src/state/remote.ts`):
    - `load(): Promise<Progress>` calls `my_progress()`.
    - Event writers: `recordAnswer`, `recordReview`, `markRead`, `completeLesson`, mapped to
      `question_attempts` inserts, `review_boxes` upserts, `mark_section_read`, and
@@ -164,7 +164,7 @@ calculation into a `complete_lesson` RPC.
    - `activity`: max per day. The same lessons recorded on both sides must not double count.
    - `xp`: the server value after import.
 4. **Auth**:
-   - Port `AuthProvider`, `lib/auth.ts`, and the Login and ResetPassword pages. Restyle with Masar
+   - Port `AuthProvider`, `lib/auth.ts`, and the Login and ResetPassword pages. Restyle with Abu Shreek
      tokens: flat cards, `--brand`, serif headings.
    - Add routes `login` and `reset-password` (lazy).
    - Add an **Account** section to `src/features/settings/SettingsPage.tsx`: email, change
@@ -176,7 +176,7 @@ calculation into a `complete_lesson` RPC.
      devices — create a free account".
    - The Home dashboard shows "Synced" or "On this device only".
 6. **i18n**: merge the archive's EN + AR auth strings and add the sync strings. FA isn't used in
-   Masar, so drop it.
+   Abu Shreek, so drop it.
 
 ## 5. Privacy and security checklist
 - RLS enabled, with an own-row policy, on every user table. Run the archive skill's checklist
@@ -218,7 +218,7 @@ calculation into a `complete_lesson` RPC.
 - **Leaderboards**: need server-computed XP (`complete_lesson` RPC) and opt-in display names.
 
 ## Open questions for the owner
-1. Should we create a new Supabase project for Masar, or reuse BA2's? A new one is recommended,
+1. Should we create a new Supabase project for Abu Shreek, or reuse BA2's? A new one is recommended,
    so the data and auth settings stay separate.
 2. Should email confirmation be required before sync starts?
 3. Do we want homework/assignments (§8) at all?

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { parseProfile } from '../src/features/profile/store'
-import { applyRestDay, bumpStreak, currentStreak, parseProgress, weekStart } from '../src/features/progress/store'
-import { lessonTerms, lessonsFor } from '../src/features/lesson/lessons'
+import { parseProfile } from '../src/domain/profile'
+import { applyRestDay, bumpStreak, currentStreak, parseProgress, weekStart } from '../src/domain/progress'
+import { lessonTerms, lessonsFor } from '../src/domain/lessons'
 import { investing } from '../src/content/courses/investing'
 
 describe('profile', () => {
@@ -33,8 +33,8 @@ describe('rest day', () => {
 
 describe('lesson terms', () => {
   it('skips bold phrases that are only numbers', async () => {
-    const week = await investing.loaders.basics()
-    for (const lesson of lessonsFor(week)) {
+    const mod = await investing.loaders.basics()
+    for (const lesson of lessonsFor(mod)) {
       for (const term of lessonTerms(lesson)) expect(term.en).toMatch(/\p{L}{3}/u)
     }
   })

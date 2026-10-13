@@ -1,0 +1,44 @@
+.page {
+  max-inline-size: var(--app-max);
+  min-block-size: 100dvh;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 48px 24px calc(24px + env(safe-area-inset-bottom));
+  text-align: center;
+}
+.top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-block-start: 8vh;
+}
+.top h1 {
+  font-size: 2.2rem;
+  line-height: 1.15;
+  color: var(--brand);
+}
+.card {
+  text-align: start;
+  display: grid;
+  gap: 12px;
+}
+.card p {
+  color: var(--ink-soft);
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+.card .safe {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--correct);
+  font-weight: 600;
+}
+.actions {
+  display: grid;
+  gap: 12px;
+}

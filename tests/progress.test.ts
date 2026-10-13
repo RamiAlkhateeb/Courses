@@ -4,7 +4,7 @@ import {
   completeLesson,
   currentStreak,
   daysBetween,
-  lessonXp,
+  payoutFor,
   localDay,
   markRead,
   MAX_BOX,
@@ -14,9 +14,9 @@ import {
   pickLessonQuestions,
   recordAnswer,
   recordReview,
-} from '../src/features/progress/store'
+} from '../src/domain/progress'
 
-const EMPTY = { answers: {}, sectionsRead: {}, xp: 0, streak: { count: 0, lastDay: '' }, boxes: {}, lessonsDone: [], activity: {} }
+const EMPTY = { answers: {}, sectionsRead: {}, bank: 1000, streak: { count: 0, lastDay: '' }, boxes: {}, lessonsDone: [], activity: {} }
 
 describe('progress store helpers', () => {
   it('parses missing or corrupt storage as empty progress', () => {
@@ -26,7 +26,7 @@ describe('progress store helpers', () => {
 
   it('reads progress saved before lessons existed, filling the new fields with defaults', () => {
     const old = JSON.stringify({ answers: { 'net-q001': { selected: 0, correct: true } }, sectionsRead: {} })
-    expect(parseProgress(old)).toEqual({ ...EMPTY, answers: { 'net-q001': { selected: 0, correct: true } } })
+    expect(parseProgress(old)).toEqual({ ...EMPTY, bank: 1010, answers: { 'net-q001': { selected: 0, correct: true } } })
   })
 
   it('ignores wrongly typed lesson fields', () => {
@@ -75,25 +75,29 @@ describe('lesson helpers', () => {
     expect(currentStreak({ count: 0, lastDay: '' }, '2026-10-04')).toBe(0)
   })
 
-  it('gives base XP, XP per correct answer and a perfect-lesson bonus', () => {
-    expect(lessonXp(0, 5)).toBe(5)
-    expect(lessonXp(3, 5)).toBe(35)
-    expect(lessonXp(5, 5)).toBe(75)
-    expect(lessonXp(0, 0)).toBe(5) // reading-only lesson: base XP, no perfect bonus
+  it('pays $10 per correct answer, only the first time a roadmap lesson is finished', () => {
+    const fresh = parseProgress(null)
+    const key = 'investing/basics/why'
+    expect(payoutFor(fresh, 4, key)).toBe(40)
+    expect(payoutFor(fresh, 0, key)).toBe(0)
+    expect(payoutFor(fresh, 5)).toBe(0) // practice and review runs have no lesson key: no pay
+    const done = completeLesson(fresh, 4, '2026-10-06', key)
+    expect(payoutFor(done, 5, key)).toBe(0) // a replay
   })
 
-  it('completes a lesson: adds XP and bumps the streak', () => {
-    const p = completeLesson(parseProgress(null), 4, 5, '2026-10-06')
-    expect(p.xp).toBe(45)
+  it('completes a lesson: pays the bank and bumps the streak', () => {
+    const p = completeLesson(parseProgress(null), 4, '2026-10-06', 'investing/basics/why')
+    expect(p.bank).toBe(1040)
     expect(p.streak).toEqual({ count: 1, lastDay: '2026-10-06' })
-    expect(completeLesson(p, 5, 5, '2026-10-06').xp).toBe(120)
+    expect(completeLesson(p, 5, '2026-10-06', 'investing/basics/why').bank).toBe(1040) // replay pays nothing
+    expect(completeLesson(p, 5, '2026-10-06', 'investing/basics/risk').bank).toBe(1090)
   })
 
   it('marks a roadmap lesson done once', () => {
-    const p = completeLesson(parseProgress(null), 1, 2, '2026-10-06', 'tech-interview/resume/template')
+    const p = completeLesson(parseProgress(null), 1, '2026-10-06', 'tech-interview/resume/template')
     expect(p.lessonsDone).toEqual(['tech-interview/resume/template'])
-    expect(completeLesson(p, 2, 2, '2026-10-07', 'tech-interview/resume/template').lessonsDone).toBe(p.lessonsDone)
-    expect(completeLesson(p, 2, 2, '2026-10-07').lessonsDone).toEqual(['tech-interview/resume/template'])
+    expect(completeLesson(p, 2, '2026-10-07', 'tech-interview/resume/template').lessonsDone).toBe(p.lessonsDone)
+    expect(completeLesson(p, 2, '2026-10-07').lessonsDone).toEqual(['tech-interview/resume/template'])
   })
 
   it('moves Leitner boxes up on a right answer (capped) and back to 1 on a wrong one', () => {
@@ -111,13 +115,14 @@ describe('lesson helpers', () => {
 })
 
 describe('dashboard data', () => {
-  it('records the finished lesson and the day’s XP', () => {
-    const p = completeLesson(parseProgress(null), 2, 2, '2026-10-08', 'tech-interview/resume/template')
+  it('records the finished lesson and the day’s earnings', () => {
+    const p = completeLesson(parseProgress(null), 2, '2026-10-08', 'tech-interview/resume/template')
     expect(p.lastLesson).toBe('tech-interview/resume/template')
-    expect(p.activity).toEqual({ '2026-10-08': 45 })
-    const practice = completeLesson(p, 0, 1, '2026-10-08') // Practice: no lesson key
+    expect(p.activity).toEqual({ '2026-10-08': 20 })
+    const practice = completeLesson(p, 1, '2026-10-08') // Practice: no lesson key, pays nothing
     expect(practice.lastLesson).toBe('tech-interview/resume/template')
-    expect(practice.activity['2026-10-08']).toBe(50)
+    expect(practice.activity['2026-10-08']).toBe(20)
+    expect(completeLesson(parseProgress(null), 3, '2026-10-09').activity).toEqual({ '2026-10-09': 0 }) // the day still counts
   })
 
   it('keeps 60 days of activity', () => {
@@ -137,3 +142,48 @@ describe('dashboard data', () => {
   })
 })
 
+describe('progress v1 → v2 migration', () => {
+  const v1 = JSON.stringify({
+    answers: { a: { selected: 0, correct: true }, b: { selected: 1, correct: false }, c: { selected: 2, correct: true } },
+    xp: 540,
+    streak: { count: 4, lastDay: '2026-10-07' },
+    lessonsDone: ['investing/basics/why'],
+    activity: { '2026-10-07': 35 },
+  })
+
+  it('gives the starting bank plus $10 per answer that is right, and drops the XP', () => {
+    const p = parseProgress(v1)
+    expect(p.bank).toBe(1020)
+    expect('xp' in p).toBe(false)
+  })
+
+  it('keeps everything else', () => {
+    const p = parseProgress(v1)
+    expect(p.streak).toEqual({ count: 4, lastDay: '2026-10-07' })
+    expect(p.lessonsDone).toEqual(['investing/basics/why'])
+    expect(p.activity).toEqual({ '2026-10-07': 35 })
+    expect(Object.keys(p.answers)).toHaveLength(3)
+  })
+
+  it('does not migrate twice: a saved bank wins', () => {
+    const v2 = JSON.stringify({ ...JSON.parse(v1), bank: 1500 })
+    expect(parseProgress(v2).bank).toBe(1500)
+  })
+
+  it('treats a player with no answers as new', () => {
+    expect(parseProgress(JSON.stringify({ xp: 0 })).bank).toBe(1000)
+  })
+})
+
+describe('progress store key', () => {
+  it('reads a saved v1 value through the v2 store and then saves under v2', async () => {
+    const data = new Map<string, string>([['progress:v1', JSON.stringify({ answers: { a: { selected: 0, correct: true } }, xp: 90 })]])
+    const storage = { getItem: (k: string) => data.get(k) ?? null, setItem: (k: string, v: string) => void data.set(k, v) }
+    const { createPersistedStore } = await import('../src/state/createPersistedStore')
+    const store = createPersistedStore({ key: 'progress:v2', legacyKeys: ['progress:v1'], empty: parseProgress(null), parse: parseProgress, storage })
+    expect(store.get().bank).toBe(1010)
+    store.update((p) => ({ ...p, bank: p.bank + 40 }))
+    expect(JSON.parse(data.get('progress:v2')!).bank).toBe(1050)
+    expect(JSON.parse(data.get('progress:v1')!).xp).toBe(90) // the old value is left alone
+  })
+})

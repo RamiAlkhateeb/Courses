@@ -1,7 +1,7 @@
 // Original teaching content. Problem statements follow the LeetCode problems the author practised in
 // solutions/ (Two Sum, Valid Parentheses, Climbing Stairs, Binary Search, ...); the code shown here is the
 // clean pattern solution in each language, not a copy of the practice files.
-import type { Block, Week } from '../../types'
+import type { Block, Module } from '../../types'
 import { COURSE_ID, cover, heading, html, mcq } from './helpers'
 
 const W = 'dsa'
@@ -63,7 +63,7 @@ const questions = [
     [{ en: 'The answer for n reuses the answers for n−1 and n−2 (overlapping subproblems)', ar: 'إجابة n تعيد استخدام إجابتي n−1 و n−2 (مسائل فرعية متداخلة)' }, { en: 'It sorts the steps', ar: 'ترتب الدرجات' }, { en: 'It avoids using loops', ar: 'تتجنب استخدام الحلقات' }], 0),
 ]
 
-export const dsa: Week = {
+export const dsa: Module = {
   id: W,
   courseId: COURSE_ID,
   order: 3,

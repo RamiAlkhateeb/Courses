@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import { AUDIENCES, courses } from '../src/content/courses'
-import type { Block, Localized, Week } from '../src/content/types'
+import type { Block, Localized, Module } from '../src/content/types'
 
 /** Every module of every course, loaded the same way the app loads them. */
-async function allWeeks() {
-  const weeks: Week[] = []
+async function allModules() {
+  const mods: Module[] = []
   for (const course of courses) {
-    for (const load of Object.values(course.loaders)) weeks.push(await load())
+    for (const load of Object.values(course.loaders)) mods.push(await load())
   }
-  return weeks
+  return mods
 }
 
 function* walkBlocks(blocks: Block[]): Generator<Block> {
@@ -18,14 +18,14 @@ function* walkBlocks(blocks: Block[]): Generator<Block> {
   }
 }
 
-function* localizedIn(week: Week): Generator<Localized> {
-  yield week.cover.kicker
-  yield week.cover.titleHtml
-  for (const q of week.questions) {
+function* localizedIn(mod: Module): Generator<Localized> {
+  yield mod.cover.kicker
+  yield mod.cover.titleHtml
+  for (const q of mod.questions) {
     yield q.prompt
     yield* q.options
   }
-  for (const s of week.sections) {
+  for (const s of mod.sections) {
     yield s.navLabel
     yield s.sectionLabel
     yield s.headingHtml
@@ -43,21 +43,21 @@ describe('course content', () => {
       expect(new Set(navIds).size, `${course.id}: duplicate nav ids`).toBe(navIds.length)
       for (const [id, load] of Object.entries(course.loaders)) {
         expect(navIds, `${course.id}/${id} has a loader but no nav item`).toContain(id)
-        const week = await load()
-        expect(week.id).toBe(id)
-        expect(week.courseId).toBe(course.id)
+        const mod = await load()
+        expect(mod.id).toBe(id)
+        expect(mod.courseId).toBe(course.id)
       }
     }
   })
 
   it('question ids are unique across the whole app and answers are in range', async () => {
     const seen = new Set<string>()
-    for (const week of await allWeeks()) {
-      for (const q of week.questions) {
+    for (const mod of await allModules()) {
+      for (const q of mod.questions) {
         expect(seen.has(q.id), `duplicate question id ${q.id}`).toBe(false)
         seen.add(q.id)
         expect(q.id).toMatch(/^[a-z]+-q\d{3}$/)
-        expect(q.weekId).toBe(week.id)
+        expect(q.moduleId).toBe(mod.id)
         expect(q.answer, `${q.id}: answer out of range`).toBeGreaterThanOrEqual(0)
         expect(q.answer, `${q.id}: answer out of range`).toBeLessThan(q.options.length)
       }
@@ -65,32 +65,32 @@ describe('course content', () => {
   })
 
   it('every exercise block points at an existing question, and every question is used', async () => {
-    for (const week of await allWeeks()) {
-      const ids = new Set(week.questions.map((q) => q.id))
+    for (const mod of await allModules()) {
+      const ids = new Set(mod.questions.map((q) => q.id))
       const used = new Set<string>()
-      for (const s of week.sections) {
+      for (const s of mod.sections) {
         for (const b of walkBlocks(s.blocks)) {
           if (b.type === 'exercise') {
-            expect(ids.has(b.questionId), `${week.id}: unknown question ${b.questionId}`).toBe(true)
+            expect(ids.has(b.questionId), `${mod.id}: unknown question ${b.questionId}`).toBe(true)
             used.add(b.questionId)
           }
         }
       }
-      for (const id of ids) expect(used.has(id), `${week.id}: question ${id} is never shown`).toBe(true)
+      for (const id of ids) expect(used.has(id), `${mod.id}: question ${id} is never shown`).toBe(true)
     }
   })
 
   it('section ids are unique within a module', async () => {
-    for (const week of await allWeeks()) {
-      const ids = week.sections.map((s) => s.id)
-      expect(new Set(ids).size, `${week.id}: duplicate section ids`).toBe(ids.length)
+    for (const mod of await allModules()) {
+      const ids = mod.sections.map((s) => s.id)
+      expect(new Set(ids).size, `${mod.id}: duplicate section ids`).toBe(ids.length)
     }
   })
 
   it('every piece of text has an Arabic translation', async () => {
-    for (const week of await allWeeks()) {
-      for (const text of localizedIn(week)) {
-        expect(text.ar, `${week.id}: missing ar for "${text.en.slice(0, 50)}"`).toBeTruthy()
+    for (const mod of await allModules()) {
+      for (const text of localizedIn(mod)) {
+        expect(text.ar, `${mod.id}: missing ar for "${text.en.slice(0, 50)}"`).toBeTruthy()
       }
     }
   })
@@ -120,6 +120,19 @@ describe('course content', () => {
       for (const group of course.groups) {
         expect(group.label.ar, `${course.id}: group`).toBeTruthy()
         for (const item of group.items) expect(item.title.ar, `${course.id}/${item.id}`).toBeTruthy()
+      }
+    }
+  })
+
+  // Course HTML is rendered with dangerouslySetInnerHTML, so what may appear in it is pinned here. Until content is
+  // sanitised at render time (needed before any community or CMS content), this test is the only gate.
+  it('content HTML has no scripts, event handlers, javascript: URLs or embeds', async () => {
+    const banned = /<\s*(script|iframe|object|embed|style|link|meta|form)\b|\son[a-z]+\s*=|javascript\s*:|data\s*:\s*text\/html/i
+    for (const mod of await allModules()) {
+      for (const text of localizedIn(mod)) {
+        for (const lang of ['en', 'ar'] as const) {
+          expect(text[lang], `${mod.courseId}/${mod.id} (${lang}): ${text[lang]?.slice(0, 60)}`).not.toMatch(banned)
+        }
       }
     }
   })

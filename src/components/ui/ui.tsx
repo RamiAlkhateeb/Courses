@@ -1,18 +1,26 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import type { ParseKeys } from 'i18next'
 import { Icon, type IconName } from './Icon'
 import styles from './ui.module.css'
 
 const cx = (...c: (string | false | undefined)[]) => c.filter(Boolean).join(' ')
 
-/** `primary` (saffron: the next step), `secondary` (flat card), `ghost` (text), `correct`/`oops` (feedback sheets). */
-export function Button({
-  variant = 'primary',
-  className,
-  ...rest
-}: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'secondary' | 'ghost' | 'correct' | 'oops' | 'ink' }) {
-  return <button type="button" className={cx(styles.btn, styles[variant], className)} {...rest} />
+/** `primary` (saffron: the next step), `secondary` (flat card), `ghost` (dashed outline), `correct`/`oops` (feedback sheets). */
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'correct' | 'oops' | 'ink'
+export interface ButtonLook {
+  variant?: ButtonVariant
+  /** `sm`: a compact button that fits its label (inline in a header or list). Default: a full-width 56px bar. */
+  size?: 'md' | 'sm'
+}
+
+/** The class for something that looks like a Button but is not a `<button>`, e.g. `<Link className={buttonClass()} …>`. */
+export const buttonClass = ({ variant = 'primary', size = 'md' }: ButtonLook = {}, extra?: string) =>
+  cx(styles.btn, styles[variant], size === 'sm' && styles.sm, extra)
+
+export function Button({ variant, size, className, ...rest }: ButtonHTMLAttributes<HTMLButtonElement> & ButtonLook) {
+  return <button type="button" className={buttonClass({ variant, size }, className)} {...rest} />
 }
 
 /** Flat 1px-border card. `tone="dawn"` = selected/highlighted, `dashed` = not started or locked. */
@@ -81,10 +89,10 @@ export function ProgressBar({ value, max = 1, label }: { value: number; max?: nu
   )
 }
 
-const TABS: { to: string; icon: IconName; key: string; end?: boolean }[] = [
+const TABS: { to: string; icon: IconName; key: ParseKeys; end?: boolean }[] = [
   { to: '/', icon: 'path', key: 'tabPath', end: true },
+  { to: '/playground', icon: 'chart', key: 'tabPlayground' },
   { to: '/review', icon: 'review', key: 'tabReview' },
-  { to: '/terms', icon: 'book', key: 'tabTerms' },
   { to: '/me', icon: 'me', key: 'tabMe' },
 ]
 

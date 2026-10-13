@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { LANGUAGES } from '../../i18n'
-import { playSound } from './sound'
-import { useSettings } from './useSettings'
+import { playSound } from '../../state/sound'
+import { useSettings } from '../../state/useSettings'
 import styles from './SettingsPage.module.css'
 
 /** Language and sound. Saved in this browser like progress. */

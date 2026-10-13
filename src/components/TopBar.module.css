@@ -10,7 +10,7 @@
   border: 1px solid var(--rule);
   border-radius: 100px;
   padding: 4px;
-  box-shadow: 0 2px 8px rgba(28, 43, 58, 0.08);
+  box-shadow: var(--shadow-sm);
 }
 .settingsLink {
   display: inline-grid;

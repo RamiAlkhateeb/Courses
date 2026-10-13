@@ -8,6 +8,16 @@
   gap: 8px;
   padding-inline: 4px;
 }
+.head > div {
+  flex: 1 1 0;
+  min-inline-size: 0;
+}
+.head img {
+  flex: 0 1 auto;
+  min-inline-size: 0;
+  max-inline-size: 36%;
+  block-size: auto !important;
+}
 .head h1 {
   font-size: 2.6rem;
   color: var(--brand);
@@ -53,13 +63,12 @@
   gap: 8px;
 }
 .fTerms strong {
-  font-family: var(--font-display);
+  font-family: var(--font);
   font-size: 2.1rem;
   line-height: 1.1;
   color: var(--brand);
 }
 .ar {
-  font-family: 'Amiri', serif;
   text-align: end;
 }
 .fFoot {
@@ -88,7 +97,7 @@
   cursor: pointer;
 }
 .kicker {
-  font-family: var(--font-ui);
+  font-family: var(--font);
   font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -121,8 +130,7 @@
   line-height: 1.2;
 }
 .chip span {
-  font-family: 'Amiri', serif;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: var(--muted);
 }
 .chipOn {
@@ -143,4 +151,12 @@
 .empty {
   color: var(--muted);
   padding: 24px 4px;
+}
+.back {
+  display: inline-grid;
+  color: var(--brand);
+  margin-block-end: 6px;
+}
+:global(html[dir='rtl']) .back svg {
+  transform: scaleX(-1);
 }
