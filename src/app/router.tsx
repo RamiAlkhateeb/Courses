@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react'
-import { Link, createBrowserRouter, type RouteObject } from 'react-router-dom'
+import { Link, Navigate, createBrowserRouter, type RouteObject } from 'react-router-dom'
+import { ENABLED_COURSE_IDS } from '../content/courses'
 import { useTranslation } from 'react-i18next'
 import { AppShell } from '../components/AppShell'
 import { RouteError } from './RouteError'
@@ -72,11 +73,12 @@ export const router = createBrowserRouter(
       ],
     },
     {
-      // Desktop views: the course catalog, a course's chapter list and Settings.
+      // Desktop views: a course's chapter list and Settings.
       element: <AppShell />,
       errorElement: <RouteError />,
       children: [
-        { path: 'courses', ...page(() => import('../features/home/HomePage'), 'HomePage') },
+        // The catalog listed every course; with Investing the only one, its old URL opens that course.
+        { path: 'courses', element: <Navigate to={`/course/${ENABLED_COURSE_IDS[0]}`} replace /> },
         {
           path: 'course/:courseId',
           lazy: async () => {

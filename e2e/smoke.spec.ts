@@ -20,13 +20,54 @@ test('a first-time visitor is sent to the welcome flow and can reach the path', 
   await page.goto('./')
   await expect(page).toHaveURL(/\/Courses\/welcome$/)
   await page.getByRole('button', { name: 'Start my path' }).click()
-  for (let i = 0; i < 4; i++) await page.getByRole('button', { name: 'Continue' }).click() // language, goal, trail, time
+  for (let i = 0; i < 2; i++) await page.getByRole('button', { name: 'Continue' }).click() // language, daily time
   await expect(page.getByText('$1,000')).toBeVisible() // the starting bank
   await page.getByRole('button', { name: 'Start climbing' }).click()
   await expect(page).toHaveURL(/\/Courses\/$/)
   await expect(page.getByRole('navigation')).toBeVisible() // the tab bar
   expect(JSON.parse((await page.evaluate(() => localStorage.getItem('profile:v1')))!).onboarded).toBe(true)
   expect(errors).toEqual([])
+})
+
+/** Visible text of the page that is not inside an element marked with another language (e.g. the EN / عربي switch). */
+const textOutside = (page: Page, otherLang: string) =>
+  page.evaluate((lang) => {
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT)
+    const out: string[] = []
+    for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+      const el = n.parentElement
+      if (!el || el.closest(`[lang="${lang}"]`) || !el.checkVisibility()) continue
+      out.push(n.textContent ?? '')
+    }
+    return out.join(' ')
+  }, otherLang)
+
+for (const [lang, other, foreign] of [
+  ['en', 'ar', /[\u0600-\u06FF]+/g],
+  ['ar', 'en', /[A-Za-z]{2,}/g],
+] as const) {
+  test(`only ${lang === 'en' ? 'English' : 'Arabic'} is shown on the main screens`, async ({ page }) => {
+    await page.addInitScript((l) => localStorage.setItem('lang', l), lang)
+    for (const route of ['welcome', 'welcome/language', 'welcome/time', 'welcome/bank']) {
+      await page.goto(route)
+      await page.waitForTimeout(300)
+      expect((await textOutside(page, other)).match(foreign) ?? [], route).toEqual([])
+    }
+    await onboarded(page, { lang })
+    for (const route of ['./', 'review', 'review/terms', 'me', 'playground']) {
+      await page.goto(route)
+      await page.waitForTimeout(400)
+      expect((await textOutside(page, other)).match(foreign) ?? [], route).toEqual([])
+    }
+  })
+}
+
+test('only the Investing course is offered', async ({ page }) => {
+  await onboarded(page)
+  await page.goto('courses')
+  await expect(page).toHaveURL(/\/course\/investing$/)
+  await page.goto('course/tech-interview')
+  await expect(page.getByText('Page not found', { exact: false }).or(page.getByText("doesn't exist", { exact: false }))).toBeVisible()
 })
 
 test('finishing a lesson with the keyboard saves progress and pays the bank', async ({ page }) => {
