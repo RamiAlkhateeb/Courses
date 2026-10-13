@@ -106,7 +106,7 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
     if (isLast) {
       const key = lessonKey(mod.courseId, mod.id, lesson.id)
       setPaid(payoutFor(progress, correctCount, key))
-      completeLesson(correctCount, key)
+      completeLesson(correctCount, key, total)
       setDone(true)
       return
     }

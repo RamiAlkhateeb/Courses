@@ -81,37 +81,43 @@
   color: var(--accent-ink);
   margin-block: 22px 10px;
 }
-.trails {
+.garden {
+  padding: 16px 12px 14px;
+}
+.stages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: end;
+  gap: 4px;
+  text-align: center;
+}
+.stages li {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-}
-.trail {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  text-align: start;
-  background: var(--surface);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius-lg);
-  padding: 16px 18px;
-  font: inherit;
-  color: var(--brand);
-  cursor: pointer;
-}
-.trailOn {
-  background: var(--dawn);
-  border: 1.5px solid var(--brand);
-}
-.trailOff {
-  background: transparent;
-  border-style: dashed;
+  align-items: center;
+  gap: 6px;
   color: var(--muted);
 }
-.trailRow {
-  display: flex;
-  justify-content: space-between;
-  font-size: 1.15rem;
+.plot {
+  display: grid;
+  place-items: end center;
+  block-size: 60px;
+}
+.stageNext .plot {
+  opacity: 0.45;
+}
+.stageNow small {
+  color: var(--indigo);
+  font-weight: 700;
+}
+.gardenNote {
+  margin-block-start: 10px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
 }
 .miles {
   display: flex;

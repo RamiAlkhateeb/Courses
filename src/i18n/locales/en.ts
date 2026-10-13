@@ -417,4 +417,13 @@ export const en = {
   "reviewMyMistake": "Review my mistake",
   "reread": "Re-read the lesson card",
   "yourBank": "Your bank",
+  "yourGarden": "Your garden",
+  "gardenOf": "{{pct}}% of the course learned",
+  "gardenSeed": "Seed",
+  "gardenSprout": "Sprout",
+  "gardenSapling": "Sapling",
+  "gardenTree": "Tree",
+  "msFirstStep": "First step",
+  "msWeek": "One week",
+  "msAce": "Quiz ace",
 }

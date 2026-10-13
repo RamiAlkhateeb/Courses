@@ -446,4 +446,13 @@ export const ar = {
   "reviewMyMistake": "راجع أخطائي",
   "reread": "أعد قراءة بطاقة الدرس",
   "yourBank": "رصيدك",
+  "yourGarden": "حديقتك",
+  "gardenOf": "تعلّمت {{pct}}% من الدورة",
+  "gardenSeed": "بذرة",
+  "gardenSprout": "برعم",
+  "gardenSapling": "شتلة",
+  "gardenTree": "شجرة",
+  "msFirstStep": "الخطوة الأولى",
+  "msWeek": "أسبوع كامل",
+  "msAce": "بطل الاختبار",
 }

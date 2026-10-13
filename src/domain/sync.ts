@@ -32,6 +32,7 @@ export function mergeProgress(local: Progress, remote: Progress, bankFrom: 'loca
     lessonsDone: union(remote.lessonsDone, local.lessonsDone),
     ...(newer.lastLesson ?? local.lastLesson ?? remote.lastLesson ? { lastLesson: newer.lastLesson ?? local.lastLesson ?? remote.lastLesson } : {}),
     activity: mergeRecords(local.activity, remote.activity, (x, y) => Math.max(x, y)),
+    perfect: Math.max(local.perfect, remote.perfect),
   }
 }
 

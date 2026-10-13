@@ -28,6 +28,8 @@ export interface Progress {
   /** Dollars earned per local day ('YYYY-MM-DD'), last ACTIVITY_DAYS days: the week strips. A day with a finished
    *  lesson is present even when it paid nothing (a replay). */
   activity: Record<string, number>
+  /** Roadmap lessons finished with every question right on the first finish (the "Quiz ace" milestone) */
+  perfect: number
 }
 
 /** Nothing learned yet. Also what unreadable saved text parses to. */
@@ -39,6 +41,7 @@ export const emptyProgress: Progress = {
   boxes: {},
   lessonsDone: [],
   activity: {},
+  perfect: 0,
 }
 
 export const MAX_BOX = 5
@@ -70,6 +73,7 @@ export function parseProgress(raw: string | null): Progress {
       lessonsDone: Array.isArray(data.lessonsDone) ? data.lessonsDone.filter((k) => typeof k === 'string') : [],
       ...(typeof data.lastLesson === 'string' ? { lastLesson: data.lastLesson } : {}),
       activity: isRecord(data.activity) ? (data.activity as Progress['activity']) : {},
+      perfect: typeof data.perfect === 'number' && data.perfect > 0 ? Math.floor(data.perfect) : 0,
     }
   } catch {
     return emptyProgress
@@ -128,7 +132,7 @@ export function payoutFor(p: Progress, correct: number, lessonKey?: string): num
 }
 
 /** Pay a finished lesson into the bank, count `today` towards the streak and mark the roadmap lesson (if given) done. */
-export function completeLesson(p: Progress, correct: number, today: string, lessonKey?: string): Progress {
+export function completeLesson(p: Progress, correct: number, today: string, lessonKey?: string, total = 0): Progress {
   const lessonsDone = lessonKey && !p.lessonsDone.includes(lessonKey) ? [...p.lessonsDone, lessonKey] : p.lessonsDone
   const payout = payoutFor(p, correct, lessonKey)
   return {
@@ -138,6 +142,7 @@ export function completeLesson(p: Progress, correct: number, today: string, less
     lessonsDone,
     lastLesson: lessonKey ?? p.lastLesson,
     activity: addActivity(p.activity, today, payout),
+    perfect: p.perfect + (lessonKey && lessonsDone !== p.lessonsDone && total > 0 && correct === total ? 1 : 0),
   }
 }
 

@@ -16,7 +16,7 @@ import {
   recordReview,
 } from '../src/domain/progress'
 
-const EMPTY = { answers: {}, sectionsRead: {}, bank: 1000, streak: { count: 0, lastDay: '' }, boxes: {}, lessonsDone: [], activity: {} }
+const EMPTY = { answers: {}, sectionsRead: {}, bank: 1000, streak: { count: 0, lastDay: '' }, boxes: {}, lessonsDone: [], activity: {}, perfect: 0 }
 
 describe('progress store helpers', () => {
   it('parses missing or corrupt storage as empty progress', () => {
@@ -185,5 +185,14 @@ describe('progress store key', () => {
     store.update((p) => ({ ...p, bank: p.bank + 40 }))
     expect(JSON.parse(data.get('progress:v2')!).bank).toBe(1050)
     expect(JSON.parse(data.get('progress:v1')!).xp).toBe(90) // the old value is left alone
+  })
+
+  it('counts a lesson with every question right once, on its first finish only', () => {
+    const k = 'investing/basics/why'
+    const first = completeLesson(parseProgress(null), 4, '2026-10-06', k, 4)
+    expect(first.perfect).toBe(1)
+    expect(completeLesson(first, 4, '2026-10-07', k, 4).perfect).toBe(1) // a replay adds nothing
+    expect(completeLesson(parseProgress(null), 3, '2026-10-06', k, 4).perfect).toBe(0) // a miss
+    expect(parseProgress(JSON.stringify({ perfect: -2 })).perfect).toBe(0)
   })
 })
