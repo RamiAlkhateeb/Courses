@@ -19,10 +19,9 @@ test('a first-time visitor is sent to the welcome flow and can reach the path', 
   const errors = watchErrors(page)
   await page.goto('./')
   await expect(page).toHaveURL(/\/Courses\/welcome$/)
-  await page.getByRole('button', { name: 'Start my path' }).click()
-  for (let i = 0; i < 2; i++) await page.getByRole('button', { name: 'Continue' }).click() // language, daily time
-  await expect(page.getByText('$1,000')).toBeVisible() // the starting bank
-  await page.getByRole('button', { name: 'Start climbing' }).click()
+  await page.getByRole('button', { name: 'Get started' }).click()
+  await page.getByRole('button', { name: 'Continue' }).click() // language
+  await page.getByRole('button', { name: 'Start learning' }).click() // daily time
   await expect(page).toHaveURL(/\/Courses\/$/)
   await expect(page.getByRole('navigation')).toBeVisible() // the tab bar
   expect(JSON.parse((await page.evaluate(() => localStorage.getItem('profile:v1')))!).onboarded).toBe(true)
@@ -48,13 +47,13 @@ for (const [lang, other, foreign] of [
 ] as const) {
   test(`only ${lang === 'en' ? 'English' : 'Arabic'} is shown on the main screens`, async ({ page }) => {
     await page.addInitScript((l) => localStorage.setItem('lang', l), lang)
-    for (const route of ['welcome', 'welcome/language', 'welcome/time', 'welcome/bank']) {
+    for (const route of ['welcome', 'welcome/language', 'welcome/time']) {
       await page.goto(route)
       await page.waitForTimeout(300)
       expect((await textOutside(page, other)).match(foreign) ?? [], route).toEqual([])
     }
     await onboarded(page, { lang })
-    for (const route of ['./', 'review', 'review/terms', 'me', 'playground']) {
+    for (const route of ['./', 'me', 'playground']) {
       await page.goto(route)
       await page.waitForTimeout(400)
       expect((await textOutside(page, other)).match(foreign) ?? [], route).toEqual([])

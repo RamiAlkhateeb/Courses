@@ -1,181 +1,195 @@
+/* Welcome, Language and Daily goal (garden design). */
 .welcome {
   min-block-size: 100dvh;
-  display: flex;
-  flex-direction: column;
   position: relative;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 70% 62%, transparent 0 60px, var(--rule) 60px 61px, transparent 61px),
-    radial-gradient(circle at 70% 62%, transparent 0 140px, var(--rule) 140px 141px, transparent 141px),
-    radial-gradient(circle at 70% 62%, transparent 0 240px, var(--rule) 240px 241px, transparent 241px),
-    var(--paper);
+  display: flex;
+  flex-direction: column;
 }
-.welcomeTop,
-.stepTop {
+.contours {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0;
+  pointer-events: none;
+}
+:global(html[dir='rtl']) .contours {
+  transform: scaleX(-1);
+}
+.welcomeTop {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px 24px 0;
+  padding: 40px 24px 0;
 }
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
-/* The name in the current language only; nowrap keeps the two words together next to the language switch. */
+.mark {
+  display: grid;
+  place-items: center;
+  inline-size: 34px;
+  block-size: 34px;
+  border-radius: 10px;
+  background: var(--indigo);
+}
+/* Both names, stacked: neither can wrap mid-name, and it fits 320px. */
 .brandName {
-  font-family: var(--font);
-  font-weight: 700;
-  font-size: 1.5rem;
+  display: flex;
+  flex-direction: column;
   line-height: 1.1;
-  color: var(--brand);
+  font-weight: 600;
+  font-size: 1.25rem;
+  letter-spacing: -0.01em;
   white-space: nowrap;
 }
-/* Very small phones (320px): the name plus the language switch no longer fit at full size. */
-@media (max-width: 360px) {
-  .welcomeTop {
-    padding-inline: 16px;
-  }
-  .brand {
-    gap: 8px;
-  }
-  .brand svg {
-    width: 36px;
-    height: 36px;
-  }
-  .brandName {
-    font-size: 1.2rem;
-  }
+.brandName span + span {
+  color: var(--blue-text);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  margin-block-start: 2px;
+}
+.brandName span {
+  text-align: start;
 }
 .langSwitch {
   display: flex;
-  background: var(--surface);
-  border: 1px solid var(--rule);
-  border-radius: 999px;
-  padding: 4px;
+  align-items: center;
+  min-block-size: 44px;
+  padding: 0 6px;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: var(--card);
+  box-shadow: var(--shadow-card);
 }
 .langSwitch button {
   font: inherit;
-  font-weight: 700;
+  font-weight: 600;
+  font-size: 0.875rem;
   border: 0;
   background: none;
   color: var(--muted);
-  padding: 8px 14px;
-  border-radius: 999px;
+  min-inline-size: 44px;
+  min-block-size: 36px;
+  padding: 0 10px;
+  border-radius: 22px;
   cursor: pointer;
 }
 .langSwitch button[aria-pressed='true'] {
-  background: var(--brand);
-  color: var(--on-brand);
+  background: var(--indigo);
+  color: var(--white);
+}
+.headWrap {
+  position: relative;
+  padding: 36px 24px 0;
+  max-inline-size: 330px;
 }
 .headline {
-  padding: 36px 24px 0;
-  font-size: 3rem;
+  font-size: 2.875rem;
   line-height: 1.04;
-  color: var(--brand);
-  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--indigo);
 }
-.headline::after {
-  content: '';
+.bar {
   display: block;
   inline-size: 44px;
   block-size: 4px;
-  background: var(--accent);
-  margin-block-start: 22px;
   border-radius: 2px;
+  background: var(--blue);
+  margin: 18px 0 12px;
 }
-.welcomeHero {
-  flex: 1;
-  position: relative;
-  min-block-size: 280px;
+.welcomeAlt {
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1.5;
+  color: var(--blue-text);
+  max-inline-size: 260px;
 }
 .bubble,
 .bubbleSm {
-  z-index: 1;
-  background: var(--surface);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius-lg);
-  padding: 12px 16px;
-  font-size: 1rem;
-  line-height: 1.4;
-  color: var(--brand);
-  display: flex;
-  flex-direction: column;
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-btn);
+  color: var(--indigo);
+  font-weight: 500;
+  line-height: 1.35;
 }
 .bubble {
-  margin: 0;
   position: absolute;
-  inset-block-start: 10px;
-  inset-inline-end: 20px;
+  inset-inline-end: 16px;
+  inset-block-start: 352px;
+  max-inline-size: 150px;
+  padding: 10px 14px;
+  font-size: 0.875rem;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+}
+.bubble span:last-child {
+  color: var(--muted);
 }
 .heroMascot {
   position: absolute;
-  inset-block-end: -4px;
-  inset-inline-start: 50%;
-  translate: -50% 0;
-}
-:global(html[dir='rtl']) .heroMascot {
-  translate: 50% 0;
+  inset-inline-start: 30px;
+  inset-block-start: 360px;
 }
 .welcomeSheet {
-  background: var(--brand);
-  border-top: 2px solid var(--accent);
-  border-radius: 36px 36px 0 0;
-  padding: 32px 24px calc(32px + env(safe-area-inset-bottom));
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  margin-block-start: auto;
   position: relative;
-}
-.alreadyBtn {
-  border: 1px solid var(--navy-line-dark);
-  color: var(--on-brand);
-  border-radius: var(--radius);
-  min-block-size: 54px;
+  min-block-size: 240px;
+  box-sizing: border-box;
+  padding: 28px 24px calc(24px + env(safe-area-inset-bottom));
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  background: linear-gradient(160deg, var(--indigo) 0%, var(--indigo-2) 100%);
+  border-block-start: 3px solid var(--sky);
+  border-radius: 34px 34px 0 0;
+  z-index: 2;
 }
 .fine {
   text-align: center;
-  font-size: 0.85rem;
-  color: var(--muted);
+  font-size: 0.75rem;
   line-height: 1.4;
-}
-.welcomeSheet .fine {
-  color: var(--on-navy-faint);
+  color: var(--on-indigo-dim);
+  margin-block-start: 2px;
 }
 
-/* ---------- steps ---------- */
+/* ---------- Language and Daily goal ---------- */
 .step {
   min-block-size: 100dvh;
+  box-sizing: border-box;
+  padding: 40px 24px calc(28px + env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
 }
 .stepTop {
-  gap: 18px;
-  justify-content: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 .iconBtn {
+  inline-size: 44px;
+  block-size: 44px;
+  margin-inline-start: -10px;
+  display: grid;
+  place-items: center;
   background: none;
   border: 0;
-  color: var(--brand);
-  padding: 4px;
+  color: var(--indigo);
   cursor: pointer;
-  display: grid;
 }
 :global(html[dir='rtl']) .mirror {
   transform: scaleX(-1);
 }
-.stepBody {
-  flex: 1;
-  padding: 24px 24px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
 .guide {
   display: flex;
   align-items: flex-end;
-  gap: 8px;
-  margin-block-end: 18px;
+  gap: 6px;
+  margin-block-start: 28px;
 }
 .guide img {
   flex: 0 1 auto;
@@ -184,129 +198,70 @@
   block-size: auto !important;
 }
 .bubbleSm {
-  min-inline-size: 0;
+  position: relative;
   flex: 1;
-  margin-block-end: 24px;
+  min-inline-size: 0;
+  margin-block-end: 30px;
+  padding: 12px 14px;
+  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+.bubbleAlt {
+  color: var(--muted);
+  font-size: 0.9375rem;
+  margin-block-start: 4px;
 }
 .title {
-  font-size: 2.1rem;
-  line-height: 1.12;
-  color: var(--brand);
+  font-size: 1.875rem;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin-block: 24px 6px;
 }
 .sub {
   color: var(--muted);
-  font-size: 1.05rem;
-  line-height: 1.45;
-  margin-block-start: -6px;
+  font-size: 0.9375rem;
+  line-height: 1.4;
 }
 .list {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  margin-block-start: 18px;
 }
 .hint {
   display: block;
   color: var(--muted);
-  font-weight: 500;
-  font-size: 0.95rem;
+  font-weight: 400;
+  font-size: 0.875rem;
+}
+.langName {
+  display: block;
+  font-size: 1.125rem;
 }
 .minutes {
   display: flex;
-  align-items: baseline;
-  gap: 18px;
+  align-items: center;
+  gap: 14px;
 }
 .minNum {
-  font-family: var(--font);
-  font-size: 1.5rem;
-  min-inline-size: 5.5rem;
+  min-inline-size: 4.5rem;
   white-space: nowrap;
-}
-
-/* ---------- Starting bank (design 21) ---------- */
-.bankBody {
-  flex: 1;
-  padding: 36px 24px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 10px;
-}
-.bankKicker {
-  font-size: 0.85rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--accent-ink);
-}
-.bankTitle {
-  font-size: 2.3rem;
-  line-height: 1.1;
-  color: var(--brand);
-}
-.notes {
-  position: relative;
-  inline-size: 260px;
-  block-size: 190px;
-  margin-block: 18px 6px;
-}
-.note {
-  position: absolute;
-  inline-size: 190px;
-  block-size: 110px;
-  border: 1px solid var(--brand);
-  border-radius: 18px;
-  display: flex;
-  align-items: flex-end;
-  padding: 14px 18px;
-  text-align: start;
-}
-.note b {
-  font-size: 1.9rem;
-  color: var(--brand);
-}
-.note500 {
-  background: var(--green);
-  inset-inline-start: 4px;
-  inset-block-start: 0;
-  transform: rotate(-9deg);
-}
-.note200 {
-  background: var(--brand);
-  inset-inline-start: 56px;
-  inset-block-start: 34px;
-  transform: rotate(4deg);
-}
-.note200 b {
-  color: var(--accent);
-}
-.note100 {
-  background: var(--accent);
-  inset-inline-start: 24px;
-  inset-block-start: 74px;
-  transform: rotate(-3deg);
-}
-.bankTotal {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 3.4rem;
   font-weight: 600;
-  line-height: 1;
-  color: var(--brand);
+  font-size: 1.375rem;
 }
-.bankSub {
+.minutes .hint,
+.paceOn {
+  font-size: 1rem;
+}
+.paceOn {
+  font-weight: 700;
+}
+.grow {
+  flex: 1;
+}
+.step .fine {
   color: var(--muted);
-  font-size: 1.1rem;
-  margin-block-end: 18px;
-}
-.bankBody .guide {
-  align-self: stretch;
-  text-align: start;
-}
-.stepFoot .fine {
-  margin-block-end: 12px;
-}
-.stepFoot {
-  padding: 16px 24px calc(24px + env(safe-area-inset-bottom));
+  font-size: 0.875rem;
+  margin-block-start: 16px;
 }
