@@ -11,8 +11,8 @@ import { useModule } from '../../content/useModule'
 import { useProgress } from '../../state/useProgress'
 import { ModuleQuestionsContext } from '../../components/content/moduleQuestions'
 import { payoutFor } from '../../domain/progress'
-import { LessonPayout } from './LessonPayout'
-import { learnHref, lessonKey, lessonRecap, lessonsFor, type Lesson } from '../../domain/lessons'
+import { lessonKey, lessonsFor, type Lesson } from '../../domain/lessons'
+import { moneyText } from '../../i18n'
 import {
   AnswerFeedback,
   LessonFooter,
@@ -36,16 +36,11 @@ export function LessonRoute() {
   if (loading || !mod) return <p>{t('loading')}</p>
   if (index === -1) return <p>{t('pageNotFound')}</p>
   // Keyed by lesson so "Continue" to the next lesson starts fresh.
-  return <CardLesson key={lessonId} mod={mod} lesson={lessons[index]} next={lessons[index + 1]} />
+  return <CardRun key={lessonId} mod={mod} lesson={lessons[index]} />
 }
 
-/** A lesson run: its small content cards, then its questions; "Practice again" restarts it via the key. */
-function CardLesson({ mod, lesson, next }: { mod: Module; lesson: Lesson; next?: Lesson }) {
-  const [round, setRound] = useState(0)
-  return <CardRun key={round} mod={mod} lesson={lesson} next={next} onRestart={() => setRound((r) => r + 1)} />
-}
-
-function CardRun({ mod, lesson, next, onRestart }: { mod: Module; lesson: Lesson; next?: Lesson; onRestart: () => void }) {
+/** A lesson run: its small content cards, then its questions. Keyed by lesson, so the next lesson starts fresh. */
+function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
   const t = useLocalized()
   const { t: tUi } = useTranslation()
   const navigate = useNavigate()
@@ -62,12 +57,15 @@ function CardRun({ mod, lesson, next, onRestart }: { mod: Module; lesson: Lesson
   const [correctCount, setCorrectCount] = useState(0)
   const [done, setDone] = useState(false)
   const [paid, setPaid] = useState(0)
-  const [stage, setStage] = useState<'summary' | 'payout'>('summary')
+  // 0 = first try at this question; 1 = a second try (the first was wrong): that one reveals the answer and carries on.
+  const [attempt, setAttempt] = useState(0)
 
   const step = steps[index]
   const isLast = index === steps.length - 1
   const question = step.kind === 'question' ? step.question : undefined
   const isCorrect = checked && question !== undefined && selected === question.answer
+  const retry = checked && !isCorrect && attempt === 0 // a wrong first try can be tried again
+  const settled = checked && !retry // right, or the second try
 
   // A content card counts its section as read, which keeps the one-page view's progress in step.
   useEffect(() => {
@@ -80,9 +78,28 @@ function CardRun({ mod, lesson, next, onRestart }: { mod: Module; lesson: Lesson
     if (!question || selected === null || checked) return
     const right = selected === question.answer
     setChecked(true)
-    if (right) setCorrectCount((c) => c + 1)
-    recordLessonAnswer(question.id, selected, right)
+    if (attempt === 0) {
+      // Only the first try counts for the score and the review boxes.
+      if (right) setCorrectCount((c) => c + 1)
+      recordLessonAnswer(question.id, selected, right)
+    }
     playAnswerSound(right)
+  }
+
+  function tryAgain() {
+    setAttempt(1)
+    setSelected(null)
+    setChecked(false)
+  }
+
+  /** "Re-read the lesson card": back to the last content card before this question. */
+  function reread() {
+    const back = steps.slice(0, index).map((s, i) => [s, i] as const).filter(([s]) => s.kind === 'content').pop()
+    if (!back) return tryAgain()
+    setIndex(back[1])
+    setAttempt(0)
+    setSelected(null)
+    setChecked(false)
   }
 
   function advance() {
@@ -96,35 +113,24 @@ function CardRun({ mod, lesson, next, onRestart }: { mod: Module; lesson: Lesson
     setIndex((i) => i + 1)
     setSelected(null)
     setChecked(false)
+    setAttempt(0)
   }
 
-  const onEnter = question && !checked ? check : advance
+  const onEnter = question && !checked ? check : retry ? tryAgain : advance
   useLessonKeys({ enabled: !done, onEnter, question, checked, onPick: setSelected })
-
-  if (done && stage === 'payout') {
-    return (
-      <LessonPayout
-        payout={paid}
-        bankAfter={progress.bank}
-        subtitle={tUi('payoutSub', { title: t(lesson.title), c: correctCount, t: total })}
-        onDone={() => navigate('/')}
-      />
-    )
-  }
 
   if (done) {
     return (
       <LessonSummary
-        recap={lessonRecap(lesson)}
-        subtitle={tUi('lessonSummary', { n: lessonsFor(mod).findIndex((l) => l.id === lesson.id) + 1, title: t(lesson.title) })}
+        subtitle={tUi('lessonSummaryBank', { title: t(lesson.title), money: moneyText(progress.bank) })}
         seconds={Math.round((Date.now() - startedAt.current) / 1000)}
         payout={pays ? paid : undefined}
         correct={correctCount}
         total={total}
         action={tUi('lessonContinue')}
-        onAction={() => (paid > 0 ? setStage('payout') : navigate(next ? learnHref(mod.courseId, mod.id, next.id) : '/'))}
-        secondary={tUi('lessonAgain')}
-        onSecondary={onRestart}
+        onAction={() => navigate('/')}
+        secondary={correctCount < total ? tUi('reviewMyMistake') : undefined}
+        onSecondary={() => navigate(`/course/${mod.courseId}/review`)}
       />
     )
   }
@@ -134,7 +140,7 @@ function CardRun({ mod, lesson, next, onRestart }: { mod: Module; lesson: Lesson
   return (
     <ModuleQuestionsContext.Provider value={mod.questions}>
       <div className={styles.lesson}>
-        <LessonTopBar quitTo="/" done={index + (checked ? 1 : 0)} total={steps.length} />
+        <LessonTopBar quitTo="/" done={index + (settled ? 1 : 0)} total={steps.length} />
 
         {step.kind === 'content' ? (
           // key: a new card replays the entrance animation.
@@ -157,6 +163,7 @@ function CardRun({ mod, lesson, next, onRestart }: { mod: Module; lesson: Lesson
               kicker={tUi('quickCheck')}
               selected={selected}
               checked={checked}
+              reveal={!retry}
               onSelect={setSelected}
             />
           </div>
@@ -167,10 +174,11 @@ function CardRun({ mod, lesson, next, onRestart }: { mod: Module; lesson: Lesson
         ) : (
           <LessonFooter
             tone={question ? (isCorrect ? 'right' : 'wrong') : undefined}
-            feedback={question && <AnswerFeedback question={question} correct={isCorrect} pays={pays} />}
-            mascot={question ? undefined : 'point'}
-            action={question ? continueLabel : tUi('nextBtn')}
-            onAction={advance}
+            feedback={question && <AnswerFeedback question={question} correct={isCorrect} pays={pays} firstTry={retry} />}
+            action={question ? (retry ? tUi('tryAgain') : continueLabel) : tUi('nextBtn')}
+            onAction={retry ? tryAgain : advance}
+            secondary={retry ? tUi('reread') : undefined}
+            onSecondary={reread}
           />
         )}
       </div>

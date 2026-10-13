@@ -1,23 +1,28 @@
-/* Lesson screens (designs 07–11, 19): full-screen on paper, saffron progress, bottom sheet for feedback. */
+/* Lesson screens (garden design): close + blue progress, a big prompt, soft answer cards, a mascot beside a pill
+   "Check answer", green and red feedback panels, and "Lesson complete!". */
 .lesson {
-  padding: 24px 24px 150px;
+  padding: 40px 24px 150px;
   min-block-size: 100dvh;
+  box-sizing: border-box;
 }
 
 /* ---------- Top bar ---------- */
 .top {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-block-end: 36px;
+  gap: 12px;
+  margin-block-end: 28px;
 }
 .quit {
-  color: var(--brand);
+  inline-size: 44px;
+  block-size: 44px;
+  margin-inline-start: -10px;
   display: grid;
-  padding: 4px;
+  place-items: center;
+  color: var(--indigo);
 }
 .counter {
-  font-size: 0.95rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
@@ -25,79 +30,106 @@
 }
 
 .kicker {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--accent-ink);
-  margin-block-end: 8px;
+  color: var(--blue-text);
 }
 .prompt {
-  font-size: 1.75rem;
-  line-height: 1.22;
-  margin-block-end: 22px;
-  color: var(--brand);
+  font-size: 1.6875rem;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin-block: 8px 24px;
+  color: var(--indigo);
 }
 .options {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
-/* ---------- Bottom: action beside AbuShreek, or the feedback sheet ---------- */
+/* ---------- Bottom: the mascot beside a pill, or the feedback panel ---------- */
 .footer {
   position: fixed;
   inset-inline: 0;
   inset-block-end: 0;
   max-inline-size: var(--app-max);
   margin-inline: auto;
+  box-sizing: border-box;
   display: flex;
   align-items: flex-end;
-  gap: 16px;
-  padding: 16px 24px calc(20px + env(safe-area-inset-bottom));
-  background: linear-gradient(to top, var(--paper) 70%, transparent);
+  gap: 12px;
+  padding: 12px 24px calc(28px + env(safe-area-inset-bottom));
   z-index: 10;
+}
+.footMascot {
+  flex-shrink: 0;
+  max-inline-size: 84px;
+  block-size: auto !important;
 }
 .compactAction {
   margin-inline-start: auto;
 }
-.footMascot {
-  flex-shrink: 0;
-  margin-block-end: -20px;
-}
 .sheetHead {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: 14px;
-  margin-block: -70px 14px;
+  margin-block: -84px 0;
 }
 .sheetMascot {
   flex-shrink: 0;
+  margin-block-end: -20px;
+  max-inline-size: 124px;
+  block-size: auto !important;
 }
 .feedback {
   flex: 1;
+  min-inline-size: 0;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px 12px;
-  padding-block-end: 8px;
+  gap: 6px 12px;
+  padding-block-start: 84px;
 }
 .feedbackTitle {
-  font-family: var(--font);
-  font-size: 2rem;
-  line-height: 1.05;
+  flex: 1;
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
 }
 .moneyPill {
-  border: 1px solid currentColor;
-  border-radius: 999px;
-  padding: 6px 14px;
+  padding: 6px 12px;
+  border-radius: 18px;
+  background: var(--card);
+  border: 1px solid var(--correct);
+  font-size: 0.875rem;
   font-weight: 700;
-  background: var(--surface);
+  color: var(--correct);
 }
 .feedbackNote {
   flex-basis: 100%;
-  font-size: 1.05rem;
-  line-height: 1.4;
+  font-size: 1rem;
+  line-height: 1.45;
+}
+.reread {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 100%;
+  min-block-size: 44px;
+  margin-block-start: 6px;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: var(--oops);
+  cursor: pointer;
+}
+.sheetHead + button {
+  margin-block-start: 14px;
 }
 
 /* ---------- Content card ---------- */
@@ -105,15 +137,16 @@
   animation: cardIn 0.25s ease-out;
 }
 .card h2 {
-  font-size: 2rem;
-  line-height: 1.12;
+  font-size: 2.25rem;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
   margin-block-end: 14px;
-  color: var(--brand);
+  color: var(--indigo);
 }
-.card > :global(p),
 .card :global(p) {
-  font-size: 1.12rem;
-  line-height: 1.55;
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--indigo) 90%, var(--white));
 }
 @keyframes cardIn {
   from {
@@ -122,140 +155,117 @@
   }
 }
 
-/* ---------- Results (Camp cleared) ---------- */
+/* ---------- Lesson complete ---------- */
 .summary {
+  position: relative;
   text-align: center;
-  padding-block-start: 12px;
-  padding-block-end: 40px;
-  min-block-size: 100dvh;
-  background:
-    radial-gradient(circle at 50% 22%, transparent 0 150px, var(--rule) 150px 151px, transparent 151px),
-    radial-gradient(circle at 50% 22%, transparent 0 260px, var(--rule) 260px 261px, transparent 261px);
+  padding-block: 0 40px;
+  overflow: hidden;
+}
+.rings {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 50%;
+  margin-inline-start: -195px;
+  pointer-events: none;
 }
 .hero {
   position: relative;
-  block-size: 260px;
   display: grid;
-  place-items: end center;
-}
-.sun {
-  position: absolute;
-  inset-block-start: 0;
-  inline-size: 220px;
-  block-size: 220px;
-  border-radius: 50%;
-  background: var(--dawn);
-  border: 2px solid var(--accent);
-}
-.heroMascot {
-  position: relative;
+  place-items: center;
+  block-size: 236px;
+  margin-block-start: 44px;
 }
 .summary h1 {
-  font-size: 2.4rem;
-  margin-block: 4px 6px;
-  color: var(--brand);
+  position: relative;
+  font-size: 2.5rem;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-block-start: 8px;
+  color: var(--indigo);
 }
 .subtitle {
-  color: var(--muted);
-  font-size: 1.05rem;
-  line-height: 1.4;
-  margin-block-end: 18px;
+  position: relative;
+  color: color-mix(in srgb, var(--indigo) 82%, var(--white));
+  font-size: 1rem;
+  line-height: 1.45;
+  margin-block: 8px 20px;
 }
 .tiles {
+  position: relative;
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: 1fr;
-  gap: 12px;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 10px;
   margin-block-end: 16px;
 }
 .tile {
-  background: var(--surface);
-  border: 2px solid var(--brand);
-  border-radius: 18px;
+  border: 2px solid var(--indigo);
+  border-radius: var(--radius-btn);
+  background: var(--card);
+  box-shadow: var(--shadow-card);
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 .tile span {
-  padding: 6px 4px;
-  font-size: 0.75rem;
+  padding: 5px 0;
+  background: var(--indigo);
+  font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--brand);
+  color: var(--white);
 }
 .tile strong {
-  padding: 14px 4px;
-  font-size: 1.5rem;
+  padding: 16px 0;
+  font-size: 1.375rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  color: var(--brand);
+  color: var(--indigo);
 }
 .tileMoney {
-  border-color: var(--accent);
+  border-color: var(--sky);
 }
 .tileMoney span {
-  background: var(--accent);
+  background: var(--blue);
 }
 .tileAcc {
-  border-color: var(--green);
+  border-color: var(--correct);
 }
 .tileAcc span {
-  background: var(--green);
-  color: var(--on-brand);
+  background: var(--correct);
 }
 .tileAcc strong {
-  color: var(--green);
-}
-.tileTime span {
-  background: var(--brand);
-  color: var(--on-brand);
+  color: var(--correct);
 }
 .weekCard {
+  position: relative;
   text-align: start;
   margin-block-end: 16px;
+  border-radius: var(--radius-pill);
 }
 .weekTitle {
   display: flex;
   align-items: center;
   gap: 10px;
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1.0625rem;
   margin-block-end: 14px;
-  color: var(--brand);
-}
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-  margin-block-end: 16px;
-}
-.chip {
-  background: var(--dawn);
-  border: 1px solid var(--accent);
-  color: var(--brand);
-  border-radius: 999px;
-  padding: 5px 14px;
-  font-size: 0.9rem;
-  font-weight: 600;
+  color: var(--indigo);
 }
 .actions {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-block-start: 8px;
+  position: relative;
+  display: grid;
+  gap: 10px;
+  margin-block-start: 22px;
 }
 .fine {
-  font-size: 0.9rem;
   color: var(--muted);
-}
-.backLink {
-  color: var(--muted);
-  font-weight: 600;
-  padding: 8px;
+  font-size: 0.75rem;
+  margin-block-end: 2px;
 }
 .emptyNote {
   color: var(--muted);
@@ -267,10 +277,22 @@
   inline-size: 72px;
   block-size: 72px;
   border-radius: 50%;
-  background: var(--dawn);
-  color: var(--accent-ink);
+  background: var(--mint);
+  color: var(--blue-text);
   font-size: 34px;
   line-height: 1;
+}
+.primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 56px;
+  border-radius: var(--radius-btn);
+  background: linear-gradient(180deg, var(--blue-light) 0%, var(--blue) 100%);
+  color: var(--white);
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: var(--shadow-cta);
 }
 @media (prefers-reduced-motion: reduce) {
   .card {

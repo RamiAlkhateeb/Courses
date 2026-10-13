@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useRef, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { getCourse } from '../../content/courses'
 import type { Question, Module } from '../../content/types'
@@ -85,18 +85,31 @@ export function QuizLesson({
   const [checked, setChecked] = useState(false)
   const [correctCount, setCorrectCount] = useState(0)
   const [done, setDone] = useState(false)
+  const [attempt, setAttempt] = useState(0) // 0 = first try; a wrong first try can be tried again, a second reveals the answer
+  const navigate = useNavigate()
+  const startedAt = useRef(Date.now())
 
   const question = questions[index]
   const isCorrect = checked && selected === question.answer
+  const retry = checked && !isCorrect && attempt === 0
+  const settled = checked && !retry
   const isLast = index === questions.length - 1
 
   function check() {
     if (selected === null || checked) return
     const right = selected === question.answer
     setChecked(true)
-    if (right) setCorrectCount((c) => c + 1)
-    recordLessonAnswer(question.id, selected, right)
+    if (attempt === 0) {
+      if (right) setCorrectCount((c) => c + 1)
+      recordLessonAnswer(question.id, selected, right)
+    }
     playAnswerSound(right)
+  }
+
+  function tryAgain() {
+    setAttempt(1)
+    setSelected(null)
+    setChecked(false)
   }
 
   function next() {
@@ -108,37 +121,42 @@ export function QuizLesson({
     setIndex((i) => i + 1)
     setSelected(null)
     setChecked(false)
+    setAttempt(0)
   }
 
-  useLessonKeys({ enabled: !done, onEnter: checked ? next : check, question, checked, onPick: setSelected })
+  useLessonKeys({ enabled: !done, onEnter: checked ? (retry ? tryAgain : next) : check, question, checked, onPick: setSelected })
 
   if (done) {
     return (
       <LessonSummary
         correct={correctCount}
         total={questions.length}
-        action={againLabel ?? tUi('lessonAgain')}
-        onAction={onRestart}
+        seconds={Math.round((Date.now() - startedAt.current) / 1000)}
+        action={tUi('lessonContinue')}
+        onAction={() => navigate('/')}
+        secondary={againLabel ?? tUi('lessonAgain')}
+        onSecondary={onRestart}
       />
     )
   }
 
   return (
     <div className={styles.lesson}>
-      <LessonTopBar quitTo={quitTo} done={index + (checked ? 1 : 0)} total={questions.length} />
+      <LessonTopBar quitTo={quitTo} done={index + (settled ? 1 : 0)} total={questions.length} />
       <QuestionCard
         question={question}
         kicker={kicker}
         selected={selected}
         checked={checked}
+        reveal={!retry}
         onSelect={setSelected}
       />
       {checked ? (
         <LessonFooter
           tone={isCorrect ? 'right' : 'wrong'}
-          feedback={<AnswerFeedback question={question} correct={isCorrect} pays={false} />}
-          action={isLast ? tUi('lessonFinish') : tUi('lessonContinue')}
-          onAction={next}
+          feedback={<AnswerFeedback question={question} correct={isCorrect} pays={false} firstTry={retry} />}
+          action={retry ? tUi('tryAgain') : isLast ? tUi('lessonFinish') : tUi('lessonContinue')}
+          onAction={retry ? tryAgain : next}
         />
       ) : (
         <LessonFooter mascot="think" compact action={tUi('check')} disabled={selected === null} onAction={check} />

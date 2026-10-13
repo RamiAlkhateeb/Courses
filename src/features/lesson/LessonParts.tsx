@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { Question } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
-import { Button, BottomSheet, Card, Coin, Icon, AnswerOption, ProgressBar, AbuShreek, type AnswerState, type MascotPose } from '../../components/ui'
+import { Button, BottomSheet, Card, Coin, Flame, Icon, AnswerOption, ProgressBar, AbuShreek, type AnswerState, type MascotPose } from '../../components/ui'
+import { Sprout } from '../../components/GardenArt'
 import { currentStreak, localDay } from '../../domain/progress'
 import { PAY_PER_CORRECT } from '../../domain/money'
 import { Money } from '../../components/Money'
@@ -12,10 +13,9 @@ import { WeekDots } from '../../components/WeekStrip'
 import { useProgress } from '../../state/useProgress'
 import { optionOrder } from '../../domain/optionOrder'
 import { playSound } from '../../state/sound'
-import type { Recap } from '../../domain/lessons'
 import styles from './LessonPage.module.css'
 
-/** ✕ (quit), the saffron progress bar and an "n/total" counter (designs 07–10). */
+/** ✕ (quit), the blue progress bar and an "n/total" counter. */
 export function LessonTopBar({ quitTo, done, total }: { quitTo: string; done: number; total: number }) {
   const { t } = useTranslation()
   return (
@@ -37,12 +37,15 @@ export function QuestionCard({
   kicker,
   selected,
   checked,
+  reveal = true,
   onSelect,
 }: {
   question: Question
   kicker?: string
   selected: number | null
   checked: boolean
+  /** Show which option was right. False after a first wrong try: only the wrong pick is marked, so they can try again. */
+  reveal?: boolean
   onSelect: (option: number) => void
 }) {
   const t = useLocalized()
@@ -58,10 +61,12 @@ export function QuestionCard({
             ? selected === i
               ? 'selected'
               : 'idle'
-            : i === question.answer
-              ? 'correct'
-              : i === selected
-                ? 'wrong'
+            : i === selected
+              ? i === question.answer
+                ? 'correct'
+                : 'wrong'
+              : reveal && i === question.answer
+                ? 'correct'
                 : 'dim'
           return (
             <AnswerOption
@@ -90,6 +95,8 @@ export function LessonFooter({
   onAction,
   mascot,
   compact,
+  secondary,
+  onSecondary,
 }: {
   tone?: 'right' | 'wrong'
   feedback?: ReactNode
@@ -99,6 +106,9 @@ export function LessonFooter({
   mascot?: MascotPose
   /** A compact button at the end of the row ("Check answer") instead of a full-width bar */
   compact?: boolean
+  /** A text link under the sheet's button ("Re-read the lesson card") */
+  secondary?: string
+  onSecondary?: () => void
 }) {
   if (tone) {
     const right = tone === 'right'
@@ -112,6 +122,11 @@ export function LessonFooter({
         <Button key={action} variant={right ? 'correct' : 'oops'} onClick={onAction} autoFocus>
           {action}
         </Button>
+        {secondary && onSecondary && (
+          <button type="button" className={styles.reread} onClick={onSecondary}>
+            {secondary}
+          </button>
+        )}
       </BottomSheet>
     )
   }
@@ -125,23 +140,25 @@ export function LessonFooter({
   )
 }
 
-/** "Spot on! +$10" (when this lesson pays) or "Not quite. The answer: …" for a checked question. */
-export function AnswerFeedback({ question, correct, pays }: { question: Question; correct: boolean; pays: boolean }) {
+/** "Spot on! +$10" (when this lesson pays); a first wrong try is nudged to have another go; a second reveals the answer. */
+export function AnswerFeedback({ question, correct, pays, firstTry = false }: { question: Question; correct: boolean; pays: boolean; firstTry?: boolean }) {
   const t = useLocalized()
   const { t: tUi } = useTranslation()
-  return correct ? (
-    <>
-      <strong className={styles.feedbackTitle}>{tUi('spotOn')}</strong>
-      {pays && (
-        <span className={styles.moneyPill}>
-          <Money amount={PAY_PER_CORRECT} sign />
-        </span>
-      )}
-    </>
-  ) : (
+  if (correct)
+    return (
+      <>
+        <strong className={styles.feedbackTitle}>{tUi('spotOn')}</strong>
+        {pays && (
+          <span className={styles.moneyPill}>
+            <Money amount={PAY_PER_CORRECT} sign />
+          </span>
+        )}
+      </>
+    )
+  return (
     <>
       <strong className={styles.feedbackTitle}>{tUi('notQuiteTitle')}</strong>
-      <span className={styles.feedbackNote}>{tUi('correctAnswerIs', { answer: t(question.options[question.answer]) })}</span>
+      <span className={styles.feedbackNote}>{firstTry ? tUi('notQuiteTry') : tUi('correctAnswerIs', { answer: t(question.options[question.answer]) })}</span>
     </>
   )
 }
@@ -183,7 +200,7 @@ export function useLessonKeys(opts: {
   }, [opts.enabled])
 }
 
-/** Design 11 "Camp cleared!": AbuShreek cheers, earned / accuracy / time tiles, the week's dots, then the actions. */
+/** "Lesson complete!": the mascot cheers, then EARNED / ACCURACY / TIME tiles, the week's streak, and the actions. */
 export function LessonSummary({
   correct,
   total,
@@ -194,22 +211,19 @@ export function LessonSummary({
   onAction,
   secondary,
   onSecondary,
-  recap,
 }: {
   correct: number
   total: number
   seconds?: number
-  /** Dollars this lesson paid into the bank. Undefined: a replay or practice run, which pays nothing (and says so) */
+  /** Dollars this lesson paid into the wallet. Undefined: a replay or practice run, which pays nothing (and says so) */
   payout?: number
   subtitle?: string
   action: string
   onAction: () => void
+  /** "Review my mistake": only offered when something was missed */
   secondary?: string
   onSecondary?: () => void
-  /** "What you learned" (card lessons only) */
-  recap?: Recap | null
 }) {
-  const t = useLocalized()
   const { t: tUi } = useTranslation()
   const { progress } = useProgress()
   const streak = currentStreak(progress.streak, localDay())
@@ -219,18 +233,28 @@ export function LessonSummary({
 
   return (
     <div className={`${styles.lesson} ${styles.summary}`}>
+      <svg className={styles.rings} width="390" height="460" viewBox="0 0 390 460" fill="none" aria-hidden focusable="false">
+        <g stroke="var(--indigo)" strokeOpacity="0.08" strokeWidth="1.2">
+          {[120, 170, 220, 270, 320].map((rx) => (
+            <ellipse key={rx} cx="195" cy="170" rx={rx} ry={Math.round(rx * 0.63)} />
+          ))}
+        </g>
+        <circle cx="195" cy="150" r="108" fill="var(--mint)" stroke="var(--sky)" strokeWidth="1.5" />
+        <path d="M70 70 L74 78 L82 79 L76 85 L78 93 L70 89 L62 93 L64 85 L58 79 L66 78 Z" fill="var(--sky)" />
+        <path d="M330 150 L333 156 L339 157 L335 161 L336 167 L330 164 L324 167 L325 161 L321 157 L327 156 Z" fill="var(--indigo)" />
+      </svg>
+      <Sprout size={54} style={{ position: 'absolute', insetInlineEnd: 44, insetBlockStart: 34 }} />
       <div className={styles.hero}>
-        <span className={styles.sun} aria-hidden />
-        <AbuShreek pose="cheer" height={250} className={styles.heroMascot} />
+        <AbuShreek pose="cheer" height={220} />
       </div>
-      <h1>{tUi('campCleared')}</h1>
+      <h1>{tUi('lessonComplete')}</h1>
       {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
       <div className={styles.tiles}>
         {payout !== undefined && payout > 0 && (
           <div className={`${styles.tile} ${styles.tileMoney}`}>
             <span>{tUi('earnedTile')}</span>
             <strong>
-              <Coin size={22} /> <Money amount={payout} />
+              <Coin size={20} /> <Money amount={payout} sign />
             </strong>
           </div>
         )}
@@ -249,19 +273,10 @@ export function LessonSummary({
       </div>
       <Card className={styles.weekCard}>
         <p className={styles.weekTitle}>
-          <Icon name="flag" size={22} /> {tUi('daysOnPath', { count: streak })}
+          <Flame size={22} /> {tUi('daysOnPath', { count: streak })}
         </p>
         <WeekDots activity={progress.activity} />
       </Card>
-      {recap && (
-        <div className={styles.chips}>
-          {recap.items.map((item, k) => (
-            <span key={k} className={styles.chip}>
-              {t(item)}
-            </span>
-          ))}
-        </div>
-      )}
       <div className={styles.actions}>
         <p className={styles.fine}>{payout === undefined ? tUi('practiceNoPay') : tUi('educationalOnly')}</p>
         <Button onClick={onAction} autoFocus>
@@ -272,9 +287,6 @@ export function LessonSummary({
             {secondary}
           </Button>
         )}
-        <Link className={styles.backLink} to="/">
-          {tUi('tabPath')}
-        </Link>
       </div>
     </div>
   )
