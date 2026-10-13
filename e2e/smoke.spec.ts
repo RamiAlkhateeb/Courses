@@ -123,20 +123,19 @@ for (const route of ['./', 'me', 'playground']) {
   })
 }
 
-test('fund the Playground, buy Safe Savings, and see what happened', async ({ page }) => {
+test('the Playground uses the one wallet: buy Safe Savings, time starts, the bank moves in', async ({ page }) => {
   const errors = watchErrors(page)
-  const lessons = ['investing/basics/why', 'investing/basics/compounding']
-  await onboarded(page, { 'progress:v2': JSON.stringify({ bank: 1240, lessonsDone: lessons }) })
-  await page.goto('playground/fund')
-  await page.getByRole('button', { name: '$500', exact: true }).click()
-  await page.getByRole('button', { name: /^Move/ }).first().click()
-  await expect(page).toHaveURL(/\/playground$/)
+  await onboarded(page, { 'progress:v2': JSON.stringify({ bank: 1240 }) })
+  await page.goto('playground')
+  await expect(page.getByText('Time starts when you make your first buy', { exact: true })).toBeVisible()
+  await expect(page.getByText('Educational only, not financial advice')).toBeVisible()
   await page.getByRole('button', { name: 'Buy Safe Savings' }).click()
   await page.getByRole('button', { name: '$100', exact: true }).click()
   await page.getByRole('button', { name: /^Buy .*100/ }).click()
-  await expect(page).toHaveURL(/\/playground\/debrief$/)
-  await expect(page.getByText('Educational. Not financial advice.')).toBeVisible()
-  const bank = JSON.parse((await page.evaluate(() => localStorage.getItem('progress:v2')))!).bank
-  expect(bank).toBe(740) // $500 moved out; the bank never changes from trades
+  await expect(page.getByRole('button', { name: 'Buy or sell' })).toBeVisible()
+  const saved = await page.evaluate(() => ({ bank: JSON.parse(localStorage.getItem('progress:v2')!).bank, pg: JSON.parse(localStorage.getItem('playground:v1')!) }))
+  expect(saved.bank).toBe(0) // the whole wallet is in the Playground
+  expect(saved.pg.status).toBe('running')
+  expect(saved.pg.cash + saved.pg.holdings.savings.units * 1).toBeCloseTo(1240 - 1, 0) // minus the 1% fee on $100
   expect(errors).toEqual([])
 })

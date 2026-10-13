@@ -38,16 +38,15 @@ export function scheduleEvents(seed: number): ScheduledEvent[] {
   return out
 }
 
-const memo = new Map<string, Market>()
+const memo = new Map<number, Market>()
 
-/** The market for a seed. `withEvents: false` is a season with no news (the player has not unlocked it yet). */
-export function buildMarket(seed: number, withEvents: boolean): Market {
-  const key = `${seed}:${withEvents}`
-  const hit = memo.get(key)
+/** The market for a seed (every season has market news). */
+export function buildMarket(seed: number): Market {
+  const hit = memo.get(seed)
   if (hit) return hit
   const T = WEEKS_PER_SEASON
   const W = CONFIG.weeksPerYear
-  const events = withEvents ? scheduleEvents(seed) : []
+  const events = scheduleEvents(seed)
   const price = {} as Record<AssetId, number[]>
   for (const id of ASSET_IDS) price[id] = [ASSETS[id].startPrice]
   const rate = [CONFIG.startRate]
@@ -83,6 +82,6 @@ export function buildMarket(seed: number, withEvents: boolean): Market {
   }
   const market: Market = { seed, price, rate, inflation, cpi, events }
   if (memo.size > 8) memo.clear()
-  memo.set(key, market)
+  memo.set(seed, market)
   return market
 }

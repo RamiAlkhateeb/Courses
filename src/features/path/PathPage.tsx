@@ -6,6 +6,7 @@ import { MoneyChip } from '../../components/MoneyChip'
 import { useLocalized } from '../../content/useLocalized'
 import { currentStreak, localDay } from '../../domain/progress'
 import { useProgress } from '../../state/useProgress'
+import { useWallet } from '../../state/usePlayground'
 import { useTrail, useTrailId, type Chapter } from '../../state/useTrail'
 import { UnitPath, type NodeKind } from './UnitPath'
 import styles from './PathPage.module.css'
@@ -32,6 +33,7 @@ export function PathPage() {
   const tc = useLocalized()
   const { course, chapters, loaded, next } = useTrail(useTrailId())
   const { progress } = useProgress()
+  const wallet = useWallet()
   const streak = currentStreak(progress.streak, localDay())
 
   const currentEl = useRef<HTMLElement | null>(null)
@@ -57,7 +59,7 @@ export function PathPage() {
           <Flame size={20} />
           {streak}
         </StatPill>
-        <MoneyChip amount={progress.bank} />
+        <MoneyChip amount={wallet} />
       </header>
 
       {!loaded && <p className={styles.loading}>{t('loading')}</p>}

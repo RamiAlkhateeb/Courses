@@ -8,6 +8,7 @@ import { Card, Coin, Flame, Icon, type IconName } from '../../components/ui'
 import { useLocalized } from '../../content/useLocalized'
 import { currentStreak, localDay } from '../../domain/progress'
 import { useProgress } from '../../state/useProgress'
+import { useWallet } from '../../state/usePlayground'
 import { accountsEnabled } from '../../state/supabase'
 import { useAuth } from '../../state/auth'
 import { useSyncStatus } from '../../state/sync'
@@ -29,6 +30,7 @@ export function MePage() {
   const { t } = useTranslation()
   const tc = useLocalized()
   const { progress } = useProgress()
+  const wallet = useWallet()
   const { minutes } = useProfile()
   const streak = currentStreak(progress.streak, localDay())
   const { course, totalLessons, doneLessons } = useTrail(useTrailId())
@@ -40,7 +42,7 @@ export function MePage() {
 
   const stats: { icon?: IconName | 'flame'; value: ReactNode; label: string }[] = [
     { icon: 'flame', value: String(streak), label: t('dayStreak') },
-    { value: <Money amount={progress.bank} />, label: t('playMoneyShort') },
+    { value: <Money amount={wallet} />, label: t('playMoneyShort') },
     { icon: 'check', value: String(progress.lessonsDone.length), label: t('lessonsDoneShort') },
   ]
   const milestones: { icon: IconName; label: string; got: boolean }[] = [

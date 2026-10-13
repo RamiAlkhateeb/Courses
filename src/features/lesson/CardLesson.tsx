@@ -9,6 +9,7 @@ import type { Module } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
 import { useModule } from '../../content/useModule'
 import { useProgress } from '../../state/useProgress'
+import { useWallet } from '../../state/usePlayground'
 import { ModuleQuestionsContext } from '../../components/content/moduleQuestions'
 import { payoutFor } from '../../domain/progress'
 import { lessonKey, lessonsFor, type Lesson } from '../../domain/lessons'
@@ -45,6 +46,7 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
   const { t: tUi } = useTranslation()
   const navigate = useNavigate()
   const { progress, markRead, recordLessonAnswer, completeLesson } = useProgress()
+  const wallet = useWallet()
   const { steps } = lesson
   const total = steps.filter((s) => s.kind === 'question').length
   const startedAt = useRef(Date.now())
@@ -122,7 +124,7 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
   if (done) {
     return (
       <LessonSummary
-        subtitle={tUi('lessonSummaryBank', { title: t(lesson.title), money: moneyText(progress.bank) })}
+        subtitle={tUi('lessonSummaryBank', { title: t(lesson.title), money: moneyText(wallet) })}
         seconds={Math.round((Date.now() - startedAt.current) / 1000)}
         payout={pays ? paid : undefined}
         correct={correctCount}

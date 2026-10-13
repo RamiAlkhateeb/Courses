@@ -1,14 +1,12 @@
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { BottomSheet, Button, Icon } from '../../components/ui'
 import { moneyText } from '../../i18n'
 import { Change } from '../../components/Change'
 import { Money } from '../../components/Money'
 import { RiskPills } from '../../components/RiskPills'
-import { ASSETS, CONFIG, type AssetId } from '../../domain/playground/config'
+import { ASSETS, ASSET_IDS, CONFIG, type AssetId } from '../../domain/playground/config'
 import { cents, feeFor, marketOf, maxBuy, priceOf, valueOf, type PlaygroundState } from '../../domain/playground/engine'
-import { ASSET_IDS } from '../../domain/playground/config'
 import { assetName, ASSET_DOT } from './shared'
 import { Chart } from './Chart'
 import styles from './Playground.module.css'
@@ -18,7 +16,6 @@ type Side = 'buy' | 'sell'
 /** Designs 24 and 33: choose what to trade, then a Buy/Sell sheet with the price, risk, amount, fee and what is left. */
 export function TradeSheet({
   state,
-  unlocked,
   initial,
   side: initialSide = 'buy',
   onClose,
@@ -26,7 +23,6 @@ export function TradeSheet({
   onSell,
 }: {
   state: PlaygroundState
-  unlocked: AssetId[]
   /** Open straight on this asset (tapping a holding); otherwise start with the list */
   initial?: AssetId
   side?: Side
@@ -49,23 +45,17 @@ export function TradeSheet({
             <>
               <h2 className={styles.sheetTitle}>{t('pg_trade_what')}</h2>
               <div className={styles.assetList}>
-                {ASSET_IDS.map((id) => {
-                  const open = unlocked.includes(id)
-                  return (
-                    <button key={id} type="button" disabled={!open} className={`${styles.assetRow} ${open ? '' : styles.assetLocked}`} onClick={() => setAsset(id)}>
-                      <span className={styles.dot} style={{ background: ASSET_DOT[id] }} />
-                      <span className={styles.assetText}>
-                        <strong>{assetName(t, id)}</strong>
-                        <small>{open ? t(`pg_asset_${id}_blurb`) : t('pg_unlocks_after', { n: ASSETS[id].unlockAfterLessons })}</small>
-                      </span>
-                      {open ? <RiskPills level={ASSETS[id].risk} /> : <Icon name="lock" size={20} />}
-                    </button>
-                  )
-                })}
+                {ASSET_IDS.map((id) => (
+                  <button key={id} type="button" className={styles.assetRow} onClick={() => setAsset(id)}>
+                    <span className={styles.dot} style={{ background: ASSET_DOT[id] }} />
+                    <span className={styles.assetText}>
+                      <strong>{assetName(t, id)}</strong>
+                      <small>{t(`pg_asset_${id}_blurb`)}</small>
+                    </span>
+                    <RiskPills level={ASSETS[id].risk} />
+                  </button>
+                ))}
               </div>
-              <Link to="/playground/unlocks" className={styles.unlockLink}>
-                {t('pg_what_unlocks')} ›
-              </Link>
               <p className={styles.fine}>{t('pg_play_money_not_advice')}</p>
             </>
           )}

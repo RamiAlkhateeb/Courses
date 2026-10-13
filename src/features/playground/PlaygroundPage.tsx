@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { AbuShreek, Button, Icon, type IconName } from '../../components/ui'
 import { Change } from '../../components/Change'
@@ -8,31 +8,29 @@ import { moneyText } from '../../i18n'
 import { ASSETS, ASSET_IDS, type AssetId } from '../../domain/playground/config'
 import { gain, marketOf, maxDrawdown, netWorth, realHistory, valueOf, type Speed } from '../../domain/playground/engine'
 import { EVENTS } from '../../domain/playground/events'
-import { useProgress } from '../../state/useProgress'
 import { usePlayground, usePlaygroundClock } from '../../state/usePlayground'
 import { assetName, ASSET_DOT, riskWord, yearOf } from './shared'
 import { Chart } from './Chart'
-import { NewsOverlay, PausedOverlay } from './Overlays'
+import { NewsOverlay } from './Overlays'
 import { TradeSheet } from './TradeSheet'
 import styles from './Playground.module.css'
 
-const SPEEDS: { speed: Speed; icon: IconName; key: 'pg_pause' | 'pg_speed_1' | 'pg_speed_2' | 'pg_speed_4' }[] = [
+const SPEEDS: { speed: Speed; icon: IconName; key: 'pg_pause' | 'pg_speed_1' | 'pg_speed_2' | 'pg_speed_3' }[] = [
   { speed: 0, icon: 'pause', key: 'pg_pause' },
   { speed: 1, icon: 'play', key: 'pg_speed_1' },
   { speed: 2, icon: 'fast', key: 'pg_speed_2' },
-  { speed: 4, icon: 'faster', key: 'pg_speed_4' },
+  { speed: 3, icon: 'faster', key: 'pg_speed_3' },
 ]
 
-/** The Playground tab (designs 23, 27, 30): net worth, the chart, the clock, what you hold, and Buy or sell. */
+/** The Playground tab: net worth, the chart, the clock, what you hold, and Buy or sell. */
 export function PlaygroundPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const pg = usePlayground()
-  const { state, unlocked } = pg
+  const { state } = pg
   const [sheet, setSheet] = useState<{ asset?: AssetId; side?: 'buy' | 'sell' } | null>(null)
   const [reading, setReading] = useState(false)
-  const clock = usePlaygroundClock(state, sheet !== null)
-  useProgress() // keeps the bank-dependent screens fresh
+  usePlaygroundClock(state, sheet !== null)
 
   const market = marketOf(state)
   const net = netWorth(state, market)
@@ -53,12 +51,7 @@ export function PlaygroundPage() {
 
   return (
     <div className={styles.page}>
-      <header className={styles.head}>
-        <h1>{t('pg_title')}</h1>
-        <Button variant="indigo" size="sm" onClick={() => navigate('/playground/fund')}>
-          <Icon name="plus" size={18} /> {t('pg_add_funds')}
-        </Button>
-      </header>
+      <h1 className={styles.title}>{t('pg_title')}</h1>
 
       <div className={styles.netRow}>
         <div>
@@ -74,11 +67,6 @@ export function PlaygroundPage() {
             )}
           </p>
         </div>
-        {running && (
-          <Link to="/playground/risk" className={styles.riskLink}>
-            {t('pg_risk_check')} ›
-          </Link>
-        )}
       </div>
 
       <div className={styles.chartCard}>
@@ -124,7 +112,13 @@ export function PlaygroundPage() {
             </button>
           ))}
         </span>
-        <span className={styles.muted}>{t('pg_years_per_minute', { count: state.status === 'running' && state.speed ? state.speed : 1 })}</span>
+        {state.status === 'running' ? (
+          <Button size="sm" className={styles.buyBtn} disabled={state.cash <= 0 && holdings.length === 0} onClick={() => setSheet({})}>
+            <Icon name="plus" size={18} /> {t('pg_buy_or_sell')}
+          </Button>
+        ) : (
+          <span className={styles.muted}>{t('pg_years_per_minute', { count: 1 })}</span>
+        )}
       </div>
 
       <ul className={styles.holdings}>
@@ -175,51 +169,25 @@ export function PlaygroundPage() {
         <div className={styles.emptyCard}>
           <div className={styles.emptyRow}>
             <AbuShreek pose="point" height={110} />
-            <p className={styles.bubble}>{state.cash > 0 ? t('pg_empty_bubble') : t('pg_unfunded_bubble')}</p>
+            <p className={styles.bubble}>{t('pg_empty_bubble')}</p>
           </div>
-          {state.cash <= 0 ? (
-            <Button onClick={() => navigate('/playground/fund')}>{t('pg_fund_cta')}</Button>
-          ) : unlocked.includes('savings') ? (
-            <Button onClick={() => setSheet({ asset: 'savings', side: 'buy' })}>{t('pg_buy_safe')}</Button>
-          ) : (
-            <Button variant="secondary" onClick={() => navigate('/')}>
-              {t('pg_unlock_first')}
-            </Button>
-          )}
-        </div>
-      )}
-
-      <p className={styles.seasonLinks}>
-        <Link to="/playground/missions">{t('pg_missions')}</Link>
-        <span aria-hidden> · </span>
-        <Link to="/playground/seasons">{t('pg_past_seasons')}</Link>
-      </p>
-      <p className={styles.fine}>{t('pg_play_money_simulated')}</p>
-
-      {state.status !== 'ended' && !empty && (
-        <div className={styles.dock}>
-          <AbuShreek pose="think" height={96} className={styles.dockMascot} />
-          <Button disabled={state.cash <= 0 && holdings.length === 0} onClick={() => setSheet({})}>
-            <Icon name="plus" size={20} /> {t('pg_buy_or_sell')}
+          <Button onClick={() => setSheet({ asset: 'savings', side: 'buy' })} disabled={state.cash <= 0}>
+            {t('pg_buy_safe')}
           </Button>
         </div>
       )}
 
+      <p className={styles.fine}>{t('pg_play_money_simulated')}</p>
+      <p className={styles.fine}>{t('educationalOnly')}</p>
+
       {sheet && (
         <TradeSheet
           state={state}
-          unlocked={unlocked}
           initial={sheet.asset}
           side={sheet.side}
           onClose={() => setSheet(null)}
-          onBuy={(asset, amount) => {
-            const r = pg.buy(asset, amount)
-            if (r.ok) navigate('/playground/debrief', { state: r.trade })
-          }}
-          onSell={(asset, amount) => {
-            const r = pg.sell(asset, amount)
-            if (r.ok) navigate('/playground/debrief', { state: r.trade })
-          }}
+          onBuy={(asset, amount) => pg.buy(asset, amount).ok && setSheet(null)}
+          onSell={(asset, amount) => pg.sell(asset, amount).ok && setSheet(null)}
         />
       )}
 
@@ -235,7 +203,6 @@ export function PlaygroundPage() {
         />
       )}
 
-      {clock.away && !state.pendingEvent && <PausedOverlay year={year} net={net} speed={state.speed || 1} onResume={clock.resume} onStay={clock.stayPaused} />}
     </div>
   )
 }

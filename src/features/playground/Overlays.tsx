@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next'
 import { AbuShreek, Button, Icon } from '../../components/ui'
-import { Money } from '../../components/Money'
 import { ASSET_IDS } from '../../domain/playground/config'
 import { direction, EVENTS, type EventId } from '../../domain/playground/events'
 import { assetName } from './shared'
@@ -48,47 +47,6 @@ export function NewsOverlay({ id, year, paused, onContinue }: { id: EventId; yea
       <div className={styles.newsFoot}>
         <Button onClick={onContinue} autoFocus>
           {t('continue')}
-        </Button>
-      </div>
-    </div>
-  )
-}
-
-/** Design 37: "Time stood still": shown when you come back, because markets only move while you watch. */
-export function PausedOverlay({ year, net, speed, onResume, onStay }: { year: number; net: number; speed: number; onResume: () => void; onStay: () => void }) {
-  const { t } = useTranslation()
-  return (
-    <div className={styles.paused} role="dialog" aria-modal="true" aria-label={t('pg_time_stood_still')}>
-      <div className={styles.pauseTop}>
-        <span className={styles.pauseDisc}>
-          <Icon name="pause" size={42} />
-        </span>
-        <h1>{t('pg_time_stood_still')}</h1>
-        <p className={styles.muted}>{t('pg_still_year', { n: year })}</p>
-      </div>
-      <div className={styles.pauseCard}>
-        <div>
-          <p className={styles.kicker}>{t('pg_net_worth')}</p>
-          <strong className={styles.amount}>
-            <Money amount={net} />
-          </strong>
-        </div>
-        <div className={styles.pauseSpeed}>
-          <p className={styles.kicker}>{t('pg_speed')}</p>
-          <strong>{t('pg_years_per_minute', { count: speed })}</strong>
-        </div>
-      </div>
-      <div className={styles.newsGuide}>
-        <AbuShreek pose="wave" height={130} />
-        <p className={styles.bubble}>{t('pg_welcome_back')}</p>
-      </div>
-      <div className={styles.newsFoot}>
-        <p className={styles.fine}>{t('pg_play_money_simulated')}</p>
-        <Button onClick={onResume} autoFocus>
-          {t('pg_resume')}
-        </Button>
-        <Button variant="secondary" onClick={onStay}>
-          {t('pg_stay_paused')}
         </Button>
       </div>
     </div>

@@ -35,14 +35,7 @@ export const router = createBrowserRouter(
             { path: 'me', ...page(() => import('../features/me/MePage'), 'MePage') },
           ],
         },
-        { path: 'playground/fund', ...page(() => import('../features/playground/FundPage'), 'FundPage') },
-        { path: 'playground/unlocks', ...page(() => import('../features/playground/UnlocksPage'), 'UnlocksPage') },
-        { path: 'playground/risk', ...page(() => import('../features/playground/RiskPage'), 'RiskPage') },
-        { path: 'playground/missions', ...page(() => import('../features/playground/SeasonPages'), 'MissionsPage') },
-        { path: 'playground/summary', ...page(() => import('../features/playground/SeasonPages'), 'SummaryPage') },
-        { path: 'playground/rewind', ...page(() => import('../features/playground/SeasonPages'), 'RewindPage') },
-        { path: 'playground/seasons', ...page(() => import('../features/playground/SeasonPages'), 'SeasonsPage') },
-        { path: 'playground/debrief', ...page(() => import('../features/playground/DebriefPage'), 'DebriefPage') },
+        { path: 'playground/summary', ...page(() => import('../features/playground/SummaryPage'), 'SummaryPage') },
         { path: 'account', ...page(() => import('../features/account/AccountPage'), 'AccountPage') },
         {
           // A roadmap lesson: small cards from one section, then its questions.

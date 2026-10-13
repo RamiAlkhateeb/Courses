@@ -1,8 +1,6 @@
-import { ASSET_IDS, CONFIG, MISSIONS, MISSION_IDS, type AssetId, type Habit, type MissionId } from './config'
-import { marketOf, maxDrawdown, realHistory, type PlaygroundState, type Trade } from './engine'
+import { ASSET_IDS, CONFIG, type AssetId } from './config'
+import { maxDrawdown, realHistory, type PlaygroundState, type Trade } from './engine'
 import { biggestBet } from './risk'
-
-export const missionsUnlocked = (lessonsDone: number): MissionId[] => MISSION_IDS.filter((id) => lessonsDone >= MISSIONS[id].unlockAfterLessons)
 
 /** Units held of each asset just after the trades up to and including week `tick` (replayed from the trade list). */
 export function unitsAt(trades: Trade[], tick: number): Partial<Record<AssetId, number>> {
@@ -28,21 +26,10 @@ export function wasSpread(trades: Trade[]): boolean {
   return false
 }
 
-/** Was invested at the moment every piece of news landed (and the season had some). */
-export function stayedThroughNews(s: PlaygroundState): boolean {
-  const seen = marketOf(s).events.filter((e) => e.tick <= s.tick)
-  return seen.length > 0 && seen.every((e) => held(unitsAt(s.trades, e.tick)).length > 0)
-}
-
 /** The season finished with more than it started with, in the dollars of its first week. */
 export function beatInflation(s: PlaygroundState): boolean {
   const real = realHistory(s)
   return s.funded > 0 && real.length > 0 && real[real.length - 1] > s.funded
-}
-
-/** Which of the picked missions the season meets (judged on the whole season; live while it runs). */
-export function metMissions(s: PlaygroundState): MissionId[] {
-  return s.missions.filter((id) => (id === 'beat-inflation' ? beatInflation(s) : id === 'rate-rise' ? stayedThroughNews(s) : wasSpread(s.trades)))
 }
 
 export interface Insight {
@@ -56,7 +43,7 @@ const DIP_WINDOW = 26
 const BIG_BET = 0.7
 
 /** What helped and what hurt in a finished season, from the trades alone: habits and costs, never "you should have". */
-export function insights(s: PlaygroundState): { helped: Insight[]; hurt: Insight[]; habit: Habit } {
+export function insights(s: PlaygroundState): { helped: Insight[]; hurt: Insight[] } {
   const helped: Insight[] = []
   const hurt: Insight[] = []
   const worst = maxDrawdown(s.history, s.historyStart)
@@ -71,7 +58,6 @@ export function insights(s: PlaygroundState): { helped: Insight[]; hurt: Insight
   const bet = biggestBet(s)
   if (bet && bet.share >= BIG_BET && bet.id !== 'savings') hurt.push({ key: 'big_bet', vars: { pct: Math.round(bet.share * 100) } })
   if (s.funded > 0 && !beatInflation(s)) hurt.push({ key: 'behind' })
-  const habit: Habit = helped.some((i) => i.key === 'stayed') ? 'stayed' : helped.some((i) => i.key === 'spread') ? 'spread' : helped.some((i) => i.key === 'beat') ? 'beat' : ''
-  return { helped: helped.slice(0, 3), hurt: hurt.slice(0, 3), habit }
+  return { helped: helped.slice(0, 3), hurt: hurt.slice(0, 3) }
 }
 

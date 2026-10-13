@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { currentStreak, localDay } from '../domain/progress'
 import { useProgress } from '../state/useProgress'
+import { useWallet } from '../state/usePlayground'
 import { MoneyChip } from './MoneyChip'
 import styles from './TopBar.module.css'
 
@@ -9,6 +10,7 @@ import styles from './TopBar.module.css'
 export function TopBar() {
   const { t } = useTranslation()
   const { progress } = useProgress()
+  const wallet = useWallet()
   const streak = currentStreak(progress.streak, localDay())
 
   return (
@@ -17,7 +19,7 @@ export function TopBar() {
         <span className={streak > 0 ? styles.streakOn : undefined} title={t('streakDays', { count: streak })}>
           🔥 {streak}
         </span>
-        <MoneyChip amount={progress.bank} />
+        <MoneyChip amount={wallet} />
       </span>
       <Link to="/settings" className={styles.settingsLink} aria-label={t('settings')} title={t('settings')}>
         ⚙️

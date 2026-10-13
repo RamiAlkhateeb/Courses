@@ -1,10 +1,10 @@
 // The Playground as pure functions: (state, market) → state. The UI only draws it and dispatches to it.
 // Money is play money, rounded to cents. Nothing here touches React, storage or the clock.
-import { ASSET_IDS, CONFIG, WEEKS_PER_SEASON, type AssetId, type Habit, type MissionId } from './config'
+import { ASSET_IDS, CONFIG, WEEKS_PER_SEASON, type AssetId } from './config'
 import type { EventId } from './events'
 import { buildMarket, type Market } from './market'
 
-export type Speed = 0 | 1 | 2 | 4
+export type Speed = 0 | 1 | 2 | 3
 export type Status = 'idle' | 'running' | 'ended'
 
 export interface Holding {
@@ -23,35 +23,10 @@ export interface Trade {
   price: number
 }
 
-export interface SeasonResult {
-  season: number
-  years: number
-  /** Dollars moved in this season, and what it was worth at the end (cash out) */
-  funded: number
-  ended: number
-  /** `ended` in the dollars of the season's first week (inflation taken out) */
-  endedReal: number
-  fees: number
-  trades: number
-  /** Worst fall from a peak, as a fraction (0.12 = 12%) */
-  maxDrawdown: number
-  /** What is needed to replay it ("What if I waited?") and to draw it: the market's seed, whether it had news, and
-   *  the net worth each week */
-  seed: number
-  eventsOn: boolean
-  history: number[]
-  /** Missions picked, and the ones met */
-  missions: MissionId[]
-  met: MissionId[]
-  habit: Habit
-}
-
 export interface PlaygroundState {
   /** 1, 2, 3 … */
   season: number
   seed: number
-  /** Whether this season has market news (decided when it starts, from the player's unlocks) */
-  eventsOn: boolean
   status: Status
   /** Weeks since the season began (0 … WEEKS_PER_SEASON) */
   tick: number
@@ -69,15 +44,11 @@ export interface PlaygroundState {
   /** News already shown, and news waiting for the player to press Continue (time is paused until then) */
   seenEvents: number[]
   pendingEvent?: EventId
-  /** Missions picked for this season */
-  missions: MissionId[]
-  past: SeasonResult[]
 }
 
 export const emptyPlayground: PlaygroundState = {
   season: 1,
   seed: 1,
-  eventsOn: false,
   status: 'idle',
   tick: 0,
   speed: 0,
@@ -89,12 +60,10 @@ export const emptyPlayground: PlaygroundState = {
   funded: 0,
   fees: 0,
   seenEvents: [],
-  missions: [],
-  past: [],
 }
 
 export const cents = (n: number) => Math.round(n * 100) / 100
-export const marketOf = (s: PlaygroundState): Market => buildMarket(s.seed, s.eventsOn)
+export const marketOf = (s: PlaygroundState): Market => buildMarket(s.seed)
 export const priceOf = (s: PlaygroundState, asset: AssetId, market: Market = marketOf(s)) => market.price[asset][s.tick]
 
 export function valueOf(s: PlaygroundState, asset: AssetId, market: Market = marketOf(s)): number {
@@ -109,7 +78,7 @@ export function netWorth(s: PlaygroundState, market: Market = marketOf(s)): numb
 /** Net worth minus the dollars moved in: what the season has gained (or lost) so far. */
 export const gain = (s: PlaygroundState, market?: Market) => cents(netWorth(s, market) - s.funded)
 
-/** Money from the bank into the Playground (the caller takes it out of the bank). */
+/** Money from the bank into the Playground: the starting wallet, and lesson rewards earned mid-season (the caller takes it out of the bank). */
 export function fund(s: PlaygroundState, amount: number): PlaygroundState {
   if (!(amount > 0)) return s
   const a = cents(amount)
@@ -197,9 +166,6 @@ export function advance(s: PlaygroundState): PlaygroundState {
 }
 
 /** The player pressed Continue on the news: time runs again. */
-/** Pick the season's missions (before the first buy). */
-export const setMissions = (s: PlaygroundState, missions: MissionId[]): PlaygroundState => (s.status === 'idle' ? { ...s, missions } : s)
-
 export const dismissEvent = (s: PlaygroundState): PlaygroundState => (s.pendingEvent ? { ...s, pendingEvent: undefined } : s)
 
 /** Money can only leave the Playground between seasons: before the first buy, or after the season ends. */
@@ -228,32 +194,10 @@ export interface CashOut {
   state: PlaygroundState
 }
 
-/** Leave the Playground: everything is valued at today's prices (no fee), a finished season goes into `past`, and
- *  a new idle season starts with `nextSeed`. Only between seasons (`canWithdraw`). */
-export function cashOut(s: PlaygroundState, nextSeed: number, nextEventsOn: boolean, extras: { met: MissionId[]; habit: Habit } = { met: [], habit: '' }): CashOut | null {
+/** Leave the Playground: everything is valued at today's prices (no fee), and a new idle season starts with `nextSeed`.
+ *  Only between seasons (`canWithdraw`). */
+export function cashOut(s: PlaygroundState, nextSeed: number): CashOut | null {
   if (!canWithdraw(s)) return null
-  const market = marketOf(s)
-  const amount = netWorth(s, market)
-  const past = [...s.past]
-  if (s.status === 'ended') {
-    const real = realHistory(s, market)
-    past.push({
-      season: s.season,
-      years: CONFIG.seasonYears,
-      funded: s.funded,
-      ended: amount,
-      endedReal: real[real.length - 1] ?? amount,
-      fees: s.fees,
-      trades: s.trades.length,
-      maxDrawdown: maxDrawdown(s.history).fall,
-      seed: s.seed,
-      eventsOn: s.eventsOn,
-      history: s.history,
-      missions: s.missions,
-      met: extras.met,
-      habit: extras.habit,
-    })
-  }
-  const nextSeason = s.status === 'ended' ? s.season + 1 : s.season
-  return { amount, state: { ...emptyPlayground, season: nextSeason, seed: nextSeed, eventsOn: nextEventsOn, past } }
+  const amount = netWorth(s)
+  return { amount, state: { ...emptyPlayground, season: s.status === 'ended' ? s.season + 1 : s.season, seed: nextSeed } }
 }
