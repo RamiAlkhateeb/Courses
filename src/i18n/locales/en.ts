@@ -448,4 +448,5 @@ export const en = {
   "acc_err_unknown": "Something went wrong. Please try again.",
   "acc_me_sign_in": "Sign in to sync",
   "acc_me_sub": "Keep your progress on every device",
+  "acc_err_unconfirmed": "Confirm your email first: open the link we sent you, then sign in.",
 }

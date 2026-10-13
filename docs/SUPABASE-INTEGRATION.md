@@ -63,6 +63,7 @@ mapped to translated messages (`acc_err_*`).
 
 ## Testing
 
+- `e2e/account.spec.ts`: sign-up, sign-in (wrong and right password, unconfirmed email), sync up and down, reload, sign-out, against a **fake** Supabase answered inside the test (`playwright.config.ts` builds with a made-up project, so nothing reaches a real database).
 - `tests/sync.test.ts`: every merge rule, the wallet decision, the shared-device rule.
 - Manual: sign up, finish a lesson, open the app in a second browser, sign in: the lesson is ticked and the bank matches;
   sign out: the guest copy is still there.

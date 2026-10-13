@@ -164,8 +164,6 @@ export function StartingBank() {
         <p className={styles.fine}>{t('bankFine')}</p>
         <Button
           onClick={() => {
-            // With accounts configured, "I already have a path" means: sign in and bring it here.
-            if (accountsEnabled) return navigate('/account')
             updateProfile({ onboarded: true })
             navigate('/')
           }}

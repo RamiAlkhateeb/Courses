@@ -35,13 +35,11 @@ export const useAuth = () => useStore(authStore)
 
 const toUser = (s: Session | null): AuthUser | null => (s?.user ? { id: s.user.id, email: s.user.email ?? '' } : null)
 
-let started = false
-/** Start listening for the signed-in user. Without a saved sign-in (or an email link) the client is not even downloaded. */
-export async function initAuth(): Promise<void> {
-  if (!accountsEnabled || started) return
-  started = true
-  if (!hasStoredSession() && !arrivedFromEmailLink()) return set({ status: 'signedOut', user: null })
-  try {
+let listening: Promise<void> | undefined
+/** Load the client (once) and keep the auth state in step with it. Every sign-in path goes through here: a visitor who
+ *  had no saved sign-in never loaded the client at startup, so signing in must start the listening itself. */
+function ensureListening(): Promise<void> {
+  listening ??= (async () => {
     const sb = await loadSupabase()
     sb.auth.onAuthStateChange((event: AuthChangeEvent, session: Session | null) => {
       const user = toUser(session)
@@ -50,14 +48,29 @@ export async function initAuth(): Promise<void> {
       else if (state.status !== 'recovery') set({ status: 'signedIn', user })
     })
     const { data } = await sb.auth.getSession()
-    if (state.status === 'loading') set(data.session ? { status: 'signedIn', user: toUser(data.session) } : { status: 'signedOut', user: null })
+    if (state.status === 'loading' || (data.session && state.status === 'signedOut')) set(data.session ? { status: 'signedIn', user: toUser(data.session) } : { status: 'signedOut', user: null })
+  })().catch((e) => {
+    listening = undefined // allow a retry
+    throw e
+  })
+  return listening
+}
+
+let started = false
+/** Start listening for the signed-in user. Without a saved sign-in (or an email link) the client is not even downloaded. */
+export async function initAuth(): Promise<void> {
+  if (!accountsEnabled || started) return
+  started = true
+  if (!hasStoredSession() && !arrivedFromEmailLink()) return set({ status: 'signedOut', user: null })
+  try {
+    await ensureListening()
   } catch {
     set({ status: 'signedOut', user: null })
   }
 }
 
 /** Why something failed, in terms the screen can translate. */
-export type AuthError = 'invalid' | 'exists' | 'weak' | 'email' | 'rate' | 'network' | 'unknown'
+export type AuthError = 'unconfirmed' | 'invalid' | 'exists' | 'weak' | 'email' | 'rate' | 'network' | 'unknown'
 export type AuthResult = { ok: true; needsConfirmation?: boolean } | { ok: false; error: AuthError }
 
 function failure(e: unknown): AuthResult {
@@ -65,7 +78,8 @@ function failure(e: unknown): AuthResult {
   const code = err?.code ?? ''
   const msg = (err?.message ?? '').toLowerCase()
   const error: AuthError =
-    code === 'invalid_credentials' || msg.includes('invalid login') ? 'invalid'
+    code === 'email_not_confirmed' || msg.includes('not confirmed') ? 'unconfirmed'
+    : code === 'invalid_credentials' || msg.includes('invalid login') ? 'invalid'
     : code === 'user_already_exists' || code === 'email_exists' || msg.includes('already registered') ? 'exists'
     : code === 'weak_password' || msg.includes('password') ? 'weak'
     : code === 'email_address_invalid' || code === 'validation_failed' || msg.includes('email') ? 'email'
@@ -75,22 +89,29 @@ function failure(e: unknown): AuthResult {
   return { ok: false, error }
 }
 
-async function run(fn: (sb: Awaited<ReturnType<typeof loadSupabase>>) => Promise<{ error: unknown | null; needsConfirmation?: boolean }>): Promise<AuthResult> {
+async function run(fn: (sb: Awaited<ReturnType<typeof loadSupabase>>) => Promise<{ error: unknown | null; needsConfirmation?: boolean; session?: Session | null }>): Promise<AuthResult> {
   try {
+    await ensureListening()
     const sb = await loadSupabase()
-    const { error, needsConfirmation } = await fn(sb)
+    const { error, needsConfirmation, session } = await fn(sb)
+    // Don't wait for the library's event: a successful sign-in is signed in now.
+    if (!error && session?.user) set({ status: 'signedIn', user: toUser(session) })
     return error ? failure(error) : { ok: true, ...(needsConfirmation ? { needsConfirmation } : {}) }
   } catch (e) {
     return failure(e)
   }
 }
 
-export const signIn = (email: string, password: string) => run(async (sb) => sb.auth.signInWithPassword({ email: email.trim(), password }))
+export const signIn = (email: string, password: string) =>
+  run(async (sb) => {
+    const { data, error } = await sb.auth.signInWithPassword({ email: email.trim(), password })
+    return { error, session: data?.session }
+  })
 
 export const signUp = (email: string, password: string) =>
   run(async (sb) => {
     const { data, error } = await sb.auth.signUp({ email: email.trim(), password, options: { emailRedirectTo: accountUrl() } })
-    return { error, needsConfirmation: !error && !data.session }
+    return { error, needsConfirmation: !error && !data.session, session: data?.session }
   })
 
 /** The address the emails send people back to; built from the deploy base path, never hard-coded. */

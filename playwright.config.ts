@@ -18,7 +18,9 @@ export default defineConfig({
   },
   webServer: {
     command: `npm run build && npx vite preview --port ${PORT} --strictPort`,
-    env: { GITHUB_PAGES: 'true', GITHUB_REPOSITORY: 'owner/Courses' },
+    // The accounts tests run against fake Supabase answers (e2e/account.spec.ts), so the build has accounts switched on
+    // with a made-up project: nothing here can reach a real database.
+    env: { GITHUB_PAGES: 'true', GITHUB_REPOSITORY: 'owner/Courses', VITE_SUPABASE_URL: 'https://fake-project.supabase.co', VITE_SUPABASE_ANON_KEY: 'fake-anon-key-for-tests-only-0000' },
     url: `http://localhost:${PORT}/Courses/`,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
