@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { ParseKeys } from 'i18next'
-import { Button, Coin, Icon, OptionCard, ProgressBar, AbuShreek, type MascotPose } from '../../components/ui'
+import { Button, Coin, Icon, AnswerOption, ProgressBar, AbuShreek, type MascotPose } from '../../components/ui'
 import { LogoMark } from '../../components/Logo'
 import { LANGUAGES } from '../../i18n'
 import { accountsEnabled } from '../../state/supabase'
@@ -100,10 +100,10 @@ export function OnboardingStep() {
         {step === 'language' && (
           <div className={styles.list}>
             {LANGUAGES.map((l) => (
-              <OptionCard radio key={l.code} state={i18n.language === l.code ? 'selected' : 'idle'} role="radio" onClick={() => i18n.changeLanguage(l.code)} letter={<span lang={l.code}>{l.letter}</span>}>
+              <AnswerOption radio key={l.code} state={i18n.language === l.code ? 'selected' : 'idle'} role="radio" onClick={() => i18n.changeLanguage(l.code)} letter={<span lang={l.code}>{l.letter}</span>}>
                 <strong lang={l.code}>{l.name}</strong>
                 <small className={styles.hint}>{t(l.code === 'ar' ? 'rtl' : 'ltr')}</small>
-              </OptionCard>
+              </AnswerOption>
             ))}
           </div>
         )}
@@ -112,12 +112,12 @@ export function OnboardingStep() {
           <>
             <div className={styles.list}>
               {MINUTES.map((m) => (
-                <OptionCard radio key={m} role="radio" state={minutes === m ? 'selected' : 'idle'} onClick={() => setMinutes(m)}>
+                <AnswerOption radio key={m} role="radio" state={minutes === m ? 'selected' : 'idle'} onClick={() => setMinutes(m)}>
                   <span className={styles.minutes}>
                     <strong className={styles.minNum}>{t('minShort', { n: m })}</strong>
                     <span className={styles.hint}>{t(`pace_${m}` as ParseKeys)}</span>
                   </span>
-                </OptionCard>
+                </AnswerOption>
               ))}
             </div>
             <p className={styles.fine}>{t('changeLater')}</p>

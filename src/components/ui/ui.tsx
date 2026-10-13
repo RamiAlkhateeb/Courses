@@ -7,11 +7,12 @@ import styles from './ui.module.css'
 
 const cx = (...c: (string | false | undefined)[]) => c.filter(Boolean).join(' ')
 
-/** `primary` (saffron: the next step), `secondary` (flat card), `ghost` (dashed outline), `correct`/`oops` (feedback sheets). */
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'correct' | 'oops' | 'ink'
+/** `primary` (blue gradient: the next step), `indigo`, `secondary` (soft card), `ghost` (dashed outline), `correct` /
+ *  `oops` (feedback sheets), `onIndigo` (outline on the indigo Welcome sheet). */
+export type ButtonVariant = 'primary' | 'indigo' | 'secondary' | 'ghost' | 'correct' | 'oops' | 'onIndigo'
 export interface ButtonLook {
   variant?: ButtonVariant
-  /** `sm`: a compact button that fits its label (inline in a header or list). Default: a full-width 56px bar. */
+  /** `sm`: a 40px pill that fits its label (inline in a header or list). Default: a full-width 56px bar. */
   size?: 'md' | 'sm'
 }
 
@@ -23,25 +24,26 @@ export function Button({ variant, size, className, ...rest }: ButtonHTMLAttribut
   return <button type="button" className={buttonClass({ variant, size }, className)} {...rest} />
 }
 
-/** Flat 1px-border card. `tone="dawn"` = selected/highlighted, `dashed` = not started or locked. */
+/** A soft card. `tone="mint"` = selected / highlighted, `indigo` = a dark card, `dashed` = not started or locked. */
 export function Card({
   tone,
   dashed,
   className,
   children,
 }: {
-  tone?: 'dawn' | 'ink'
+  tone?: 'mint' | 'indigo'
   dashed?: boolean
   className?: string
   children: ReactNode
 }) {
-  return <div className={cx(styles.card, tone === 'dawn' && styles.dawn, tone === 'ink' && styles.inkCard, dashed && styles.dashed, className)}>{children}</div>
+  return <div className={cx(styles.card, tone === 'mint' && styles.mint, tone === 'indigo' && styles.indigoCard, dashed && styles.dashed, className)}>{children}</div>
 }
 
-export type OptionState = 'idle' | 'selected' | 'correct' | 'wrong' | 'dim'
+export type AnswerState = 'idle' | 'selected' | 'correct' | 'wrong' | 'dim'
 
-/** An answer / choice row: a letter (or check/cross) badge and a label. */
-export function OptionCard({
+/** An answer or choice row: a letter (or check / cross) badge and a label. `choice` is the taller row used for
+ *  language and daily time, with an icon tile and a trailing radio circle. */
+export function AnswerOption({
   state = 'idle',
   letter,
   icon,
@@ -50,10 +52,11 @@ export function OptionCard({
   disabled,
   role,
   radio,
+  choice,
 }: {
-  state?: OptionState
+  state?: AnswerState
   letter?: ReactNode
-  /** Leading icon tile instead of a letter (onboarding choices) */
+  /** Leading icon tile instead of a letter */
   icon?: IconName
   children: ReactNode
   onClick?: () => void
@@ -61,14 +64,15 @@ export function OptionCard({
   role?: 'radio'
   /** Trailing radio circle (a check when selected), for single-choice lists */
   radio?: boolean
+  choice?: boolean
 }) {
-  const badge = state === 'correct' ? <Icon name="check" size={18} /> : state === 'wrong' ? <Icon name="close" size={18} /> : icon ? <Icon name={icon} size={20} /> : letter
+  const badge = state === 'correct' ? <Icon name="check" size={18} /> : state === 'wrong' ? <Icon name="close" size={16} /> : icon ? <Icon name={icon} size={22} /> : letter
   return (
     <button
       type="button"
       role={role}
       aria-checked={role ? state === 'selected' || state === 'correct' : undefined}
-      className={cx(styles.option, styles[`opt_${state}`])}
+      className={cx(styles.option, choice && styles.choice, styles[`opt_${state}`])}
       onClick={onClick}
       disabled={disabled}
     >
@@ -79,7 +83,7 @@ export function OptionCard({
   )
 }
 
-/** Saffron fill on a sand track. `segments` draws one pill per step instead (lesson progress). */
+/** Blue fill on a mint track. */
 export function ProgressBar({ value, max = 1, label }: { value: number; max?: number; label?: string }) {
   const pct = max > 0 ? Math.min(100, Math.max(0, (value / max) * 100)) : 0
   return (
@@ -89,21 +93,29 @@ export function ProgressBar({ value, max = 1, label }: { value: number; max?: nu
   )
 }
 
+/** A small rounded pill with an icon and a value: the streak, the play-money balance. */
+export function StatPill({ children, className, title }: { children: ReactNode; className?: string; title?: string }) {
+  return (
+    <span className={cx(styles.stat, className)} title={title}>
+      {children}
+    </span>
+  )
+}
+
 const TABS: { to: string; icon: IconName; key: ParseKeys; end?: boolean }[] = [
-  { to: '/', icon: 'path', key: 'tabPath', end: true },
+  { to: '/', icon: 'sprout', key: 'tabLearn', end: true },
   { to: '/playground', icon: 'chart', key: 'tabPlayground' },
-  { to: '/review', icon: 'review', key: 'tabReview' },
   { to: '/me', icon: 'me', key: 'tabMe' },
 ]
 
-/** Bottom navigation of the four main screens; the active tab sits on a dawn pill. */
+/** The floating pill with the three tabs; the active one is an indigo pill with white text. The order mirrors in RTL. */
 export function TabBar() {
   const { t } = useTranslation()
   return (
     <nav className={styles.tabbar} aria-label={t('appName')}>
       {TABS.map((tab) => (
         <NavLink key={tab.to} to={tab.to} end={tab.end} className={({ isActive }) => cx(styles.tab, isActive && styles.tabOn)}>
-          <Icon name={tab.icon} size={26} />
+          <Icon name={tab.icon} size={24} />
           <span>{t(tab.key)}</span>
         </NavLink>
       ))}
@@ -111,7 +123,7 @@ export function TabBar() {
   )
 }
 
-/** Sheet rising from the bottom edge: lesson feedback (`tone`) or a prompt like the rest-day offer. */
+/** A panel rising from the bottom edge: green or red lesson feedback (`tone`), or a plain sheet. */
 export function BottomSheet({
   tone,
   children,
@@ -128,28 +140,28 @@ export function BottomSheet({
   )
 }
 
-export type NodeState = 'done' | 'next' | 'locked' | 'checkpoint'
+export type NodeState = 'done' | 'next' | 'locked' | 'chest' | 'chestLocked'
 
-/** A stop on the path: done (ink + check), next (saffron + play), locked (dashed), checkpoint (star). */
+/** A stop on the path: done (leaf green + check), next (blue + sprout, with a halo), locked (pale + lock), and the unit
+ *  reward chest (rounded square; pale until every lesson in the unit is done). */
 export function PathNode({
   state,
-  size = 56,
+  size,
   onClick,
   label,
-  onMountain,
 }: {
   state: NodeState
   size?: number
   onClick?: () => void
+  /** Spoken label, e.g. "Lesson 3, Compound interest, start" */
   label: string
-  /** Drawn on the navy mountain (lighter fills) rather than on paper */
-  onMountain?: boolean
 }) {
-  const icon: IconName = state === 'done' ? 'check' : state === 'next' ? 'play' : state === 'locked' ? 'lock' : 'star'
-  const inner = <Icon name={icon} size={Math.round(size * 0.46)} />
-  const cls = cx(styles.node, styles[`node_${state}`], onMountain && styles.nodeMtn)
-  const style = { inlineSize: size, blockSize: size }
-  if (!onClick || state === 'locked')
+  const px = size ?? (state === 'next' ? 84 : 68)
+  const icon: IconName = state === 'done' ? 'check' : state === 'next' ? 'sprout' : state === 'locked' ? 'lock' : 'chest'
+  const cls = cx(styles.node, state === 'chest' || state === 'chestLocked' ? styles.chest : '', styles[state === 'chest' ? 'node_ready' : state === 'chestLocked' ? 'node_locked' : `node_${state}`])
+  const inner = <Icon name={icon} size={Math.round(px * (state === 'next' ? 0.45 : 0.42))} strokeWidth={state === 'done' ? 3.4 : 2.1} />
+  const style = { inlineSize: px, blockSize: px }
+  if (!onClick || state === 'locked' || state === 'chestLocked')
     return (
       <span className={cls} style={style} role="img" aria-label={label}>
         {inner}

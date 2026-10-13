@@ -72,7 +72,7 @@ export function LessonPayout({
             <small>{t('pg_bank_stays', { amount: moneyText(bankAfter - offer) })}</small>
           </div>
           <Button
-            variant="ink"
+            variant="indigo"
             size="sm"
             onClick={() => {
               if (pg.fund(offer)) navigate('/playground')

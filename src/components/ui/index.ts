@@ -1,5 +1,5 @@
-export { Button, buttonClass, Card, OptionCard, ProgressBar, TabBar, BottomSheet, PathNode } from './ui'
-export type { OptionState, NodeState } from './ui'
-export { Icon, type IconName } from './Icon'
+export { Button, buttonClass, Card, AnswerOption, ProgressBar, StatPill, TabBar, BottomSheet, PathNode } from './ui'
+export type { AnswerState, NodeState } from './ui'
+export { Flame, Icon, type IconName } from './Icon'
 export { AbuShreek, type MascotPose } from './AbuShreek'
 export { Coin } from './Coin'

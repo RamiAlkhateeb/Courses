@@ -90,7 +90,7 @@ export function PathMap({ chapter }: { chapter: Chapter }) {
       {pos.map((p, k) => {
         const isCheckpoint = k === n
         const lesson = chapter.lessons[k]
-        const state: NodeState = isCheckpoint ? 'checkpoint' : chapter.states[k] === 'current' ? 'next' : chapter.states[k]
+        const state: NodeState = isCheckpoint ? "chestLocked" : chapter.states[k] === 'current' ? 'next' : chapter.states[k]
         const label = isCheckpoint ? tUi('pathUnitCheckpoint') : t(lesson.title)
         const go = isCheckpoint
           ? allDone
@@ -101,7 +101,7 @@ export function PathMap({ chapter }: { chapter: Chapter }) {
             : () => navigate(learnHref(chapter.mod!.courseId, chapter.mod!.id, lesson.id))
         return (
           <div key={k} ref={state === 'next' ? currentRef : undefined} className={styles.stop} style={{ insetInlineStart: `${p.x}%`, insetBlockStart: p.y - (state === 'next' ? 40 : 30) }}>
-            <PathNode state={state} size={state === 'next' ? 80 : 60} onMountain onClick={go} label={label} />
+            <PathNode state={state} onClick={go} label={label} />
             <span className={`${styles.label} ${state === 'next' ? styles.labelNext : ''}`}>{label}</span>
           </div>
         )
@@ -109,7 +109,7 @@ export function PathMap({ chapter }: { chapter: Chapter }) {
       <AbuShreek pose="point" height={130} className={styles.guide} />
       {away && (
         <div className={styles.backToCamp}>
-          <Button variant="ink" size="sm" onClick={backToCamp}>
+          <Button variant="indigo" size="sm" onClick={backToCamp}>
             <Icon name="play" size={16} /> {tUi('backToCamp')}
           </Button>
         </div>

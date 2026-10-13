@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { Question } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
-import { Button, BottomSheet, Card, Coin, Icon, OptionCard, ProgressBar, AbuShreek, type OptionState, type MascotPose } from '../../components/ui'
+import { Button, BottomSheet, Card, Coin, Icon, AnswerOption, ProgressBar, AbuShreek, type AnswerState, type MascotPose } from '../../components/ui'
 import { currentStreak, localDay } from '../../domain/progress'
 import { PAY_PER_CORRECT } from '../../domain/money'
 import { Money } from '../../components/Money'
@@ -54,7 +54,7 @@ export function QuestionCard({
       <h1 className={styles.prompt}>{t(question.prompt)}</h1>
       <div className={styles.options} role="radiogroup">
         {order.map((i, position) => {
-          const state: OptionState = !checked
+          const state: AnswerState = !checked
             ? selected === i
               ? 'selected'
               : 'idle'
@@ -64,7 +64,7 @@ export function QuestionCard({
                 ? 'wrong'
                 : 'dim'
           return (
-            <OptionCard
+            <AnswerOption
               key={i}
               role="radio"
               state={state}
@@ -73,7 +73,7 @@ export function QuestionCard({
               onClick={() => onSelect(i)}
             >
               {t(question.options[i])}
-            </OptionCard>
+            </AnswerOption>
           )
         })}
       </div>

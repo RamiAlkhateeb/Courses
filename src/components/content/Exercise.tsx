@@ -54,7 +54,7 @@ export function Exercise({ questionId }: { questionId: string }) {
         ))}
       </div>
       <Button
-        variant="ink"
+        variant="indigo"
         size="sm"
         disabled={!submitted && selected === null}
         onClick={submitted ? handleRetry : handleSubmit}

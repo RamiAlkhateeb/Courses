@@ -279,7 +279,7 @@ function ChapterStop({
         {mod && (
           <div className={styles.chapterActions}>
             <Link
-              className={buttonClass({ variant: stage === 'done' ? 'secondary' : 'ink', size: 'sm' })}
+              className={buttonClass({ variant: stage === 'done' ? 'secondary' : 'indigo', size: 'sm' })}
               to={learnHref(courseId, item.id, target.id)}
             >
               {action}

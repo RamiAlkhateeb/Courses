@@ -1,72 +1,124 @@
-/* Design tokens — the "Abu Shreek · أبو شريك" identity: deep navy brand, warm saffron accent, soft paper.
-   Components use these names only (no raw colours), so a theme is just a different set of values. */
+/* Design tokens: the "Abu Shreek · أبو شريك" garden identity. Cool mist, deep indigo ink, electric blue only where the
+   next step is, leaf green for what you have grown. Every colour, radius, shadow and font lives here; components use
+   these names only (a test enforces it). Change a value and every screen follows. */
 :root {
-  --paper: #f6f1e6;
-  --paper-2: #ece5d4;
-  --paper-3: #e4dcc6;
-  --ink: #14213d;
-  --ink-soft: #5b6478;
-  --ink-faint: #8a8f9c;
-  --rule: #ddd3bf;
-  --surface: #fffcf5;
-  /* Brand: navy, for primary actions, links and the journey line */
-  --brand: #14213d;
-  --brand-bg: #e6eaf2;
-  /* Text on a --brand fill */
-  --on-brand: #fff;
-  /* Accent: saffron, for what is "next" — the current lesson, Continue, XP */
-  --accent: #f2a93b;
-  --accent-ink: #8a5a00;
-  --accent-bg: #fbebcb;
-  --lav: #5b4a8a;
-  --lav-bg: #ece8f4;
-  --amber: #8a5a00;
-  --amber-bg: #faf0dc;
-  --red: #a8432b;
-  --red-bg: #f9e8e5;
-  --green: #1f6b4a;
-  --green-bg: #e5f1ea;
-  /* Navy surfaces (the Welcome screen, the path map, Summit): tints of --brand and the text/lines that sit on them */
-  --navy-2: #243566;
-  --navy-line: #5b6a99;
-  --navy-line-dark: #44527a;
-  --navy-line-soft: #8a96b8;
-  --navy-stroke: #b8c0d8;
-  --on-navy-dim: #c9d0e4;
-  --on-navy-faint: #b9c1d6;
-  /* Code blocks in lessons */
-  --code-bg: #1c2b3a;
-  --code-fg: #e3f1f3;
+  /* ---- Core palette (Tokens board) ---- */
+  --indigo: #293681;
+  --blue: #4274d9;
+  --sky: #95ccdd;
+  --mint: #d0e7e6;
+  --mist: #f4fafb;
+  --card: #fff;
+  --line: #d0e7e6;
+  --muted: #5b678f;
+  --blue-text: #3560c7;
+  --correct: #1f6b4a;
+  --oops: #a8432b;
+  --correct-bg: #dcefe4;
+  --oops-bg: #f7ded5;
+
+  /* ---- Indigo surfaces (the unit banner, the news screen) ---- */
+  --indigo-2: #3a4da8;
+  --indigo-edge: #1c2760; /* the solid bottom edge under the banner */
+  --on-indigo: #fff;
+  --on-indigo-dim: rgba(255, 255, 255, 0.72);
+  --indigo-line: rgba(255, 255, 255, 0.18);
+  --indigo-line-strong: rgba(255, 255, 255, 0.4);
+
+  /* ---- Garden greens: done nodes and plants only ---- */
+  --leaf: #5fb58b;
+  --leaf-light: #6fc9a0;
+  --leaf-mid: #3e9b73;
+  --leaf-soft: #4fae87;
+  --leaf-dark: #2b7a58;
+
+  /* ---- Path nodes (3D bottom edge) ---- */
+  --blue-light: #5588ec;
+  --blue-edge: #2c4fa6;
+  --blue-halo: rgba(66, 116, 217, 0.16);
+  --locked: #a8c4d0;
+  --locked-bg: #dcebee;
+  --locked-edge: #b9d2d8;
+  --locked-icon: #7c8db5;
+  --flame: #ffb561;
+  --flame-edge: #e5732f;
+
+  /* ---- Backgrounds ---- */
+  --bg-from: #f4fafb;
+  --bg-to: #e2f0f1;
+  --glow-sky: #95ccdd;
+  --chip-bg: #e4f1f3;
+  --tab-bg: rgba(255, 255, 255, 0.92);
+
+  /* ---- Code blocks in lessons ---- */
+  --code-bg: #1b2459;
+  --code-text: #d0e7e6;
   --code-line: rgba(255, 255, 255, 0.25);
   --code-fill: rgba(255, 255, 255, 0.08);
   --code-fill-hover: rgba(255, 255, 255, 0.16);
-  --navy-line-strong: rgba(246, 241, 230, 0.35);
-  --on-navy: #f6f1e6;
+
   --white: #fff;
-  --scrim: rgba(20, 33, 61, 0.35);
-  --shadow-sm: 0 2px 8px rgba(20, 33, 61, 0.08);
-  --shadow-pop: 4px 0 24px rgba(20, 33, 61, 0.14);
-  --shadow-sheet: 0 -8px 24px rgba(20, 33, 61, 0.12);
-  --shadow-knob: 0 1px 3px rgba(0, 0, 0, 0.25);
+  --scrim: rgba(41, 54, 129, 0.55);
+
+  /* ---- Shadows ---- */
+  --shadow-card: 0 4px 16px rgba(41, 54, 129, 0.07);
+  --shadow-cta: 0 10px 24px rgba(66, 116, 217, 0.34);
+  --shadow-bar: 0 12px 32px rgba(41, 54, 129, 0.18);
+  --shadow-banner: 0 14px 28px rgba(41, 54, 129, 0.22);
+  --shadow-sheet: 0 -8px 24px rgba(41, 54, 129, 0.12);
+
+  /* ---- Shape ---- */
+  --radius-btn: 20px;
+  --radius-card: 24px;
+  --radius-xl: 30px;
+  --radius-pill: 26px;
   --radius: 16px;
-  --shadow: 0 1px 2px rgba(20, 33, 61, 0.06), 0 4px 16px rgba(20, 33, 61, 0.06);
-  --dawn: #fbebcb;
-  --muted: #5b6478;
-  --locked: #cfc3a8;
-  --radius-lg: 20px;
+  --radius-lg: 24px;
+  --edge-node: 6px; /* the 3D bottom edge of a path node */
+
   /* One family per language: Instrument Sans for English, IBM Plex Sans Arabic for Arabic (self-hosted, see
      src/styles/fonts.css). Each lists the other as its fallback, so Latin inside Arabic text and Arabic inside
      English text still get the right glyphs. */
   --font: 'Instrument Sans', 'IBM Plex Sans Arabic', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  /* The names the design sheet uses ("Tokens and Arabic rules"). Same values as the tokens above; new code can use either. */
-  --saffron: var(--accent);
-  --saffron-text: var(--accent-ink);
-  --card: var(--surface);
-  --line: var(--rule);
-  --correct: var(--green);
-  --oops: var(--red);
   --app-max: 430px;
-}
-html[dir='rtl'] {
-  --font: 'IBM Plex Sans Arabic', 'Instrument Sans', 'Segoe UI', Tahoma, sans-serif;
+  --sidebar-w: 260px;
+
+  /* ---- Legacy names, kept so the desktop pages (catalog, course page, settings) follow the new look without edits.
+     New code uses the names above. ---- */
+  --paper: var(--mist);
+  --paper-2: var(--chip-bg);
+  --paper-3: var(--mint);
+  --ink: var(--indigo);
+  --ink-soft: var(--muted);
+  --ink-faint: var(--locked-icon);
+  --rule: var(--line);
+  --surface: var(--card);
+  --brand: var(--indigo);
+  --brand-bg: var(--mint);
+  --on-brand: var(--on-indigo);
+  --accent: var(--blue);
+  --accent-ink: var(--blue-text);
+  --accent-bg: var(--mint);
+  --dawn: var(--mint);
+  --lav: var(--indigo-2);
+  --lav-bg: var(--mint);
+  --amber: var(--blue-text);
+  --amber-bg: var(--mint);
+  --red: var(--oops);
+  --red-bg: var(--oops-bg);
+  --green: var(--correct);
+  --green-bg: var(--correct-bg);
+  --navy-2: var(--indigo-2);
+  --navy-line: var(--indigo-line-strong);
+  --navy-line-soft: var(--indigo-line-strong);
+  --navy-line-dark: var(--indigo-line);
+  --navy-stroke: var(--sky);
+  --on-navy: var(--on-indigo);
+  --on-navy-dim: var(--on-indigo-dim);
+  --on-navy-faint: var(--on-indigo-dim);
+  --code-fg: var(--code-text);
+  --shadow-sm: var(--shadow-card);
+  --shadow: var(--shadow-card);
+  --shadow-knob: var(--shadow-card);
+  --shadow-pop: var(--shadow-card);
 }

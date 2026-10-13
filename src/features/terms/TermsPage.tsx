@@ -63,7 +63,7 @@ export function TermsPage() {
       </div>
 
       {featured ? (
-        <Card tone="dawn" className={styles.featured}>
+        <Card tone="mint" className={styles.featured}>
           <div className={styles.fTerms}>
             {sides.includes('en') && <strong>{featured.term.en}</strong>}
             {sides.includes('ar') && (

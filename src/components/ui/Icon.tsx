@@ -75,12 +75,32 @@ const PATHS = {
   shield: <path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z" />,
   chart: <path d="M4 4v16h16M7 15l4-4 3 3 5-6" />,
   arrowRight: <path d="M5 12h14M13 6l6 6-6 6" />,
+  sprout: (
+    <>
+      <path d="M12 21v-9" />
+      <path d="M12 12c0-4 3-6 7-6 0 4-3 6-7 6z" />
+      <path d="M12 14c0-3-2-5-6-5 0 3 2 5 6 5z" />
+    </>
+  ),
+  chest: (
+    <>
+      <rect x="4" y="11" width="16" height="9" rx="2" />
+      <path d="M3 7.5C3 6 4.5 5 6 5h12c1.5 0 3 1 3 2.5V11H3z" />
+      <path d="M12 11v4" />
+    </>
+  ),
+  guide: (
+    <>
+      <path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4z" />
+      <path d="M5 17a3 3 0 0 1 3-3h10" />
+    </>
+  ),
   flip: <path d="M20 11a8 8 0 00-14.5-4.5L4 8M4 4v4h4M4 13a8 8 0 0014.5 4.5L20 16M20 20v-4h-4" />,
 } satisfies Record<string, ReactNode>
 
 export type IconName = keyof typeof PATHS
 
-export function Icon({ name, size = 24, className }: { name: IconName; size?: number; className?: string }) {
+export function Icon({ name, size = 24, className, strokeWidth = 2 }: { name: IconName; size?: number; className?: string; strokeWidth?: number }) {
   return (
     <svg
       width={size}
@@ -88,7 +108,7 @@ export function Icon({ name, size = 24, className }: { name: IconName; size?: nu
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth={strokeWidth}
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden
@@ -96,6 +116,15 @@ export function Icon({ name, size = 24, className }: { name: IconName; size?: nu
       className={className}
     >
       {PATHS[name]}
+    </svg>
+  )
+}
+
+/** The streak flame: filled, in its own two colours (tokens), so it reads as fire and not as a line icon. */
+export function Flame({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="var(--flame)" stroke="var(--flame-edge)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden focusable="false">
+      <path d="M12 3c1 4 5 5.5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9z" />
     </svg>
   )
 }

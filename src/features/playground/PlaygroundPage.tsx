@@ -55,7 +55,7 @@ export function PlaygroundPage() {
     <div className={styles.page}>
       <header className={styles.head}>
         <h1>{t('pg_title')}</h1>
-        <Button variant="ink" size="sm" onClick={() => navigate('/playground/fund')}>
+        <Button variant="indigo" size="sm" onClick={() => navigate('/playground/fund')}>
           <Icon name="plus" size={18} /> {t('pg_add_funds')}
         </Button>
       </header>
