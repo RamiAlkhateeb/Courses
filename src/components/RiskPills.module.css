@@ -1,0 +1,14 @@
+.pills {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+.pills i {
+  inline-size: 22px;
+  block-size: 9px;
+  border-radius: 999px;
+  background: var(--paper-3);
+}
+.pills i.on {
+  background: var(--accent);
+}

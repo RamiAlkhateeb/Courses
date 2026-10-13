@@ -40,10 +40,13 @@
   --code-line: rgba(255, 255, 255, 0.25);
   --code-fill: rgba(255, 255, 255, 0.08);
   --code-fill-hover: rgba(255, 255, 255, 0.16);
+  --navy-line-strong: rgba(246, 241, 230, 0.35);
+  --on-navy: #f6f1e6;
   --white: #fff;
   --scrim: rgba(20, 33, 61, 0.35);
   --shadow-sm: 0 2px 8px rgba(20, 33, 61, 0.08);
   --shadow-pop: 4px 0 24px rgba(20, 33, 61, 0.14);
+  --shadow-sheet: 0 -8px 24px rgba(20, 33, 61, 0.12);
   --shadow-knob: 0 1px 3px rgba(0, 0, 0, 0.25);
   --radius: 16px;
   --shadow: 0 1px 2px rgba(20, 33, 61, 0.06), 0 4px 16px rgba(20, 33, 61, 0.06);
@@ -55,6 +58,13 @@
      src/styles/fonts.css). Each lists the other as its fallback, so Latin inside Arabic text and Arabic inside
      English text still get the right glyphs. */
   --font: 'Instrument Sans', 'IBM Plex Sans Arabic', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  /* The names the design sheet uses ("Tokens and Arabic rules"). Same values as the tokens above; new code can use either. */
+  --saffron: var(--accent);
+  --saffron-text: var(--accent-ink);
+  --card: var(--surface);
+  --line: var(--rule);
+  --correct: var(--green);
+  --oops: var(--red);
   --app-max: 430px;
 }
 html[dir='rtl'] {

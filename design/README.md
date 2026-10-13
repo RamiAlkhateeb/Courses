@@ -1,39 +1,46 @@
 # Abu Shreek design handoff
 
-> The app was renamed from "Masar" to "Abu Shreek" (أبو شريك) after these screens were drawn, so the images (and
-> `screens/masar-style-guide.png`) still show the old name. The layouts, colours and Rafiq are unchanged.
+Source: the Claude Design canvas (47 frames; 42 numbered screens in English and Arabic, plus a style guide, a tokens sheet
+and the mascot sheet). Screens are 390×844 (shown at 2x). Mobile-first: a max-width-430px column with a tab bar
+(Path · Playground · Review · Me) on the four main screens.
 
-Source: the Claude Design canvas "App Flow". Screens are 390×844 (shown at 2x). Mobile-first: the app is a
-max-width-430px column, with a tab bar (Path · Review · Terms · Me) on the four main screens.
+`abu-shreek/` holds the mascot (Abu Shreek, أبو شريك): `wave` (hello), `cheer` (correct), `oops` (not quite), `think`
+(questions), `point` (next step). They are copied to `public/abu-shreek/` and drawn by `src/components/ui/AbuShreek.tsx`.
+`screens/Abu Shreek style guide.png` and `screens/Tokens and Arabic rules.png` have the colours, type, buttons, answer
+states, money styling and the six Arabic plural forms.
 
-`rafiq/` holds the guide character: `wave` (hello), `cheer` (correct), `oops` (not quite), `think` (questions),
-`point` (next step). They are copied to `public/rafiq/` and rendered by `src/components/ui/Rafiq.tsx`.
-`screens/masar-style-guide.png` has the colours, type, path nodes and button/answer states.
+The product logic (learning pays play money, the Playground, unlocks) is in `docs/PLAN.md`.
 
-## Flow order
+## Flow order and status
 
-| # | File | What it does |
-|---|------|--------------|
-| 01 | welcome | Landing: headline, Rafiq waving, EN/عربي switch, "Start my path" / "I already have a path" |
-| 02 | language | Onboarding 1/4: English or Arabic (switches `dir` immediately) |
-| 03 | your-goal | Onboarding 2/4: why you're here (understand money / invest / accounting / business skills) |
-| 04 | pick-a-trail | Onboarding 3/4: choose the first course ("trail") |
-| 05 | daily-time | Onboarding 4/4: 5/10/15/20 min a day, then "Start my path" |
-| 06 | home-path | **Home**: trail switcher, streak + XP chips, current-camp banner, mountain path map |
-| 07 | lesson-card | Lesson content card with key idea, term chip, Rafiq tip, Next |
-| 08 | quiz-question | Quick check: options A–D, hint, Check |
-| 09 | correct | Green bottom sheet: Rafiq cheers, "+10 XP", explanation, Continue |
-| 10 | not-quite | Red bottom sheet: Rafiq oops, explanation, Try again / Re-read the card |
-| 11 | camp-cleared | Lesson results: XP, accuracy, time, week streak, Review my mistake |
-| 12 | review-tab | Cards due, per-topic strength, Mistakes only / Key terms |
-| 13 | progress | **Me** tab: streak, XP, lessons, this-week bars, trails, milestones |
-| 14 | home-arabic-rtl | Home mirrored for RTL (path, chips, Rafiq flipped) |
-| 15 | quiz-arabic-rtl | Quiz mirrored for RTL |
-| 16 | terms-collection | **Terms** tab: EN / AR / Both, flip card, collected words |
-| 17 | summit-map | Whole-trail mountain with numbered camps and camp list |
-| 18 | weekly-expedition | Shared weekly XP goal with friends (needs a backend — not built) |
-| 19 | scenario-lesson | "What would you do?" lesson: tap an option to see its trade-offs |
-| 20 | rest-day | Missed a day: use the weekly rest day to keep the streak |
-
-## Status
-See "Design rebuild" in `docs/PLAN.md`.
+| # | Screen | What it does | Status |
+|---|--------|--------------|--------|
+| 01 | Welcome | Names stacked, tagline, mascot, EN/عربي switch, Start / "I already have a path" | built |
+| 02 | Language | Onboarding 1/4: English or Arabic | built |
+| 03 | Your goal | Onboarding 2/4: why you're here | built |
+| 04 | Your first trail | Onboarding 3/4: Investing, the only trail for now | built |
+| 05 | Daily time | Onboarding 4/4: 5/10/15/20 min a day | built |
+| 21 | Starting bank | $1,000 play-money bank, then Path | built |
+| 06 | Home path | Mountain path, opens at your lesson, "Back to my camp" | built |
+| 07 | Lesson card | Content card, Next | built |
+| 08 | Quiz question | Options, "Check answer" | built |
+| 09 | Correct | Green sheet, mascot cheers | built |
+| 10 | Not quite | Red sheet, mascot oops | built |
+| 11 | Camp cleared | Lesson results, earned $ | built |
+| 28 | Lesson payout | +$40, coin to the bank chip, bank before → after | built, with the "Move $100?" offer |
+| 12 | Review tab | Cards due, topics, practice | built |
+| 16 | Terms collection | Word collection (inside Review) | built (at /review/terms) |
+| 13 | Progress (Me) | Streak, bank, week, trails, milestones | built |
+| 14, 15 | Home / Quiz, Arabic RTL | Mirrored layouts | built |
+| 17 | Summit map | Whole trail overview | built |
+| 19 | Scenario lesson | "What would you do?" trade-offs | not built (needs a content type) |
+| 20 | Rest day | One rest day a week keeps the streak | built |
+| 18 | Weekly expedition | Shared crew goal | skipped (needs a backend) |
+| 22, 30, 23 | Fund Playground, empty, Playground | Move money in, net worth, chart, holdings | built |
+| 24, 33, 32 | Buy, Sell, Trade debrief | Trade sheets and explanations | built |
+| 25, 34, 31 | Market news, Risk check, What unlocks | Events, risk, unlock ladder | built |
+| 37 | Time paused | "Time stood still" | built |
+| 29, 26, 35, 36 | Missions, Season summary, What if I waited, Past seasons | Seasons | built |
+| 27, 38, 39 | Playground / Buy / News, Arabic | RTL versions | built |
+| 40 | Season summary, Arabic | RTL version | built |
+| 41, 42 | Error, EN and AR | Reload and Home | built |

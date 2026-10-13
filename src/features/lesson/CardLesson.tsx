@@ -10,6 +10,8 @@ import { useLocalized } from '../../content/useLocalized'
 import { useModule } from '../../content/useModule'
 import { useProgress } from '../../state/useProgress'
 import { ModuleQuestionsContext } from '../../components/content/moduleQuestions'
+import { payoutFor } from '../../domain/progress'
+import { LessonPayout } from './LessonPayout'
 import { learnHref, lessonKey, lessonRecap, lessonsFor, type Lesson } from '../../domain/lessons'
 import {
   AnswerFeedback,
@@ -47,16 +49,20 @@ function CardRun({ mod, lesson, next, onRestart }: { mod: Module; lesson: Lesson
   const t = useLocalized()
   const { t: tUi } = useTranslation()
   const navigate = useNavigate()
-  const { markRead, recordLessonAnswer, completeLesson } = useProgress()
+  const { progress, markRead, recordLessonAnswer, completeLesson } = useProgress()
   const { steps } = lesson
   const total = steps.filter((s) => s.kind === 'question').length
   const startedAt = useRef(Date.now())
+  // Does finishing this lesson pay? Decided once, on arrival: finishing it marks it done.
+  const [pays] = useState(() => payoutFor(progress, 1, lessonKey(mod.courseId, mod.id, lesson.id)) > 0)
 
   const [index, setIndex] = useState(0)
   const [selected, setSelected] = useState<number | null>(null)
   const [checked, setChecked] = useState(false)
   const [correctCount, setCorrectCount] = useState(0)
   const [done, setDone] = useState(false)
+  const [paid, setPaid] = useState(0)
+  const [stage, setStage] = useState<'summary' | 'payout'>('summary')
 
   const step = steps[index]
   const isLast = index === steps.length - 1
@@ -81,7 +87,9 @@ function CardRun({ mod, lesson, next, onRestart }: { mod: Module; lesson: Lesson
 
   function advance() {
     if (isLast) {
-      completeLesson(correctCount, total, lessonKey(mod.courseId, mod.id, lesson.id))
+      const key = lessonKey(mod.courseId, mod.id, lesson.id)
+      setPaid(payoutFor(progress, correctCount, key))
+      completeLesson(correctCount, key)
       setDone(true)
       return
     }
@@ -93,16 +101,28 @@ function CardRun({ mod, lesson, next, onRestart }: { mod: Module; lesson: Lesson
   const onEnter = question && !checked ? check : advance
   useLessonKeys({ enabled: !done, onEnter, question, checked, onPick: setSelected })
 
+  if (done && stage === 'payout') {
+    return (
+      <LessonPayout
+        payout={paid}
+        bankAfter={progress.bank}
+        subtitle={tUi('payoutSub', { title: t(lesson.title), c: correctCount, t: total })}
+        onDone={() => navigate('/')}
+      />
+    )
+  }
+
   if (done) {
     return (
       <LessonSummary
         recap={lessonRecap(lesson)}
         subtitle={tUi('lessonSummary', { n: lessonsFor(mod).findIndex((l) => l.id === lesson.id) + 1, title: t(lesson.title) })}
         seconds={Math.round((Date.now() - startedAt.current) / 1000)}
+        payout={pays ? paid : undefined}
         correct={correctCount}
         total={total}
         action={tUi('lessonContinue')}
-        onAction={() => navigate(next ? learnHref(mod.courseId, mod.id, next.id) : '/')}
+        onAction={() => (paid > 0 ? setStage('payout') : navigate(next ? learnHref(mod.courseId, mod.id, next.id) : '/'))}
         secondary={tUi('lessonAgain')}
         onSecondary={onRestart}
       />
@@ -143,12 +163,12 @@ function CardRun({ mod, lesson, next, onRestart }: { mod: Module; lesson: Lesson
         )}
 
         {question && !checked ? (
-          <LessonFooter rafiq="think" action={tUi('check')} disabled={selected === null} onAction={check} />
+          <LessonFooter mascot="think" compact action={tUi('check')} disabled={selected === null} onAction={check} />
         ) : (
           <LessonFooter
             tone={question ? (isCorrect ? 'right' : 'wrong') : undefined}
-            feedback={question && <AnswerFeedback question={question} correct={isCorrect} />}
-            rafiq={question ? undefined : 'point'}
+            feedback={question && <AnswerFeedback question={question} correct={isCorrect} pays={pays} />}
+            mascot={question ? undefined : 'point'}
             action={question ? continueLabel : tUi('nextBtn')}
             onAction={advance}
           />

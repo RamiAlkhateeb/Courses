@@ -101,7 +101,7 @@ export function QuizLesson({
 
   function next() {
     if (isLast) {
-      completeLesson(correctCount, questions.length)
+      completeLesson(correctCount)
       setDone(true)
       return
     }
@@ -136,12 +136,12 @@ export function QuizLesson({
       {checked ? (
         <LessonFooter
           tone={isCorrect ? 'right' : 'wrong'}
-          feedback={<AnswerFeedback question={question} correct={isCorrect} />}
+          feedback={<AnswerFeedback question={question} correct={isCorrect} pays={false} />}
           action={isLast ? tUi('lessonFinish') : tUi('lessonContinue')}
           onAction={next}
         />
       ) : (
-        <LessonFooter rafiq="think" action={tUi('check')} disabled={selected === null} onAction={check} />
+        <LessonFooter mascot="think" compact action={tUi('check')} disabled={selected === null} onAction={check} />
       )}
     </div>
   )

@@ -1,0 +1,16 @@
+.change {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 700;
+}
+.up {
+  color: var(--correct);
+}
+.down {
+  color: var(--oops);
+}
+.label {
+  font-weight: 600;
+  margin-inline-start: 2px;
+}

@@ -1,6 +1,8 @@
-// Learner progress: the shape, how it is read from saved text, and every rule that changes it (streaks, XP,
-// spaced review, rest day, activity). Pure functions only: no React, no storage, no clock unless passed in, so
+// Learner progress: the shape, how it is read from saved text, and every rule that changes it (streaks, the play-money
+// bank, spaced review, rest day, activity). Pure functions only: no React, no storage, no clock unless passed in, so
 // everything here is unit-tested directly. Saving and subscribing live in src/state/progress.ts.
+
+import { lessonPayout, START_BANK, PAY_PER_CORRECT } from './money'
 
 export interface Streak {
   /** Consecutive days with at least one finished lesson, as of `lastDay` */
@@ -14,8 +16,8 @@ export interface Progress {
   answers: Record<string, { selected: number; correct: boolean }>
   /** `${courseId}/${moduleId}` -> section ids scrolled into view */
   sectionsRead: Record<string, string[]>
-  /** Total XP earned from lessons */
-  xp: number
+  /** The play-money bank: starts at START_BANK and grows by lesson payouts (src/domain/money.ts) */
+  bank: number
   streak: Streak
   /** questionId -> Leitner box (1 = shaky … MAX_BOX = known); lessons favour low boxes */
   boxes: Record<string, number>
@@ -23,7 +25,8 @@ export interface Progress {
   lessonsDone: string[]
   /** Key of the roadmap lesson finished most recently: Home's "Continue" starts from the lesson after it */
   lastLesson?: string
-  /** XP earned per local day ('YYYY-MM-DD'), last ACTIVITY_DAYS days: Home's week strip */
+  /** Dollars earned per local day ('YYYY-MM-DD'), last ACTIVITY_DAYS days: the week strips. A day with a finished
+   *  lesson is present even when it paid nothing (a replay). */
   activity: Record<string, number>
 }
 
@@ -31,7 +34,7 @@ export interface Progress {
 export const emptyProgress: Progress = {
   answers: {},
   sectionsRead: {},
-  xp: 0,
+  bank: START_BANK,
   streak: { count: 0, lastDay: '' },
   boxes: {},
   lessonsDone: [],
@@ -39,22 +42,26 @@ export const emptyProgress: Progress = {
 }
 
 export const MAX_BOX = 5
-/** For finishing any lesson, so a reading-only lesson still counts. */
-export const LESSON_BASE_XP = 5
-export const XP_PER_CORRECT = 10
-export const XP_PERFECT_BONUS = 20
 
 const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
 
+/** Reads saved progress. Also the v1 → v2 migration: v1 counted XP; v2 counts dollars, so a player who has none
+ *  yet gets the starting bank plus $10 for every question they have answered right, and the XP is dropped. Their
+ *  per-day activity keeps its days (the numbers stay as they were: only the days and their relative heights show). */
 export function parseProgress(raw: string | null): Progress {
   if (!raw) return emptyProgress
   try {
     const data = JSON.parse(raw) as Record<string, unknown>
+    const answers = isRecord(data.answers) ? (data.answers as Progress['answers']) : {}
+    const bank =
+      typeof data.bank === 'number' && Number.isFinite(data.bank)
+        ? data.bank
+        : START_BANK + PAY_PER_CORRECT * Object.values(answers).filter((a) => a?.correct === true).length
     const streak: Record<string, unknown> = isRecord(data.streak) ? data.streak : {}
     return {
-      answers: isRecord(data.answers) ? (data.answers as Progress['answers']) : {},
+      answers,
       sectionsRead: isRecord(data.sectionsRead) ? (data.sectionsRead as Progress['sectionsRead']) : {},
-      xp: typeof data.xp === 'number' ? data.xp : 0,
+      bank,
       streak: {
         count: typeof streak.count === 'number' ? streak.count : 0,
         lastDay: typeof streak.lastDay === 'string' ? streak.lastDay : '',
@@ -121,45 +128,42 @@ export function bumpStreak(streak: Streak, today: string): Streak {
   return { count: gap === 1 ? streak.count + 1 : 1, lastDay: today }
 }
 
-export const lessonXp = (correct: number, total: number) =>
-  LESSON_BASE_XP + correct * XP_PER_CORRECT + (total > 0 && correct === total ? XP_PERFECT_BONUS : 0)
-
 /** Leitner step: a right answer moves the question up a box, a wrong one sends it back to box 1. */
 export function recordReview(p: Progress, questionId: string, correct: boolean): Progress {
   const box = p.boxes[questionId] ?? 0
   return { ...p, boxes: { ...p.boxes, [questionId]: correct ? Math.min(box + 1, MAX_BOX) : 1 } }
 }
 
-/** Award a finished lesson's XP, count `today` towards the streak and mark the roadmap lesson (if given) done. */
-export function completeLesson(
-  p: Progress,
-  correct: number,
-  total: number,
-  today: string,
-  lessonKey?: string,
-): Progress {
+/** What finishing a lesson pays: $10 per correct answer, and only the first time that roadmap lesson is finished
+ *  (replays and practice runs pay nothing, so they can't be farmed). */
+export function payoutFor(p: Progress, correct: number, lessonKey?: string): number {
+  return lessonKey && !p.lessonsDone.includes(lessonKey) ? lessonPayout(correct) : 0
+}
+
+/** Pay a finished lesson into the bank, count `today` towards the streak and mark the roadmap lesson (if given) done. */
+export function completeLesson(p: Progress, correct: number, today: string, lessonKey?: string): Progress {
   const lessonsDone = lessonKey && !p.lessonsDone.includes(lessonKey) ? [...p.lessonsDone, lessonKey] : p.lessonsDone
-  const xp = lessonXp(correct, total)
+  const payout = payoutFor(p, correct, lessonKey)
   return {
     ...p,
-    xp: p.xp + xp,
+    bank: p.bank + payout,
     streak: bumpStreak(p.streak, today),
     lessonsDone,
     lastLesson: lessonKey ?? p.lastLesson,
-    activity: addActivity(p.activity, today, xp),
+    activity: addActivity(p.activity, today, payout),
   }
 }
 
-/** Days of per-day XP kept for the week strip; older days are dropped. */
+/** Days of per-day earnings kept for the week strip; older days are dropped. */
 export const ACTIVITY_DAYS = 60
 
-/** Adds XP to `today` and drops days more than ACTIVITY_DAYS old. */
-export function addActivity(activity: Record<string, number>, today: string, xp: number): Record<string, number> {
+/** Adds dollars to `today` (the day is recorded even for 0) and drops days more than ACTIVITY_DAYS old. */
+export function addActivity(activity: Record<string, number>, today: string, dollars: number): Record<string, number> {
   const next: Record<string, number> = {}
   for (const [day, value] of Object.entries(activity)) {
     if (daysBetween(day, today) < ACTIVITY_DAYS) next[day] = value
   }
-  next[today] = (next[today] ?? 0) + xp
+  next[today] = (next[today] ?? 0) + dollars
   return next
 }
 

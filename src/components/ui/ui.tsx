@@ -7,7 +7,7 @@ import styles from './ui.module.css'
 
 const cx = (...c: (string | false | undefined)[]) => c.filter(Boolean).join(' ')
 
-/** `primary` (saffron: the next step), `secondary` (flat card), `ghost` (text), `correct`/`oops` (feedback sheets). */
+/** `primary` (saffron: the next step), `secondary` (flat card), `ghost` (dashed outline), `correct`/`oops` (feedback sheets). */
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'correct' | 'oops' | 'ink'
 export interface ButtonLook {
   variant?: ButtonVariant
@@ -91,8 +91,8 @@ export function ProgressBar({ value, max = 1, label }: { value: number; max?: nu
 
 const TABS: { to: string; icon: IconName; key: ParseKeys; end?: boolean }[] = [
   { to: '/', icon: 'path', key: 'tabPath', end: true },
+  { to: '/playground', icon: 'chart', key: 'tabPlayground' },
   { to: '/review', icon: 'review', key: 'tabReview' },
-  { to: '/terms', icon: 'book', key: 'tabTerms' },
   { to: '/me', icon: 'me', key: 'tabMe' },
 ]
 

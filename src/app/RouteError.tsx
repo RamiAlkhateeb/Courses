@@ -1,12 +1,12 @@
 import { useEffect } from 'react'
 import { isRouteErrorResponse, Link, useRouteError } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Button, Card, Rafiq } from '../components/ui'
+import { AbuShreek, Button, buttonClass, Card, Icon } from '../components/ui'
 import { isChunkLoadError, reloadOnce } from './chunkReload'
 import styles from './RouteError.module.css'
 
-/** Shown by the router when a screen throws or its code can't be loaded. Reloading fixes the common case: the app
- *  was deployed while this tab was open, so the tab's old files are gone (see chunkReload.ts). */
+/** Shown by the router when a screen throws or its code can't be loaded (designs 41, 42). Reloading fixes the common
+ *  case: the app was deployed while this tab was open, so the tab's old files are gone (see chunkReload.ts). */
 export function RouteError() {
   const error = useRouteError()
   const { t } = useTranslation()
@@ -19,17 +19,22 @@ export function RouteError() {
 
   return (
     <main className={styles.page} role="alert">
-      <Rafiq pose="oops" height={120} />
-      <Card className={styles.card}>
+      <div className={styles.top}>
+        <AbuShreek pose="oops" height={240} />
         <h1>{t('errorTitle')}</h1>
-        <p>{stale ? t('errorUpdated') : t('errorGeneric')}</p>
-        <div className={styles.actions}>
-          <Button onClick={() => window.location.reload()}>{t('errorReload')}</Button>
-          <Link to="/" className={styles.home}>
-            {t('home')}
-          </Link>
-        </div>
-      </Card>
+        <Card className={styles.card}>
+          <p>{stale ? t('errorUpdated') : t('errorGeneric')}</p>
+          <p className={styles.safe}>
+            <Icon name="check" size={20} /> {t('errorSafe')}
+          </p>
+        </Card>
+      </div>
+      <div className={styles.actions}>
+        <Button onClick={() => window.location.reload()}>{t('errorReload')}</Button>
+        <Link to="/" className={buttonClass({ variant: 'secondary' })}>
+          {t('home')}
+        </Link>
+      </div>
     </main>
   )
 }

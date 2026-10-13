@@ -36,8 +36,8 @@
 }
 .ghost {
   background: transparent;
-  border-color: transparent;
-  color: var(--muted);
+  border: 1px dashed var(--locked);
+  color: var(--ink);
   min-block-size: 44px;
 }
 .sm {
@@ -189,6 +189,7 @@
 
 /* ---------- TabBar ---------- */
 .tabbar {
+  box-sizing: border-box;
   position: fixed;
   inset-inline: 0;
   inset-block-end: 0;
@@ -202,12 +203,15 @@
   border-block-start: 1px solid var(--rule);
 }
 .tab {
-  flex: 1;
+  flex: 1 1 0;
+  min-inline-size: 0;
+  text-align: center;
+  line-height: 1.2;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  padding: 8px 4px;
+  padding: 8px 2px;
   border-radius: var(--radius-lg);
   border: 1px solid transparent;
   color: var(--muted);
@@ -306,7 +310,4 @@ button.node {
   background: var(--navy-2);
   border-color: var(--navy-line);
   color: var(--brand-bg);
-}
-:global(html[dir='rtl']) :global(.rafiq) {
-  transform: scaleX(-1);
 }

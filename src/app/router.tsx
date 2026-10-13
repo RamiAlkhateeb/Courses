@@ -25,16 +25,26 @@ export const router = createBrowserRouter(
       hydrateFallbackElement: <p>…</p>,
       children: [
         { path: 'welcome', ...page(() => import('../features/onboarding/Onboarding'), 'Welcome') },
+        { path: 'welcome/bank', ...page(() => import('../features/onboarding/Onboarding'), 'StartingBank') },
         { path: 'welcome/:step', ...page(() => import('../features/onboarding/Onboarding'), 'OnboardingStep') },
         {
           element: <TabsLayout />,
           children: [
             { index: true, element: <PathPage /> },
             { path: 'review', ...page(() => import('../features/review/ReviewTab'), 'ReviewTab') },
-            { path: 'terms', ...page(() => import('../features/terms/TermsPage'), 'TermsPage') },
+            { path: 'playground', ...page(() => import('../features/playground/PlaygroundPage'), 'PlaygroundPage') },
+            { path: 'review/terms', ...page(() => import('../features/terms/TermsPage'), 'TermsPage') },
             { path: 'me', ...page(() => import('../features/me/MePage'), 'MePage') },
           ],
         },
+        { path: 'playground/fund', ...page(() => import('../features/playground/FundPage'), 'FundPage') },
+        { path: 'playground/unlocks', ...page(() => import('../features/playground/UnlocksPage'), 'UnlocksPage') },
+        { path: 'playground/risk', ...page(() => import('../features/playground/RiskPage'), 'RiskPage') },
+        { path: 'playground/missions', ...page(() => import('../features/playground/SeasonPages'), 'MissionsPage') },
+        { path: 'playground/summary', ...page(() => import('../features/playground/SeasonPages'), 'SummaryPage') },
+        { path: 'playground/rewind', ...page(() => import('../features/playground/SeasonPages'), 'RewindPage') },
+        { path: 'playground/seasons', ...page(() => import('../features/playground/SeasonPages'), 'SeasonsPage') },
+        { path: 'playground/debrief', ...page(() => import('../features/playground/DebriefPage'), 'DebriefPage') },
         { path: 'summit', ...page(() => import('../features/path/SummitPage'), 'SummitPage') },
         { path: 'review/run', ...page(() => import('../features/lesson/ReviewRun'), 'ReviewRun') },
         {

@@ -67,6 +67,10 @@ export const courses: Course[] = [
   dss,
 ]
 
+/** The courses the app offers. The rest stay in the repo (content, tests) but are hidden until they come back. */
+export const ENABLED_COURSE_IDS = ['investing']
+export const appCourses = courses.filter((c) => ENABLED_COURSE_IDS.includes(c.id))
+
 export const getCourse = (id: string | undefined) => courses.find((c) => c.id === id)
 
 export const moduleHref = (courseId: string, moduleId: string) => `/course/${courseId}/${moduleId}`

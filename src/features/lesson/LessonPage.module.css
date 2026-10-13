@@ -44,7 +44,7 @@
   gap: 12px;
 }
 
-/* ---------- Bottom: action beside Rafiq, or the feedback sheet ---------- */
+/* ---------- Bottom: action beside AbuShreek, or the feedback sheet ---------- */
 .footer {
   position: fixed;
   inset-inline: 0;
@@ -58,7 +58,10 @@
   background: linear-gradient(to top, var(--paper) 70%, transparent);
   z-index: 10;
 }
-.footRafiq {
+.compactAction {
+  margin-inline-start: auto;
+}
+.footMascot {
   flex-shrink: 0;
   margin-block-end: -20px;
 }
@@ -68,7 +71,7 @@
   gap: 14px;
   margin-block: -70px 14px;
 }
-.sheetRafiq {
+.sheetMascot {
   flex-shrink: 0;
 }
 .feedback {
@@ -84,7 +87,7 @@
   font-size: 2rem;
   line-height: 1.05;
 }
-.xpPill {
+.moneyPill {
   border: 1px solid currentColor;
   border-radius: 999px;
   padding: 6px 14px;
@@ -144,7 +147,7 @@
   background: var(--dawn);
   border: 2px solid var(--accent);
 }
-.heroRafiq {
+.heroMascot {
   position: relative;
 }
 .summary h1 {
@@ -190,10 +193,10 @@
   gap: 6px;
   color: var(--brand);
 }
-.tileXp {
+.tileMoney {
   border-color: var(--accent);
 }
-.tileXp span {
+.tileMoney span {
   background: var(--accent);
 }
 .tileAcc {

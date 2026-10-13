@@ -23,7 +23,19 @@ export const LANGUAGES = [
 
 /** Number locale for a UI language: Arabic keeps Western digits (1,240), as in the design. */
 export const numberLocale = (lng: string) => (lng === 'ar' ? 'ar-u-nu-latn' : lng)
-export const formatNumber = (n: number, lng: string = i18n.language) => new Intl.NumberFormat(numberLocale(lng)).format(n)
+export const formatNumber = (n: number, { decimals }: { decimals?: number } = {}, lng: string = i18n.language) =>
+  new Intl.NumberFormat(numberLocale(lng), decimals === undefined ? undefined : { minimumFractionDigits: decimals, maximumFractionDigits: decimals }).format(n)
+
+/** A play-money amount as text: `$1,240`, `+$486`, `−$6` (Western digits in both languages). For attributes and
+ *  sentences; screens use <Money>, which also pins the direction. */
+export const formatMoney = (amount: number, { sign = false, decimals = 0 }: { sign?: boolean; decimals?: number } = {}, lng: string = i18n.language) => {
+  const abs = new Intl.NumberFormat(numberLocale(lng), { minimumFractionDigits: decimals, maximumFractionDigits: decimals }).format(Math.abs(amount))
+  return `${amount < 0 ? '−' : sign ? '+' : ''}$${abs}`
+}
+
+/** `formatMoney` wrapped so the amount stays one left-to-right unit when it is slotted into a sentence (a button label
+ *  such as "Buy $150" inside Arabic text). */
+export const moneyText = (amount: number, opts?: { sign?: boolean; decimals?: number }) => `\u2066${formatMoney(amount, opts)}\u2069`
 
 const applyDir = (lng: string) => {
   document.documentElement.lang = lng
