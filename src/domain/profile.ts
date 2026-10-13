@@ -10,8 +10,6 @@ export interface Profile {
   trail?: string
   /** Daily time goal in minutes */
   minutes: number
-  /** Local day ('YYYY-MM-DD') the weekly rest day was last used (design 20) */
-  restDayUsed?: string
 }
 
 /** A first-time visitor. Also what unreadable saved text parses to. */
@@ -26,7 +24,6 @@ export function parseProfile(raw: string | null): Profile {
       minutes: typeof d.minutes === 'number' && d.minutes > 0 ? d.minutes : 10,
       ...(typeof d.goal === 'string' ? { goal: d.goal } : {}),
       ...(typeof d.trail === 'string' ? { trail: d.trail } : {}),
-      ...(typeof d.restDayUsed === 'string' ? { restDayUsed: d.restDayUsed } : {}),
     }
   } catch {
     return emptyProfile

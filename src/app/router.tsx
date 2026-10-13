@@ -32,9 +32,7 @@ export const router = createBrowserRouter(
           element: <TabsLayout />,
           children: [
             { index: true, element: <PathPage /> },
-            { path: 'review', ...page(() => import('../features/review/ReviewTab'), 'ReviewTab') },
             { path: 'playground', ...page(() => import('../features/playground/PlaygroundPage'), 'PlaygroundPage') },
-            { path: 'review/terms', ...page(() => import('../features/terms/TermsPage'), 'TermsPage') },
             { path: 'me', ...page(() => import('../features/me/MePage'), 'MePage') },
           ],
         },
@@ -47,8 +45,6 @@ export const router = createBrowserRouter(
         { path: 'playground/seasons', ...page(() => import('../features/playground/SeasonPages'), 'SeasonsPage') },
         { path: 'playground/debrief', ...page(() => import('../features/playground/DebriefPage'), 'DebriefPage') },
         { path: 'account', ...page(() => import('../features/account/AccountPage'), 'AccountPage') },
-        { path: 'summit', ...page(() => import('../features/path/SummitPage'), 'SummitPage') },
-        { path: 'review/run', ...page(() => import('../features/lesson/ReviewRun'), 'ReviewRun') },
         {
           // A roadmap lesson: small cards from one section, then its questions.
           path: 'course/:courseId/:moduleId/learn/:lessonId',

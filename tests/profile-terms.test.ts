@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest'
 import { parseProfile } from '../src/domain/profile'
-import { applyRestDay, bumpStreak, currentStreak, parseProgress, weekStart } from '../src/domain/progress'
 import { lessonTerms, lessonsFor } from '../src/domain/lessons'
 import { investing } from '../src/content/courses/investing'
 
@@ -13,21 +12,6 @@ describe('profile', () => {
       trail: 'investing',
       minutes: 15,
     })
-  })
-})
-
-describe('rest day', () => {
-  it('finds the Monday of a week', () => {
-    expect(weekStart('2026-10-11')).toBe('2026-10-05') // a Sunday
-    expect(weekStart('2026-10-05')).toBe('2026-10-05') // the Monday itself
-  })
-
-  it('keeps a streak alive across one missed day', () => {
-    const p = { ...parseProgress(null), streak: { count: 7, lastDay: '2026-10-09' } }
-    expect(currentStreak(p.streak, '2026-10-11')).toBe(0) // missed 10th: lost without a rest day
-    const rested = applyRestDay(p, '2026-10-11')
-    expect(rested.streak.lastDay).toBe('2026-10-10')
-    expect(bumpStreak(rested.streak, '2026-10-11').count).toBe(8)
   })
 })
 

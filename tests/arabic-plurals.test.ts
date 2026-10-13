@@ -21,18 +21,6 @@ describe('Arabic plurals', () => {
     expect(i18n.t('daysOnPath', { count })).toBe(text)
   })
 
-  const cards: [number, string][] = [
-    [0, 'لا بطاقات'],
-    [1, 'بطاقة واحدة'],
-    [2, 'بطاقتان'],
-    [3, '3 بطاقات'],
-    [11, '11 بطاقة'],
-    [100, '100 بطاقة'],
-  ]
-  it.each(cards)('cards due: %i', (count, text) => {
-    expect(i18n.t('cardsDue', { count })).toContain(text)
-  })
-
   it('never says "1 أيام"', () => {
     expect(i18n.t('daysOnPath', { count: 1 })).not.toMatch(/1 أيام/)
   })

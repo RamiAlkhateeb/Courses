@@ -2,14 +2,41 @@
   max-inline-size: var(--app-max);
   min-block-size: 100dvh;
   margin-inline: auto;
-  background: var(--paper);
   position: relative;
+  isolation: isolate;
+  overflow-x: clip;
+}
+/* Soft blurred glows behind every screen: sky at the top corner, blue lower on the other side. */
+.frame::before,
+.frame::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  filter: blur(70px);
+  pointer-events: none;
+}
+.frame::before {
+  inset-inline-end: -90px;
+  inset-block-start: -40px;
+  inline-size: 320px;
+  block-size: 320px;
+  background: var(--glow-sky);
+  opacity: 0.4;
+}
+.frame::after {
+  inset-inline-start: -110px;
+  inset-block-start: 380px;
+  inline-size: 260px;
+  block-size: 260px;
+  background: var(--blue);
+  opacity: 0.14;
 }
 @media (min-width: 431px) {
   .frame {
-    border-inline: 1px solid var(--rule);
+    border-inline: 1px solid var(--line);
   }
 }
 .tabs {
-  padding-block-end: 110px;
+  padding-block-end: 112px;
 }

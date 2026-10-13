@@ -1,4 +1,4 @@
-import { applyRestDay, completeLesson, localDay, markRead, recordAnswer, recordReview } from '../domain/progress'
+import { completeLesson, localDay, markRead, recordAnswer, recordReview } from '../domain/progress'
 import { progressStore } from './progress'
 import { useStore } from './useStore'
 
@@ -15,7 +15,6 @@ export function useProgress() {
       update((p) => recordReview(recordAnswer(p, questionId, selected, correct), questionId, correct)),
     completeLesson: (correct: number, lessonKey?: string) => update((p) => completeLesson(p, correct, localDay(), lessonKey)),
     markRead: (moduleKey: string, sectionId: string) => update((p) => markRead(p, moduleKey, sectionId)),
-    takeRestDay: () => update((p) => applyRestDay(p, localDay())),
     reset,
   }
 }

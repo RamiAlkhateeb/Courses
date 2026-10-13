@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { MoneyChip } from '../../components/MoneyChip'
@@ -11,7 +10,6 @@ import { useLocalized } from '../../content/useLocalized'
 import { currentStreak, localDay } from '../../domain/progress'
 import { useProgress } from '../../state/useProgress'
 import { PathMap } from './PathMap'
-import { RestDay, useRestDayOffer } from './RestDay'
 import { useTrail, useTrailId } from '../../state/useTrail'
 import styles from './PathPage.module.css'
 
@@ -22,8 +20,6 @@ export function PathPage() {
   const trailId = useTrailId()
   const { course, current, loaded } = useTrail(trailId)
   const { progress } = useProgress()
-  const offerRest = useRestDayOffer()
-  const [restClosed, setRestClosed] = useState(false)
   const streak = currentStreak(progress.streak, localDay())
   const playground = useStore(playgroundStore)
 
@@ -51,9 +47,6 @@ export function PathPage() {
               <p className={styles.bannerKicker}>{t('unitCamp', { u: current.unit, c: current.camp })}</p>
               <h1 className={styles.bannerTitle}>{tc(current.title)}</h1>
             </div>
-            <Link to="/summit" className={styles.summitBtn} aria-label={t('summitView')}>
-              <Icon name="mountain" size={26} />
-            </Link>
           </section>
           {playground.funded > 0 && (
             <div className={styles.pgRow}>
@@ -68,7 +61,6 @@ export function PathPage() {
         <p className={styles.loading}>{t('contentComing')}</p>
       )}
 
-      {offerRest && !restClosed && <RestDay onClose={() => setRestClosed(true)} />}
     </div>
   )
 }

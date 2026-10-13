@@ -108,19 +108,6 @@ export function currentStreak(streak: Streak, today: string): number {
   return gap === 0 || gap === 1 ? streak.count : 0
 }
 
-/** The weekly rest day: pretends the last lesson was yesterday, so today's lesson extends the streak instead of restarting it. */
-export function applyRestDay(p: Progress, today: string): Progress {
-  const [y, m, d] = today.split('-').map(Number)
-  return { ...p, streak: { ...p.streak, lastDay: localDay(new Date(y, m - 1, d - 1)) } }
-}
-
-/** Monday of `day`'s week, 'YYYY-MM-DD': the rest day resets on it. */
-export function weekStart(day: string): string {
-  const [y, m, d] = day.split('-').map(Number)
-  const date = new Date(y, m - 1, d)
-  return localDay(new Date(y, m - 1, d - ((date.getDay() + 6) % 7)))
-}
-
 /** Streak after finishing a lesson on `today`: same day keeps it, next day extends it, a gap restarts it. */
 export function bumpStreak(streak: Streak, today: string): Streak {
   const gap = daysBetween(streak.lastDay, today)

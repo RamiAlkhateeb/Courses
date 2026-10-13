@@ -3,7 +3,7 @@ import { useProfile } from '../state/profile'
 import { TabBar } from './ui'
 import styles from './AppFrame.module.css'
 
-/** Mobile column (max 430px) for the new app screens. First-time visitors are sent to Welcome. */
+/** Mobile column (max 430px) for the app screens. First-time visitors are sent to Welcome. */
 export function AppFrame() {
   const { onboarded } = useProfile()
   const { pathname } = useLocation()
@@ -15,7 +15,7 @@ export function AppFrame() {
   )
 }
 
-/** The four main screens: content above the tab bar. */
+/** The three main screens (Learn, Playground, Me): content above the floating tab bar. */
 export function TabsLayout() {
   return (
     <div className={styles.tabs}>
