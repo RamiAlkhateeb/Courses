@@ -5,6 +5,7 @@ import type { ParseKeys } from 'i18next'
 import { Button, Coin, Icon, OptionCard, ProgressBar, AbuShreek, type MascotPose } from '../../components/ui'
 import { LogoMark } from '../../components/Logo'
 import { LANGUAGES } from '../../i18n'
+import { accountsEnabled } from '../../state/supabase'
 import { START_BANK } from '../../domain/money'
 import { Money } from '../../components/Money'
 import { DEFAULT_TRAIL } from '../../domain/profile'
@@ -46,6 +47,8 @@ export function Welcome() {
           variant="ghost"
           className={styles.alreadyBtn}
           onClick={() => {
+            // With accounts configured, "I already have a path" means: sign in and bring it here.
+            if (accountsEnabled) return navigate('/account')
             updateProfile({ onboarded: true })
             navigate('/')
           }}
@@ -161,6 +164,8 @@ export function StartingBank() {
         <p className={styles.fine}>{t('bankFine')}</p>
         <Button
           onClick={() => {
+            // With accounts configured, "I already have a path" means: sign in and bring it here.
+            if (accountsEnabled) return navigate('/account')
             updateProfile({ onboarded: true })
             navigate('/')
           }}

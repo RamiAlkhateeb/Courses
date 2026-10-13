@@ -9,6 +9,9 @@ import { ENABLED_COURSE_IDS, getCourse } from '../../content/courses'
 import { useLocalized } from '../../content/useLocalized'
 import { currentStreak, localDay } from '../../domain/progress'
 import { useProgress } from '../../state/useProgress'
+import { accountsEnabled } from '../../state/supabase'
+import { useAuth } from '../../state/auth'
+import { useSyncStatus } from '../../state/sync'
 import { WeekBars } from '../../components/WeekStrip'
 import { updateProfile, useProfile } from '../../state/profile'
 import { useTrail, useTrailId } from '../../state/useTrail'
@@ -24,6 +27,8 @@ export function MePage() {
   const active = useTrailId()
   const streak = currentStreak(progress.streak, localDay())
   const { course } = useTrail(active)
+  const auth = useAuth()
+  const sync = useSyncStatus()
 
   const stats: { icon?: IconName; value: ReactNode; label: string }[] = [
     { icon: 'flag', value: String(streak), label: t('dayStreak') },
@@ -51,6 +56,16 @@ export function MePage() {
         </Link>
       </header>
 
+      {accountsEnabled && auth.status !== 'loading' && (
+        <Link to="/account" className={styles.account}>
+          <Icon name="me" size={22} />
+          <span>
+            <strong>{auth.status === 'signedIn' ? auth.user?.email : t('acc_me_sign_in')}</strong>
+            <small>{auth.status === 'signedIn' ? t(`acc_sync_${sync === 'off' ? 'syncing' : sync}` as 'acc_sync_synced') : t('acc_me_sub')}</small>
+          </span>
+          <Icon name="chevron" size={20} className={styles.chev} />
+        </Link>
+      )}
       <div className={styles.stats}>
         {stats.map((s) => (
           <Card key={s.label} className={styles.stat}>

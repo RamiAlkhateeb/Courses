@@ -7,7 +7,7 @@ import styles from './AppFrame.module.css'
 export function AppFrame() {
   const { onboarded } = useProfile()
   const { pathname } = useLocation()
-  if (!onboarded && !pathname.startsWith('/welcome')) return <Navigate to="/welcome" replace />
+  if (!onboarded && !pathname.startsWith('/welcome') && !pathname.startsWith('/account')) return <Navigate to="/welcome" replace />
   return (
     <div className={styles.frame}>
       <Outlet />

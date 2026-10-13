@@ -46,6 +46,7 @@ export const router = createBrowserRouter(
         { path: 'playground/rewind', ...page(() => import('../features/playground/SeasonPages'), 'RewindPage') },
         { path: 'playground/seasons', ...page(() => import('../features/playground/SeasonPages'), 'SeasonsPage') },
         { path: 'playground/debrief', ...page(() => import('../features/playground/DebriefPage'), 'DebriefPage') },
+        { path: 'account', ...page(() => import('../features/account/AccountPage'), 'AccountPage') },
         { path: 'summit', ...page(() => import('../features/path/SummitPage'), 'SummitPage') },
         { path: 'review/run', ...page(() => import('../features/lesson/ReviewRun'), 'ReviewRun') },
         {

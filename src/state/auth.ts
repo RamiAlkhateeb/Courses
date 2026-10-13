@@ -1,0 +1,124 @@
+import type { AuthChangeEvent, Session } from '@supabase/supabase-js'
+import { accountsEnabled, arrivedFromEmailLink, hasStoredSession, loadSupabase } from './supabase'
+import { useStore } from './useStore'
+
+export interface AuthUser {
+  id: string
+  email: string
+}
+
+/** `off`: accounts are not configured. `loading`: checking a saved sign-in. `recovery`: arrived from a reset-password email. */
+export type AuthStatus = 'off' | 'loading' | 'signedOut' | 'signedIn' | 'recovery'
+export interface AuthState {
+  status: AuthStatus
+  user: AuthUser | null
+}
+
+let state: AuthState = { status: accountsEnabled ? 'loading' : 'off', user: null }
+const listeners = new Set<() => void>()
+const set = (next: AuthState) => {
+  state = next
+  listeners.forEach((l) => l())
+}
+
+/** A store-shaped object so `useStore` and the sync code can both use it. */
+export const authStore = {
+  get: () => state,
+  subscribe(l: () => void) {
+    listeners.add(l)
+    return () => {
+      listeners.delete(l)
+    }
+  },
+}
+export const useAuth = () => useStore(authStore)
+
+const toUser = (s: Session | null): AuthUser | null => (s?.user ? { id: s.user.id, email: s.user.email ?? '' } : null)
+
+let started = false
+/** Start listening for the signed-in user. Without a saved sign-in (or an email link) the client is not even downloaded. */
+export async function initAuth(): Promise<void> {
+  if (!accountsEnabled || started) return
+  started = true
+  if (!hasStoredSession() && !arrivedFromEmailLink()) return set({ status: 'signedOut', user: null })
+  try {
+    const sb = await loadSupabase()
+    sb.auth.onAuthStateChange((event: AuthChangeEvent, session: Session | null) => {
+      const user = toUser(session)
+      if (event === 'PASSWORD_RECOVERY') set({ status: 'recovery', user })
+      else if (event === 'SIGNED_OUT' || !user) set({ status: 'signedOut', user: null })
+      else if (state.status !== 'recovery') set({ status: 'signedIn', user })
+    })
+    const { data } = await sb.auth.getSession()
+    if (state.status === 'loading') set(data.session ? { status: 'signedIn', user: toUser(data.session) } : { status: 'signedOut', user: null })
+  } catch {
+    set({ status: 'signedOut', user: null })
+  }
+}
+
+/** Why something failed, in terms the screen can translate. */
+export type AuthError = 'invalid' | 'exists' | 'weak' | 'email' | 'rate' | 'network' | 'unknown'
+export type AuthResult = { ok: true; needsConfirmation?: boolean } | { ok: false; error: AuthError }
+
+function failure(e: unknown): AuthResult {
+  const err = e as { code?: string; status?: number; message?: string } | null
+  const code = err?.code ?? ''
+  const msg = (err?.message ?? '').toLowerCase()
+  const error: AuthError =
+    code === 'invalid_credentials' || msg.includes('invalid login') ? 'invalid'
+    : code === 'user_already_exists' || code === 'email_exists' || msg.includes('already registered') ? 'exists'
+    : code === 'weak_password' || msg.includes('password') ? 'weak'
+    : code === 'email_address_invalid' || code === 'validation_failed' || msg.includes('email') ? 'email'
+    : code.includes('rate_limit') || err?.status === 429 ? 'rate'
+    : err?.status === 0 || msg.includes('fetch') || msg.includes('network') ? 'network'
+    : 'unknown'
+  return { ok: false, error }
+}
+
+async function run(fn: (sb: Awaited<ReturnType<typeof loadSupabase>>) => Promise<{ error: unknown | null; needsConfirmation?: boolean }>): Promise<AuthResult> {
+  try {
+    const sb = await loadSupabase()
+    const { error, needsConfirmation } = await fn(sb)
+    return error ? failure(error) : { ok: true, ...(needsConfirmation ? { needsConfirmation } : {}) }
+  } catch (e) {
+    return failure(e)
+  }
+}
+
+export const signIn = (email: string, password: string) => run(async (sb) => sb.auth.signInWithPassword({ email: email.trim(), password }))
+
+export const signUp = (email: string, password: string) =>
+  run(async (sb) => {
+    const { data, error } = await sb.auth.signUp({ email: email.trim(), password, options: { emailRedirectTo: accountUrl() } })
+    return { error, needsConfirmation: !error && !data.session }
+  })
+
+/** The address the emails send people back to; built from the deploy base path, never hard-coded. */
+const accountUrl = () => `${location.origin}${import.meta.env.BASE_URL}account`
+
+export const requestPasswordReset = (email: string) => run(async (sb) => sb.auth.resetPasswordForEmail(email.trim(), { redirectTo: accountUrl() }))
+
+export const setNewPassword = (password: string) =>
+  run(async (sb) => {
+    const res = await sb.auth.updateUser({ password })
+    if (!res.error) set({ status: 'signedIn', user: state.user })
+    return res
+  })
+
+export const signOut = () =>
+  run(async (sb) => {
+    const res = await sb.auth.signOut()
+    set({ status: 'signedOut', user: null })
+    return res
+  })
+
+/** Delete the account and everything saved for it (the `delete_my_account` function), then sign out. This device keeps its own copy as guest progress. */
+export const deleteAccount = () =>
+  run(async (sb) => {
+    const res = await sb.rpc('delete_my_account')
+    if (!res.error) {
+      await sb.auth.signOut().catch(() => undefined)
+      set({ status: 'signedOut', user: null })
+    }
+    return res
+  })

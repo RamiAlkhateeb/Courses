@@ -142,3 +142,31 @@
   border: 1px dashed var(--locked);
   color: var(--locked);
 }
+.account {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-block-start: 16px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  color: var(--brand);
+  text-decoration: none;
+}
+.account > span {
+  flex: 1;
+  min-inline-size: 0;
+  display: grid;
+}
+.account strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.account small {
+  color: var(--muted);
+}
+:global(html[dir='rtl']) .chev {
+  transform: scaleX(-1);
+}

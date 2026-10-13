@@ -8,8 +8,12 @@ import './i18n'
 import { Providers } from './app/providers'
 import { reloadOnStaleChunks } from './app/chunkReload'
 import { router } from './app/router'
+import { initAuth } from './state/auth'
+import { startSync } from './state/sync'
 
 reloadOnStaleChunks()
+startSync() // listens for sign-in; does nothing unless accounts are configured
+void initAuth()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
