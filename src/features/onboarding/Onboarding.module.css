@@ -265,3 +265,21 @@
   font-size: 0.875rem;
   margin-block-start: 16px;
 }
+
+/* Narrow phones (320px): the headline wraps to more lines, so everything under it moves up and the mascot shrinks. */
+@media (max-width: 359px) {
+  .headline {
+    font-size: 2.1rem;
+  }
+  .welcomeAlt {
+    font-size: 1.15rem;
+  }
+  .bubble {
+    inset-block-start: 340px;
+  }
+  .heroMascot {
+    inset-block-start: 380px;
+    block-size: 300px;
+    inline-size: auto;
+  }
+}

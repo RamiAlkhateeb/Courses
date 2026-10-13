@@ -139,3 +139,15 @@ test('the Playground uses the one wallet: buy Safe Savings, time starts, the ban
   expect(saved.pg.cash + saved.pg.holdings.savings.units * 1).toBeCloseTo(1240 - 1, 0) // minus the 1% fee on $100
   expect(errors).toEqual([])
 })
+
+for (const lang of ['en', 'ar']) {
+  test(`no sideways scroll at 320px in ${lang}`, async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 700 })
+    await onboarded(page, { lang, 'progress:v2': JSON.stringify({ bank: 1240 }) })
+    for (const route of ['./', 'playground', 'me', 'course/investing/basics/learn/risk-return']) {
+      await page.goto(route)
+      await page.waitForTimeout(400)
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), route).toBe(true)
+    }
+  })
+}

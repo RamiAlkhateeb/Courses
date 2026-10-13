@@ -1,13 +1,11 @@
 # Roadmap
 
-## Money loop (in progress; the plan is in the build brief)
-Done: Phase A (mascot, tokens, Investing-only, Starting bank, Error screens) and Phase B (bank instead of XP, `progress:v2` migration, lesson payouts, Camp cleared with dollars, Lesson payout screen, Path opens at your lesson with "Back to my camp").
-Phase C (seeded simulation engine with tests, Playground, Fund, Buy/Sell, debrief, market news, risk check, unlocks, "Time stood still", Terms under Review, the "Move $100" offer).
-Phase D (season missions, season summary with what helped / what hurt, "What if I waited?", past seasons, and a 320/390 px overflow sweep in English and Arabic).
-Still open: Weekly expedition (needs a backend), the scenario lesson type (19), lesson-card tip bubbles, the quiz hint.
+## Garden redesign (October 2026, done)
+The app was rebuilt to the garden design in `design/Abu Shreek Mobile App Flow.html` (screen map: `design/README.md`): new tokens and UI kit, Welcome / Language / Daily goal, the Learn path (one long scroll of units with zigzag nodes), the lesson loop (card, quiz, Correct / Not quite with a retry, Lesson complete), the Me tab (stats, this week, "Your garden", milestones), the one-wallet Playground (10-year seasons, Buy / Sell, market news, season summary) and the three-tab floating navigation. Accounts (optional Supabase sync) are part of the app. Everything the design dropped was deleted (see `CLAUDE.md`, "Design system").
+Still open: Weekly expedition (needs a backend), lesson-card tip bubbles, the quiz hint, a restyle of the desktop reading pages (`/course/:id`, `/settings`) to the garden tokens.
 
-## Current scope (October 2026)
-Investing only (`ENABLED_COURSE_IDS`), money loop instead of XP, light theme only, one language on screen at a time, mascot-face app icon, onboarding Language → Daily time → Starting bank. The items below are history: some describe screens that were later removed (the catalog/Home dashboard at `/courses`, the one-page reading view, dark mode, XP).
+## Current scope
+Investing only (`ENABLED_COURSE_IDS`), one wallet of play money, light theme only, one language on screen at a time, mascot-face app icon, onboarding Language → Daily goal. The items below are history: some describe screens that were later removed (the catalog/Home dashboard at `/courses`, the one-page reading view, dark mode, XP, the mountain path, Review and Terms tabs).
 
 ## Done
 - Guest-only Vite + React + TS app (no accounts, no backend), EN + AR with RTL (dark theme later removed).
@@ -27,10 +25,6 @@ Investing only (`ENABLED_COURSE_IDS`), money loop instead of XP, light theme onl
 - **Settings** page (`/settings`, ⚙ in the top bar): language, sound effects (synthesised with Web Audio, no files).
 
 - Business courses (category "Business & finance" on the home page): **Investing Fundamentals** (3 modules), **Personal Finance**, **Accounting Essentials**, **Entrepreneurship**, **Marketing Fundamentals** (1 module each), with "Soon" placeholders for the rest. Shared content helpers in `src/content/helpers.ts`; per-question shuffled option order.
-
-## Design rebuild (from `design/`)
-Done: tokens + fonts, UI kit (`src/components/ui`), Welcome and onboarding (01–05), Path home with the mountain map (06, 14), card lessons, quiz, feedback sheets and results (07–11, 15), Review tab (12), Me tab (13), Terms tab (16), Summit view (17), rest-day offer (20).
-Not done: Weekly expedition (18, needs a backend), the "What would you do?" trade-off lesson type (19, needs new content type), Rafiq tip bubbles on lesson cards and the quiz hint (need content), "Try again / Re-read the card" on a wrong answer (the app still shows the right answer and continues), PWA/installable, Playwright screenshot checks.
 
 ## Next: finish the courses
 Write the "Soon" modules. Tech interview: Behavioral (STAR), Offers & negotiation, SQL (from `solutions/sql/`), JavaScript (from `solutions/javascript/`), System design, Mock-interview checklist. Business: investing (valuation, retirement accounts, investment plan), personal finance (debt, credit, insurance, goals), accounting (bookkeeping, ratios, cash management), entrepreneurship (business model, pricing, unit economics, funding, legal), marketing (branding, digital, content & SEO, sales). Use the `add-module` skill.

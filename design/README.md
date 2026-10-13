@@ -1,46 +1,35 @@
-# Abu Shreek design handoff
+# Abu Shreek design handoff: the garden design
 
-Source: the Claude Design canvas (47 frames; 42 numbered screens in English and Arabic, plus a style guide, a tokens sheet
-and the mascot sheet). Screens are 390×844 (shown at 2x). Mobile-first: a max-width-430px column with a tab bar
-(Path · Playground · Review · Me) on the four main screens.
+Source: `Abu Shreek Mobile App Flow.html`, the Claude Design export (27 screens at 390×844, English and Arabic/RTL, plus a
+style board and a tokens board). It is a visual spec only: the app is built from its own components (`src/components/ui/`),
+colours live in `src/styles/tokens.css`. Open the HTML in a browser to see every screen.
 
-`abu-shreek/` holds the mascot (Abu Shreek, أبو شريك): `wave` (hello), `cheer` (correct), `oops` (not quite), `think`
-(questions), `point` (next step). They are copied to `public/abu-shreek/` and drawn by `src/components/ui/AbuShreek.tsx`.
-`screens/Abu Shreek style guide.png` and `screens/Tokens and Arabic rules.png` have the colours, type, buttons, answer
-states, money styling and the six Arabic plural forms.
+`abu-shreek/` holds the mascot (Abu Shreek, أبو شريك): `wave` (welcome, language), `point` (guidance), `think` (quiz),
+`cheer` (correct, lesson complete, season summary), `oops` (not quite). They are copied to `public/abu-shreek/` and drawn
+by `src/components/ui/AbuShreek.tsx`.
 
-The product logic (learning pays play money, the Playground, unlocks) is in `docs/PLAN.md`.
+## Screens and where they live
 
-## Flow order and status
+| Screens | Route | Code |
+|---|---|---|
+| Welcome, Language, Daily goal | `/welcome`, `/welcome/language`, `/welcome/time` | `src/features/onboarding` |
+| Learn path (streak and money, unit banner, zigzag nodes, chest) | `/` | `src/features/path` |
+| Lesson card, quiz, Correct, Not quite, Lesson complete | `/course/:id/:module/learn/:lesson` | `src/features/lesson` |
+| Me (stats, this week, Your garden, milestones) | `/me` | `src/features/me` |
+| Playground (empty, running), Buy, Sell, Market news | `/playground` | `src/features/playground` |
+| Season summary | `/playground/summary` | `src/features/playground/SummaryPage.tsx` |
+| Error | any failing route | `src/app/RouteError.tsx` |
 
-| # | Screen | What it does | Status |
-|---|--------|--------------|--------|
-| 01 | Welcome | Names stacked, tagline, mascot, EN/عربي switch, Start / "I already have a path" | built |
-| 02 | Language | Onboarding 1/4: English or Arabic | built |
-| 03 | Your goal | Onboarding 2/4: why you're here | built |
-| 04 | Your first trail | Onboarding 3/4: Investing, the only trail for now | built |
-| 05 | Daily time | Onboarding 4/4: 5/10/15/20 min a day | built |
-| 21 | Starting bank | $1,000 play-money bank, then Path | built |
-| 06 | Home path | Mountain path, opens at your lesson, "Back to my camp" | built |
-| 07 | Lesson card | Content card, Next | built |
-| 08 | Quiz question | Options, "Check answer" | built |
-| 09 | Correct | Green sheet, mascot cheers | built |
-| 10 | Not quite | Red sheet, mascot oops | built |
-| 11 | Camp cleared | Lesson results, earned $ | built |
-| 28 | Lesson payout | +$40, coin to the bank chip, bank before → after | built, with the "Move $100?" offer |
-| 12 | Review tab | Cards due, topics, practice | built |
-| 16 | Terms collection | Word collection (inside Review) | built (at /review/terms) |
-| 13 | Progress (Me) | Streak, bank, week, trails, milestones | built |
-| 14, 15 | Home / Quiz, Arabic RTL | Mirrored layouts | built |
-| 17 | Summit map | Whole trail overview | built |
-| 19 | Scenario lesson | "What would you do?" trade-offs | not built (needs a content type) |
-| 20 | Rest day | One rest day a week keeps the streak | built |
-| 18 | Weekly expedition | Shared crew goal | skipped (needs a backend) |
-| 22, 30, 23 | Fund Playground, empty, Playground | Move money in, net worth, chart, holdings | built |
-| 24, 33, 32 | Buy, Sell, Trade debrief | Trade sheets and explanations | built |
-| 25, 34, 31 | Market news, Risk check, What unlocks | Events, risk, unlock ladder | built |
-| 37 | Time paused | "Time stood still" | built |
-| 29, 26, 35, 36 | Missions, Season summary, What if I waited, Past seasons | Seasons | built |
-| 27, 38, 39 | Playground / Buy / News, Arabic | RTL versions | built |
-| 40 | Season summary, Arabic | RTL version | built |
-| 41, 42 | Error, EN and AR | Reload and Home | built |
+The Arabic versions are the same components with `dir="rtl"`; nothing is duplicated.
+
+## What the design removed
+
+Mountain and summit, Weekly expedition, Review and Terms tabs, Scenario lessons, Rest day, Starting bank, Fund Playground,
+Lesson payout screen, Season missions, What unlocks, Risk check, Trade debrief, What if I waited, Past seasons and
+Time paused. They are gone from the code, not hidden.
+
+## Navigation
+
+Three floating-pill tabs: Learn (تعلّم), Playground (التجربة), Me (أنا).
+
+The product logic (one wallet of play money, lessons add rewards, the Playground) is in `CLAUDE.md` under "Product rules".
