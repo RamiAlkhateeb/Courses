@@ -365,4 +365,5 @@ export const en = {
   "acc_del_forever": "Delete my account forever",
   "acc_keep": "Keep my account",
   "acc_pw_rules": "Password rules",
+  "acc_header_cta": "Log in",
 }
