@@ -41,10 +41,9 @@ export const router = createBrowserRouter(
           ...page(() => import('../features/account/AccountGate'), 'AccountGate'),
           children: [
             { path: 'signup', ...page(() => import('../features/account/SignUpPage'), 'SignUpPage') },
-            { path: 'confirm-email', ...page(() => import('../features/account/ConfirmEmailPage'), 'ConfirmEmailPage') },
             { path: 'login', ...page(() => import('../features/account/LogInPage'), 'LogInPage') },
             { path: 'forgot-password', ...page(() => import('../features/account/ForgotPasswordPage'), 'ForgotPasswordPage') },
-            { path: 'check-email', ...page(() => import('../features/account/ConfirmEmailPage'), 'CheckEmailPage') },
+            { path: 'check-email', ...page(() => import('../features/account/CheckEmailPage'), 'CheckEmailPage') },
             { path: 'new-password', ...page(() => import('../features/account/NewPasswordPage'), 'NewPasswordPage') },
             { path: 'account', ...page(() => import('../features/account/AccountPage'), 'AccountPage') },
             { path: 'account/delete', ...page(() => import('../features/account/DeleteAccountPage'), 'DeleteAccountPage') },

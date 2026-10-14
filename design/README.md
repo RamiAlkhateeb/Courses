@@ -19,7 +19,7 @@ by `src/components/ui/AbuShreek.tsx`.
 | Playground (empty, running), Buy, Sell, Market news | `/playground` | `src/features/playground` |
 | Season summary | `/playground/summary` | `src/features/playground/SummaryPage.tsx` |
 | Error | any failing route | `src/app/RouteError.tsx` |
-| Sign up, Confirm email, Log in (+ wrong password), Forgot password, Check your email, New password, Account, Delete account (screens 25–35, Arabic Sign up and Log in) | `/signup`, `/confirm-email`, `/login`, `/forgot-password`, `/check-email`, `/new-password`, `/account`, `/account/delete` | `src/features/account` (built from a separate export, `Abu_Shreek_Mobile_App_Flow-png.zip`; the PNGs are not in the repo) |
+| Sign up, Log in (+ wrong password), Forgot password, Check your email, New password, Account, Delete account (screens 25–35, Arabic Sign up and Log in) | `/signup`, `/login`, `/forgot-password`, `/check-email`, `/new-password`, `/account`, `/account/delete` | `src/features/account` (built from a separate export, `Abu_Shreek_Mobile_App_Flow-png.zip`; the PNGs are not in the repo) |
 
 The Arabic versions are the same components with `dir="rtl"`; nothing is duplicated.
 

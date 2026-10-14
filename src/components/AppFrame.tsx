@@ -4,7 +4,7 @@ import { TabBar } from './ui'
 import styles from './AppFrame.module.css'
 
 /** Screens a first-time visitor may open before onboarding: signing in is how someone brings an existing account here. */
-const FIRST_TIMER_OK = /^\/(account|login|signup|confirm-email|forgot-password|check-email|new-password|legal)(\/|$)/
+const FIRST_TIMER_OK = /^\/(account|login|signup|forgot-password|check-email|new-password|legal)(\/|$)/
 
 /** Mobile column (max 430px) for the app screens. First-time visitors are sent to Welcome. */
 export function AppFrame() {

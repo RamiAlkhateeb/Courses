@@ -49,7 +49,6 @@ under `AccountGate`, which sends everyone back to Me when accounts are not confi
 | Route | Screen |
 |---|---|
 | `/signup` | Create your account: name, email, password with three visible rules, agreement to the terms |
-| `/confirm-email` | Confirm your email (when the project requires it): open the mail app, resend after a 60 s wait, skip |
 | `/login` | Log in; a wrong email or password turns the fields red and never says which one was wrong |
 | `/forgot-password`, `/check-email` | Ask for a reset link; always answers "Check your email" (no account enumeration) |
 | `/new-password` | Choose a new password (from the reset email, or from Account → Password) |
@@ -58,7 +57,7 @@ under `AccountGate`, which sends everyone back to Me when accounts are not confi
 | `/legal/terms`, `/legal/privacy`, `/legal/help` | **Drafts** (`legal.ts`): the owner must review them (and the Arabic) before launch |
 
 Entry points: the Me tab's account row (Log in when signed out, Account when signed in) and Welcome's "I already have an
-account". Not built from the design: Google / Apple sign-in (providers not set up) and the "Reminder at 8:00 PM" row
+account". Not built from the design: the "Confirm your email" screen (design 26: this project does not require email confirmation; if "Confirm email" is ever turned on in Supabase, a sign-up then sends people to Log in, and the screen needs building first), Google / Apple sign-in (providers not set up) and the "Reminder at 8:00 PM" row
 (needs notifications). Errors are mapped to translated messages (`acc_err_*`); the rules for passwords, names and the
 delete word are pure functions in `src/domain/auth.ts`.
 
@@ -71,8 +70,8 @@ Deleting the account removes the online copy only; this device keeps its own cop
 2. **Auth settings** (Authentication → URL Configuration):
    - Site URL: `https://ramialkhateeb.github.io/Courses/`
    - Redirect URLs (all four): `https://ramialkhateeb.github.io/Courses/account`, `https://ramialkhateeb.github.io/Courses/new-password`,
-     `http://localhost:5173/account` and `http://localhost:5173/new-password`. The confirmation email returns to `/account`;
-     the password-reset email returns to `/new-password`.
+     `http://localhost:5173/account` and `http://localhost:5173/new-password`.
+     The password-reset email returns to `/new-password`.
    - Password length: Authentication → Policies → minimum password length **8** (the app enforces 8 + a letter + a number
      on its own screens, but only the dashboard setting stops a direct API call).
    - Authentication → Providers → Email: enabled. "Confirm email" is **off** for now, so sync starts right after sign-up;
@@ -83,7 +82,7 @@ Deleting the account removes the online copy only; this device keeps its own cop
 
 ## Testing
 
-- `e2e/account.spec.ts` (fake Supabase in `e2e/fakeSupabase.ts`, answered inside the test; `playwright.config.ts` builds with a made-up project, so nothing reaches a real database): sign up (rules, confirmation, resend wait, skip), log in (wrong and right password, unconfirmed email, reload), reset flow, Account edits, change password, log out, delete (button waits for `DELETE`), Arabic RTL, and axe on every screen in English and Arabic.
+- `e2e/account.spec.ts` (fake Supabase in `e2e/fakeSupabase.ts`, answered inside the test; `playwright.config.ts` builds with a made-up project, so nothing reaches a real database): sign up (rules, and the no-confirm-screen fallback), log in (wrong and right password, unconfirmed email, reload), reset flow, Account edits, change password, log out, delete (button waits for `DELETE`), Arabic RTL, and axe on every screen in English and Arabic.
 - `tests/auth-domain.test.ts` (password / email / name / delete-word rules) and `tests/legal.test.ts`.
 - `tests/sync.test.ts`: every merge rule, the wallet decision, the shared-device rule.
 - Manual: sign up, finish a lesson, open the app in a second browser, sign in: the lesson is ticked and the bank matches;

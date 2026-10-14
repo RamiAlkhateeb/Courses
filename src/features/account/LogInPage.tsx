@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Button, TextField } from '../../components/ui'
 import { isEmail } from '../../domain/auth'
@@ -12,7 +12,6 @@ import styles from './Account.module.css'
  *  which of the two was wrong. */
 export function LogInPage() {
   const { t } = useTranslation()
-  const navigate = useNavigate()
   const auth = useAuth()
   const arrive = useArrive()
   const [email, setEmail] = useState('')
@@ -72,11 +71,6 @@ export function LogInPage() {
           state={error && error !== 'email' ? 'error' : 'idle'}
           message={message}
         />
-        {error === 'unconfirmed' && (
-          <button type="button" className={`${styles.link} ${styles.linkRight}`} onClick={() => navigate('/confirm-email', { state: { email: email.trim() } })}>
-            {t('acc_resend')}
-          </button>
-        )}
         <Link className={`${styles.link} ${styles.linkRight}`} to="/forgot-password" state={{ email: email.trim() }}>
           {t('acc_forgot')}
         </Link>

@@ -43,7 +43,8 @@ export function SignUpPage() {
       arrive.fail()
       return setError(res.error)
     }
-    if (res.needsConfirmation) return navigate('/confirm-email', { state: { email: email.trim() } })
+    // The project does not require email confirmation. If it ever does, there is no session yet: send them to log in.
+    if (res.needsConfirmation) return navigate('/login', { replace: true })
     arrive.start()
   }
 

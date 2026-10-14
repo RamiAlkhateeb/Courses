@@ -126,9 +126,6 @@ const accountUrl = () => appUrl('account')
 
 export const requestPasswordReset = (email: string) => run(async (sb) => sb.auth.resetPasswordForEmail(email.trim(), { redirectTo: appUrl('new-password') }))
 
-/** Send the confirmation link again (the "Resend email" button). */
-export const resendConfirmation = (email: string) => run(async (sb) => sb.auth.resend({ type: 'signup', email: email.trim(), options: { emailRedirectTo: accountUrl() } }))
-
 export const updateName = (name: string) =>
   run(async (sb) => {
     const res = await sb.auth.updateUser({ data: { name } })

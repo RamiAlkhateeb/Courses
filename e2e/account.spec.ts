@@ -59,20 +59,15 @@ test('sign up: the rules are shown and enforced, then it signs up and syncs the 
   await expect(page.getByText('Aya', { exact: true })).toBeVisible() // the name, not the email, on the Me row
 })
 
-test('sign up with email confirmation: shows "Confirm your email", a resend wait, and lets you skip', async ({ page }) => {
-  const fake = await fakeSupabase(page, { signupNeedsConfirmation: true })
+test('if the project ever requires email confirmation, sign up sends you to Log in (there is no confirm screen)', async ({ page }) => {
+  await fakeSupabase(page, { signupNeedsConfirmation: true })
   await onboarded(page)
   await page.goto('signup')
   await signUpForm(page)
   await page.getByRole('button', { name: 'Create account' }).click()
-  await expect(page).toHaveURL(/\/confirm-email$/)
-  await expect(page.getByRole('heading', { name: 'Confirm your email' })).toBeVisible()
-  await expect(page.getByText('learner@example.com')).toBeVisible()
-  await expect(page.getByRole('link', { name: 'Open email app' })).toHaveAttribute('href', 'mailto:learner@example.com')
-  await expect(page.getByRole('button', { name: /Resend email in 0:\d\d/ })).toBeDisabled()
-  expect(fake.calls.some((c) => c.includes('resend'))).toBe(false)
-  await page.getByRole('button', { name: 'Skip for now' }).click()
-  await expect(page).toHaveURL(/\/Courses\/$/)
+  await expect(page).toHaveURL(/\/login$/)
+  await page.goto('confirm-email') // the screen is not built: an unknown route
+  await expect(page.getByRole('heading', { name: 'Confirm your email' })).toHaveCount(0)
 })
 
 test('log in: a wrong password says so (and the mascot looks sheepish), the right one works, and it survives a reload', async ({ page }) => {
@@ -102,14 +97,12 @@ test('log in on a second device brings the account progress down', async ({ page
   expect(saved.lessonsDone).toHaveLength(2)
 })
 
-test('log in before confirming the email explains what to do and offers to resend', async ({ page }) => {
+test('log in before confirming the email explains what to do', async ({ page }) => {
   await fakeSupabase(page)
   await onboarded(page)
   await page.goto('login')
   await logIn(page, 'learner@example.com', 'unconfirmed')
   await expect(page.getByRole('alert')).toContainText('Confirm your email')
-  await page.getByRole('button', { name: 'Resend email' }).click()
-  await expect(page).toHaveURL(/\/confirm-email$/)
 })
 
 test('forgot password: asks for the email, then "Check your email" with a resend wait', async ({ page }) => {
