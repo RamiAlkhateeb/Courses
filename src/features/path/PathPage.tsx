@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ParseKeys } from 'i18next'
-import { Icon, Flame, StatPill } from '../../components/ui'
+import { Link } from 'react-router-dom'
+import { buttonClass, Icon, Flame, StatPill } from '../../components/ui'
 import { MoneyChip } from '../../components/MoneyChip'
 import { useLocalized } from '../../content/useLocalized'
 import { currentStreak, localDay } from '../../domain/progress'
 import { useProgress } from '../../state/useProgress'
+import { useAuth } from '../../state/auth'
+import { accountsEnabled } from '../../state/supabase'
 import { useWallet } from '../../state/usePlayground'
 import { useTrail, useTrailId, type Chapter } from '../../state/useTrail'
 import { UnitPath, type NodeKind } from './UnitPath'
@@ -35,6 +38,7 @@ export function PathPage() {
   const { progress } = useProgress()
   const wallet = useWallet()
   const streak = currentStreak(progress.streak, localDay())
+  const auth = useAuth()
 
   const currentEl = useRef<HTMLElement | null>(null)
   const onCurrent = useCallback((el: HTMLElement | null) => {
@@ -60,6 +64,12 @@ export function PathPage() {
           {streak}
         </StatPill>
         <MoneyChip amount={wallet} />
+        {/* Accounts are optional and only exist when Supabase is configured; the Log in screen links on to Create an account. */}
+        {accountsEnabled && auth.status === 'signedOut' && (
+          <Link to="/login" className={buttonClass({ variant: 'secondary', size: 'sm' }, styles.login)}>
+            {t('acc_header_cta')}
+          </Link>
+        )}
       </header>
 
       {!loaded && <p className={styles.loading}>{t('loading')}</p>}

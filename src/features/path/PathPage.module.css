@@ -4,7 +4,14 @@
 .top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 8px;
+}
+/* Pushed to the far end of the row, whichever way the language reads */
+.login {
+  margin-inline-start: auto;
+  min-inline-size: 0;
+  padding-inline: 14px;
+  white-space: nowrap;
 }
 .loading {
   padding: 40px 8px;

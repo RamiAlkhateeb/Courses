@@ -56,7 +56,7 @@ under `AccountGate`, which sends everyone back to Me when accounts are not confi
 | `/account/delete` | Delete the account: says what goes, needs `DELETE` typed first |
 | `/legal/terms`, `/legal/privacy`, `/legal/help` | **Drafts** (`legal.ts`): the owner must review them (and the Arabic) before launch |
 
-Entry points: the Me tab's account row (Log in when signed out, Account when signed in) and Welcome's "I already have an
+Entry points: a Log in button in the Learn header (signed out only), the Me tab's account row (Log in when signed out, Account when signed in) and Welcome's "I already have an
 account". Not built from the design: the "Confirm your email" screen (design 26: this project does not require email confirmation; if "Confirm email" is ever turned on in Supabase, a sign-up then sends people to Log in, and the screen needs building first), Google / Apple sign-in (providers not set up) and the "Reminder at 8:00 PM" row
 (needs notifications). Errors are mapped to translated messages (`acc_err_*`); the rules for passwords, names and the
 delete word are pure functions in `src/domain/auth.ts`.

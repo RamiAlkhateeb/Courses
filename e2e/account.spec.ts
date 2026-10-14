@@ -27,6 +27,19 @@ async function logIn(page: Page, email: string, password: string) {
 
 const GOOD = { bank: 1180, lessonsDone: ['investing/basics/why'] }
 
+test('Learn shows a Log in button while signed out, and it goes away once signed in', async ({ page }) => {
+  await fakeSupabase(page)
+  await onboarded(page)
+  await page.goto('./')
+  const cta = page.getByRole('link', { name: 'Log in' })
+  await expect(cta).toBeVisible()
+  await cta.click()
+  await expect(page).toHaveURL(/\/login$/)
+  await logIn(page, 'learner@example.com', 'right-password')
+  await expect(page).toHaveURL(/\/Courses\/$/)
+  await expect(page.getByRole('link', { name: 'Log in' })).toHaveCount(0)
+})
+
 test('Welcome: "I already have an account" opens Log in', async ({ page }) => {
   await fakeSupabase(page)
   await page.goto('welcome')
@@ -251,7 +264,7 @@ for (const lang of ['en', 'ar'] as const) {
   test(`account screens have no serious accessibility violations (${lang})`, async ({ page }) => {
     await fakeSupabase(page)
     await onboarded(page, GOOD, lang)
-    const routes = ['signup', 'login', 'forgot-password', 'legal/terms', 'legal/privacy', 'legal/help']
+    const routes = ['./', 'signup', 'login', 'forgot-password', 'legal/terms', 'legal/privacy', 'legal/help']
     for (const route of routes) {
       await page.goto(route)
       await page.waitForTimeout(300)

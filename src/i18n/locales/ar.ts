@@ -386,4 +386,5 @@ export const ar = {
   "acc_del_forever": "احذف حسابي نهائياً",
   "acc_keep": "أبقِ حسابي",
   "acc_pw_rules": "شروط كلمة المرور",
+  "acc_header_cta": "تسجيل الدخول",
 }
