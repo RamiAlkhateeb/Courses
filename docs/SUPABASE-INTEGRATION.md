@@ -43,10 +43,25 @@ for a learning game with no rankings. If a leaderboard is ever added, move payou
 
 ## Screens
 
-`/account` (mobile column): sign in / create account (email + password, 8+ characters), forgot password (email link
-back to `/account`, where a new password is set), signed-in view with sync status, sign out and delete account.
-The Me tab shows an Account row; Welcome's "I already have a path" goes to sign-in when accounts are configured. Errors are
-mapped to translated messages (`acc_err_*`).
+The account flow is eleven screens from the design (`src/features/account/`), all in the mobile column and all routed
+under `AccountGate`, which sends everyone back to Me when accounts are not configured:
+
+| Route | Screen |
+|---|---|
+| `/signup` | Create your account: name, email, password with three visible rules, agreement to the terms |
+| `/login` | Log in; a wrong email or password turns the fields red and never says which one was wrong |
+| `/forgot-password`, `/check-email` | Ask for a reset link; always answers "Check your email" (no account enumeration) |
+| `/new-password` | Choose a new password (from the reset email, or from Account → Password) |
+| `/account` | Name, email, password, language, daily goal, Terms / Privacy / Help, Log out; sync status |
+| `/account/delete` | Delete the account: says what goes, needs `DELETE` typed first |
+| `/legal/terms`, `/legal/privacy`, `/legal/help` | **Drafts** (`legal.ts`): the owner must review them (and the Arabic) before launch |
+
+Entry points: the Me tab's account row (Log in when signed out, Account when signed in) and Welcome's "I already have an
+account". Not built from the design: the "Confirm your email" screen (design 26: this project does not require email confirmation; if "Confirm email" is ever turned on in Supabase, a sign-up then sends people to Log in, and the screen needs building first), Google / Apple sign-in (providers not set up) and the "Reminder at 8:00 PM" row
+(needs notifications). Errors are mapped to translated messages (`acc_err_*`); the rules for passwords, names and the
+delete word are pure functions in `src/domain/auth.ts`.
+
+Deleting the account removes the online copy only; this device keeps its own copy as guest progress (the screen says so).
 
 ## Set-up (one time)
 
@@ -54,7 +69,11 @@ mapped to translated messages (`acc_err_*`).
    can be run twice safely.
 2. **Auth settings** (Authentication → URL Configuration):
    - Site URL: `https://ramialkhateeb.github.io/Courses/`
-   - Redirect URLs: `https://ramialkhateeb.github.io/Courses/account` and `http://localhost:5173/account`
+   - Redirect URLs (all four): `https://ramialkhateeb.github.io/Courses/account`, `https://ramialkhateeb.github.io/Courses/new-password`,
+     `http://localhost:5173/account` and `http://localhost:5173/new-password`.
+     The password-reset email returns to `/new-password`.
+   - Password length: Authentication → Policies → minimum password length **8** (the app enforces 8 + a letter + a number
+     on its own screens, but only the dashboard setting stops a direct API call).
    - Authentication → Providers → Email: enabled. "Confirm email" is **off** for now, so sync starts right after sign-up;
      turning it on later needs no code change (the app already shows "check your email").
 3. **Deploy.** The repository secrets `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are passed to the build step in
@@ -63,7 +82,8 @@ mapped to translated messages (`acc_err_*`).
 
 ## Testing
 
-- `e2e/account.spec.ts`: sign-up, sign-in (wrong and right password, unconfirmed email), sync up and down, reload, sign-out, against a **fake** Supabase answered inside the test (`playwright.config.ts` builds with a made-up project, so nothing reaches a real database).
+- `e2e/account.spec.ts` (fake Supabase in `e2e/fakeSupabase.ts`, answered inside the test; `playwright.config.ts` builds with a made-up project, so nothing reaches a real database): sign up (rules, and the no-confirm-screen fallback), log in (wrong and right password, unconfirmed email, reload), reset flow, Account edits, change password, log out, delete (button waits for `DELETE`), Arabic RTL, and axe on every screen in English and Arabic.
+- `tests/auth-domain.test.ts` (password / email / name / delete-word rules) and `tests/legal.test.ts`.
 - `tests/sync.test.ts`: every merge rule, the wallet decision, the shared-device rule.
 - Manual: sign up, finish a lesson, open the app in a second browser, sign in: the lesson is ticked and the bank matches;
   sign out: the guest copy is still there.

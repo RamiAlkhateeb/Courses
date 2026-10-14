@@ -1,138 +1,276 @@
-import { expect, test, type Page, type Route } from '@playwright/test'
+import AxeBuilder from '@axe-core/playwright'
+import { expect, test, type Page } from '@playwright/test'
+import { fakeSupabase } from './fakeSupabase'
 
-// Accounts against a fake Supabase: every request to the made-up project is answered here, so the sign-up and
-// sign-in flows (and the sync that follows) are tested end to end without a real database.
-const b64 = (o: object) => Buffer.from(JSON.stringify(o)).toString('base64url')
-const USER = { id: '11111111-1111-4111-8111-111111111111', aud: 'authenticated', role: 'authenticated', email: 'learner@example.com', app_metadata: {}, user_metadata: {}, created_at: '2026-01-01T00:00:00Z' }
-const session = () => ({
-  access_token: `${b64({ alg: 'HS256', typ: 'JWT' })}.${b64({ sub: USER.id, exp: Math.floor(Date.now() / 1000) + 3600, role: 'authenticated' })}.sig`,
-  token_type: 'bearer',
-  expires_in: 3600,
-  expires_at: Math.floor(Date.now() / 1000) + 3600,
-  refresh_token: 'fake-refresh',
-  user: USER,
-})
-const json = (route: Route, status: number, body: unknown) => route.fulfill({ status, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify(body) })
+const onboarded = (page: Page, progress?: object, lang?: string) =>
+  page.addInitScript(
+    ([p, l]) => {
+      localStorage.setItem('profile:v1', JSON.stringify({ onboarded: true }))
+      if (p) localStorage.setItem('progress:v2', JSON.stringify(p))
+      if (l) localStorage.setItem('lang', l)
+    },
+    [progress, lang] as const,
+  )
 
-interface Fake {
-  rows: Record<string, { key: string; data: unknown; updated_at: string }>
-  upserts: string[][]
-  signupNeedsConfirmation: boolean
+async function signUpForm(page: Page, opts: { name?: string; email?: string; password?: string; agree?: boolean } = {}) {
+  await page.getByLabel('Name').fill(opts.name ?? 'Aya')
+  await page.getByLabel('Email').fill(opts.email ?? 'learner@example.com')
+  await page.getByLabel('Password', { exact: true }).fill(opts.password ?? 'right-password1')
+  if (opts.agree !== false) await page.getByRole('checkbox').check()
 }
 
-async function fakeSupabase(page: Page, opts: Partial<Fake> = {}) {
-  const fake: Fake = { rows: {}, upserts: [], signupNeedsConfirmation: false, ...opts }
-  await page.route('https://fake-project.supabase.co/**', async (route) => {
-    const req = route.request()
-    const url = new URL(req.url())
-    if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: { 'access-control-allow-origin': '*', 'access-control-allow-headers': '*', 'access-control-allow-methods': '*' } })
-    if (url.pathname.endsWith('/auth/v1/signup')) return fake.signupNeedsConfirmation ? json(route, 200, USER) : json(route, 200, session())
-    if (url.pathname.endsWith('/auth/v1/token')) {
-      const body = req.postDataJSON() as { password?: string }
-      if (body.password === 'unconfirmed') return json(route, 400, { code: 'email_not_confirmed', error_code: 'email_not_confirmed', msg: 'Email not confirmed', message: 'Email not confirmed' })
-      return body.password === 'right-password' ? json(route, 200, session()) : json(route, 400, { code: 'invalid_credentials', error_code: 'invalid_credentials', msg: 'Invalid login credentials', message: 'Invalid login credentials' })
-    }
-    if (url.pathname.endsWith('/auth/v1/user')) return json(route, 200, USER)
-    if (url.pathname.endsWith('/auth/v1/logout')) return route.fulfill({ status: 204, headers: { 'access-control-allow-origin': '*' } })
-    if (url.pathname.endsWith('/rest/v1/user_state')) {
-      if (req.method() === 'GET') return json(route, 200, Object.values(fake.rows))
-      if (req.method() === 'POST') {
-        const sent = req.postDataJSON() as { key: string; data: unknown }[]
-        fake.upserts.push(sent.map((r) => r.key))
-        const out = sent.map((r) => ({ key: r.key, updated_at: new Date().toISOString() }))
-        sent.forEach((r, i) => (fake.rows[r.key] = { key: r.key, data: r.data, updated_at: out[i].updated_at }))
-        return json(route, 201, out)
-      }
-    }
-    return json(route, 404, { message: 'not faked: ' + url.pathname })
-  })
-  return fake
-}
-
-const onboarded = (page: Page, progress?: object) =>
-  page.addInitScript((p) => {
-    localStorage.setItem('profile:v1', JSON.stringify({ onboarded: true }))
-    if (p) localStorage.setItem('progress:v2', JSON.stringify(p))
-  }, progress)
-
-async function fill(page: Page, email: string, password: string) {
+async function logIn(page: Page, email: string, password: string) {
   await page.getByLabel('Email').fill(email)
-  await page.getByLabel('Password').fill(password)
+  await page.getByLabel('Password', { exact: true }).fill(password)
+  await page.getByRole('button', { name: 'Log in' }).click()
 }
 
-test('create an account: signs up, syncs the guest progress up, and leaves the account page', async ({ page }) => {
+const GOOD = { bank: 1180, lessonsDone: ['investing/basics/why'] }
+
+test('Welcome: "I already have an account" opens Log in', async ({ page }) => {
+  await fakeSupabase(page)
+  await page.goto('welcome')
+  await page.getByRole('button', { name: 'I already have an account' }).click()
+  await expect(page).toHaveURL(/\/login$/)
+  await expect(page.getByRole('heading', { name: 'Log in' })).toBeVisible()
+})
+
+test('sign up: the rules are shown and enforced, then it signs up and syncs the guest progress up', async ({ page }) => {
   const fake = await fakeSupabase(page)
-  await onboarded(page, { bank: 1180, lessonsDone: ['investing/basics/why'] })
-  await page.goto('account')
-  await page.getByRole('button', { name: 'Create account' }).first().click()
-  await fill(page, 'learner@example.com', 'right-password')
-  await page.getByRole('button', { name: 'Create account' }).last().click()
+  await onboarded(page, GOOD)
+  await page.goto('signup')
+  await expect(page.getByRole('heading', { name: 'Create your account' })).toBeVisible()
+  // submitting an empty form explains what is missing and sends nothing
+  await page.getByRole('button', { name: 'Create account' }).click()
+  await expect(page.getByText('Enter your name.')).toBeVisible()
+  await expect(page.getByText('Please agree to the terms to continue.')).toBeVisible()
+  expect(fake.calls).toEqual([])
+  // a weak password keeps its rules unmet; a good one meets all three
+  await page.getByLabel('Password', { exact: true }).fill('short')
+  await expect(page.getByRole('listitem').filter({ hasText: '8+ characters' })).not.toContainText('✓')
+  await signUpForm(page)
+  for (const rule of ['8+ characters', 'One number', 'One letter']) await expect(page.getByRole('listitem').filter({ hasText: rule })).toContainText('✓')
+  await page.getByRole('button', { name: 'Create account' }).click()
   await expect(page).toHaveURL(/\/Courses\/$/)
-  // the guest's progress reached the account
+  expect(fake.bodies.signup).toMatchObject({ email: 'learner@example.com', data: { name: 'Aya' } })
   await expect.poll(() => fake.rows.progress !== undefined).toBe(true)
   expect((fake.rows.progress.data as { bank: number }).bank).toBe(1180)
-  // and the app now knows who is signed in
   await page.goto('me')
-  await expect(page.getByText('learner@example.com')).toBeVisible()
+  await expect(page.getByText('Aya', { exact: true })).toBeVisible() // the name, not the email, on the Me row
 })
 
-test('sign in: a wrong password says so, the right one works, and it stays signed in after a reload', async ({ page }) => {
+test('if the project ever requires email confirmation, sign up sends you to Log in (there is no confirm screen)', async ({ page }) => {
+  await fakeSupabase(page, { signupNeedsConfirmation: true })
+  await onboarded(page)
+  await page.goto('signup')
+  await signUpForm(page)
+  await page.getByRole('button', { name: 'Create account' }).click()
+  await expect(page).toHaveURL(/\/login$/)
+  await page.goto('confirm-email') // the screen is not built: an unknown route
+  await expect(page.getByRole('heading', { name: 'Confirm your email' })).toHaveCount(0)
+})
+
+test('log in: a wrong password says so (and the mascot looks sheepish), the right one works, and it survives a reload', async ({ page }) => {
   await fakeSupabase(page)
   await onboarded(page)
-  await page.goto('account')
-  await fill(page, 'learner@example.com', 'wrong')
-  await page.getByRole('button', { name: 'Sign in' }).last().click()
-  await expect(page.getByRole('alert')).toContainText('do not match')
-  await fill(page, 'learner@example.com', 'right-password')
-  await page.getByRole('button', { name: 'Sign in' }).last().click()
+  await page.goto('login')
+  await logIn(page, 'learner@example.com', 'wrong')
+  await expect(page.getByRole('alert')).toContainText('That email and password do not match.')
+  await expect(page.getByText('Hmm, that did not work. Let us try again.')).toBeVisible()
+  await page.getByLabel('Password', { exact: true }).fill('right-password')
+  await page.getByRole('button', { name: 'Log in' }).click()
   await expect(page).toHaveURL(/\/Courses\/$/)
   await page.reload()
   await page.goto('me')
   await expect(page.getByText('learner@example.com')).toBeVisible()
 })
 
-test('sign in on a second device brings the account progress down', async ({ page }) => {
+test('log in on a second device brings the account progress down', async ({ page }) => {
   const progress = { answers: {}, sectionsRead: {}, bank: 1500, streak: { count: 3, lastDay: '2026-10-01' }, boxes: {}, lessonsDone: ['investing/basics/why', 'investing/basics/compounding'], activity: {} }
   await fakeSupabase(page, { rows: { progress: { key: 'progress', data: progress, updated_at: '2026-10-02T00:00:00Z' } } })
   await onboarded(page)
-  await page.goto('account')
-  await fill(page, 'learner@example.com', 'right-password')
-  await page.getByRole('button', { name: 'Sign in' }).last().click()
+  await page.goto('login')
+  await logIn(page, 'learner@example.com', 'right-password')
   await expect(page).toHaveURL(/\/Courses\/$/)
   const saved = JSON.parse((await page.evaluate(() => localStorage.getItem('progress:v2')))!)
   expect(saved.bank).toBe(1500)
   expect(saved.lessonsDone).toHaveLength(2)
 })
 
-test('when the project asks for email confirmation, the screen says to check the inbox instead of hanging', async ({ page }) => {
-  await fakeSupabase(page, { signupNeedsConfirmation: true })
-  await onboarded(page)
-  await page.goto('account')
-  await page.getByRole('button', { name: 'Create account' }).first().click()
-  await fill(page, 'learner@example.com', 'right-password')
-  await page.getByRole('button', { name: 'Create account' }).last().click()
-  await expect(page.getByRole('status')).toContainText('Check your email')
-  await expect(page).toHaveURL(/\/account$/)
-})
-
-test('signing in before confirming the email explains what to do', async ({ page }) => {
+test('log in before confirming the email explains what to do', async ({ page }) => {
   await fakeSupabase(page)
   await onboarded(page)
-  await page.goto('account')
-  await fill(page, 'learner@example.com', 'unconfirmed')
-  await page.getByRole('button', { name: 'Sign in' }).last().click()
+  await page.goto('login')
+  await logIn(page, 'learner@example.com', 'unconfirmed')
   await expect(page.getByRole('alert')).toContainText('Confirm your email')
 })
 
-test('sign out keeps the local copy and returns to the guest view', async ({ page }) => {
-  await fakeSupabase(page)
-  await onboarded(page, { bank: 1180, lessonsDone: ['investing/basics/why'] })
-  await page.goto('account')
-  await fill(page, 'learner@example.com', 'right-password')
-  await page.getByRole('button', { name: 'Sign in' }).last().click()
+test('forgot password: asks for the email, then "Check your email" with a resend wait', async ({ page }) => {
+  const fake = await fakeSupabase(page)
+  await onboarded(page)
+  await page.goto('login')
+  await page.getByRole('link', { name: 'Forgot password?' }).click()
+  await expect(page.getByRole('heading', { name: 'Forgot your password?' })).toBeVisible()
+  await page.getByLabel('Email').fill('not-an-email')
+  await page.getByRole('button', { name: 'Send reset link' }).click()
+  await expect(page.getByRole('alert')).toContainText('valid email')
+  await page.getByLabel('Email').fill('anyone@example.com')
+  await page.getByRole('button', { name: 'Send reset link' }).click()
+  await expect(page).toHaveURL(/\/check-email$/)
+  await expect(page.getByRole('heading', { name: 'Check your email' })).toBeVisible()
+  await expect(page.getByText('anyone@example.com')).toBeVisible()
+  expect(fake.calls.some((c) => c.includes('recover'))).toBe(true)
+  expect(JSON.stringify(fake.bodies.recover)).not.toContain('password')
+  await page.getByRole('button', { name: 'Use a different email' }).click()
+  await expect(page).toHaveURL(/\/forgot-password$/)
+})
+
+test('account: shows the profile, edits the name, changes the daily goal and language, and the legal pages open', async ({ page }) => {
+  const fake = await fakeSupabase(page)
+  await onboarded(page, GOOD)
+  await page.goto('signup')
+  await signUpForm(page)
+  await page.getByRole('button', { name: 'Create account' }).click()
   await expect(page).toHaveURL(/\/Courses\/$/)
   await page.goto('account')
-  await page.getByRole('button', { name: 'Sign out' }).click()
+  await expect(page.getByRole('heading', { name: 'Account' })).toBeVisible()
+  await expect(page.getByRole('button', { name: /Name\s*Aya/ })).toBeVisible()
+  await expect(page.getByRole('button', { name: /Email\s*learner@example.com/ })).toBeVisible()
+  // edit the name
+  await page.getByRole('button', { name: /Name\s*Aya/ }).click()
+  await page.getByLabel('Name').fill('Aya  Rami')
+  await page.getByRole('button', { name: 'Save' }).click()
+  await expect(page.getByRole('button', { name: /Name\s*Aya Rami/ })).toBeVisible()
+  expect(fake.bodies.user).toMatchObject({ data: { name: 'Aya Rami' } })
+  // daily goal
+  await page.getByRole('button', { name: /Daily goal/ }).click()
+  await page.getByRole('radio', { name: /20 min/ }).click()
+  expect(JSON.parse((await page.evaluate(() => localStorage.getItem('profile:v1')))!).minutes).toBe(20)
+  // language
+  await page.getByRole('button', { name: /Language/ }).click()
+  await page.getByRole('radio', { name: /العربية/ }).click()
+  await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
+  await page.evaluate(() => localStorage.setItem('lang', 'en'))
+  await page.reload()
+  // legal pages
+  await page.getByRole('link', { name: 'Terms of Use' }).click()
+  await expect(page.getByRole('heading', { name: 'Terms of Use', level: 1 })).toBeVisible()
+  await expect(page.getByText('play money', { exact: false }).first()).toBeVisible()
+  await page.goBack()
+  await page.getByRole('link', { name: 'Privacy Policy' }).click()
+  await expect(page.getByRole('heading', { name: 'Privacy Policy', level: 1 })).toBeVisible()
+  await page.goBack()
+  await page.getByRole('link', { name: 'Help and support' }).click()
+  await expect(page.getByRole('heading', { name: 'Help and support', level: 1 })).toBeVisible()
+})
+
+test('change password from Account: both fields must match before it saves', async ({ page }) => {
+  const fake = await fakeSupabase(page)
+  await onboarded(page)
+  await page.goto('login')
+  await logIn(page, 'learner@example.com', 'right-password')
+  await expect(page).toHaveURL(/\/Courses\/$/)
+  await page.goto('account')
+  await page.getByRole('link', { name: /Password/ }).click()
+  await expect(page.getByRole('heading', { name: 'Choose a new password' })).toBeVisible()
+  await page.getByLabel('New password').fill('brand-new-pass1')
+  await page.getByLabel('Confirm password').fill('different-pass1')
+  await page.getByRole('button', { name: 'Save password' }).click()
+  await expect(page.getByText('Passwords do not match')).toBeVisible()
+  expect(fake.calls.some((c) => c.startsWith('PUT user'))).toBe(false)
+  await page.getByLabel('Confirm password').fill('brand-new-pass1')
+  await expect(page.getByText('Passwords match')).toBeVisible()
+  await page.getByRole('button', { name: 'Save password' }).click()
+  await expect(page).toHaveURL(/\/account$/)
+  expect(fake.bodies.user).toMatchObject({ password: 'brand-new-pass1' })
+})
+
+test('log out keeps the local copy and returns to the guest view', async ({ page }) => {
+  await fakeSupabase(page)
+  await onboarded(page, GOOD)
+  await page.goto('login')
+  await logIn(page, 'learner@example.com', 'right-password')
+  await expect(page).toHaveURL(/\/Courses\/$/)
+  await page.goto('account')
+  await page.getByRole('button', { name: 'Log out' }).click()
   await expect(page).toHaveURL(/\/me$/)
   expect(JSON.parse((await page.evaluate(() => localStorage.getItem('progress:v2')))!).lessonsDone).toContain('investing/basics/why')
+  await page.goto('account') // signed out: Account sends you to Log in
+  await expect(page).toHaveURL(/\/login$/)
 })
+
+test('delete account: the red button waits for DELETE, then removes the account and keeps this device\'s copy', async ({ page }) => {
+  const fake = await fakeSupabase(page)
+  await onboarded(page, GOOD)
+  await page.goto('login')
+  await logIn(page, 'learner@example.com', 'right-password')
+  await expect(page).toHaveURL(/\/Courses\/$/)
+  await page.goto('account/delete')
+  await expect(page.getByRole('heading', { name: 'Delete your account?' })).toBeVisible()
+  await expect(page.getByText('What we will delete')).toBeVisible()
+  const del = page.getByRole('button', { name: 'Delete my account forever' })
+  await expect(del).toBeDisabled()
+  await page.getByLabel('Type DELETE to confirm').fill('DELET')
+  await expect(del).toBeDisabled()
+  await page.getByLabel('Type DELETE to confirm').fill('delete')
+  await expect(del).toBeEnabled()
+  await del.click()
+  await expect(page).toHaveURL(/\/me$/)
+  expect(fake.calls.some((c) => c.includes('rpc/delete_my_account'))).toBe(true)
+  expect(JSON.parse((await page.evaluate(() => localStorage.getItem('progress:v2')))!).lessonsDone).toContain('investing/basics/why')
+})
+
+test('"Keep my account" goes back to Account without calling the server', async ({ page }) => {
+  const fake = await fakeSupabase(page)
+  await onboarded(page)
+  await page.goto('login')
+  await logIn(page, 'learner@example.com', 'right-password')
+  await expect(page).toHaveURL(/\/Courses\/$/)
+  await page.goto('account/delete')
+  await page.getByRole('button', { name: 'Keep my account' }).click()
+  await expect(page).toHaveURL(/\/account$/)
+  expect(fake.calls.some((c) => c.includes('delete_my_account'))).toBe(false)
+})
+
+test('Arabic: sign up and log in are right-to-left, in Arabic, with the Arabic copy from the design', async ({ page }) => {
+  await fakeSupabase(page)
+  await onboarded(page, undefined, 'ar')
+  await page.goto('signup')
+  await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
+  await expect(page.getByRole('heading', { name: 'أنشئ حسابك' })).toBeVisible()
+  await expect(page.getByText('8 أحرف على الأقل')).toBeVisible()
+  await expect(page.getByRole('link', { name: 'شروط الاستخدام' })).toBeVisible()
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
+  await page.goto('login')
+  await expect(page.getByRole('heading', { name: 'تسجيل الدخول' })).toBeVisible()
+  await expect(page.getByText('أهلاً بعودتك! جاهز تكمل النمو؟')).toBeVisible()
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
+})
+
+for (const lang of ['en', 'ar'] as const) {
+  test(`account screens have no serious accessibility violations (${lang})`, async ({ page }) => {
+    await fakeSupabase(page)
+    await onboarded(page, GOOD, lang)
+    const routes = ['signup', 'login', 'forgot-password', 'legal/terms', 'legal/privacy', 'legal/help']
+    for (const route of routes) {
+      await page.goto(route)
+      await page.waitForTimeout(300)
+      const { violations } = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze()
+      const serious = violations.filter((v) => v.impact === 'serious' || v.impact === 'critical')
+      expect(serious.map((v) => `${route} ${v.id}: ${v.nodes[0]?.target}`)).toEqual([])
+    }
+    // the signed-in screens
+    await page.goto('login')
+    await page.getByLabel(lang === 'en' ? 'Email' : 'البريد الإلكتروني').fill('learner@example.com')
+    await page.getByLabel(lang === 'en' ? 'Password' : 'كلمة المرور', { exact: true }).fill('right-password')
+    await page.locator('form button[type=submit]').click()
+    await expect(page).toHaveURL(/\/Courses\/$/)
+    for (const route of ['account', 'account/delete', 'new-password']) {
+      await page.goto(route)
+      await page.waitForTimeout(400)
+      const { violations } = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze()
+      const serious = violations.filter((v) => v.impact === 'serious' || v.impact === 'critical')
+      expect(serious.map((v) => `${route} ${v.id}: ${v.nodes[0]?.target}`)).toEqual([])
+    }
+  })
+}

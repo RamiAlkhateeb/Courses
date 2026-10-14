@@ -1,0 +1,125 @@
+/* TextField and CheckPill (see TextField.tsx). Tokens only. */
+.field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+.label {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--indigo);
+}
+.box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-block-size: 56px;
+  padding-inline: 18px;
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-card);
+  color: var(--indigo);
+  box-sizing: border-box;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.box:focus-within {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 4px var(--blue-halo);
+}
+.valid {
+  border-color: var(--correct);
+}
+.error {
+  border-color: var(--oops);
+  box-shadow: 0 0 0 4px var(--oops-bg);
+}
+.lead {
+  flex-shrink: 0;
+  color: var(--locked-icon);
+}
+.box:focus-within .lead {
+  color: var(--blue);
+}
+.error .lead {
+  color: var(--oops);
+}
+.box input {
+  flex: 1;
+  min-inline-size: 0;
+  align-self: stretch;
+  border: 0;
+  outline: 0; /* the box shows the focus ring */
+  background: transparent;
+  font: inherit;
+  font-size: 1.0625rem;
+  color: var(--indigo);
+  text-align: start;
+}
+.box input::placeholder {
+  color: var(--locked-icon);
+}
+.eye {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: none;
+  color: var(--locked-icon);
+  padding: 6px;
+  margin-inline-end: -6px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.message {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--muted);
+}
+.message svg {
+  flex-shrink: 0;
+  margin-block-start: 1px;
+}
+.messageError {
+  color: var(--oops);
+}
+.messageValid {
+  color: var(--correct);
+}
+
+/* ---------- Checklist pill ---------- */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.pillDot {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 24px;
+  block-size: 24px;
+  border-radius: 50%;
+  border: 1.5px solid var(--locked);
+  color: var(--white);
+}
+.pillOk {
+  color: var(--correct);
+}
+.pillOk .pillDot {
+  background: var(--correct);
+  border-color: var(--correct);
+}
+.sr {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}

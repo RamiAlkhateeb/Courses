@@ -1,235 +1,224 @@
-import { useEffect, useState, type FormEvent } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { AbuShreek, Button, Icon } from '../../components/ui'
-import { accountsEnabled } from '../../state/supabase'
-import { deleteAccount, requestPasswordReset, setNewPassword, signIn, signOut, signUp, useAuth, type AuthError, type AuthResult } from '../../state/auth'
+import type { ParseKeys } from 'i18next'
+import { AnswerOption, BottomSheet, Button, Icon, TextField, type IconName } from '../../components/ui'
+import { LANGUAGES } from '../../i18n'
+import { cleanName, isEmail } from '../../domain/auth'
+import { signOut, updateEmail, updateName, useAuth, type AuthError } from '../../state/auth'
+import { updateProfile, useProfile } from '../../state/profile'
 import { useSyncStatus } from '../../state/sync'
-import styles from './AccountPage.module.css'
+import { AccountScreen } from './AccountScreen'
+import { errorKey } from './useAccountFlow'
+import styles from './Account.module.css'
 
-const errorKey = (e: AuthError) =>
-  ({ unconfirmed: 'acc_err_unconfirmed', invalid: 'acc_err_invalid', exists: 'acc_err_exists', weak: 'acc_err_weak', email: 'acc_err_email', rate: 'acc_err_rate', network: 'acc_err_network', unknown: 'acc_err_unknown' })[e] as 'acc_err_unknown'
+const MINUTES = [5, 10, 15, 20]
 
-/** Optional accounts: sign in or create one to keep progress and play money on every device. Guest mode stays complete. */
+/** Design 32: the account. Profile (name, email, password), preferences (language, daily goal), about (terms, privacy,
+ *  help), Log out and Delete account. Name, email, language and daily goal change in a bottom sheet. */
 export function AccountPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const auth = useAuth()
   const sync = useSyncStatus()
-  // Just signed in or up: stay for a moment while the account's data is merged in (otherwise a device that has not been
-  // through onboarding could bounce back to Welcome), then go home. Never wait more than a few seconds.
-  const [arriving, setArriving] = useState(false)
-  const signedIn = auth.status === 'signedIn'
-  const settled = sync === 'synced' || sync === 'error' || sync === 'offline'
-  useEffect(() => {
-    if (!arriving || !signedIn) return
-    if (settled) return void navigate('/', { replace: true })
-    const id = setTimeout(() => navigate('/', { replace: true }), 6000)
-    return () => clearTimeout(id)
-  }, [arriving, signedIn, settled, navigate])
-  if (!accountsEnabled) return <Navigate to="/me" replace />
+  const { minutes } = useProfile()
+  const [sheet, setSheet] = useState<'name' | 'email' | 'language' | 'goal' | null>(null)
+
+  if (auth.status === 'loading') return <AccountScreen title={t('loading')} onBack={() => navigate('/me')} />
+  if (auth.status !== 'signedIn' || !auth.user) return <Navigate to="/login" replace />
+  const { user } = auth
+  const lang = LANGUAGES.find((l) => l.code === i18n.language)
 
   return (
-    <div className={styles.page}>
-      <button type="button" className={styles.back} onClick={() => navigate(-1)} aria-label={t('back')}>
-        <Icon name="back" size={26} />
-      </button>
-      <h1>{t('acc_title')}</h1>
-      {auth.status === 'loading' && <p className={styles.sub}>{t('loading')}</p>}
-      {arriving && signedIn && <p className={styles.sub} role="status">{t('acc_syncing')}</p>}
-      {auth.status === 'signedOut' && <SignedOut onDone={() => setArriving(true)} />}
-      {signedIn && !arriving && auth.user && <SignedIn email={auth.user.email} />}
-      {auth.status === 'recovery' && <NewPassword />}
+    <AccountScreen title={t('acc_title')} onBack={() => navigate('/me')}>
+      <p className={`${styles.syncLine} ${sync === 'synced' ? styles.syncOk : ''}`} role="status">
+        <Icon name={sync === 'synced' ? 'check' : 'review'} size={18} /> {t(`acc_sync_${sync === 'off' ? 'syncing' : sync}` as 'acc_sync_synced')}
+      </p>
+
+      <Section title={t('acc_s_profile')}>
+        <Row icon="user" label={t('acc_name')} value={user.name || '—'} onClick={() => setSheet('name')} />
+        <Row icon="mail" label={t('acc_email')} value={user.email} ltr onClick={() => setSheet('email')} />
+        <Row icon="lock" label={t('acc_password')} value={t('acc_change')} to="/new-password" state={{ from: 'account' }} />
+      </Section>
+
+      <Section title={t('acc_s_prefs')}>
+        <Row icon="globe" label={t('language')} value={lang?.name} onClick={() => setSheet('language')} />
+        <Row icon="clock" label={t('acc_daily_goal')} value={t('minShort', { n: minutes })} onClick={() => setSheet('goal')} />
+      </Section>
+
+      <Section title={t('acc_s_about')}>
+        <Row icon="doc" label={t('acc_terms')} to="/legal/terms" />
+        <Row icon="shield" label={t('acc_privacy_policy')} to="/legal/privacy" />
+        <Row icon="help" label={t('acc_help')} to="/legal/help" />
+      </Section>
+
+      <footer className={styles.footer}>
+        <Button
+          variant="secondary"
+          onClick={async () => {
+            await signOut()
+            navigate('/me', { replace: true })
+          }}
+        >
+          <Icon name="logout" size={22} /> {t('acc_log_out')}
+        </Button>
+        <Link to="/account/delete" className={styles.danger}>
+          {t('acc_delete')}
+        </Link>
+      </footer>
+
+      {sheet === 'name' && <NameSheet initial={user.name} onClose={() => setSheet(null)} />}
+      {sheet === 'email' && <EmailSheet initial={user.email} onClose={() => setSheet(null)} />}
+      {sheet === 'language' && (
+        <Sheet title={t('language')} onClose={() => setSheet(null)}>
+          {LANGUAGES.map((l) => (
+            <AnswerOption
+              choice
+              radio
+              key={l.code}
+              role="radio"
+              state={i18n.language === l.code ? 'selected' : 'idle'}
+              letter={<span lang={l.code}>{l.letter}</span>}
+              onClick={() => {
+                void i18n.changeLanguage(l.code)
+                setSheet(null)
+              }}
+            >
+              <strong lang={l.code}>{l.name}</strong>
+            </AnswerOption>
+          ))}
+        </Sheet>
+      )}
+      {sheet === 'goal' && (
+        <Sheet title={t('acc_daily_goal')} onClose={() => setSheet(null)}>
+          {MINUTES.map((m) => (
+            <AnswerOption
+              choice
+              radio
+              key={m}
+              role="radio"
+              state={minutes === m ? 'selected' : 'idle'}
+              onClick={() => {
+                updateProfile({ minutes: m })
+                setSheet(null)
+              }}
+            >
+              <strong>{t('minShort', { n: m })}</strong> <small>{t(`pace_${m}` as ParseKeys)}</small>
+            </AnswerOption>
+          ))}
+        </Sheet>
+      )}
+    </AccountScreen>
+  )
+}
+
+function Section({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section className={styles.group}>
+      <h2 className={styles.kicker}>{title}</h2>
+      <ul className={styles.list}>{children}</ul>
+    </section>
+  )
+}
+
+/** One row: an icon tile, a label, an optional value and a chevron. A button, or a link when given `to`. */
+function Row({ icon, label, value, ltr, onClick, to, state }: { icon: IconName; label: string; value?: string; ltr?: boolean; onClick?: () => void; to?: string; state?: unknown }) {
+  const inner = (
+    <>
+      <span className={styles.tile}>
+        <Icon name={icon} size={22} />
+      </span>
+      <span className={styles.rowLabel}>{label}</span>
+      {value && (
+        <span className={styles.rowValue} dir={ltr ? 'ltr' : undefined}>
+          {value}
+        </span>
+      )}
+      <Icon name="chevron" size={20} className={styles.chev} />
+    </>
+  )
+  return <li>{to ? <Link className={styles.row} to={to} state={state}>{inner}</Link> : <button type="button" className={styles.row} onClick={onClick}>{inner}</button>}</li>
+}
+
+/** A bottom sheet over a scrim: tap outside or press Escape to close. */
+function Sheet({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose])
+  return (
+    <div className={styles.scrim} onClick={onClose}>
+      <div onClick={(e) => e.stopPropagation()}>
+        <BottomSheet>
+          <div className={styles.grab} aria-hidden />
+          <h2 className={styles.sheetTitle}>{title}</h2>
+          <div className={styles.sheetBody}>{children}</div>
+        </BottomSheet>
+      </div>
     </div>
   )
 }
 
-function Field({ id, label, ...rest }: { id: string; label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
-  return (
-    <label htmlFor={id} className={styles.field}>
-      <span>{label}</span>
-      <input id={id} dir="ltr" {...rest} />
-    </label>
-  )
-}
-
-function SignedOut({ onDone }: { onDone: () => void }) {
+function NameSheet({ initial, onClose }: { initial: string; onClose: () => void }) {
   const { t } = useTranslation()
-  const [mode, setMode] = useState<'in' | 'up'>('in')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [name, setName] = useState(initial)
   const [busy, setBusy] = useState(false)
-  const [error, setError] = useState<AuthError | null>(null)
-  const [notice, setNotice] = useState<'confirm' | 'reset' | null>(null)
-
-  async function submit(e: FormEvent) {
+  const [error, setError] = useState<AuthError | 'name' | null>(null)
+  async function save(e: FormEvent) {
     e.preventDefault()
+    if (!cleanName(name)) return setError('name')
     setBusy(true)
-    setError(null)
-    setNotice(null)
-    const res: AuthResult = mode === 'in' ? await signIn(email, password) : await signUp(email, password)
+    const res = await updateName(cleanName(name))
     setBusy(false)
     if (!res.ok) return setError(res.error)
-    if (res.needsConfirmation) return setNotice('confirm')
-    onDone()
+    onClose()
   }
-
-  async function forgot() {
-    if (!email.trim()) return setError('email')
-    setBusy(true)
-    setError(null)
-    const res = await requestPasswordReset(email)
-    setBusy(false)
-    if (!res.ok) return setError(res.error)
-    setNotice('reset')
-  }
-
   return (
-    <>
-      <p className={styles.sub}>{t('acc_sub')}</p>
-      <div className={styles.seg} role="group" aria-label={t('acc_title')}>
-        <button type="button" aria-pressed={mode === 'in'} onClick={() => setMode('in')}>
-          {t('acc_sign_in')}
-        </button>
-        <button type="button" aria-pressed={mode === 'up'} onClick={() => setMode('up')}>
-          {t('acc_create')}
-        </button>
-      </div>
-      <form onSubmit={submit} className={styles.form} noValidate>
-        <Field id="acc-email" label={t('acc_email')} type="email" autoComplete="email" inputMode="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <Field
-          id="acc-password"
-          label={t('acc_password')}
-          type="password"
-          autoComplete={mode === 'in' ? 'current-password' : 'new-password'}
-          minLength={8}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        {mode === 'up' && <small className={styles.hint}>{t('acc_password_hint')}</small>}
-        {error && (
-          <p className={styles.error} role="alert">
-            {t(errorKey(error))}
-          </p>
-        )}
-        {notice && (
-          <p className={styles.notice} role="status">
-            {notice === 'confirm' ? t('acc_check_email_confirm') : t('acc_check_email_reset')}
-          </p>
-        )}
-        <Button type="submit" disabled={busy || !email.trim() || password.length < 1}>
-          {busy ? t('acc_syncing') : mode === 'in' ? t('acc_sign_in') : t('acc_create')}
+    <Sheet title={t('acc_edit_name')} onClose={onClose}>
+      <form className={styles.sheetBody} onSubmit={save} noValidate>
+        <TextField label={t('acc_name')} icon="user" autoComplete="name" autoFocus maxLength={60} value={name} onChange={(e) => setName(e.target.value)} state={error ? 'error' : 'idle'} message={error ? (error === 'name' ? t('acc_err_name') : t(errorKey(error))) : undefined} />
+        <Button type="submit" disabled={busy}>
+          {t('acc_save')}
         </Button>
-        {mode === 'in' && (
-          <Button type="button" variant="ghost" size="sm" className={styles.center} onClick={forgot} disabled={busy}>
-            {t('acc_forgot')}
-          </Button>
-        )}
       </form>
-      <div className={styles.guide}>
-        <AbuShreek pose="think" height={110} />
-        <p className={styles.bubble}>{t('acc_guest_ok')}</p>
-      </div>
-      <p className={styles.fine}>{t('acc_privacy')}</p>
-    </>
+    </Sheet>
   )
 }
 
-function SignedIn({ email }: { email: string }) {
+function EmailSheet({ initial, onClose }: { initial: string; onClose: () => void }) {
   const { t } = useTranslation()
-  const navigate = useNavigate()
-  const sync = useSyncStatus()
-  const [confirming, setConfirming] = useState(false)
+  const [email, setEmail] = useState(initial)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<AuthError | null>(null)
-
-  async function remove() {
-    setBusy(true)
-    const res = await deleteAccount()
-    setBusy(false)
-    if (!res.ok) return setError(res.error)
-    navigate('/me', { replace: true })
-  }
-
-  return (
-    <>
-      <div className={styles.card}>
-        <p className={styles.kicker}>{t('acc_signed_in_as')}</p>
-        <strong className={styles.email} dir="ltr">
-          {email}
-        </strong>
-        <p className={`${styles.status} ${sync === 'synced' ? styles.ok : ''}`} role="status">
-          <Icon name={sync === 'synced' ? 'check' : 'review'} size={18} /> {t(`acc_sync_${sync === 'off' ? 'syncing' : sync}` as 'acc_sync_synced')}
-        </p>
-        <p className={styles.fine}>{t('acc_sync_what')}</p>
-      </div>
-      <Button
-        variant="secondary"
-        onClick={async () => {
-          await signOut()
-          navigate('/me', { replace: true })
-        }}
-      >
-        {t('acc_sign_out')}
-      </Button>
-      <p className={styles.fine}>{t('acc_sign_out_note')}</p>
-      <div className={styles.danger}>
-        {!confirming ? (
-          <Button variant="ghost" onClick={() => setConfirming(true)}>
-            {t('acc_delete')}
-          </Button>
-        ) : (
-          <div className={styles.card}>
-            <p>{t('acc_delete_confirm')}</p>
-            {error && (
-              <p className={styles.error} role="alert">
-                {t(errorKey(error))}
-              </p>
-            )}
-            <Button variant="oops" disabled={busy} onClick={remove}>
-              {t('acc_delete_yes')}
-            </Button>
-            <Button variant="secondary" onClick={() => setConfirming(false)}>
-              {t('acc_cancel')}
-            </Button>
-          </div>
-        )}
-      </div>
-    </>
-  )
-}
-
-/** Arrived from the reset-password email: choose a new password. */
-function NewPassword() {
-  const { t } = useTranslation()
-  const navigate = useNavigate()
-  const [password, setPassword] = useState('')
-  const [busy, setBusy] = useState(false)
-  const [error, setError] = useState<AuthError | null>(null)
-
-  async function submit(e: FormEvent) {
+  const [sent, setSent] = useState(false)
+  async function save(e: FormEvent) {
     e.preventDefault()
+    if (!isEmail(email)) return setError('email')
+    if (email.trim() === initial) return onClose()
     setBusy(true)
-    const res = await setNewPassword(password)
+    const res = await updateEmail(email)
     setBusy(false)
     if (!res.ok) return setError(res.error)
-    navigate('/', { replace: true })
+    setSent(true)
   }
-
   return (
-    <form onSubmit={submit} className={styles.form}>
-      <p className={styles.sub}>{t('acc_new_password_sub')}</p>
-      <Field id="acc-new" label={t('acc_new_password')} type="password" autoComplete="new-password" minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} required />
-      <small className={styles.hint}>{t('acc_password_hint')}</small>
-      {error && (
-        <p className={styles.error} role="alert">
-          {t(errorKey(error))}
-        </p>
+    <Sheet title={t('acc_edit_email')} onClose={onClose}>
+      {sent ? (
+        <>
+          <p className={styles.notice} role="status">
+            {t('acc_email_sent', { email: email.trim() })}
+          </p>
+          <Button onClick={onClose}>{t('close')}</Button>
+        </>
+      ) : (
+        <form className={styles.sheetBody} onSubmit={save} noValidate>
+          <TextField label={t('acc_email')} icon="mail" type="email" autoComplete="email" inputMode="email" autoFocus value={email} onChange={(e) => setEmail(e.target.value)} state={error ? 'error' : 'idle'} message={error ? t(errorKey(error)) : undefined} />
+          <Button type="submit" disabled={busy}>
+            {t('acc_save')}
+          </Button>
+        </form>
       )}
-      <Button type="submit" disabled={busy || password.length < 8}>
-        {t('acc_save_password')}
-      </Button>
-    </form>
+    </Sheet>
   )
 }

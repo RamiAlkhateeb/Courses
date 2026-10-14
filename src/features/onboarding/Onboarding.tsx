@@ -86,7 +86,7 @@ export function Welcome() {
           variant="onIndigo"
           onClick={() => {
             // With accounts configured, "I already have an account" means: sign in and bring it here.
-            if (accountsEnabled) return navigate('/account')
+            if (accountsEnabled) return navigate('/login')
             updateProfile({ onboarded: true })
             navigate('/')
           }}

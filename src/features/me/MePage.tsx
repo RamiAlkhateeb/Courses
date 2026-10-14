@@ -67,10 +67,10 @@ export function MePage() {
       </header>
 
       {accountsEnabled && auth.status !== 'loading' && (
-        <Link to="/account" className={styles.account}>
+        <Link to={auth.status === 'signedIn' ? '/account' : '/login'} className={styles.account}>
           <Icon name="me" size={22} />
           <span>
-            <strong>{auth.status === 'signedIn' ? auth.user?.email : t('acc_me_sign_in')}</strong>
+            <strong>{auth.status === 'signedIn' ? auth.user?.name || auth.user?.email : t('acc_me_sign_in')}</strong>
             <small>{auth.status === 'signedIn' ? t(`acc_sync_${sync === 'off' ? 'syncing' : sync}` as 'acc_sync_synced') : t('acc_me_sub')}</small>
           </span>
           <Icon name="chevron" size={20} className={styles.chev} />

@@ -36,7 +36,20 @@ export const router = createBrowserRouter(
           ],
         },
         { path: 'playground/summary', ...page(() => import('../features/playground/SummaryPage'), 'SummaryPage') },
-        { path: 'account', ...page(() => import('../features/account/AccountPage'), 'AccountPage') },
+        {
+          // Optional accounts (sign up, log in, reset, account, delete): only when Supabase is configured.
+          ...page(() => import('../features/account/AccountGate'), 'AccountGate'),
+          children: [
+            { path: 'signup', ...page(() => import('../features/account/SignUpPage'), 'SignUpPage') },
+            { path: 'login', ...page(() => import('../features/account/LogInPage'), 'LogInPage') },
+            { path: 'forgot-password', ...page(() => import('../features/account/ForgotPasswordPage'), 'ForgotPasswordPage') },
+            { path: 'check-email', ...page(() => import('../features/account/CheckEmailPage'), 'CheckEmailPage') },
+            { path: 'new-password', ...page(() => import('../features/account/NewPasswordPage'), 'NewPasswordPage') },
+            { path: 'account', ...page(() => import('../features/account/AccountPage'), 'AccountPage') },
+            { path: 'account/delete', ...page(() => import('../features/account/DeleteAccountPage'), 'DeleteAccountPage') },
+            { path: 'legal/:page', ...page(() => import('../features/account/LegalPage'), 'LegalPage') },
+          ],
+        },
         {
           // A roadmap lesson: small cards from one section, then its questions.
           path: 'course/:courseId/:moduleId/learn/:lessonId',
