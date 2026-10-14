@@ -1,0 +1,369 @@
+/* The account screens (sign up, log in, reset, account, delete). Tokens only; logical properties so RTL just works. */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-block-size: 100dvh;
+  padding: 20px 24px 28px;
+  box-sizing: border-box;
+}
+.top {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-block-size: 44px;
+}
+.top > div {
+  flex: 1;
+}
+.back {
+  display: grid;
+  place-items: center;
+  inline-size: 44px;
+  block-size: 44px;
+  margin-inline-start: -10px;
+  border: 0;
+  background: none;
+  color: var(--indigo);
+  cursor: pointer;
+  border-radius: 50%;
+}
+:global(html[dir='rtl']) .back svg {
+  transform: scaleX(-1);
+}
+.guide {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin-block-start: 4px;
+}
+.guide img {
+  flex: 0 0 auto;
+  block-size: auto !important;
+  max-inline-size: 34%;
+}
+.bubble {
+  position: relative;
+  flex: 1;
+  min-inline-size: 0;
+  margin: 0 0 24px;
+  padding: 16px 18px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  color: var(--indigo);
+  font-size: 1.1rem;
+  line-height: 1.35;
+}
+.title {
+  font-size: 2.2rem;
+  line-height: 1.1;
+  color: var(--indigo);
+  margin: 0;
+}
+.sub {
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1.4;
+}
+.form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr); /* a grid item would otherwise grow to its input's default width */
+  gap: 16px;
+}
+.grow {
+  flex: 1;
+}
+.footer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  margin-block-start: auto;
+  padding-block-start: 12px;
+}
+.alt {
+  margin: 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+/* A text-only action under a button (Skip for now, Use a different email) */
+.center {
+  justify-self: center;
+}
+.link {
+  font: inherit;
+  font-weight: 700;
+  color: var(--blue-text);
+  background: none;
+  border: 0;
+  padding: 4px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.linkRight {
+  justify-self: end;
+}
+.checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.agree {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 1rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.agree input {
+  flex-shrink: 0;
+  inline-size: 24px;
+  block-size: 24px;
+  margin: 2px 0 0;
+  accent-color: var(--indigo);
+}
+.agree a {
+  color: var(--blue-text);
+  font-weight: 700;
+}
+.fieldError {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  color: var(--oops);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.status {
+  margin: 0;
+  text-align: center;
+  color: var(--muted);
+  font-weight: 600;
+}
+.notice {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  background: var(--mint);
+  color: var(--indigo);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* ---------- Confirm / Check your email ---------- */
+.mailPage {
+  align-items: center;
+  text-align: center;
+}
+.mailPage .top {
+  align-self: stretch;
+}
+.mailHalo {
+  display: grid;
+  place-items: center;
+  inline-size: 138px;
+  block-size: 138px;
+  margin-block-start: 90px;
+  border-radius: 50%;
+  background: var(--chip-bg);
+}
+.mailDisc {
+  display: grid;
+  place-items: center;
+  inline-size: 114px;
+  block-size: 114px;
+  border-radius: 50%;
+  background: var(--mint);
+  border: 1px solid var(--sky);
+  color: var(--indigo);
+}
+.mailPage .footer {
+  align-self: stretch;
+}
+.small {
+  margin: 0;
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+/* ---------- Account ---------- */
+.group {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+.kicker {
+  margin: 8px 0 0;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blue-text);
+}
+:global(html[dir='rtl']) .kicker {
+  letter-spacing: 0;
+}
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+.list > li + li {
+  border-block-start: 1px solid var(--line);
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  inline-size: 100%;
+  min-block-size: 64px;
+  padding: 0 16px;
+  box-sizing: border-box;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--indigo);
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+}
+.tile {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  inline-size: 40px;
+  block-size: 40px;
+  border-radius: 12px;
+  background: var(--chip-bg);
+  color: var(--indigo);
+}
+.rowLabel {
+  flex: 1;
+  min-inline-size: 0;
+}
+.rowValue {
+  max-inline-size: 42%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+  font-size: 1rem;
+  color: var(--muted);
+}
+.chev {
+  flex-shrink: 0;
+  color: var(--locked-icon);
+}
+:global(html[dir='rtl']) .chev {
+  transform: scaleX(-1);
+}
+.syncLine {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-weight: 700;
+  color: var(--muted);
+}
+.syncOk {
+  color: var(--correct);
+}
+.danger {
+  justify-self: center;
+  font: inherit;
+  font-weight: 700;
+  color: var(--oops);
+  background: none;
+  border: 0;
+  padding: 8px 12px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* ---------- Edit sheet ---------- */
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 25;
+  background: var(--scrim);
+}
+.sheetTitle {
+  margin: 0 0 14px;
+  font-size: 1.5rem;
+  color: var(--indigo);
+}
+.sheetBody {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}
+.grab {
+  inline-size: 44px;
+  block-size: 5px;
+  margin: -8px auto 14px;
+  border-radius: 999px;
+  background: var(--line);
+}
+
+/* ---------- Delete ---------- */
+.lose {
+  margin: 0;
+  padding: 16px 18px;
+  border-radius: var(--radius-card);
+  background: var(--oops-bg);
+  border: 1px solid var(--oops);
+  color: var(--oops);
+  line-height: 1.5;
+}
+.lose strong {
+  display: block;
+  font-size: 1.05rem;
+}
+
+/* ---------- Legal ---------- */
+.prose {
+  display: grid;
+  gap: 10px;
+  color: var(--indigo);
+  line-height: 1.55;
+}
+.prose h2 {
+  margin: 10px 0 0;
+  font-size: 1.15rem;
+}
+.prose p {
+  margin: 0;
+}
+.draft {
+  align-self: start;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--chip-bg);
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+@media (max-width: 360px) {
+  .page {
+    padding-inline: 16px;
+  }
+  .title {
+    font-size: 1.9rem;
+  }
+}

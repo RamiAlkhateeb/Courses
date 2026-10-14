@@ -5,6 +5,8 @@ import { useStore } from './useStore'
 export interface AuthUser {
   id: string
   email: string
+  /** The display name chosen at sign-up (kept in the account's metadata); empty when there is none */
+  name: string
 }
 
 /** `off`: accounts are not configured. `loading`: checking a saved sign-in. `recovery`: arrived from a reset-password email. */
@@ -33,7 +35,11 @@ export const authStore = {
 }
 export const useAuth = () => useStore(authStore)
 
-const toUser = (s: Session | null): AuthUser | null => (s?.user ? { id: s.user.id, email: s.user.email ?? '' } : null)
+const toUser = (s: Session | null): AuthUser | null => {
+  if (!s?.user) return null
+  const name = s.user.user_metadata?.name
+  return { id: s.user.id, email: s.user.email ?? '', name: typeof name === 'string' ? name : '' }
+}
 
 let listening: Promise<void> | undefined
 /** Load the client (once) and keep the auth state in step with it. Every sign-in path goes through here: a visitor who
@@ -108,16 +114,30 @@ export const signIn = (email: string, password: string) =>
     return { error, session: data?.session }
   })
 
-export const signUp = (email: string, password: string) =>
+export const signUp = (email: string, password: string, name = '') =>
   run(async (sb) => {
-    const { data, error } = await sb.auth.signUp({ email: email.trim(), password, options: { emailRedirectTo: accountUrl() } })
+    const { data, error } = await sb.auth.signUp({ email: email.trim(), password, options: { emailRedirectTo: accountUrl(), data: name ? { name } : {} } })
     return { error, needsConfirmation: !error && !data.session, session: data?.session }
   })
 
-/** The address the emails send people back to; built from the deploy base path, never hard-coded. */
-const accountUrl = () => `${location.origin}${import.meta.env.BASE_URL}account`
+/** The addresses the emails send people back to; built from the deploy base path, never hard-coded. */
+const appUrl = (path: string) => `${location.origin}${import.meta.env.BASE_URL}${path}`
+const accountUrl = () => appUrl('account')
 
-export const requestPasswordReset = (email: string) => run(async (sb) => sb.auth.resetPasswordForEmail(email.trim(), { redirectTo: accountUrl() }))
+export const requestPasswordReset = (email: string) => run(async (sb) => sb.auth.resetPasswordForEmail(email.trim(), { redirectTo: appUrl('new-password') }))
+
+/** Send the confirmation link again (the "Resend email" button). */
+export const resendConfirmation = (email: string) => run(async (sb) => sb.auth.resend({ type: 'signup', email: email.trim(), options: { emailRedirectTo: accountUrl() } }))
+
+export const updateName = (name: string) =>
+  run(async (sb) => {
+    const res = await sb.auth.updateUser({ data: { name } })
+    if (!res.error && state.user) set({ status: state.status, user: { ...state.user, name } })
+    return res
+  })
+
+/** Change the sign-in email. The server mails a link to the new address; the email only changes once it is opened. */
+export const updateEmail = (email: string) => run(async (sb) => sb.auth.updateUser({ email: email.trim() }, { emailRedirectTo: accountUrl() }))
 
 export const setNewPassword = (password: string) =>
   run(async (sb) => {
