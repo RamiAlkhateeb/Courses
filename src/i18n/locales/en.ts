@@ -390,4 +390,12 @@ export const en = {
   "learn_start": "Start",
   "learn_unit_review": "Unit review",
   "learn_all_done": "Every lesson is done. Review a unit any time.",
+  "key_idea": "Key idea",
+  "calc_title": "Try it",
+  "calc_sub": "Move the sliders to see what 1,000 grows to.",
+  "calc_rate": "Yearly return",
+  "calc_years": "Years",
+  "calc_result": "1,000 becomes",
+  "calc_growth": "of which growth: {{growth}}",
+  "calc_note": "Illustration only: real returns change every year and can be negative.",
 }

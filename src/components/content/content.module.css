@@ -140,7 +140,7 @@
   border-inline-start: 5px solid var(--amber);
 }
 .keypoint .boxLabel {
-  color: var(--amber);
+  color: var(--indigo); /* --amber (blue text) on mint fell just short of AA */
 }
 .example {
   background: var(--brand-bg);
@@ -148,6 +148,118 @@
 }
 .example .boxLabel {
   color: var(--brand);
+}
+/* Box text stays a step smaller than the lesson card's body text */
+.box div p {
+  font-size: 1.0625rem;
+  line-height: 1.5;
+}
+/* Analogy and mistake boxes: a small Abu Shreek beside the tip */
+.tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.tip > div {
+  flex: 1;
+  min-inline-size: 0;
+}
+.tipMascot {
+  flex-shrink: 0;
+  margin-block-start: 2px;
+}
+
+/* ---------- Key idea: the one thing to remember, its own card before the questions ---------- */
+.keyIdea {
+  margin: 8px 0;
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  background: var(--indigo);
+  color: var(--white);
+}
+.keyIdeaLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-block-end: 10px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sky);
+}
+:global(html[dir='rtl']) .keyIdeaLabel {
+  letter-spacing: 0;
+}
+.keyIdea div p {
+  margin: 0;
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--white);
+}
+.keyIdea div p strong {
+  color: var(--sky);
+}
+
+/* ---------- "Try it" calculator ---------- */
+.calc {
+  margin: 20px 0;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  display: grid;
+  gap: 8px;
+}
+.calc .calcHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-weight: 700;
+  color: var(--indigo);
+}
+.calc .calcSub,
+.calc .calcNote {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+.calcRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-block-start: 6px;
+  font-weight: 600;
+  color: var(--indigo);
+}
+.calcRow output {
+  font-weight: 700;
+  color: var(--blue-text);
+}
+.calc input[type='range'] {
+  inline-size: 100%;
+  min-block-size: 44px;
+  margin: 0;
+  accent-color: var(--blue);
+}
+.calcResult {
+  display: grid;
+  gap: 2px;
+  margin-block-start: 6px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: var(--mint);
+  color: var(--indigo);
+}
+.calcResult strong {
+  font-size: 2rem;
+  line-height: 1.1;
+}
+.calcResult small {
+  font-size: 0.9375rem;
+  color: var(--indigo);
 }
 
 .codeBlock {

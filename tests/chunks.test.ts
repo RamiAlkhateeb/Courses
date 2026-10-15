@@ -54,6 +54,14 @@ describe('toCards', () => {
     expect(cards.map((c) => c.map((b) => b.type))).toEqual([['html'], ['html', 'diagram'], ['html']])
   })
 
+  it('puts an example box on the card of a lone paragraph before it, and a key idea on its own card', () => {
+    const example: Block = { type: 'box', variant: 'example', label: { en: 'E' }, html: { en: 'x' } }
+    const tip: Block = { type: 'box', variant: 'analogy', label: { en: 'A' }, html: { en: 'y' } }
+    const idea: Block = { type: 'keyIdea', html: { en: '<p>k</p>' } }
+    const { cards } = toCards([html('<p>a</p>'), example, tip, idea])
+    expect(cards.map((c) => c.map((b) => b.type))).toEqual([['html', 'box'], ['box'], ['keyIdea']])
+  })
+
   it('cuts at cardBreak and records where each exercise was', () => {
     const { cards, exercises } = toCards([
       html('<p>a</p>'),

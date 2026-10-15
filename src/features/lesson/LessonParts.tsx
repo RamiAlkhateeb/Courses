@@ -131,10 +131,12 @@ export function LessonFooter({
   )
 }
 
-/** "Spot on! +$10" (when this lesson pays); a first wrong try is nudged to have another go; a second reveals the answer. */
+/** "Correct +$10" (when this lesson pays) and why; a first wrong try is nudged to have another go; a second reveals the answer and why. */
 export function AnswerFeedback({ question, correct, pays, firstTry = false }: { question: Question; correct: boolean; pays: boolean; firstTry?: boolean }) {
   const t = useLocalized()
   const { t: tUi } = useTranslation()
+  // The explanation gives the answer away, so a first wrong try only gets the nudge to try again.
+  const why = question.explain && (correct || !firstTry) ? <span className={styles.feedbackNote}>{t(question.explain)}</span> : null
   if (correct)
     return (
       <>
@@ -144,12 +146,14 @@ export function AnswerFeedback({ question, correct, pays, firstTry = false }: { 
             <Money amount={PAY_PER_CORRECT} sign />
           </span>
         )}
+        {why}
       </>
     )
   return (
     <>
       <strong className={styles.feedbackTitle}>{tUi('notQuiteTitle')}</strong>
       <span className={styles.feedbackNote}>{firstTry ? tUi('notQuiteTry') : tUi('correctAnswerIs', { answer: t(question.options[question.answer]) })}</span>
+      {why}
     </>
   )
 }
