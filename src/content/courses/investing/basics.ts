@@ -1,6 +1,6 @@
 // Original course content. Figures are illustrative examples, not forecasts.
 import type { Module } from '../../types'
-import { L, box, cover, exercise, formula, html, mcq, objectives, section, table, takeaways } from '../../helpers'
+import { L, box, cover, diagram, exercise, formula, html, mcq, objectives, section, table, takeaways } from '../../helpers'
 
 const W = 'basics'
 const P = 'invb'
@@ -54,6 +54,16 @@ export const basics: Module = {
           '<p>Prices rise over time — that is <strong>inflation</strong>. If your money grows more slowly than prices, it buys less every year even though the number in your account goes up.</p>',
           '<p>ترتفع الأسعار مع الوقت — وهذا هو <strong>التضخم</strong>. إذا نما مالك أبطأ من الأسعار، فإنه يشتري أقل كل عام حتى لو ارتفع الرقم في حسابك.</p>',
         )),
+        diagram({
+          fig: L('Illustration', 'توضيح'),
+          title: L('What 1,000 in cash buys over time', 'ماذا تشتري 1,000 نقدًا مع مرور الوقت'),
+          src: '/diagrams/inflation.svg',
+          alt: L(
+            'Bar chart: 1,000 today buys what 789 buys in 8 years, 623 in 16 years and 492 in 24 years.',
+            'رسم بالأعمدة: 1,000 اليوم تشتري ما تشتريه 789 بعد 8 سنوات، و623 بعد 16 سنة، و492 بعد 24 سنة.',
+          ),
+          caption: L('Years from now, at 3% inflation a year. Illustrative figures.', 'السنوات من الآن، بتضخم 3% سنويًا. أرقام توضيحية.'),
+        }),
         box('example', L('Example', 'مثال'), L(
           'With 3% inflation, 1,000 in cash loses about half its purchasing power in 24 years: it will buy roughly what 490 buys today.',
           'مع تضخم 3%، يفقد مبلغ 1,000 نقدًا نحو نصف قوته الشرائية خلال 24 سنة: سيشتري تقريبًا ما يشتريه 490 اليوم.',

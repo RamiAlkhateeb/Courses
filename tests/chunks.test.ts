@@ -48,6 +48,12 @@ describe('toCards', () => {
     expect(cards.map((c) => c.map((b) => b.type))).toEqual([['html', 'html'], ['html', 'table'], ['formula', 'code']])
   })
 
+  it('keeps a picture on the card of the paragraph before it', () => {
+    const fig: Block = { type: 'diagram', fig: { en: 'F' }, title: { en: 'T' }, src: '/x.svg', alt: { en: 'A' }, caption: { en: 'C' } }
+    const { cards } = toCards([html('<p>a</p><p>b</p>'), fig, html('<p>c</p>')])
+    expect(cards.map((c) => c.map((b) => b.type))).toEqual([['html'], ['html', 'diagram'], ['html']])
+  })
+
   it('cuts at cardBreak and records where each exercise was', () => {
     const { cards, exercises } = toCards([
       html('<p>a</p>'),

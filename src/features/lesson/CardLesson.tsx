@@ -146,7 +146,7 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
 
         {step.kind === 'content' ? (
           // key: a new card replays the entrance animation.
-          <div key={index} className={`${styles.card} ${contentStyles.content}`}>
+          <div key={index} className={`${styles.card} ${contentStyles.content} ${step.blocks.length === 1 && step.blocks[0].type === 'html' ? styles.lead : ''}`}>
             {step.heading && (
               <p className={styles.kicker}>
                 {t(step.heading.label)}

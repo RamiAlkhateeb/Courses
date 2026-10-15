@@ -69,7 +69,7 @@
   font-weight: 800;
   letter-spacing: 0.07em;
   text-transform: uppercase;
-  color: var(--ink-faint);
+  color: var(--muted); /* --ink-faint on the mint box fell short of AA */
   margin-bottom: 8px;
 }
 .objectives ul {
@@ -198,41 +198,42 @@
 }
 
 .diagram {
-  border: 1px solid var(--rule);
-  background: var(--white);
-  border-radius: 10px;
-  padding: 20px 18px 16px 18px;
-  margin: 24px 0;
-  direction: ltr;
+  border: 1px solid var(--line);
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  padding: 16px 16px 14px;
+  margin: 20px 0;
 }
 .diagram .fig {
-  font-size: 12px;
-  font-weight: 800;
+  font-size: 0.75rem;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--lav);
-  margin-bottom: 6px;
-  text-align: start;
+  color: var(--blue-text);
+  margin-bottom: 4px;
+}
+:global(html[dir='rtl']) .diagram .fig {
+  letter-spacing: 0;
 }
 .diagram .figTitle {
   font-weight: 700;
-  font-size: 1.08rem;
-  margin-bottom: 14px;
-  text-align: start;
-  color: var(--ink);
+  font-size: 1.0625rem;
+  margin-bottom: 12px;
+  color: var(--indigo);
 }
+/* The picture holds numbers only, which read left to right in both languages */
 .diagram img {
   width: 100%;
   height: auto;
   display: block;
+  direction: ltr;
 }
 .diagram figcaption {
-  font-size: 0.95rem;
-  color: var(--ink-soft);
-  border-top: 1px solid var(--rule);
-  padding-top: 11px;
-  margin-top: 14px;
-  text-align: start;
+  font-size: 0.9375rem;
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+  margin-top: 12px;
 }
 
 .exercise {

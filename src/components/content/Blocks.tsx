@@ -60,7 +60,7 @@ export function Blocks({ blocks }: { blocks: Block[] }) {
               <figure key={i} className={styles.diagram}>
                 <div className={styles.fig}>{t(block.fig)}</div>
                 <div className={styles.figTitle}>{t(block.title)}</div>
-                <img src={resolveAssetPath(block.src)} alt={block.alt} />
+                <img src={resolveAssetPath(block.src)} alt={t(block.alt)} />
                 <figcaption>{t(block.caption)}</figcaption>
               </figure>
             )

@@ -40,6 +40,10 @@ export const table = (headers: Localized[], rows: Localized[][]): Block => ({ ty
 
 export const formula = (eq: string, note: Localized): Block => ({ type: 'formula', eq, note })
 
+/** A picture (`src` root-absolute under public/, e.g. '/diagrams/inflation.svg'). Keep words out of the image: numbers only, with the
+ *  title, caption and alt text here so they follow the reader's language. It shares a card with the text before it. */
+export const diagram = (d: { fig: Localized; title: Localized; src: string; alt: Localized; caption: Localized }): Block => ({ type: 'diagram', ...d })
+
 export const exercise = (questionId: string): Block => ({ type: 'exercise', questionId })
 
 /** Forces a new lesson card here (cards are otherwise cut automatically). */

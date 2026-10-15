@@ -23,7 +23,7 @@ export type Block =
   | { type: 'takeaways'; label: Localized; items: Localized[] }
   | { type: 'box'; variant: 'analogy' | 'mistake' | 'keypoint' | 'example'; label: Localized; html: Localized }
   | { type: 'code'; code: string; lang?: string }
-  | { type: 'diagram'; fig: Localized; title: Localized; src: string; alt: string; caption: Localized }
+  | { type: 'diagram'; fig: Localized; title: Localized; src: string; alt: Localized; caption: Localized }
   | { type: 'exercise'; questionId: string }
   | { type: 'formula'; eq: string; note: Localized }
   | { type: 'table'; headers: Localized[]; rows: Localized[][] }
