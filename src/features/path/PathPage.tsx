@@ -18,7 +18,7 @@ const questionsIn = (l: Lesson) => l.steps.filter((s) => s.kind === 'question').
 /** Learn (the Home tab), flat: the streak in days and the play-money balance, an "Up next" card for the next lesson,
  *  then every unit as a plain list of lessons (done, the next one, locked). */
 export function PathPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const tc = useLocalized()
   const { course, chapters, loaded, next } = useTrail(useTrailId())
   const { progress } = useProgress()
@@ -60,7 +60,8 @@ export function PathPage() {
               {t('continue')}
             </Link>
           </div>
-          <AbuShreek pose="point" height={104} className={styles.upMascot} />
+          {/* He sits at the card's end edge, so he faces back and points at the lesson and Continue. */}
+          <AbuShreek pose="point" height={104} flip={i18n.dir() !== 'rtl'} className={styles.upMascot} />
         </section>
       )}
       {loaded && !next && chapters.length > 0 && <p className={styles.allDone}>{t('learn_all_done')}</p>}
