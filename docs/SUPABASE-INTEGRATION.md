@@ -52,12 +52,13 @@ under `AccountGate`, which sends everyone back to Me when accounts are not confi
 | `/login` | Log in; a wrong email or password turns the fields red and never says which one was wrong |
 | `/forgot-password`, `/check-email` | Ask for a reset link; always answers "Check your email" (no account enumeration) |
 | `/new-password` | Choose a new password (from the reset email, or from Account → Password) |
-| `/account` | Name, email, password, language, daily goal, Terms / Privacy / Help, Log out; sync status |
+| `/account` | Name, email, password (Change), and a red Delete account link. Back goes to Settings |
+| `/settings` (not behind the gate) | Account row, language, daily goal, sound, reminder (disabled), Terms / Privacy / Help, Log out (signed in only) |
 | `/account/delete` | Delete the account: says what goes, needs `DELETE` typed first |
 | `/legal/terms`, `/legal/privacy`, `/legal/help` | **Drafts** (`legal.ts`): the owner must review them (and the Arabic) before launch |
 
-Entry points: a Log in button in the Learn header (signed out only), the Me tab's account row (Log in when signed out, Account when signed in) and Welcome's "I already have an
-account". Not built from the design: the "Confirm your email" screen (design 26: this project does not require email confirmation; if "Confirm email" is ever turned on in Supabase, a sign-up then sends people to Log in, and the screen needs building first), Google / Apple sign-in (providers not set up) and the "Reminder at 8:00 PM" row
+Entry points: a Log in button in the Learn header (signed out only), the guest banner on Me (Create profile / Log in), the Account row in Settings (gear on Me) and Welcome's "I already have an
+account". There is no email confirmation step: Create account goes straight to Learn (keep "Confirm email" off in Supabase; if it were on, a new account would land on Learn signed out). No Google / Apple sign-in. The reminder row in Settings is disabled
 (needs notifications). Errors are mapped to translated messages (`acc_err_*`); the rules for passwords, names and the
 delete word are pure functions in `src/domain/auth.ts`.
 
@@ -82,7 +83,7 @@ Deleting the account removes the online copy only; this device keeps its own cop
 
 ## Testing
 
-- `e2e/account.spec.ts` (fake Supabase in `e2e/fakeSupabase.ts`, answered inside the test; `playwright.config.ts` builds with a made-up project, so nothing reaches a real database): sign up (rules, and the no-confirm-screen fallback), log in (wrong and right password, unconfirmed email, reload), reset flow, Account edits, change password, log out, delete (button waits for `DELETE`), Arabic RTL, and axe on every screen in English and Arabic.
+- `e2e/account.spec.ts` (fake Supabase in `e2e/fakeSupabase.ts`, answered inside the test; `playwright.config.ts` builds with a made-up project, so nothing reaches a real database): sign up (rules; straight to Learn, no confirm screen), log in (wrong and right password, reload), Me gear → Settings → Account, guest Settings, reset flow, Account edits, change password, log out, delete (button waits for `DELETE`), Arabic RTL, and axe on every screen in English and Arabic.
 - `tests/auth-domain.test.ts` (password / email / name / delete-word rules) and `tests/legal.test.ts`.
 - `tests/sync.test.ts`: every merge rule, the wallet decision, the shared-device rule.
 - Manual: sign up, finish a lesson, open the app in a second browser, sign in: the lesson is ticked and the bank matches;

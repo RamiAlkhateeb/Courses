@@ -20,7 +20,6 @@
   color: var(--ink-soft);
   cursor: pointer;
   font-family: inherit;
-  box-shadow: var(--shadow-sm);
   text-decoration: none;
 }
 .pillBtn:hover {

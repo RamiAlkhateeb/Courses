@@ -53,7 +53,7 @@ for (const [lang, other, foreign] of [
       expect((await textOutside(page, other)).match(foreign) ?? [], route).toEqual([])
     }
     await onboarded(page, { lang })
-    for (const route of ['./', 'me', 'playground']) {
+    for (const route of ['./', 'me', 'settings', 'playground']) {
       await page.goto(route)
       await page.waitForTimeout(400)
       expect((await textOutside(page, other)).match(foreign) ?? [], route).toEqual([])
@@ -144,7 +144,7 @@ for (const lang of ['en', 'ar']) {
   test(`no sideways scroll at 320px in ${lang}`, async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 700 })
     await onboarded(page, { lang, 'progress:v2': JSON.stringify({ bank: 1240 }) })
-    for (const route of ['./', 'playground', 'me', 'course/investing/basics/learn/risk-return']) {
+    for (const route of ['./', 'playground', 'me', 'settings', 'course/investing/basics/learn/risk-return']) {
       await page.goto(route)
       await page.waitForTimeout(400)
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), route).toBe(true)

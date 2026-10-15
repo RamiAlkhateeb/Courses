@@ -7,9 +7,9 @@ import styles from './ui.module.css'
 
 const cx = (...c: (string | false | undefined)[]) => c.filter(Boolean).join(' ')
 
-/** `primary` (blue gradient: the next step), `indigo`, `secondary` (soft card), `ghost` (dashed outline), `correct` /
- *  `oops` (feedback sheets), `onIndigo` (outline on the indigo Welcome sheet). */
-export type ButtonVariant = 'primary' | 'indigo' | 'secondary' | 'ghost' | 'correct' | 'oops' | 'onIndigo'
+/** `primary` (solid blue: the next step), `indigo`, `white` (on an indigo card), `secondary` (white with a 1px border),
+ *  `ghost` (text only), `correct` / `oops`, `onIndigo` (outline on an indigo surface). All flat: no gradient, no shadow. */
+export type ButtonVariant = 'primary' | 'indigo' | 'white' | 'secondary' | 'ghost' | 'correct' | 'oops' | 'onIndigo'
 export interface ButtonLook {
   variant?: ButtonVariant
   /** `sm`: a 40px pill that fits its label (inline in a header or list). Default: a full-width 56px bar. */
@@ -53,6 +53,7 @@ export function AnswerOption({
   role,
   radio,
   choice,
+  ring,
 }: {
   state?: AnswerState
   letter?: ReactNode
@@ -65,6 +66,8 @@ export function AnswerOption({
   /** Trailing radio circle (a check when selected), for single-choice lists */
   radio?: boolean
   choice?: boolean
+  /** Quiz answers: a leading ring (filled when chosen, a check / cross once checked) instead of a letter badge */
+  ring?: boolean
 }) {
   const badge = state === 'correct' ? <Icon name="check" size={18} /> : state === 'wrong' ? <Icon name="close" size={16} /> : icon ? <Icon name={icon} size={22} /> : letter
   return (
@@ -76,7 +79,14 @@ export function AnswerOption({
       onClick={onClick}
       disabled={disabled}
     >
-      {badge && <span className={styles.badge}>{badge}</span>}
+      {ring ? (
+        <span className={styles.ring} aria-hidden>
+          {state === 'correct' && <Icon name="check" size={16} strokeWidth={3} />}
+          {state === 'wrong' && <Icon name="close" size={14} strokeWidth={3} />}
+        </span>
+      ) : (
+        badge && <span className={styles.badge}>{badge}</span>
+      )}
       <span className={styles.optionBody}>{children}</span>
       {radio && <span className={cx(styles.radio, state === 'selected' && styles.radioOn)}>{state === 'selected' && <Icon name="check" size={16} />}</span>}
     </button>
@@ -137,39 +147,5 @@ export function BottomSheet({
     <div className={cx(styles.sheet, tone && styles[`sheet_${tone}`], className)} role={tone ? 'status' : 'dialog'} aria-live={tone ? 'polite' : undefined}>
       {children}
     </div>
-  )
-}
-
-export type NodeState = 'done' | 'next' | 'locked' | 'chest' | 'chestLocked'
-
-/** A stop on the path: done (leaf green + check), next (blue + sprout, with a halo), locked (pale + lock), and the unit
- *  reward chest (rounded square; pale until every lesson in the unit is done). */
-export function PathNode({
-  state,
-  size,
-  onClick,
-  label,
-}: {
-  state: NodeState
-  size?: number
-  onClick?: () => void
-  /** Spoken label, e.g. "Lesson 3, Compound interest, start" */
-  label: string
-}) {
-  const px = size ?? (state === 'next' ? 84 : 68)
-  const icon: IconName = state === 'done' ? 'check' : state === 'next' ? 'sprout' : state === 'locked' ? 'lock' : 'chest'
-  const cls = cx(styles.node, state === 'chest' || state === 'chestLocked' ? styles.chest : '', styles[state === 'chest' ? 'node_ready' : state === 'chestLocked' ? 'node_locked' : `node_${state}`])
-  const inner = <Icon name={icon} size={Math.round(px * (state === 'next' ? 0.45 : 0.42))} strokeWidth={state === 'done' ? 3.4 : 2.1} />
-  const style = { inlineSize: px, blockSize: px }
-  if (!onClick || state === 'locked' || state === 'chestLocked')
-    return (
-      <span className={cls} style={style} role="img" aria-label={label}>
-        {inner}
-      </span>
-    )
-  return (
-    <button type="button" className={cls} style={style} onClick={onClick} aria-label={label}>
-      {inner}
-    </button>
   )
 }

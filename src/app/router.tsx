@@ -36,6 +36,9 @@ export const router = createBrowserRouter(
           ],
         },
         { path: 'playground/summary', ...page(() => import('../features/playground/SummaryPage'), 'SummaryPage') },
+        // Settings (from the gear on Me) and the legal pages it links to work with or without accounts.
+        { path: 'settings', ...page(() => import('../features/settings/SettingsPage'), 'SettingsPage') },
+        { path: 'legal/:page', ...page(() => import('../features/account/LegalPage'), 'LegalPage') },
         {
           // Optional accounts (sign up, log in, reset, account, delete): only when Supabase is configured.
           ...page(() => import('../features/account/AccountGate'), 'AccountGate'),
@@ -47,7 +50,6 @@ export const router = createBrowserRouter(
             { path: 'new-password', ...page(() => import('../features/account/NewPasswordPage'), 'NewPasswordPage') },
             { path: 'account', ...page(() => import('../features/account/AccountPage'), 'AccountPage') },
             { path: 'account/delete', ...page(() => import('../features/account/DeleteAccountPage'), 'DeleteAccountPage') },
-            { path: 'legal/:page', ...page(() => import('../features/account/LegalPage'), 'LegalPage') },
           ],
         },
         {
@@ -66,7 +68,7 @@ export const router = createBrowserRouter(
           },
         },
         {
-                    path: 'course/:courseId/:moduleId/lesson',
+          path: 'course/:courseId/:moduleId/lesson',
           lazy: async () => {
             const { LessonPage } = await import('../features/lesson/LessonPage')
             return { element: <LessonPage /> }
@@ -75,7 +77,7 @@ export const router = createBrowserRouter(
       ],
     },
     {
-      // Desktop views: a course's chapter list and Settings.
+      // Desktop views: a course's chapter list.
       element: <AppShell />,
       errorElement: <RouteError />,
       children: [
@@ -86,13 +88,6 @@ export const router = createBrowserRouter(
           lazy: async () => {
             const { CoursePage } = await import('../features/course/CoursePage')
             return { element: <CoursePage /> }
-          },
-        },
-        {
-          path: 'settings',
-          lazy: async () => {
-            const { SettingsPage } = await import('../features/settings/SettingsPage')
-            return { element: <SettingsPage /> }
           },
         },
         { path: '*', element: <NotFound /> },

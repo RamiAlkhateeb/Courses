@@ -1,17 +1,16 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { ReactNode } from 'react'
-import { LogoMark } from '../../components/Logo'
+import { Logo } from '../../components/Logo'
 import { Money } from '../../components/Money'
 import { Bush, Mound, Sprout, Tree } from '../../components/GardenArt'
-import { Card, Coin, Flame, Icon, type IconName } from '../../components/ui'
+import { Card, Coin, Icon, buttonClass, type IconName } from '../../components/ui'
 import { useLocalized } from '../../content/useLocalized'
 import { currentStreak, localDay } from '../../domain/progress'
 import { useProgress } from '../../state/useProgress'
 import { useWallet } from '../../state/usePlayground'
 import { accountsEnabled } from '../../state/supabase'
 import { useAuth } from '../../state/auth'
-import { useSyncStatus } from '../../state/sync'
 import { WeekBars } from '../../components/WeekStrip'
 import { useProfile } from '../../state/profile'
 import { useTrail, useTrailId } from '../../state/useTrail'
@@ -35,19 +34,20 @@ export function MePage() {
   const streak = currentStreak(progress.streak, localDay())
   const { course, totalLessons, doneLessons } = useTrail(useTrailId())
   const auth = useAuth()
-  const sync = useSyncStatus()
+  const guest = accountsEnabled && auth.status === 'signedOut'
+  const signedIn = accountsEnabled && auth.status === 'signedIn' ? auth.user : null
 
   const pct = totalLessons ? Math.round((doneLessons / totalLessons) * 100) : 0
   const stage = STAGES.reduce((at, s, i) => (pct >= s.from ? i : at), 0)
 
-  const stats: { icon?: IconName | 'flame'; value: ReactNode; label: string }[] = [
-    { icon: 'flame', value: String(streak), label: t('dayStreak') },
+  const stats: { icon?: IconName; value: ReactNode; label: string }[] = [
+    { icon: 'calendar', value: String(streak), label: t('dayStreak') },
     { value: <Money amount={wallet} />, label: t('playMoneyShort') },
     { icon: 'check', value: String(progress.lessonsDone.length), label: t('lessonsDoneShort') },
   ]
   const milestones: { icon: IconName; label: string; got: boolean }[] = [
-    { icon: 'flag', label: t('msFirstStep'), got: progress.lessonsDone.length >= 1 },
-    { icon: 'gem', label: t('msWeek'), got: streak >= 7 },
+    { icon: 'sprout', label: t('msFirstStep'), got: progress.lessonsDone.length >= 1 },
+    { icon: 'calendar', label: t('msWeek'), got: streak >= 7 },
     { icon: 'star', label: t('msAce'), got: progress.perfect >= 1 },
   ]
 
@@ -55,37 +55,41 @@ export function MePage() {
     <div className={styles.page}>
       <header className={styles.head}>
         <span className={styles.avatar} aria-hidden>
-          <LogoMark size={64} />
+          <Logo size={64} />
         </span>
         <div className={styles.who}>
-          <h1>{t('meName')}</h1>
-          <p>{t('walkingTrail', { trail: tc(course.title) })}</p>
+          <h1>{signedIn ? signedIn.name || signedIn.email : guest ? t('me_guest') : t('meName')}</h1>
+          <p>{guest ? t('me_guest_sub') : t('walkingTrail', { trail: tc(course.title) })}</p>
         </div>
         <Link to="/settings" className={styles.gear} aria-label={t('settings')}>
-          <Icon name="sliders" size={24} />
+          <Icon name="gear" size={24} />
         </Link>
       </header>
-
-      {accountsEnabled && auth.status !== 'loading' && (
-        <Link to={auth.status === 'signedIn' ? '/account' : '/login'} className={styles.account}>
-          <Icon name="me" size={22} />
-          <span>
-            <strong>{auth.status === 'signedIn' ? auth.user?.name || auth.user?.email : t('acc_me_sign_in')}</strong>
-            <small>{auth.status === 'signedIn' ? t(`acc_sync_${sync === 'off' ? 'syncing' : sync}` as 'acc_sync_synced') : t('acc_me_sub')}</small>
-          </span>
-          <Icon name="chevron" size={20} className={styles.chev} />
-        </Link>
-      )}
 
       <div className={styles.stats}>
         {stats.map((s) => (
           <Card key={s.label} className={styles.stat}>
-            {s.icon === 'flame' ? <Flame size={22} /> : s.icon ? <Icon name={s.icon} size={22} /> : <Coin size={22} />}
+            {s.icon ? <Icon name={s.icon} size={22} /> : <Coin size={22} />}
             <strong>{s.value}</strong>
             <span>{s.label}</span>
           </Card>
         ))}
       </div>
+
+      {guest && (
+        <Card tone="indigo" className={styles.save}>
+          <h2>{t('me_save_title')}</h2>
+          <p>{t('me_save_sub')}</p>
+          <div className={styles.saveActions}>
+            <Link to="/signup" className={buttonClass({ variant: 'white' })}>
+              {t('me_create_profile')}
+            </Link>
+            <Link to="/login" className={buttonClass({ variant: 'onIndigo' })}>
+              {t('acc_sign_in')}
+            </Link>
+          </div>
+        </Card>
+      )}
 
       <Card className={styles.week}>
         <p className={styles.weekHead}>
@@ -111,16 +115,15 @@ export function MePage() {
       </Card>
 
       <h2 className={styles.kicker}>{t('milestones')}</h2>
-      <div className={styles.miles}>
+      <ul className={styles.miles}>
         {milestones.map((m) => (
-          <div key={m.label} className={styles.mile}>
-            <span className={m.got ? styles.milOn : styles.milOff}>
-              <Icon name={m.got ? m.icon : 'lock'} size={28} />
-            </span>
-            <small>{m.label}</small>
-          </div>
+          <li key={m.label} className={m.got ? styles.mile : `${styles.mile} ${styles.mileLocked}`}>
+            <Icon name={m.got ? m.icon : 'lock'} size={22} />
+            <span>{m.label}</span>
+            {!m.got && <span className="visually-hidden">{t('nodeLocked')}</span>}
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   )
 }

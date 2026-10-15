@@ -1,0 +1,182 @@
+/* Settings and Account (designs 31, 32): a back button, a big title, grouped white lists with a mint border. */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-block-size: 100dvh;
+  padding: 20px 24px 28px;
+  box-sizing: border-box;
+}
+.back {
+  display: grid;
+  place-items: center;
+  inline-size: 44px;
+  block-size: 44px;
+  margin-inline-start: -10px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--indigo);
+  cursor: pointer;
+}
+:global(html[dir='rtl']) .back svg,
+:global(html[dir='rtl']) .chev {
+  transform: scaleX(-1);
+}
+.title {
+  margin: 0 0 4px;
+  font-size: 2.2rem;
+  line-height: 1.1;
+  color: var(--indigo);
+}
+.footer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  margin-block-start: auto;
+  padding-block-start: 12px;
+}
+.group {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+.kicker {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blue-text);
+}
+:global(html[dir='rtl']) .kicker {
+  letter-spacing: 0;
+}
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.list > li + li {
+  border-block-start: 1px solid var(--line);
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  inline-size: 100%;
+  min-block-size: 64px;
+  padding: 8px 16px;
+  box-sizing: border-box;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--indigo);
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+}
+.row:disabled {
+  cursor: default;
+}
+.tile {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  inline-size: 40px;
+  block-size: 40px;
+  border-radius: 12px;
+  background: var(--chip-bg);
+  color: var(--indigo);
+}
+.label {
+  flex: 1;
+  min-inline-size: 0;
+  display: grid;
+}
+.label small {
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+.value {
+  max-inline-size: 45%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+  font-size: 1rem;
+  color: var(--muted);
+}
+.chev {
+  flex-shrink: 0;
+  color: var(--locked-icon);
+}
+.switch {
+  flex-shrink: 0;
+  position: relative;
+  inline-size: 52px;
+  block-size: 30px;
+  border-radius: var(--radius-pill);
+  background: var(--locked);
+  transition: background-color 0.2s;
+}
+.switch span {
+  position: absolute;
+  inset-block-start: 3px;
+  inset-inline-start: 3px;
+  inline-size: 24px;
+  block-size: 24px;
+  border-radius: 50%;
+  background: var(--white);
+  transition: inset-inline-start 0.2s;
+}
+.switchOn {
+  background: var(--blue);
+}
+.switchOn span {
+  inset-inline-start: 25px;
+}
+.row:disabled .switch {
+  opacity: 0.5;
+}
+
+/* ---------- Bottom sheet ---------- */
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 25;
+  background: var(--scrim);
+}
+.sheetTitle {
+  margin: 0 0 14px;
+  font-size: 1.5rem;
+  color: var(--indigo);
+}
+.sheetBody {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}
+.grab {
+  inline-size: 44px;
+  block-size: 5px;
+  margin: -8px auto 14px;
+  border-radius: var(--radius-pill);
+  background: var(--line);
+}
+
+@media (max-width: 360px) {
+  .page {
+    padding-inline: 16px;
+  }
+  .title {
+    font-size: 1.9rem;
+  }
+}

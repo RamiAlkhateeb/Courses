@@ -159,7 +159,7 @@ export function QuizLesson({
           onAction={retry ? tryAgain : next}
         />
       ) : (
-        <LessonFooter mascot="think" compact action={tUi('check')} disabled={selected === null} onAction={check} />
+        <LessonFooter action={tUi('check')} disabled={selected === null} onAction={check} />
       )}
     </div>
   )

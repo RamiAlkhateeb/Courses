@@ -4,12 +4,11 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { Question } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
-import { Button, BottomSheet, Card, Coin, Flame, Icon, AnswerOption, ProgressBar, AbuShreek, type AnswerState, type MascotPose } from '../../components/ui'
+import { Button, Card, Coin, Icon, AnswerOption, ProgressBar, AbuShreek, type AnswerState } from '../../components/ui'
 import { Sprout } from '../../components/GardenArt'
 import { currentStreak, localDay } from '../../domain/progress'
 import { PAY_PER_CORRECT } from '../../domain/money'
 import { Money } from '../../components/Money'
-import { WeekDots } from '../../components/WeekStrip'
 import { useProgress } from '../../state/useProgress'
 import { optionOrder } from '../../domain/optionOrder'
 import { playSound } from '../../state/sound'
@@ -23,7 +22,7 @@ export function LessonTopBar({ quitTo, done, total }: { quitTo: string; done: nu
       <Link to={quitTo} className={styles.quit} aria-label={t('lessonQuit')}>
         <Icon name="close" size={26} />
       </Link>
-      <ProgressBar value={done} max={total} />
+      <ProgressBar value={done} max={total} label={t('lesson_progress')} />
       <span className={styles.counter}>
         {Math.min(done + 1, total)}/{total}
       </span>
@@ -56,7 +55,7 @@ export function QuestionCard({
       {kicker && <p className={styles.kicker}>{kicker}</p>}
       <h1 className={styles.prompt}>{t(question.prompt)}</h1>
       <div className={styles.options} role="radiogroup">
-        {order.map((i, position) => {
+        {order.map((i) => {
           const state: AnswerState = !checked
             ? selected === i
               ? 'selected'
@@ -72,8 +71,8 @@ export function QuestionCard({
             <AnswerOption
               key={i}
               role="radio"
+              ring
               state={state}
-              letter={String.fromCharCode(65 + position)}
               disabled={checked}
               onClick={() => onSelect(i)}
             >
@@ -86,15 +85,16 @@ export function QuestionCard({
   )
 }
 
-/** Bottom of a lesson screen: AbuShreek beside the action while answering, or the green/red feedback sheet once checked. */
+/** Bottom of a lesson screen: a full-width action (Check answer / Continue / Try again) docked at the bottom. Once an answer
+ *  is checked it is preceded, in the page flow right under the options, by a flat result card: a small mascot, the
+ *  title (Correct / Not quite), the explanation, and "+$10" when the lesson pays. Wrong answers add "Re-read the lesson
+ *  card" under the button. */
 export function LessonFooter({
   tone,
   feedback,
   action,
   disabled,
   onAction,
-  mascot,
-  compact,
   secondary,
   onSecondary,
 }: {
@@ -103,23 +103,22 @@ export function LessonFooter({
   action: string
   disabled?: boolean
   onAction: () => void
-  mascot?: MascotPose
-  /** A compact button at the end of the row ("Check answer") instead of a full-width bar */
-  compact?: boolean
-  /** A text link under the sheet's button ("Re-read the lesson card") */
+  /** A text link under the button ("Re-read the lesson card") */
   secondary?: string
   onSecondary?: () => void
 }) {
-  if (tone) {
-    const right = tone === 'right'
-    return (
-      <BottomSheet tone={right ? 'correct' : 'oops'}>
-        <div className={styles.sheetHead}>
-          <AbuShreek pose={right ? 'cheer' : 'oops'} height={130} className={styles.sheetMascot} />
+  const right = tone === 'right'
+  return (
+    <>
+      {tone && (
+        <div className={`${styles.result} ${right ? styles.resultRight : styles.resultWrong}`} role="status" aria-live="polite">
+          <AbuShreek pose={right ? 'cheer' : 'oops'} height={64} className={styles.resultMascot} />
           <div className={styles.feedback}>{feedback}</div>
         </div>
+      )}
+      <div className={styles.footer}>
         {/* Keyed by action so the button remounts (and autofocuses) when Check turns into Continue. */}
-        <Button key={action} variant={right ? 'correct' : 'oops'} onClick={onAction} autoFocus>
+        <Button key={action} disabled={disabled} onClick={onAction} autoFocus={!!tone}>
           {action}
         </Button>
         {secondary && onSecondary && (
@@ -127,16 +126,8 @@ export function LessonFooter({
             {secondary}
           </button>
         )}
-      </BottomSheet>
-    )
-  }
-  return (
-    <div className={styles.footer}>
-      {mascot && <AbuShreek pose={mascot} height={110} className={styles.footMascot} />}
-      <Button key={action} size={compact ? 'sm' : undefined} className={compact ? styles.compactAction : undefined} disabled={disabled} onClick={onAction}>
-        {action}
-      </Button>
-    </div>
+      </div>
+    </>
   )
 }
 
@@ -147,7 +138,7 @@ export function AnswerFeedback({ question, correct, pays, firstTry = false }: { 
   if (correct)
     return (
       <>
-        <strong className={styles.feedbackTitle}>{tUi('spotOn')}</strong>
+        <strong className={styles.feedbackTitle}>{tUi('fb_correct')}</strong>
         {pays && (
           <span className={styles.moneyPill}>
             <Money amount={PAY_PER_CORRECT} sign />
@@ -233,25 +224,16 @@ export function LessonSummary({
 
   return (
     <div className={`${styles.lesson} ${styles.summary}`}>
-      <svg className={styles.rings} width="390" height="460" viewBox="0 0 390 460" fill="none" aria-hidden focusable="false">
-        <g stroke="var(--indigo)" strokeOpacity="0.08" strokeWidth="1.2">
-          {[120, 170, 220, 270, 320].map((rx) => (
-            <ellipse key={rx} cx="195" cy="170" rx={rx} ry={Math.round(rx * 0.63)} />
-          ))}
-        </g>
-        <circle cx="195" cy="150" r="108" fill="var(--mint)" stroke="var(--sky)" strokeWidth="1.5" />
-        <path d="M70 70 L74 78 L82 79 L76 85 L78 93 L70 89 L62 93 L64 85 L58 79 L66 78 Z" fill="var(--sky)" />
-        <path d="M330 150 L333 156 L339 157 L335 161 L336 167 L330 164 L324 167 L325 161 L321 157 L327 156 Z" fill="var(--indigo)" />
-      </svg>
-      <Sprout size={54} style={{ position: 'absolute', insetInlineEnd: 44, insetBlockStart: 34 }} />
       <div className={styles.hero}>
-        <AbuShreek pose="cheer" height={220} />
+        <span className={styles.heroDisc} aria-hidden />
+        <AbuShreek pose="cheer" height={210} />
+        <Sprout size={44} style={{ position: 'absolute', insetInlineEnd: 56, insetBlockStart: 6 }} />
       </div>
       <h1>{tUi('lessonComplete')}</h1>
       {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
-      <div className={styles.tiles}>
+      <Card className={styles.stats}>
         {payout !== undefined && payout > 0 && (
-          <div className={`${styles.tile} ${styles.tileMoney}`}>
+          <div className={styles.statCol}>
             <span>{tUi('earnedTile')}</span>
             <strong>
               <Coin size={20} /> <Money amount={payout} sign />
@@ -259,23 +241,24 @@ export function LessonSummary({
           </div>
         )}
         {total > 0 && (
-          <div className={`${styles.tile} ${styles.tileAcc}`}>
+          <div className={correct === total ? `${styles.statCol} ${styles.statGood}` : styles.statCol}>
             <span>{tUi('accuracy')}</span>
             <strong>{tUi('accuracyOf', { c: correct, t: total })}</strong>
           </div>
         )}
         {clock && (
-          <div className={`${styles.tile} ${styles.tileTime}`}>
+          <div className={styles.statCol}>
             <span>{tUi('time')}</span>
             <strong>{clock}</strong>
           </div>
         )}
-      </div>
+      </Card>
       <Card className={styles.weekCard}>
         <p className={styles.weekTitle}>
-          <Flame size={22} /> {tUi('daysOnPath', { count: streak })}
+          <Icon name="calendar" size={22} /> {tUi('streakDays', { count: streak })}
         </p>
-        <WeekDots activity={progress.activity} />
+        <ProgressBar value={Math.min(streak, 7)} max={7} label={tUi('sum_streak_bar', { n: Math.min(streak, 7) })} />
+        <p className={styles.weekNote}>{streak >= 7 ? tUi('sum_streak_full') : tUi('sum_streak_bar', { n: streak })}</p>
       </Card>
       <div className={styles.actions}>
         <p className={styles.fine}>{payout === undefined ? tUi('practiceNoPay') : tUi('educationalOnly')}</p>

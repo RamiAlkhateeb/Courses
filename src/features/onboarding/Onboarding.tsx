@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import type { ParseKeys } from 'i18next'
 import { AbuShreek, AnswerOption, Button, Icon, ProgressBar, type MascotPose } from '../../components/ui'
 import { Tree } from '../../components/GardenArt'
+import { Logo } from '../../components/Logo'
 import { LANGUAGES } from '../../i18n'
 import { accountsEnabled } from '../../state/supabase'
 import { DEFAULT_TRAIL } from '../../domain/profile'
@@ -20,16 +21,6 @@ const otherLanguage = (lng: string) => LANGUAGES.find((l) => l.code !== lng)!.co
 const dirOf = (lng: string) => (lng === 'ar' ? 'rtl' : 'ltr')
 
 /** The Abu Shreek mark: a rounded indigo tile with a sky-blue "M". */
-function BrandMark() {
-  return (
-    <span className={styles.mark} aria-hidden>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <path d="M4 18 L4 6 L12 14 L20 6 L20 18" stroke="var(--sky)" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    </span>
-  )
-}
-
 /** Welcome: the brand (both names, stacked), a language switch, the headline in both languages, the mascot, and Get started. */
 export function Welcome() {
   const { t, i18n } = useTranslation()
@@ -37,18 +28,10 @@ export function Welcome() {
   const other = otherLanguage(i18n.language)
   return (
     <div className={styles.welcome}>
-      <svg className={styles.contours} width="390" height="620" viewBox="0 0 390 620" fill="none" aria-hidden focusable="false">
-        <g stroke="var(--indigo)" strokeOpacity="0.09" strokeWidth="1.2">
-          {[40, 90, 140, 190, 240, 290, 340].map((rx) => (
-            <ellipse key={rx} cx="310" cy="430" rx={rx} ry={Math.round(rx * 0.63)} />
-          ))}
-        </g>
-        <path d="M60 590 C150 540 340 560 318 480 C296 410 120 440 170 360 C210 296 340 330 322 250" stroke="var(--sky)" strokeWidth="5" strokeLinecap="round" strokeDasharray="1 11" />
-      </svg>
       <Tree size={70} style={{ position: 'absolute', insetInlineEnd: 32, insetBlockStart: 176 }} />
       <header className={styles.welcomeTop}>
         <span className={styles.brand}>
-          <BrandMark />
+          <Logo size={34} />
           <span className={styles.brandName}>
             <span lang="en" dir="ltr">
               {t('appName', { lng: 'en' })}

@@ -95,6 +95,20 @@ const PATHS = {
       <path d="M5 17a3 3 0 0 1 3-3h10" />
     </>
   ),
+  calendar: (
+    <>
+      <rect x="4" y="5.5" width="16" height="14.5" rx="3" />
+      <path d="M4 10h16M8.5 3.5v4M15.5 3.5v4" />
+    </>
+  ),
+  gear: (
+    <>
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z" />
+    </>
+  ),
+  bell: <path d="M6 16.5V11a6 6 0 1112 0v5.5l1.5 2h-15zM10 20.5a2 2 0 004 0" />,
+  volume: <path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4zM15.5 9a4 4 0 010 6M18 6.5a7.5 7.5 0 010 11" />,
   user: (
     <>
       <circle cx="12" cy="8.5" r="3.5" />
@@ -181,15 +195,6 @@ export function Icon({ name, size = 24, className, strokeWidth = 2 }: { name: Ic
       className={className}
     >
       {PATHS[name]}
-    </svg>
-  )
-}
-
-/** The streak flame: filled, in its own two colours (tokens), so it reads as fire and not as a line icon. */
-export function Flame({ size = 20 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="var(--flame)" stroke="var(--flame-edge)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden focusable="false">
-      <path d="M12 3c1 4 5 5.5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9z" />
     </svg>
   )
 }

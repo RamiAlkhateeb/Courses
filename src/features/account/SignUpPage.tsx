@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { Trans, useTranslation } from 'react-i18next'
 import { Button, CheckPill, TextField } from '../../components/ui'
 import { cleanName, isEmail, passwordChecks, passwordOk } from '../../domain/auth'
@@ -9,10 +9,9 @@ import { errorKey, useArrive } from './useAccountFlow'
 import styles from './Account.module.css'
 
 /** Design 25 (and 34 in Arabic): create an account. Name, email, a password that must pass three visible rules, and
- *  agreement to the terms. With email confirmation on, it continues to "Confirm your email". */
+ *  agreement to the terms. Create account goes straight to Learn: there is no email confirmation step. */
 export function SignUpPage() {
   const { t } = useTranslation()
-  const navigate = useNavigate()
   const auth = useAuth()
   const arrive = useArrive()
   const [name, setName] = useState('')
@@ -43,8 +42,6 @@ export function SignUpPage() {
       arrive.fail()
       return setError(res.error)
     }
-    // The project does not require email confirmation. If it ever does, there is no session yet: send them to log in.
-    if (res.needsConfirmation) return navigate('/login', { replace: true })
     arrive.start()
   }
 

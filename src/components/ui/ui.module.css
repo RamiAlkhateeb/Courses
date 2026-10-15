@@ -1,6 +1,6 @@
-/* Shared UI kit (the garden design): soft cards with a 1px mint border and a light indigo shadow, chunky buttons
-   with a blue gradient, round path nodes with a solid bottom edge, and a floating tab pill. Colours, radii and
-   shadows come from src/styles/tokens.css only. */
+/* Shared UI kit (the flat design): white cards with a 1px mint border and no shadow, solid buttons, a tab bar docked
+   to the bottom. No gradients, glows, raised edges or blur anywhere (tests/flat-ui.test.ts). Colours and radii come
+   from src/styles/tokens.css only. */
 
 :global(:focus-visible) {
   outline: 3px solid var(--blue);
@@ -20,40 +20,41 @@
   border: 1px solid transparent;
   font: inherit;
   font-weight: 700;
-  font-size: 1.0625rem;
+  font-size: 1.1875rem; /* 19px bold is "large text": white on --blue (4.4:1) passes AA */
   cursor: pointer;
   text-decoration: none;
   box-sizing: border-box;
-  transition: filter 0.15s, transform 0.1s;
-}
-.btn:active:not(:disabled) {
-  transform: translateY(1px);
+  transition: background-color 0.15s, border-color 0.15s;
 }
 .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  box-shadow: none;
 }
 .primary {
-  background: linear-gradient(180deg, var(--blue-light) 0%, var(--blue) 100%);
+  background: var(--blue);
+  border-color: var(--blue);
   color: var(--white);
-  box-shadow: var(--shadow-cta);
 }
 .indigo {
   background: var(--indigo);
   border-color: var(--indigo);
-  color: var(--sky);
+  color: var(--white);
+}
+/* White button on an indigo card (Up next, Save your progress) */
+.white {
+  background: var(--white);
+  border-color: var(--white);
+  color: var(--indigo);
 }
 .secondary {
   background: var(--card);
   border-color: var(--line);
-  box-shadow: var(--shadow-card);
   color: var(--indigo);
 }
 .ghost {
   background: transparent;
-  border: 1px dashed var(--locked);
-  color: var(--indigo);
+  border-color: transparent;
+  color: var(--muted);
 }
 .correct {
   background: var(--correct);
@@ -77,22 +78,25 @@
   inline-size: auto;
   min-block-size: 40px;
   padding: 0 20px;
-  border-radius: var(--radius-pill);
+  border-radius: 12px;
   font-size: 0.9375rem;
+}
+/* Small text is not "large": a small primary uses the darker blue so white text keeps AA contrast */
+.sm.primary {
+  background: var(--blue-text);
+  border-color: var(--blue-text);
 }
 
 /* ---------- Card ---------- */
 .card {
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: var(--radius-card);
-  box-shadow: var(--shadow-card);
+  border-radius: var(--radius-lg);
   padding: 18px 20px;
 }
 .mint {
   background: var(--mint);
-  border: 2px solid var(--indigo);
-  box-shadow: none;
+  border: 1px solid var(--line);
 }
 .indigoCard {
   background: var(--indigo);
@@ -102,7 +106,6 @@
 .dashed {
   background: transparent;
   border: 1px dashed var(--locked);
-  box-shadow: none;
   color: var(--muted);
 }
 
@@ -118,7 +121,6 @@
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: var(--radius-btn);
-  box-shadow: var(--shadow-card);
   font: inherit;
   font-weight: 600;
   font-size: 1.125rem;
@@ -173,23 +175,51 @@
 .radioOn {
   background: var(--indigo);
   border-color: var(--indigo);
-  color: var(--sky);
+  color: var(--white);
+}
+/* Quiz answers: a ring that fills with a dot when chosen, and turns into a check / cross once checked */
+.ring {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  inline-size: 26px;
+  block-size: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--locked);
+  color: var(--white);
+  box-sizing: border-box;
+}
+.opt_selected .ring {
+  border-color: var(--blue);
+}
+.opt_selected .ring::after {
+  content: '';
+  inline-size: 12px;
+  block-size: 12px;
+  border-radius: 50%;
+  background: var(--blue);
+}
+.opt_correct .ring {
+  background: var(--correct);
+  border-color: var(--correct);
+}
+.opt_wrong .ring {
+  background: var(--oops);
+  border-color: var(--oops);
 }
 .opt_selected {
-  background: var(--mint);
-  border: 2px solid var(--indigo);
-  box-shadow: none;
+  background: var(--chip-bg);
+  border: 2px solid var(--blue);
   font-weight: 700;
 }
 .opt_selected .badge {
   background: var(--indigo);
   border-color: var(--indigo);
-  color: var(--sky);
+  color: var(--white);
 }
 .opt_correct {
   background: var(--correct-bg);
   border: 2px solid var(--correct);
-  box-shadow: none;
   font-weight: 700;
 }
 .opt_correct .badge {
@@ -200,7 +230,6 @@
 .opt_wrong {
   background: var(--oops-bg);
   border: 2px solid var(--oops);
-  box-shadow: none;
   font-weight: 700;
 }
 .opt_wrong .badge {
@@ -209,20 +238,20 @@
   color: var(--white);
 }
 .opt_dim {
-  opacity: 0.55;
+  opacity: 0.5;
 }
 
 /* ---------- ProgressBar ---------- */
 .track {
   flex: 1;
-  block-size: 10px;
-  border-radius: 5px;
+  block-size: 6px;
+  border-radius: 3px;
   background: var(--mint);
   overflow: hidden;
 }
 .fill {
   block-size: 100%;
-  border-radius: 5px;
+  border-radius: 3px;
   background: var(--blue);
   transition: inline-size 0.3s;
 }
@@ -237,7 +266,6 @@
   border: 1px solid var(--line);
   border-radius: var(--radius-pill);
   background: var(--card);
-  box-shadow: var(--shadow-card);
   font-size: 1rem;
   font-weight: 700;
   color: var(--indigo);
@@ -245,30 +273,27 @@
   box-sizing: border-box;
 }
 
-/* ---------- TabBar: a floating pill ---------- */
+/* ---------- TabBar: a flat bar docked to the bottom ---------- */
 .tabbar {
   position: fixed;
-  inset-inline: 14px;
-  inset-block-end: calc(16px + env(safe-area-inset-bottom));
+  inset-inline: 0;
+  inset-block-end: 0;
   z-index: 20;
-  max-inline-size: calc(var(--app-max) - 28px);
+  max-inline-size: var(--app-max);
   margin-inline: auto;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 6px;
-  padding: 6px;
-  block-size: 68px;
+  gap: 8px;
+  padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+  min-block-size: 76px;
   box-sizing: border-box;
-  background: var(--tab-bg);
-  backdrop-filter: blur(14px);
-  border: 1px solid var(--line);
-  border-radius: 34px;
-  box-shadow: var(--shadow-bar);
+  background: var(--white);
+  border-block-start: 1px solid var(--line);
 }
 .tab {
   min-inline-size: 0;
-  block-size: 56px;
-  border-radius: 28px;
+  min-block-size: 56px;
+  border-radius: 14px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -288,8 +313,8 @@
   white-space: nowrap;
 }
 .tabOn {
-  background: var(--indigo);
-  color: var(--white);
+  background: var(--chip-bg);
+  color: var(--indigo);
   font-weight: 700;
 }
 
@@ -304,21 +329,18 @@
   padding: 24px 24px calc(28px + env(safe-area-inset-bottom));
   background: var(--card);
   border-top: 1px solid var(--line);
-  border-radius: 34px 34px 0 0;
-  box-shadow: var(--shadow-sheet);
+  border-radius: 24px 24px 0 0;
   animation: rise 0.22s ease-out;
 }
 .sheet_correct {
   background: var(--correct-bg);
   border-top: 2px solid var(--correct);
   color: var(--correct);
-  box-shadow: none;
 }
 .sheet_oops {
   background: var(--oops-bg);
   border-top: 2px solid var(--oops);
   color: var(--oops);
-  box-shadow: none;
 }
 @keyframes rise {
   from {
@@ -332,45 +354,3 @@
   }
 }
 
-/* ---------- PathNode: round, with a solid bottom edge ---------- */
-.node {
-  display: inline-grid;
-  place-items: center;
-  box-sizing: border-box;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  font: inherit;
-  transition: transform 0.1s, box-shadow 0.1s;
-}
-button.node {
-  cursor: pointer;
-}
-button.node:active {
-  transform: translateY(3px);
-}
-.chest {
-  border-radius: 24px;
-}
-.node_done {
-  background: linear-gradient(180deg, var(--leaf-light) 0%, var(--leaf-mid) 100%);
-  box-shadow: 0 var(--edge-node) 0 var(--leaf-dark);
-  color: var(--white);
-}
-.node_next {
-  background: linear-gradient(180deg, var(--blue-light) 0%, var(--blue) 100%);
-  border: 3px solid var(--white);
-  box-shadow: 0 7px 0 var(--blue-edge), 0 0 0 10px var(--blue-halo);
-  color: var(--white);
-}
-.node_locked {
-  background: var(--locked-bg);
-  box-shadow: 0 var(--edge-node) 0 var(--locked-edge);
-  color: var(--locked-icon);
-}
-/* The unit reward, once every lesson in the unit is done */
-.node_ready {
-  background: linear-gradient(180deg, var(--blue-light) 0%, var(--blue) 100%);
-  box-shadow: 0 var(--edge-node) 0 var(--blue-edge);
-  color: var(--white);
-}

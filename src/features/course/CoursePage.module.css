@@ -182,11 +182,9 @@
   background: var(--paper);
 }
 .started .stop {
-  background: linear-gradient(90deg, var(--accent) 50%, var(--paper) 50%);
+  background: var(--paper);
   border-color: var(--accent);
-}
-html[dir='rtl'] .started .stop {
-  background: linear-gradient(270deg, var(--accent) 50%, var(--paper) 50%);
+  border-width: 4px; /* a thicker ring for "in progress" (flat, no half-fill gradient) */
 }
 .done .stop {
   background: var(--brand);
@@ -199,14 +197,12 @@ html[dir='rtl'] .started .stop {
   border: 1px solid var(--rule);
   border-radius: var(--radius);
   padding: 16px 20px;
-  box-shadow: var(--shadow);
 }
 .started .chapterCard {
   border-color: var(--accent);
 }
 .soon .chapterCard {
   background: transparent;
-  box-shadow: none;
   border-style: dashed;
   color: var(--ink-faint);
 }

@@ -24,7 +24,7 @@ export function ForgotPasswordPage() {
     setBusy(true)
     const res = await requestPasswordReset(email)
     setBusy(false)
-    if (!res.ok && res.error !== 'invalid' && res.error !== 'unconfirmed') return setError(t(errorKey(res.error)))
+    if (!res.ok && res.error !== 'invalid') return setError(t(errorKey(res.error)))
     navigate('/check-email', { state: { email: email.trim() } })
   }
 

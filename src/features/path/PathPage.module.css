@@ -1,69 +1,208 @@
+/* Learn, flat: header with pills, an indigo "Up next" card, and plain lesson rows. No path, nodes or shadows. */
 .page {
-  padding: 48px 16px 24px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  padding: 28px 16px 24px;
 }
 .top {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
 }
-/* Pushed to the far end of the row, whichever way the language reads */
+.title {
+  flex: 1;
+  margin: 0;
+  font-size: 2rem;
+  line-height: 1.1;
+  color: var(--indigo);
+}
+.pills {
+  display: flex;
+  gap: 8px;
+}
 .login {
-  margin-inline-start: auto;
-  min-inline-size: 0;
-  padding-inline: 14px;
+  justify-self: end;
   white-space: nowrap;
 }
-.loading {
-  padding: 40px 8px;
+.loading,
+.allDone {
+  margin: 0;
+  padding: 24px 8px;
   color: var(--muted);
 }
-.section {
+
+/* ---------- Up next ---------- */
+.upNext {
   position: relative;
-}
-/* Pinned under the top edge while you scroll through the unit; the next unit's banner then takes over. */
-.banner {
-  position: sticky;
-  inset-block-start: 12px;
-  z-index: 5;
-  min-block-size: 84px;
-  margin-block-start: 16px;
-  box-sizing: border-box;
-  padding: 12px 16px 12px 20px;
-  border-radius: var(--radius-pill);
-  background: linear-gradient(120deg, var(--indigo) 0%, var(--blue) 140%);
-  box-shadow: 0 8px 0 var(--indigo-edge), var(--shadow-banner);
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  align-items: flex-end;
+  gap: 8px;
+  min-block-size: 176px;
+  padding: 20px 18px 18px 20px;
+  border-radius: var(--radius-lg);
+  background: var(--indigo);
   color: var(--on-indigo);
+  overflow: hidden;
 }
-:global(html[dir='rtl']) .banner {
-  padding: 12px 20px 12px 16px;
-  background: linear-gradient(240deg, var(--indigo) 0%, var(--blue) 140%);
+.upText {
+  flex: 1;
+  min-inline-size: 0;
+  display: grid;
+  gap: 4px;
+  align-content: start;
+  align-self: stretch;
 }
-.kicker {
-  font-size: 0.6875rem;
+.upKicker {
+  margin: 0;
+  font-size: 0.8rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--sky);
 }
-.bannerTitle {
-  font-size: 1.4375rem;
+:global(html[dir='rtl']) .upKicker {
+  letter-spacing: 0;
+}
+.upTitle {
+  margin: 0;
+  font-size: 1.5rem;
   line-height: 1.15;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  margin-block-start: 4px;
   color: var(--on-indigo);
 }
-.guide {
+.upMeta {
+  margin: 0 0 10px;
+  font-size: 0.9375rem;
+  color: var(--on-indigo-dim);
+}
+.upCta {
+  justify-self: start;
+  min-block-size: 44px;
+  padding-inline: 22px;
+  margin-block-start: auto;
+}
+.upMascot {
+  flex: 0 0 auto;
+  margin-block-end: -18px;
+  block-size: auto !important;
+  max-inline-size: 34%;
+}
+
+/* ---------- A unit ---------- */
+.unit {
+  display: grid;
+  gap: 10px;
+}
+.unitHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.unitTitle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-inline-size: 0;
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--blue-text);
+}
+.unitTitle svg {
   flex-shrink: 0;
-  inline-size: 46px;
-  block-size: 46px;
-  border-radius: 16px;
-  border: 2px solid var(--indigo-line-strong);
+  color: var(--leaf-dark);
+}
+:global(html[dir='rtl']) .unitTitle {
+  letter-spacing: 0;
+}
+.unitDone {
+  flex-shrink: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+.rows {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-block-size: 60px;
+  padding: 8px 14px;
+  box-sizing: border-box;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--indigo);
+  text-decoration: none;
+}
+.mark {
+  flex-shrink: 0;
   display: grid;
   place-items: center;
-  color: var(--mist);
+  inline-size: 32px;
+  block-size: 32px;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+.rowText {
+  flex: 1;
+  min-inline-size: 0;
+  display: grid;
+  line-height: 1.25;
+}
+.rowText strong {
+  font-size: 1.0625rem;
+  font-weight: 700;
+}
+.rowText small {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+.rowDone .mark {
+  background: var(--correct);
+  color: var(--white);
+}
+.rowNext {
+  border: 2px solid var(--blue);
+  padding-inline: 13px; /* keeps the content where the 1px rows have it */
+}
+.rowNext .mark {
+  border: 2px solid var(--blue);
+  color: var(--blue);
+  box-sizing: border-box;
+}
+.chip {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 32px;
+  padding: 0 14px;
+  border-radius: 10px;
+  background: var(--blue-text); /* white on --blue is 4.4:1, short of AA at this size */
+  color: var(--white);
+  font-weight: 700;
+  font-size: 0.9375rem;
+}
+.rowLocked {
+  background: var(--mist);
+  color: var(--locked-icon);
+  cursor: default;
+}
+.rowLocked .mark {
+  background: var(--locked-bg);
+  color: var(--locked-icon);
+}
+.rowLocked .rowText small {
+  color: var(--locked-icon);
 }

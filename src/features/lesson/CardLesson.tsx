@@ -172,7 +172,7 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
         )}
 
         {question && !checked ? (
-          <LessonFooter mascot="think" compact action={tUi('check')} disabled={selected === null} onAction={check} />
+          <LessonFooter action={tUi('check')} disabled={selected === null} onAction={check} />
         ) : (
           <LessonFooter
             tone={question ? (isCorrect ? 'right' : 'wrong') : undefined}
