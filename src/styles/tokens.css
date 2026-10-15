@@ -19,7 +19,6 @@
 
   /* ---- Indigo surfaces (the unit banner, the news screen) ---- */
   --indigo-2: #3a4da8;
-  --indigo-edge: #1c2760; /* the solid bottom edge under the banner */
   --on-indigo: #fff;
   --on-indigo-dim: rgba(255, 255, 255, 0.72);
   --indigo-line: rgba(255, 255, 255, 0.18);
@@ -27,28 +26,18 @@
 
   /* ---- Garden greens: done nodes and plants only ---- */
   --leaf: #5fb58b;
-  --leaf-light: #6fc9a0;
   --leaf-mid: #3e9b73;
   --leaf-soft: #4fae87;
   --leaf-dark: #2b7a58;
 
   /* ---- Path nodes (3D bottom edge) ---- */
-  --blue-light: #5588ec;
-  --blue-edge: #2c4fa6;
   --blue-halo: rgba(66, 116, 217, 0.16);
   --locked: #a8c4d0;
   --locked-bg: #dcebee;
-  --locked-edge: #b9d2d8;
   --locked-icon: #7c8db5;
-  --flame: #ffb561;
-  --flame-edge: #e5732f;
 
   /* ---- Backgrounds ---- */
-  --bg-from: #f4fafb;
-  --bg-to: #e2f0f1;
-  --glow-sky: #95ccdd;
   --chip-bg: #e4f1f3;
-  --tab-bg: rgba(255, 255, 255, 0.92);
 
   /* ---- Code blocks in lessons ---- */
   --code-bg: #1b2459;
@@ -60,21 +49,17 @@
   --white: #fff;
   --scrim: rgba(41, 54, 129, 0.55);
 
-  /* ---- Shadows ---- */
-  --shadow-card: 0 4px 16px rgba(41, 54, 129, 0.07);
-  --shadow-cta: 0 10px 24px rgba(66, 116, 217, 0.34);
-  --shadow-bar: 0 12px 32px rgba(41, 54, 129, 0.18);
-  --shadow-banner: 0 14px 28px rgba(41, 54, 129, 0.22);
-  --shadow-sheet: 0 -8px 24px rgba(41, 54, 129, 0.12);
+  /* ---- Focus ring: the only shadow in the flat design (text inputs) ---- */
+  --focus-ring: 0 0 0 4px var(--blue-halo);
+  --focus-ring-oops: 0 0 0 4px var(--oops-bg);
 
   /* ---- Shape ---- */
-  --radius-btn: 20px;
+  --radius-btn: 16px;
   --radius-card: 24px;
   --radius-xl: 30px;
   --radius-pill: 26px;
   --radius: 16px;
   --radius-lg: 24px;
-  --edge-node: 6px; /* the 3D bottom edge of a path node */
 
   /* One family per language: Instrument Sans for English, IBM Plex Sans Arabic for Arabic (self-hosted, see
      src/styles/fonts.css). Each lists the other as its fallback, so Latin inside Arabic text and Arabic inside
@@ -117,8 +102,4 @@
   --on-navy-dim: var(--on-indigo-dim);
   --on-navy-faint: var(--on-indigo-dim);
   --code-fg: var(--code-text);
-  --shadow-sm: var(--shadow-card);
-  --shadow: var(--shadow-card);
-  --shadow-knob: var(--shadow-card);
-  --shadow-pop: var(--shadow-card);
 }

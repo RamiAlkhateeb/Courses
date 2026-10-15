@@ -17,7 +17,6 @@ const json = (route: Route, status: number, body: unknown) => route.fulfill({ st
 export interface Fake {
   rows: Record<string, { key: string; data: unknown; updated_at: string }>
   upserts: string[][]
-  signupNeedsConfirmation: boolean
   /** Auth calls received, as 'METHOD /path', so tests can assert what the screens sent */
   calls: string[]
   /** The last body sent to each auth call */
@@ -25,7 +24,7 @@ export interface Fake {
 }
 
 export async function fakeSupabase(page: Page, opts: Partial<Fake> = {}) {
-  const fake: Fake = { rows: {}, upserts: [], signupNeedsConfirmation: false, calls: [], bodies: {}, ...opts }
+  const fake: Fake = { rows: {}, upserts: [], calls: [], bodies: {}, ...opts }
   await page.route('https://fake-project.supabase.co/**', async (route) => {
     const req = route.request()
     const url = new URL(req.url())
@@ -41,13 +40,12 @@ export async function fakeSupabase(page: Page, opts: Partial<Fake> = {}) {
     if (url.pathname.endsWith('/auth/v1/signup')) {
       const name = (req.postDataJSON() as { data?: { name?: string } }).data?.name
       const user = { ...USER, user_metadata: name ? { name } : {} }
-      return fake.signupNeedsConfirmation ? json(route, 200, user) : json(route, 200, { ...session(), user })
+      return json(route, 200, { ...session(), user })
     }
     if (url.pathname.endsWith('/auth/v1/resend') || url.pathname.endsWith('/auth/v1/recover')) return json(route, 200, {})
     if (url.pathname.endsWith('/rest/v1/rpc/delete_my_account')) return route.fulfill({ status: 204, headers: { 'access-control-allow-origin': '*' } })
     if (url.pathname.endsWith('/auth/v1/token')) {
       const body = req.postDataJSON() as { password?: string }
-      if (body.password === 'unconfirmed') return json(route, 400, { code: 'email_not_confirmed', error_code: 'email_not_confirmed', msg: 'Email not confirmed', message: 'Email not confirmed' })
       return body.password === 'right-password' ? json(route, 200, session()) : json(route, 400, { code: 'invalid_credentials', error_code: 'invalid_credentials', msg: 'Invalid login credentials', message: 'Invalid login credentials' })
     }
     if (url.pathname.endsWith('/auth/v1/user')) {

@@ -1,0 +1,175 @@
+// Grouped list rows (Settings, Account): an icon tile, a label, an optional value, a chevron or a switch;
+// plus the bottom sheet the rows open, and the Language and Daily goal pickers both screens use.
+import { useEffect, type ReactNode } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import type { ParseKeys } from 'i18next'
+import { AnswerOption, BottomSheet, Icon, type IconName } from './ui'
+import { LANGUAGES } from '../i18n'
+import { updateProfile, useProfile } from '../state/profile'
+import styles from './SettingsList.module.css'
+
+/** A full screen with a back button and a big title (Settings, Account). */
+export function ListScreen({ title, back, footer, children }: { title: string; back: string; footer?: ReactNode; children: ReactNode }) {
+  const { t } = useTranslation()
+  const navigate = useNavigate()
+  return (
+    <div className={styles.page}>
+      <button type="button" className={styles.back} onClick={() => navigate(back)} aria-label={t('back')}>
+        <Icon name="back" size={26} />
+      </button>
+      <h1 className={styles.title}>{title}</h1>
+      {children}
+      {footer && <footer className={styles.footer}>{footer}</footer>}
+    </div>
+  )
+}
+
+export function ListGroup({ title, children }: { title?: string; children: ReactNode }) {
+  return (
+    <section className={styles.group}>
+      {title && <h2 className={styles.kicker}>{title}</h2>}
+      <ul className={styles.list}>{children}</ul>
+    </section>
+  )
+}
+
+/** One row: a button, or a link when given `to`. */
+export function ListRow({
+  icon,
+  label,
+  sub,
+  value,
+  ltr,
+  onClick,
+  to,
+  state,
+}: {
+  icon: IconName
+  label: string
+  sub?: string
+  value?: string
+  ltr?: boolean
+  onClick?: () => void
+  to?: string
+  state?: unknown
+}) {
+  const inner = (
+    <>
+      <span className={styles.tile}>
+        <Icon name={icon} size={22} />
+      </span>
+      <span className={styles.label}>
+        {label}
+        {sub && <small>{sub}</small>}
+      </span>
+      {value && (
+        <span className={styles.value} dir={ltr ? 'ltr' : undefined}>
+          {value}
+        </span>
+      )}
+      <Icon name="chevron" size={20} className={styles.chev} />
+    </>
+  )
+  return (
+    <li>
+      {to ? (
+        <Link className={styles.row} to={to} state={state}>
+          {inner}
+        </Link>
+      ) : (
+        <button type="button" className={styles.row} onClick={onClick}>
+          {inner}
+        </button>
+      )}
+    </li>
+  )
+}
+
+/** A row with an on/off switch; the whole row toggles it. */
+export function ListSwitch({ icon, label, note, checked, disabled, onChange }: { icon: IconName; label: string; note?: string; checked: boolean; disabled?: boolean; onChange?: (on: boolean) => void }) {
+  return (
+    <li>
+      <button type="button" role="switch" aria-checked={checked} disabled={disabled} className={styles.row} onClick={() => onChange?.(!checked)}>
+        <span className={styles.tile}>
+          <Icon name={icon} size={22} />
+        </span>
+        <span className={styles.label}>{label}</span>
+        {note && <span className={styles.value}>{note}</span>}
+        <span className={`${styles.switch} ${checked ? styles.switchOn : ''}`} aria-hidden>
+          <span />
+        </span>
+      </button>
+    </li>
+  )
+}
+
+/** A bottom sheet over a scrim: tap outside or press Escape to close. */
+export function Sheet({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose])
+  return (
+    <div className={styles.scrim} onClick={onClose}>
+      <div onClick={(e) => e.stopPropagation()}>
+        <BottomSheet>
+          <div className={styles.grab} aria-hidden />
+          <h2 className={styles.sheetTitle}>{title}</h2>
+          <div className={styles.sheetBody}>{children}</div>
+        </BottomSheet>
+      </div>
+    </div>
+  )
+}
+
+export function LanguageSheet({ onClose }: { onClose: () => void }) {
+  const { t, i18n } = useTranslation()
+  return (
+    <Sheet title={t('language')} onClose={onClose}>
+      {LANGUAGES.map((l) => (
+        <AnswerOption
+          choice
+          radio
+          key={l.code}
+          role="radio"
+          state={i18n.language === l.code ? 'selected' : 'idle'}
+          letter={<span lang={l.code}>{l.letter}</span>}
+          onClick={() => {
+            void i18n.changeLanguage(l.code)
+            onClose()
+          }}
+        >
+          <strong lang={l.code}>{l.name}</strong>
+        </AnswerOption>
+      ))}
+    </Sheet>
+  )
+}
+
+const MINUTES = [5, 10, 15, 20]
+
+export function GoalSheet({ onClose }: { onClose: () => void }) {
+  const { t } = useTranslation()
+  const { minutes } = useProfile()
+  return (
+    <Sheet title={t('acc_daily_goal')} onClose={onClose}>
+      {MINUTES.map((m) => (
+        <AnswerOption
+          choice
+          radio
+          key={m}
+          role="radio"
+          state={minutes === m ? 'selected' : 'idle'}
+          onClick={() => {
+            updateProfile({ minutes: m })
+            onClose()
+          }}
+        >
+          <strong>{t('minShort', { n: m })}</strong> <small>{t(`pace_${m}` as ParseKeys)}</small>
+        </AnswerOption>
+      ))}
+    </Sheet>
+  )
+}

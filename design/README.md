@@ -31,6 +31,6 @@ Time paused. They are gone from the code, not hidden.
 
 ## Navigation
 
-Three floating-pill tabs: Learn (تعلّم), Playground (التجربة), Me (أنا).
+Three tabs in a flat bar docked to the bottom: Learn (تعلّم), Playground (التجربة), Me (أنا). The flat update (no 3D edges, gradients, glows or shadows; the Learn list; ring quiz options; the inline result card; the bar-chart logo; Settings and the slimmer Account) is from the PNG export of 38 screens.
 
 The product logic (one wallet of play money, lessons add rewards, the Playground) is in `CLAUDE.md` under "Product rules".

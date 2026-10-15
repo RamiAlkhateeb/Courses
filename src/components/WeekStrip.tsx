@@ -12,21 +12,6 @@ export function lastSevenDays(activity: Record<string, number>, lang: string, no
   })
 }
 
-/** Seven dots, navy for days with a lesson and saffron for today (designs 11, 20). */
-export function WeekDots({ activity }: { activity: Record<string, number> }) {
-  const { i18n } = useTranslation()
-  return (
-    <div className={styles.dots}>
-      {lastSevenDays(activity, i18n.language).map((d) => (
-        <div key={d.day} className={styles.col}>
-          <span className={`${styles.dot} ${d.today ? styles.today : d.xp > 0 ? styles.on : ''}`} />
-          <span className={d.today ? styles.labelToday : styles.label}>{d.label}</span>
-        </div>
-      ))}
-    </div>
-  )
-}
-
 /** Seven bars scaled to the week's best day (design 13); today's bar is saffron. */
 export function WeekBars({ activity }: { activity: Record<string, number> }) {
   const { i18n } = useTranslation()

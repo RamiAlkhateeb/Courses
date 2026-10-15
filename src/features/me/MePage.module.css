@@ -33,9 +33,9 @@
   inline-size: 44px;
   block-size: 44px;
   border-radius: 50%;
-  background: var(--surface);
-  border: 1px solid var(--rule);
-  color: var(--brand);
+  background: var(--card);
+  border: 1px solid var(--line);
+  color: var(--indigo);
 }
 .stats {
   display: grid;
@@ -99,7 +99,7 @@
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  color: var(--muted);
+  color: var(--indigo); /* --muted on mint is 4.3:1 */
 }
 .plot {
   display: grid;
@@ -116,63 +116,63 @@
 .gardenNote {
   margin-block-start: 10px;
   text-align: center;
-  color: var(--muted);
+  color: var(--indigo);
   font-size: 0.9rem;
 }
 .miles {
   display: flex;
-  gap: 18px;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 .mile {
-  display: flex;
-  flex-direction: column;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  color: var(--muted);
-  max-inline-size: 90px;
-  text-align: center;
+  gap: 10px;
+  min-block-size: 44px;
+  padding: 8px 16px;
+  box-sizing: border-box;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-btn);
+  font-weight: 700;
+  color: var(--indigo);
 }
-.milOn,
-.milOff {
-  display: grid;
-  place-items: center;
-  inline-size: 64px;
-  block-size: 64px;
-  border-radius: 50%;
+.mile svg {
+  color: var(--leaf-mid);
 }
-.milOn {
-  background: var(--brand);
-  color: var(--accent);
-}
-.milOff {
+.mileLocked {
+  background: transparent;
   border: 1px dashed var(--locked);
-  color: var(--locked);
-}
-.account {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-block-start: 16px;
-  padding: 14px 16px;
-  background: var(--surface);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius-lg);
-  color: var(--brand);
-  text-decoration: none;
-}
-.account > span {
-  flex: 1;
-  min-inline-size: 0;
-  display: grid;
-}
-.account strong {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.account small {
   color: var(--muted);
 }
-:global(html[dir='rtl']) .chev {
-  transform: scaleX(-1);
+.mileLocked svg {
+  color: var(--muted);
+}
+/* Guest banner: solid indigo, Create profile + Log in */
+.save {
+  margin-block-end: 14px;
+  display: grid;
+  gap: 8px;
+}
+.save h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--white);
+}
+.save p {
+  margin: 0;
+  color: var(--on-indigo);
+}
+.saveActions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-block-start: 8px;
+}
+.saveActions a {
+  padding-inline: 12px;
+  font-size: 1.0625rem;
 }

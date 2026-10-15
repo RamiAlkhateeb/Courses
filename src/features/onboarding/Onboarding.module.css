@@ -6,15 +6,6 @@
   display: flex;
   flex-direction: column;
 }
-.contours {
-  position: absolute;
-  inset-inline-start: 0;
-  inset-block-start: 0;
-  pointer-events: none;
-}
-:global(html[dir='rtl']) .contours {
-  transform: scaleX(-1);
-}
 .welcomeTop {
   position: relative;
   display: flex;
@@ -26,14 +17,6 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-}
-.mark {
-  display: grid;
-  place-items: center;
-  inline-size: 34px;
-  block-size: 34px;
-  border-radius: 10px;
-  background: var(--indigo);
 }
 /* Both names, stacked: neither can wrap mid-name, and it fits 320px. */
 .brandName {
@@ -62,7 +45,6 @@
   border: 1px solid var(--line);
   border-radius: 28px;
   background: var(--card);
-  box-shadow: var(--shadow-card);
 }
 .langSwitch button {
   font: inherit;
@@ -110,7 +92,6 @@
 .bubble,
 .bubbleSm {
   background: var(--card);
-  box-shadow: var(--shadow-card);
   border: 1px solid var(--line);
   border-radius: var(--radius-btn);
   color: var(--indigo);
@@ -120,7 +101,7 @@
 .bubble {
   position: absolute;
   inset-inline-end: 16px;
-  inset-block-start: 352px;
+  inset-block-start: 372px;
   max-inline-size: 150px;
   padding: 10px 14px;
   font-size: 0.875rem;
@@ -134,7 +115,7 @@
 .heroMascot {
   position: absolute;
   inset-inline-start: 30px;
-  inset-block-start: 360px;
+  inset-block-start: 392px;
 }
 .welcomeSheet {
   margin-block-start: auto;
@@ -145,9 +126,8 @@
   display: grid;
   gap: 12px;
   align-content: start;
-  background: linear-gradient(160deg, var(--indigo) 0%, var(--indigo-2) 100%);
-  border-block-start: 3px solid var(--sky);
-  border-radius: 34px 34px 0 0;
+  background: var(--indigo);
+  border-radius: 24px 24px 0 0;
   z-index: 2;
 }
 .fine {

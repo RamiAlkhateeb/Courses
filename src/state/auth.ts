@@ -76,15 +76,16 @@ export async function initAuth(): Promise<void> {
 }
 
 /** Why something failed, in terms the screen can translate. */
-export type AuthError = 'unconfirmed' | 'invalid' | 'exists' | 'weak' | 'email' | 'rate' | 'network' | 'unknown'
-export type AuthResult = { ok: true; needsConfirmation?: boolean } | { ok: false; error: AuthError }
+export type AuthError = 'invalid' | 'exists' | 'weak' | 'email' | 'rate' | 'network' | 'unknown'
+export type AuthResult = { ok: true } | { ok: false; error: AuthError }
 
 function failure(e: unknown): AuthResult {
   const err = e as { code?: string; status?: number; message?: string } | null
   const code = err?.code ?? ''
   const msg = (err?.message ?? '').toLowerCase()
   const error: AuthError =
-    code === 'email_not_confirmed' || msg.includes('not confirmed') ? 'unconfirmed'
+    // The app never asks for a verified email; if the project ever did, it shows as a general failure.
+    code === 'email_not_confirmed' || msg.includes('not confirmed') ? 'unknown'
     : code === 'invalid_credentials' || msg.includes('invalid login') ? 'invalid'
     : code === 'user_already_exists' || code === 'email_exists' || msg.includes('already registered') ? 'exists'
     : code === 'weak_password' || msg.includes('password') ? 'weak'
@@ -95,14 +96,14 @@ function failure(e: unknown): AuthResult {
   return { ok: false, error }
 }
 
-async function run(fn: (sb: Awaited<ReturnType<typeof loadSupabase>>) => Promise<{ error: unknown | null; needsConfirmation?: boolean; session?: Session | null }>): Promise<AuthResult> {
+async function run(fn: (sb: Awaited<ReturnType<typeof loadSupabase>>) => Promise<{ error: unknown | null; session?: Session | null }>): Promise<AuthResult> {
   try {
     await ensureListening()
     const sb = await loadSupabase()
-    const { error, needsConfirmation, session } = await fn(sb)
+    const { error, session } = await fn(sb)
     // Don't wait for the library's event: a successful sign-in is signed in now.
     if (!error && session?.user) set({ status: 'signedIn', user: toUser(session) })
-    return error ? failure(error) : { ok: true, ...(needsConfirmation ? { needsConfirmation } : {}) }
+    return error ? failure(error) : { ok: true }
   } catch (e) {
     return failure(e)
   }
@@ -117,7 +118,7 @@ export const signIn = (email: string, password: string) =>
 export const signUp = (email: string, password: string, name = '') =>
   run(async (sb) => {
     const { data, error } = await sb.auth.signUp({ email: email.trim(), password, options: { emailRedirectTo: accountUrl(), data: name ? { name } : {} } })
-    return { error, needsConfirmation: !error && !data.session, session: data?.session }
+    return { error, session: data?.session }
   })
 
 /** The addresses the emails send people back to; built from the deploy base path, never hard-coded. */

@@ -51,7 +51,6 @@
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: var(--radius-card);
-  box-shadow: var(--shadow-card);
   color: var(--indigo);
   font-size: 1.1rem;
   line-height: 1.35;
@@ -195,129 +194,15 @@
 }
 
 /* ---------- Account ---------- */
-.group {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 8px;
-}
-.kicker {
-  margin: 8px 0 0;
-  font-size: 0.85rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--blue-text);
-}
-:global(html[dir='rtl']) .kicker {
-  letter-spacing: 0;
-}
-.list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-card);
-  box-shadow: var(--shadow-card);
-  overflow: hidden;
-}
-.list > li + li {
-  border-block-start: 1px solid var(--line);
-}
-.row {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  inline-size: 100%;
-  min-block-size: 64px;
-  padding: 0 16px;
-  box-sizing: border-box;
-  background: none;
-  border: 0;
-  font: inherit;
-  font-weight: 700;
-  font-size: 1.1rem;
-  color: var(--indigo);
-  text-align: start;
-  text-decoration: none;
-  cursor: pointer;
-}
-.tile {
-  flex-shrink: 0;
-  display: grid;
-  place-items: center;
-  inline-size: 40px;
-  block-size: 40px;
-  border-radius: 12px;
-  background: var(--chip-bg);
-  color: var(--indigo);
-}
-.rowLabel {
-  flex: 1;
-  min-inline-size: 0;
-}
-.rowValue {
-  max-inline-size: 42%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-weight: 500;
-  font-size: 1rem;
-  color: var(--muted);
-}
-.chev {
-  flex-shrink: 0;
-  color: var(--locked-icon);
-}
-:global(html[dir='rtl']) .chev {
-  transform: scaleX(-1);
-}
-.syncLine {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  font-weight: 700;
-  color: var(--muted);
-}
-.syncOk {
-  color: var(--correct);
-}
 .danger {
   justify-self: center;
-  font: inherit;
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  padding: 0 12px;
   font-weight: 700;
   color: var(--oops);
-  background: none;
-  border: 0;
-  padding: 8px 12px;
-  cursor: pointer;
   text-decoration: none;
-}
-
-/* ---------- Edit sheet ---------- */
-.scrim {
-  position: fixed;
-  inset: 0;
-  z-index: 25;
-  background: var(--scrim);
-}
-.sheetTitle {
-  margin: 0 0 14px;
-  font-size: 1.5rem;
-  color: var(--indigo);
-}
-.sheetBody {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 14px;
-}
-.grab {
-  inline-size: 44px;
-  block-size: 5px;
-  margin: -8px auto 14px;
-  border-radius: 999px;
-  background: var(--line);
 }
 
 /* ---------- Delete ---------- */

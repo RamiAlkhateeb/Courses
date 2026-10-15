@@ -7,7 +7,7 @@ import { RESEND_SECONDS } from '../../domain/auth'
 
 /** The i18n key of each failure, for messages shown under a form. */
 export const errorKey = (e: AuthError) =>
-  ({ unconfirmed: 'acc_err_unconfirmed', invalid: 'acc_err_invalid', exists: 'acc_err_exists', weak: 'acc_err_weak', email: 'acc_err_email', rate: 'acc_err_rate', network: 'acc_err_network', unknown: 'acc_err_unknown' })[e] as 'acc_err_unknown'
+  ({ invalid: 'acc_err_invalid', exists: 'acc_err_exists', weak: 'acc_err_weak', email: 'acc_err_email', rate: 'acc_err_rate', network: 'acc_err_network', unknown: 'acc_err_unknown' })[e] as 'acc_err_unknown'
 
 /** Just signed in or up: stay a moment while the account's data is merged in (otherwise a device that has not been
  *  through onboarding could bounce back to Welcome), then go home. Never wait more than a few seconds. */
@@ -21,7 +21,9 @@ export function useArrive() {
   const settled = sync === 'synced' || sync === 'error' || sync === 'offline'
   const signedIn = auth.status === 'signedIn'
   useEffect(() => {
-    if (!arriving || !signedIn) return
+    if (!arriving) return
+    // Signed up without a session (never expected: the app asks for no email confirmation): go to Learn anyway.
+    if (!signedIn) return void navigate('/', { replace: true })
     if (settled) return void navigate('/', { replace: true })
     const id = setTimeout(() => navigate('/', { replace: true }), 6000)
     return () => clearTimeout(id)

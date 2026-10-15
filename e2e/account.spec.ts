@@ -72,14 +72,9 @@ test('sign up: the rules are shown and enforced, then it signs up and syncs the 
   await expect(page.getByText('Aya', { exact: true })).toBeVisible() // the name, not the email, on the Me row
 })
 
-test('if the project ever requires email confirmation, sign up sends you to Log in (there is no confirm screen)', async ({ page }) => {
-  await fakeSupabase(page, { signupNeedsConfirmation: true })
+test('there is no email confirmation step: no confirm-email screen', async ({ page }) => {
   await onboarded(page)
-  await page.goto('signup')
-  await signUpForm(page)
-  await page.getByRole('button', { name: 'Create account' }).click()
-  await expect(page).toHaveURL(/\/login$/)
-  await page.goto('confirm-email') // the screen is not built: an unknown route
+  await page.goto('confirm-email') // an unknown route
   await expect(page.getByRole('heading', { name: 'Confirm your email' })).toHaveCount(0)
 })
 
@@ -110,14 +105,6 @@ test('log in on a second device brings the account progress down', async ({ page
   expect(saved.lessonsDone).toHaveLength(2)
 })
 
-test('log in before confirming the email explains what to do', async ({ page }) => {
-  await fakeSupabase(page)
-  await onboarded(page)
-  await page.goto('login')
-  await logIn(page, 'learner@example.com', 'unconfirmed')
-  await expect(page.getByRole('alert')).toContainText('Confirm your email')
-})
-
 test('forgot password: asks for the email, then "Check your email" with a resend wait', async ({ page }) => {
   const fake = await fakeSupabase(page)
   await onboarded(page)
@@ -138,15 +125,22 @@ test('forgot password: asks for the email, then "Check your email" with a resend
   await expect(page).toHaveURL(/\/forgot-password$/)
 })
 
-test('account: shows the profile, edits the name, changes the daily goal and language, and the legal pages open', async ({ page }) => {
+test('Me gear opens Settings, Settings opens Account: edit the name, change the daily goal and language, open the legal pages', async ({ page }) => {
   const fake = await fakeSupabase(page)
   await onboarded(page, GOOD)
   await page.goto('signup')
   await signUpForm(page)
   await page.getByRole('button', { name: 'Create account' }).click()
   await expect(page).toHaveURL(/\/Courses\/$/)
-  await page.goto('account')
+  await page.goto('me')
+  await page.getByRole('link', { name: 'Settings' }).click()
+  await expect(page.getByRole('heading', { name: 'Settings' })).toBeVisible()
+  await page.getByRole('link', { name: /Account/ }).click()
   await expect(page.getByRole('heading', { name: 'Account' })).toBeVisible()
+  // Account keeps only the profile and Delete account
+  await expect(page.getByRole('button', { name: 'Log out' })).toHaveCount(0)
+  await expect(page.getByRole('button', { name: /Language/ })).toHaveCount(0)
+  await expect(page.getByRole('link', { name: 'Delete account' })).toBeVisible()
   await expect(page.getByRole('button', { name: /Name\s*Aya/ })).toBeVisible()
   await expect(page.getByRole('button', { name: /Email\s*learner@example.com/ })).toBeVisible()
   // edit the name
@@ -155,6 +149,8 @@ test('account: shows the profile, edits the name, changes the daily goal and lan
   await page.getByRole('button', { name: 'Save' }).click()
   await expect(page.getByRole('button', { name: /Name\s*Aya Rami/ })).toBeVisible()
   expect(fake.bodies.user).toMatchObject({ data: { name: 'Aya Rami' } })
+  await page.getByRole('button', { name: 'Back' }).click()
+  await expect(page).toHaveURL(/\/settings$/)
   // daily goal
   await page.getByRole('button', { name: /Daily goal/ }).click()
   await page.getByRole('radio', { name: /20 min/ }).click()
@@ -198,13 +194,24 @@ test('change password from Account: both fields must match before it saves', asy
   expect(fake.bodies.user).toMatchObject({ password: 'brand-new-pass1' })
 })
 
+test('Settings works as a guest: no Log out, and the Account row opens Log in', async ({ page }) => {
+  await fakeSupabase(page)
+  await onboarded(page)
+  await page.goto('me')
+  await expect(page.getByRole('heading', { name: 'Save your progress' })).toBeVisible()
+  await page.getByRole('link', { name: 'Settings' }).click()
+  await expect(page.getByRole('button', { name: 'Log out' })).toHaveCount(0)
+  await page.getByRole('link', { name: /Account/ }).click()
+  await expect(page).toHaveURL(/\/login$/)
+})
+
 test('log out keeps the local copy and returns to the guest view', async ({ page }) => {
   await fakeSupabase(page)
   await onboarded(page, GOOD)
   await page.goto('login')
   await logIn(page, 'learner@example.com', 'right-password')
   await expect(page).toHaveURL(/\/Courses\/$/)
-  await page.goto('account')
+  await page.goto('settings')
   await page.getByRole('button', { name: 'Log out' }).click()
   await expect(page).toHaveURL(/\/me$/)
   expect(JSON.parse((await page.evaluate(() => localStorage.getItem('progress:v2')))!).lessonsDone).toContain('investing/basics/why')
@@ -264,7 +271,7 @@ for (const lang of ['en', 'ar'] as const) {
   test(`account screens have no serious accessibility violations (${lang})`, async ({ page }) => {
     await fakeSupabase(page)
     await onboarded(page, GOOD, lang)
-    const routes = ['./', 'signup', 'login', 'forgot-password', 'legal/terms', 'legal/privacy', 'legal/help']
+    const routes = ['./', 'me', 'settings', 'signup', 'login', 'forgot-password', 'legal/terms', 'legal/privacy', 'legal/help']
     for (const route of routes) {
       await page.goto(route)
       await page.waitForTimeout(300)
@@ -278,7 +285,7 @@ for (const lang of ['en', 'ar'] as const) {
     await page.getByLabel(lang === 'en' ? 'Password' : 'كلمة المرور', { exact: true }).fill('right-password')
     await page.locator('form button[type=submit]').click()
     await expect(page).toHaveURL(/\/Courses\/$/)
-    for (const route of ['account', 'account/delete', 'new-password']) {
+    for (const route of ['me', 'settings', 'account', 'account/delete', 'new-password']) {
       await page.goto(route)
       await page.waitForTimeout(400)
       const { violations } = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze()

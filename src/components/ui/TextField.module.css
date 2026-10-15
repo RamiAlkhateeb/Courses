@@ -24,14 +24,14 @@
 }
 .box:focus-within {
   border-color: var(--blue);
-  box-shadow: 0 0 0 4px var(--blue-halo);
+  box-shadow: var(--focus-ring);
 }
 .valid {
   border-color: var(--correct);
 }
 .error {
   border-color: var(--oops);
-  box-shadow: 0 0 0 4px var(--oops-bg);
+  box-shadow: var(--focus-ring-oops);
 }
 .lead {
   flex-shrink: 0;
