@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 210" font-family="Instrument Sans, Helvetica, Arial, sans-serif">
+  <!-- 100,000 for 30 years at 6% before fees: with a 0.1% yearly fee (indigo) and a 1% fee (sky). Values at 0, 10,
+       20, 30 years; the end values and the gap on the right. Numbers only: the words are in the lesson. -->
+  <line x1="20" y1="180" x2="236" y2="180" stroke="#D0E7E6" stroke-width="2"/>
+  <polyline points="30,153.3 97,132.7 163,96.1 230,31.1" fill="none" stroke="#293681" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <polyline points="30,153.3 97,136.6 163,109.3 230,64.7" fill="none" stroke="#95CCDD" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="230" cy="31.1" r="6" fill="#293681"/>
+  <circle cx="230" cy="64.7" r="6" fill="#95CCDD"/>
+  <g font-size="15" font-weight="700">
+    <text x="244" y="36" fill="#293681">558,000</text>
+    <text x="244" y="70" fill="#3560C7">432,000</text>
+    <text x="244" y="104" fill="#A8432B">−126,000</text>
+  </g>
+  <text x="30" y="172" font-size="13" font-weight="600" fill="#5B678F">100,000</text>
+  <g font-size="14" font-weight="600" fill="#5B678F" text-anchor="middle">
+    <text x="30" y="200">0</text>
+    <text x="97" y="200">10</text>
+    <text x="163" y="200">20</text>
+    <text x="230" y="200">30</text>
+  </g>
+</svg>

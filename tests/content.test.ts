@@ -24,13 +24,15 @@ function* localizedIn(mod: Module): Generator<Localized> {
   for (const q of mod.questions) {
     yield q.prompt
     yield* q.options
+    if (q.explain) yield q.explain
   }
   for (const s of mod.sections) {
     yield s.navLabel
     yield s.sectionLabel
     yield s.headingHtml
     for (const b of walkBlocks(s.blocks)) {
-      if (b.type === 'html' || b.type === 'box') yield b.html
+      if (b.type === 'html' || b.type === 'box' || b.type === 'keyIdea') yield b.html
+      if (b.type === 'diagram') yield* [b.fig, b.title, b.alt, b.caption]
       if (b.type === 'objectives' || b.type === 'takeaways') yield* b.items
     }
   }

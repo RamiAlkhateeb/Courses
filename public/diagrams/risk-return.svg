@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 220" font-family="Instrument Sans, Helvetica, Arial, sans-serif">
+  <!-- Illustrative range of yearly results, worst year to best year, for three holdings (cash, bonds, stocks, left
+       to right). Zero line in the middle. Numbers only: the words are in the lesson. -->
+  <line x1="12" y1="110" x2="308" y2="110" stroke="#5B678F" stroke-width="1.5" stroke-dasharray="4 5"/>
+  <text x="14" y="104" font-size="13" font-weight="600" fill="#5B678F">0%</text>
+  <!-- scale: 1% = 2px; +50% at y=10, -40% at y=190 -->
+  <rect x="60" y="100" width="44" height="10" rx="5" fill="#95CCDD"/>
+  <rect x="150" y="80" width="44" height="50" rx="8" fill="#4274D9"/>
+  <rect x="240" y="10" width="44" height="100" rx="10" fill="#293681"/>
+  <rect x="240" y="110" width="44" height="80" rx="10" fill="#A8432B"/>
+  <g font-size="14" font-weight="700" text-anchor="middle">
+    <text x="82" y="94" fill="#293681">+5%</text>
+    <text x="82" y="130" fill="#293681">0%</text>
+    <text x="172" y="74" fill="#293681">+15%</text>
+    <text x="172" y="148" fill="#A8432B">−10%</text>
+    <text x="262" y="208" fill="#A8432B">−40%</text>
+  </g>
+  <text x="226" y="22" font-size="14" font-weight="700" fill="#293681" text-anchor="end">+50%</text>
+</svg>

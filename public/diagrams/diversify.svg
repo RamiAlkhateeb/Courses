@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" font-family="Instrument Sans, Helvetica, Arial, sans-serif">
+  <!-- Left: all money in one company that fails (−100%). Right: the same money spread over 20 companies, one fails
+       (−5%). Numbers only: the words are in the lesson. -->
+  <rect x="8" y="8" width="132" height="184" rx="18" fill="#FFFFFF" stroke="#D0E7E6" stroke-width="2"/>
+  <circle cx="74" cy="78" r="42" fill="#A8432B"/>
+  <path d="M56 60 L92 96 M92 60 L56 96" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round"/>
+  <text x="74" y="166" font-size="26" font-weight="700" fill="#A8432B" text-anchor="middle">−100%</text>
+  <rect x="160" y="8" width="152" height="184" rx="18" fill="#FFFFFF" stroke="#D0E7E6" stroke-width="2"/>
+  <g fill="#4274D9">
+    <circle cx="186" cy="40" r="11"/><circle cx="212" cy="40" r="11"/><circle cx="238" cy="40" r="11"/><circle cx="264" cy="40" r="11"/><circle cx="290" cy="40" r="11"/>
+    <circle cx="186" cy="66" r="11"/><circle cx="212" cy="66" r="11"/><circle cx="264" cy="66" r="11"/><circle cx="290" cy="66" r="11"/>
+    <circle cx="186" cy="92" r="11"/><circle cx="212" cy="92" r="11"/><circle cx="238" cy="92" r="11"/><circle cx="264" cy="92" r="11"/><circle cx="290" cy="92" r="11"/>
+    <circle cx="186" cy="118" r="11"/><circle cx="212" cy="118" r="11"/><circle cx="238" cy="118" r="11"/><circle cx="264" cy="118" r="11"/><circle cx="290" cy="118" r="11"/>
+  </g>
+  <circle cx="238" cy="66" r="11" fill="#A8432B"/>
+  <path d="M233 61 L243 71 M243 61 L233 71" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+  <text x="238" y="166" font-size="26" font-weight="700" fill="#293681" text-anchor="middle">−5%</text>
+</svg>

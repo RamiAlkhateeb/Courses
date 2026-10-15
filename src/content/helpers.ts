@@ -40,7 +40,17 @@ export const table = (headers: Localized[], rows: Localized[][]): Block => ({ ty
 
 export const formula = (eq: string, note: Localized): Block => ({ type: 'formula', eq, note })
 
+/** A picture (`src` root-absolute under public/, e.g. '/diagrams/inflation.svg'). Keep words out of the image: numbers only, with the
+ *  title, caption and alt text here so they follow the reader's language. It shares a card with the text before it. */
+export const diagram = (d: { fig: Localized; title: Localized; src: string; alt: Localized; caption: Localized }): Block => ({ type: 'diagram', ...d })
+
 export const exercise = (questionId: string): Block => ({ type: 'exercise', questionId })
+
+/** The one idea to remember from a lesson; put it after the content, before the lesson's questions. */
+export const keyIdea = (value: Localized): Block => ({ type: 'keyIdea', html: value })
+
+/** A "try it" calculator card: sliders for years and yearly return, and what 1,000 grows to. */
+export const compoundCalculator: Block = { type: 'calculator', kind: 'compound' }
 
 /** Forces a new lesson card here (cards are otherwise cut automatically). */
 export const cardBreak: Block = { type: 'cardBreak' }
@@ -75,6 +85,8 @@ export function mcq(
   prompt: Localized,
   options: Localized[],
   answer: number,
+  /** Why the answer is right, shown after the learner checks */
+  explain?: Localized,
 ): Question {
-  return { id: `${prefix}-q${String(n).padStart(3, '0')}`, moduleId, topic, prompt, options, answer }
+  return { id: `${prefix}-q${String(n).padStart(3, '0')}`, moduleId, topic, prompt, options, answer, ...(explain ? { explain } : {}) }
 }

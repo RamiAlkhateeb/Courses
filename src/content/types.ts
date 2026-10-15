@@ -15,6 +15,8 @@ export interface Question {
   options: Localized[]
   /** Index into `options` */
   answer: number
+  /** Why the answer is right, shown on the result card after a check */
+  explain?: Localized
 }
 
 export type Block =
@@ -23,7 +25,7 @@ export type Block =
   | { type: 'takeaways'; label: Localized; items: Localized[] }
   | { type: 'box'; variant: 'analogy' | 'mistake' | 'keypoint' | 'example'; label: Localized; html: Localized }
   | { type: 'code'; code: string; lang?: string }
-  | { type: 'diagram'; fig: Localized; title: Localized; src: string; alt: string; caption: Localized }
+  | { type: 'diagram'; fig: Localized; title: Localized; src: string; alt: Localized; caption: Localized }
   | { type: 'exercise'; questionId: string }
   | { type: 'formula'; eq: string; note: Localized }
   | { type: 'table'; headers: Localized[]; rows: Localized[][] }
@@ -31,6 +33,10 @@ export type Block =
   /** Lessons only: forces a new card here (cards are otherwise cut automatically, see
    *  src/domain/chunks.ts). The one-page view ignores it. */
   | { type: 'cardBreak' }
+  /** The one idea to remember from a lesson: its own card, just before the questions */
+  | { type: 'keyIdea'; html: Localized }
+  /** A "try it" calculator; `compound` shows what a starting amount grows to */
+  | { type: 'calculator'; kind: 'compound' }
 
 export interface Section {
   id: string

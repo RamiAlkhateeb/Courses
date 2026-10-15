@@ -91,6 +91,10 @@ function blockWords(block: Block): number {
       return (block.tabs[0]?.blocks ?? []).reduce((n, b) => n + blockWords(b), 0)
     case 'diagram':
       return words(strip(block.caption.en)) + 20
+    case 'keyIdea':
+      return words(strip(block.html.en))
+    case 'calculator':
+      return 40 // a moment to play with the sliders
     default:
       return 0
   }

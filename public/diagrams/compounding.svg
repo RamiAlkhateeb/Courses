@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 210" font-family="Instrument Sans, Helvetica, Arial, sans-serif">
+  <!-- 1,000 at 7% a year after 0, 10, 20 and 30 years (1000 × 1.07^t). Indigo = the 1,000 put in, sky = growth.
+       Numbers only: the words are in the lesson, in the reader's language. -->
+  <line x1="12" y1="176" x2="308" y2="176" stroke="#D0E7E6" stroke-width="2"/>
+  <rect x="24" y="156.3" width="52" height="19.7" rx="6" fill="#293681"/>
+  <rect x="98" y="137.2" width="52" height="38.8" rx="6" fill="#95CCDD"/>
+  <rect x="98" y="156.3" width="52" height="19.7" rx="0" fill="#293681"/>
+  <rect x="172" y="99.7" width="52" height="76.3" rx="6" fill="#95CCDD"/>
+  <rect x="172" y="156.3" width="52" height="19.7" rx="0" fill="#293681"/>
+  <rect x="246" y="26" width="52" height="150" rx="6" fill="#95CCDD"/>
+  <rect x="246" y="156.3" width="52" height="19.7" rx="0" fill="#293681"/>
+  <g font-size="16" font-weight="700" fill="#293681" text-anchor="middle">
+    <text x="50" y="148">1,000</text>
+    <text x="124" y="129">1,967</text>
+    <text x="198" y="91.7">3,870</text>
+    <text x="272" y="18">7,612</text>
+  </g>
+  <g font-size="14" font-weight="600" fill="#5B678F" text-anchor="middle">
+    <text x="50" y="198">0</text>
+    <text x="124" y="198">10</text>
+    <text x="198" y="198">20</text>
+    <text x="272" y="198">30</text>
+  </g>
+</svg>

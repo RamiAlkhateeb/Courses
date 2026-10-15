@@ -5,10 +5,17 @@ import { useLocalized } from '../../content/useLocalized'
 import { Exercise } from './Exercise'
 import { CodeBlock } from './CodeBlock'
 import { Tabs } from './Tabs'
+import { CompoundCalculator } from './CompoundCalculator'
+import { AbuShreek, Icon } from '../ui'
+import { useTranslation } from 'react-i18next'
 import styles from './content.module.css'
+
+/** Abu Shreek gives the tips: he points at an analogy and winces at a common mistake. */
+const TIP_POSE = { analogy: 'point', mistake: 'oops' } as const
 
 export function Blocks({ blocks }: { blocks: Block[] }) {
   const t = useLocalized()
+  const { t: tUi } = useTranslation()
 
   return (
     <>
@@ -32,13 +39,31 @@ export function Blocks({ blocks }: { blocks: Block[] }) {
               </div>
             )
 
-          case 'box':
+          case 'box': {
+            const pose = block.variant === 'analogy' || block.variant === 'mistake' ? TIP_POSE[block.variant] : undefined
             return (
-              <div key={i} className={`${styles.box} ${styles[block.variant]}`}>
-                <span className={styles.boxLabel}>{t(block.label)}</span>
+              <div key={i} className={`${styles.box} ${styles[block.variant]} ${pose ? styles.tip : ''}`}>
+                {pose && <AbuShreek pose={pose} height={72} className={styles.tipMascot} />}
+                <div>
+                  <span className={styles.boxLabel}>{t(block.label)}</span>
+                  <div dangerouslySetInnerHTML={safeHtml(t(block.html))} />
+                </div>
+              </div>
+            )
+          }
+
+          case 'keyIdea':
+            return (
+              <div key={i} className={styles.keyIdea}>
+                <span className={styles.keyIdeaLabel}>
+                  <Icon name="bulb" size={22} /> {tUi('key_idea')}
+                </span>
                 <div dangerouslySetInnerHTML={safeHtml(t(block.html))} />
               </div>
             )
+
+          case 'calculator':
+            return <CompoundCalculator key={i} />
 
           case 'takeaways':
             return (
@@ -60,7 +85,7 @@ export function Blocks({ blocks }: { blocks: Block[] }) {
               <figure key={i} className={styles.diagram}>
                 <div className={styles.fig}>{t(block.fig)}</div>
                 <div className={styles.figTitle}>{t(block.title)}</div>
-                <img src={resolveAssetPath(block.src)} alt={block.alt} />
+                <img src={resolveAssetPath(block.src)} alt={t(block.alt)} />
                 <figcaption>{t(block.caption)}</figcaption>
               </figure>
             )

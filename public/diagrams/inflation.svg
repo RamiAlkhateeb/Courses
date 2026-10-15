@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 210" font-family="Instrument Sans, Helvetica, Arial, sans-serif">
+  <!-- What 1,000 buys at 3% a year inflation after 0, 8, 16 and 24 years (1000 / 1.03^t). Numbers only: the
+       title, caption and alt text are in the lesson, in the reader's language. -->
+  <line x1="12" y1="176" x2="308" y2="176" stroke="#D0E7E6" stroke-width="2"/>
+  <rect x="24" y="36" width="52" height="140" rx="10" fill="#293681"/>
+  <rect x="98" y="65.5" width="52" height="110.5" rx="10" fill="#4274D9"/>
+  <rect x="172" y="88.8" width="52" height="87.2" rx="10" fill="#95CCDD"/>
+  <rect x="246" y="107.1" width="52" height="68.9" rx="10" fill="#95CCDD"/>
+  <g font-size="16" font-weight="700" fill="#293681" text-anchor="middle">
+    <text x="50" y="26">1,000</text>
+    <text x="124" y="55.5">789</text>
+    <text x="198" y="78.8">623</text>
+    <text x="272" y="97.1">492</text>
+  </g>
+  <g font-size="14" font-weight="600" fill="#5B678F" text-anchor="middle">
+    <text x="50" y="198">0</text>
+    <text x="124" y="198">8</text>
+    <text x="198" y="198">16</text>
+    <text x="272" y="198">24</text>
+  </g>
+  <path d="M84 30 C 150 34, 200 52, 236 88" fill="none" stroke="#A8432B" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 7"/>
+  <path d="M226 86 L 238 91 L 236 78" fill="none" stroke="#A8432B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

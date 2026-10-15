@@ -60,7 +60,8 @@ export interface Cards {
 }
 
 /** One idea per card: each paragraph, list, box, table, code sample… is a card; a heading or a lead-in
- *  ending in ":" sticks to what follows, as does a code example after a formula. `cardBreak` forces a cut. */
+ *  ending in ":" sticks to what follows, as does a code example after a formula, a picture after its paragraph, and an example box after a
+ *  lone paragraph (a definition and its example share a card). `cardBreak` forces a cut. */
 export function toCards(blocks: Block[]): Cards {
   const pieces: Block[] = blocks.flatMap((b): Block[] =>
     b.type === 'html' ? splitLocalized(b.html).map((html) => ({ type: 'html', html })) : [b],
@@ -87,7 +88,11 @@ export function toCards(blocks: Block[]): Cards {
       continue
     }
     const prev = current.at(-1)
-    const joins = glue || (piece.type === 'code' && prev?.type === 'formula')
+    const joins =
+      glue ||
+      (piece.type === 'code' && prev?.type === 'formula') ||
+      (piece.type === 'diagram' && prev?.type === 'html') ||
+      (piece.type === 'box' && piece.variant === 'example' && current.length === 1 && prev?.type === 'html')
     if (!joins) close()
     current.push(piece)
     glue = isHeading(piece) || isLeadIn(piece)
