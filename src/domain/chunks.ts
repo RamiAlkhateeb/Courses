@@ -48,6 +48,51 @@ export function splitLocalized(text: Localized): Localized[] {
 }
 
 const plain = (html: string) => html.replace(/<[^>]+>/g, '').trim()
+export const stripTags = (html: string) => html.replace(/<[^>]+>/g, ' ')
+export const wordCount = (text: string) => text.split(/\s+/).filter(Boolean).length
+
+/** Reading words in a block (English text; tabs count their first tab only — the others are alternatives). */
+export function blockWords(block: Block): number {
+  switch (block.type) {
+    case 'html':
+    case 'box':
+    case 'keyIdea':
+      return wordCount(stripTags(block.html.en))
+    case 'objectives':
+    case 'takeaways':
+      return block.items.reduce((n, item) => n + wordCount(stripTags(item.en)), 0)
+    case 'table':
+      return [...block.headers, ...block.rows.flat()].reduce((n, cell) => n + wordCount(stripTags(cell.en)), 0)
+    case 'formula':
+      return wordCount(block.eq) + wordCount(block.note.en)
+    case 'code':
+      return block.code.split('\n').length * 3
+    case 'tabs':
+      return (block.tabs[0]?.blocks ?? []).reduce((n, b) => n + blockWords(b), 0)
+    case 'diagram':
+      return wordCount(stripTags(block.caption.en)) + 20
+    case 'calculator':
+      return 40 // a moment to play with the sliders
+    default:
+      return 0
+  }
+}
+
+/** Words on a card. */
+export const cardWords = (blocks: Block[]) => blocks.reduce((n, b) => n + blockWords(b), 0)
+
+/** A card under this many words is "short": it joins the card before it, or (if it can't) gets an illustration. */
+export const SHORT_CARD = 35
+/** Two cards merge only while together they stay this short (one screen of reading); a key idea is a single
+ *  sentence on its own coloured panel, so it may stretch a card a little further. */
+export const CARD_WORDS = 90
+const KEY_IDEA_WORDS = 110
+/** Blocks that fill a card on their own: such a card never takes on another, and is never "short". */
+const MEDIA = new Set<Block['type']>(['table', 'diagram', 'calculator', 'code', 'tabs'])
+export const hasMedia = (blocks: Block[]) => blocks.some((b) => MEDIA.has(b.type))
+/** A short card with nothing to look at: the lesson screen adds a small Abu Shreek under it. */
+export const needsIllustration = (blocks: Block[]) =>
+  cardWords(blocks) < SHORT_CARD && !hasMedia(blocks) && !blocks.some((b) => b.type === 'objectives' || b.type === 'takeaways' || b.type === 'formula')
 const isHeading = (b: Block) => b.type === 'html' && /^<h[34]\b/i.test(b.html.en)
 /** "Keep these sections, in this order:" — introduces the block after it, so they share a card. */
 const isLeadIn = (b: Block) => b.type === 'html' && /[:：]$/.test(plain(b.html.en))
@@ -68,6 +113,7 @@ export function toCards(blocks: Block[]): Cards {
   )
   const cards: Block[][] = []
   const exercises: Cards['exercises'] = []
+  const forced = new Set<number>() // cards that start at a cardBreak: never merged into the one before
   let current: Block[] = []
   let glue = false // the last piece wants the next one on the same card
   const close = () => {
@@ -84,6 +130,7 @@ export function toCards(blocks: Block[]): Cards {
     }
     if (piece.type === 'cardBreak') {
       close()
+      forced.add(cards.length)
       glue = false
       continue
     }
@@ -98,5 +145,30 @@ export function toCards(blocks: Block[]): Cards {
     glue = isHeading(piece) || isLeadIn(piece)
   }
   close()
-  return { cards, exercises }
+  return mergeShort(cards, exercises, forced)
+}
+
+/** No near-empty steps: a short card (or a key idea) joins the card before it, as long as no question sits between
+ *  them, the author did not force a cut, neither card holds a table / picture / calculator / code, and together they
+ *  stay within one screen of reading. */
+function mergeShort(cards: Block[][], exercises: Cards['exercises'], forced: Set<number>): Cards {
+  const out: Block[][] = []
+  const remap: number[] = [] // old card index -> new card index
+  cards.forEach((card, i) => {
+    const prev = out.at(-1)
+    const idea = card.length === 1 && card[0].type === 'keyIdea'
+    const short = cardWords(card) < SHORT_CARD || idea
+    const canJoin =
+      prev &&
+      short &&
+      !forced.has(i) &&
+      !exercises.some((e) => e.afterCard === i - 1) &&
+      !hasMedia(prev) &&
+      !hasMedia(card) &&
+      cardWords(prev) + cardWords(card) <= (idea ? KEY_IDEA_WORDS : CARD_WORDS)
+    if (canJoin) prev.push(...card)
+    else out.push([...card])
+    remap.push(out.length - 1)
+  })
+  return { cards: out, exercises: exercises.map((e) => ({ ...e, afterCard: e.afterCard < 0 ? e.afterCard : remap[e.afterCard] })) }
 }

@@ -97,8 +97,11 @@ export function LessonFooter({
   onAction,
   secondary,
   onSecondary,
+  paid,
 }: {
   tone?: 'right' | 'wrong'
+  /** A right answer that earned +$10: Abu Shreek tosses coins instead of cheering */
+  paid?: boolean
   feedback?: ReactNode
   action: string
   disabled?: boolean
@@ -112,7 +115,7 @@ export function LessonFooter({
     <>
       {tone && (
         <div className={`${styles.result} ${right ? styles.resultRight : styles.resultWrong}`} role="status" aria-live="polite">
-          <AbuShreek pose={right ? 'cheer' : 'oops'} height={64} className={styles.resultMascot} />
+          <AbuShreek pose={right ? (paid ? 'coins' : 'cheer') : 'oops'} height={64} className={styles.resultMascot} />
           <div className={styles.feedback}>{feedback}</div>
         </div>
       )}
@@ -230,7 +233,7 @@ export function LessonSummary({
     <div className={`${styles.lesson} ${styles.summary}`}>
       <div className={styles.hero}>
         <span className={styles.heroDisc} aria-hidden />
-        <AbuShreek pose="cheer" height={210} />
+        <AbuShreek pose={payout ? 'coins' : 'cheer'} height={210} />
         <Sprout size={44} style={{ position: 'absolute', insetInlineEnd: 56, insetBlockStart: 6 }} />
       </div>
       <h1>{tUi('lessonComplete')}</h1>
@@ -258,9 +261,12 @@ export function LessonSummary({
         )}
       </Card>
       <Card className={styles.weekCard}>
-        <p className={styles.weekTitle}>
-          <Icon name="calendar" size={22} /> {tUi('streakDays', { count: streak })}
-        </p>
+        <div className={styles.weekHead}>
+          <p className={styles.weekTitle}>
+            <Icon name="calendar" size={22} /> {tUi('streakDays', { count: streak })}
+          </p>
+          <AbuShreek pose="streak" height={64} className={styles.weekMascot} />
+        </div>
         <ProgressBar value={Math.min(streak, 7)} max={7} label={tUi('sum_streak_bar', { n: Math.min(streak, 7) })} />
         <p className={styles.weekNote}>{streak >= 7 ? tUi('sum_streak_full') : tUi('sum_streak_bar', { n: streak })}</p>
       </Card>

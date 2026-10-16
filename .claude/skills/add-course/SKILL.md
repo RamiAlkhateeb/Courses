@@ -9,4 +9,4 @@ description: Add a whole new course (e.g. "Project management") alongside the ex
 2. Build content with the shared helpers in `src/content/helpers.ts` (`L`, `section`, `mcq`, …).
 3. List the course in `src/content/courses.ts` (`courses` array). The home page, `/course/<id>` page, lesson mode, sidebar, contents panel and prev/next all derive from it — no router changes needed.
 4. Pick a distinct letters-only question-ID prefix per module, unique app-wide (a test enforces this).
-5. Add modules with the `add-module` skill. Run `npm test`, `npm run lint`, `npm run build`.
+5. Add modules with the `add-module` skill, and check their steps with the `lesson-cards` skill. Run `npm test`, `npm run lint`, `npm run build`.

@@ -13,6 +13,8 @@ import { useWallet } from '../../state/usePlayground'
 import { ModuleQuestionsContext } from '../../components/content/moduleQuestions'
 import { payoutFor } from '../../domain/progress'
 import { lessonKey, lessonsFor, type Lesson } from '../../domain/lessons'
+import { needsIllustration } from '../../domain/chunks'
+import { AbuShreek } from '../../components/ui'
 import { moneyText } from '../../i18n'
 import {
   AnswerFeedback,
@@ -146,7 +148,7 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
 
         {step.kind === 'content' ? (
           // key: a new card replays the entrance animation.
-          <div key={index} className={`${styles.card} ${contentStyles.content} ${step.blocks.length === 1 && step.blocks[0].type === 'html' ? styles.lead : ''}`}>
+          <div key={index} className={`${styles.card} ${contentStyles.content}`}>
             {step.heading && (
               <p className={styles.kicker}>
                 {t(step.heading.label)}
@@ -157,6 +159,9 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
               <div dangerouslySetInnerHTML={safeHtml(t(step.heading.html))} />
             )}
             <Blocks blocks={step.blocks} />
+            {/* A short step with nothing to look at (e.g. a key idea after a picture) gets Abu Shreek, so it never
+                reads as an empty screen. The first step carries the lesson title, so it never needs him. */}
+            {!step.heading && needsIllustration(step.blocks) && <AbuShreek pose="think" height={180} className={styles.cardMascot} />}
           </div>
         ) : (
           <div key={index} className={styles.card}>
@@ -176,6 +181,7 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
         ) : (
           <LessonFooter
             tone={question ? (isCorrect ? 'right' : 'wrong') : undefined}
+            paid={!!question && isCorrect && pays}
             feedback={question && <AnswerFeedback question={question} correct={isCorrect} pays={pays} firstTry={retry} />}
             action={question ? (retry ? tUi('tryAgain') : continueLabel) : tUi('nextBtn')}
             onAction={retry ? tryAgain : advance}

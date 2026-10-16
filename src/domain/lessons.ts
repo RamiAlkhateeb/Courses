@@ -1,5 +1,5 @@
 import type { Block, Localized, Question, Module } from '../content/types'
-import { toCards } from './chunks'
+import { blockWords, stripTags, toCards, wordCount } from './chunks'
 
 /** Most content cards in one lesson; a longer section is split into balanced parts. */
 export const MAX_CARDS = 7
@@ -69,36 +69,8 @@ export const lessonKey = (courseId: string, moduleId: string, lessonId: string) 
 export const learnHref = (courseId: string, moduleId: string, lessonId: string) =>
   `/course/${courseId}/${moduleId}/learn/${lessonId}`
 
-const strip = (html: string) => html.replace(/<[^>]+>/g, ' ')
-const words = (text: string) => text.split(/\s+/).filter(Boolean).length
-
-/** Reading words in a block (English text; tabs count their first tab only — the others are alternatives). */
-function blockWords(block: Block): number {
-  switch (block.type) {
-    case 'html':
-    case 'box':
-      return words(strip(block.html.en))
-    case 'objectives':
-    case 'takeaways':
-      return block.items.reduce((n, item) => n + words(strip(item.en)), 0)
-    case 'table':
-      return [...block.headers, ...block.rows.flat()].reduce((n, cell) => n + words(strip(cell.en)), 0)
-    case 'formula':
-      return words(block.eq) + words(block.note.en)
-    case 'code':
-      return block.code.split('\n').length * 3
-    case 'tabs':
-      return (block.tabs[0]?.blocks ?? []).reduce((n, b) => n + blockWords(b), 0)
-    case 'diagram':
-      return words(strip(block.caption.en)) + 20
-    case 'keyIdea':
-      return words(strip(block.html.en))
-    case 'calculator':
-      return 40 // a moment to play with the sliders
-    default:
-      return 0
-  }
-}
+const strip = stripTags
+const words = wordCount
 
 /** Estimated minutes for a lesson: reading at ~200 words/min plus half a minute per question; at least 1. */
 export function lessonMinutes(lesson: Lesson): number {
