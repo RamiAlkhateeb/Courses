@@ -59,6 +59,11 @@
   --radius-xl: 30px;
   --radius-pill: 26px;
   --radius: 16px;
+  /* Lesson typography: every step uses one text size and face (tests/lesson-cards.test.ts) */
+  --lesson-text: 1.25rem;
+  --lesson-line: 1.55;
+  --lesson-small: 1rem;
+  --lesson-label: 0.75rem;
   --radius-lg: 24px;
 
   /* One family per language: Instrument Sans for English, IBM Plex Sans Arabic for Arabic (self-hosted, see

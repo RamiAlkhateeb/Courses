@@ -107,7 +107,9 @@ describe('lesson time, recap and next lesson', () => {
 })
 
 describe('fixed lesson ids', () => {
-  const para = (n: number) => ({ type: 'html' as const, html: { en: `<p>Card ${n}</p>`, ar: `<p>بطاقة ${n}</p>` } })
+  // Paragraphs long enough (40 words) that short-card merging leaves one card each
+  const filler = ' word'.repeat(38)
+  const para = (n: number) => ({ type: 'html' as const, html: { en: `<p>Card ${n}${filler}</p>`, ar: `<p>بطاقة ${n}${filler}</p>` } })
   const mod = (lessonIds?: string[]): Module =>
     ({
       id: 'm',

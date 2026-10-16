@@ -3,6 +3,8 @@ import type { Block } from '../src/content/types'
 import { splitHtml, splitLocalized, toCards } from '../src/domain/chunks'
 
 const html = (en: string, ar = en): Block => ({ type: 'html', html: { en, ar } })
+/** A paragraph long enough (40 words) to stand on its own card */
+const long = (tag: string) => `<p>${tag} ${'word '.repeat(39).trim()}</p>`
 
 describe('splitHtml', () => {
   it('splits top-level block elements and keeps inline markup and nesting intact', () => {
@@ -35,8 +37,8 @@ describe('splitLocalized', () => {
 
 describe('toCards', () => {
   it('gives each paragraph, box and table its own card', () => {
-    const box: Block = { type: 'box', variant: 'mistake', label: { en: 'M' }, html: { en: 'x' } }
-    const { cards } = toCards([html('<p>a</p><p>b</p>'), box])
+    const box: Block = { type: 'box', variant: 'mistake', label: { en: 'M' }, html: { en: long('x') } }
+    const { cards } = toCards([html(long('a') + long('b')), box])
     expect(cards.map((c) => c.length)).toEqual([1, 1, 1])
   })
 
@@ -44,31 +46,48 @@ describe('toCards', () => {
     const table: Block = { type: 'table', headers: [], rows: [] }
     const formula: Block = { type: 'formula', eq: 'a = b', note: { en: 'n' } }
     const code: Block = { type: 'code', code: 'x' }
-    const { cards } = toCards([html('<h3>Q?</h3><p>Answer.</p>'), html('<p>Keep these:</p>'), table, formula, code])
+    const { cards } = toCards([html('<h3>Q?</h3>' + long('Answer.')), html('<p>Keep these:</p>'), table, formula, code])
     expect(cards.map((c) => c.map((b) => b.type))).toEqual([['html', 'html'], ['html', 'table'], ['formula', 'code']])
   })
 
   it('keeps a picture on the card of the paragraph before it', () => {
     const fig: Block = { type: 'diagram', fig: { en: 'F' }, title: { en: 'T' }, src: '/x.svg', alt: { en: 'A' }, caption: { en: 'C' } }
-    const { cards } = toCards([html('<p>a</p><p>b</p>'), fig, html('<p>c</p>')])
+    const { cards } = toCards([html(long('a') + long('b')), fig, html(long('c'))])
     expect(cards.map((c) => c.map((b) => b.type))).toEqual([['html'], ['html', 'diagram'], ['html']])
   })
 
-  it('puts an example box on the card of a lone paragraph before it, and a key idea on its own card', () => {
-    const example: Block = { type: 'box', variant: 'example', label: { en: 'E' }, html: { en: 'x' } }
-    const tip: Block = { type: 'box', variant: 'analogy', label: { en: 'A' }, html: { en: 'y' } }
-    const idea: Block = { type: 'keyIdea', html: { en: '<p>k</p>' } }
-    const { cards } = toCards([html('<p>a</p>'), example, tip, idea])
-    expect(cards.map((c) => c.map((b) => b.type))).toEqual([['html', 'box'], ['box'], ['keyIdea']])
+  it('puts an example box on the card of a lone paragraph before it', () => {
+    const example: Block = { type: 'box', variant: 'example', label: { en: 'E' }, html: { en: long('x') } }
+    const tip: Block = { type: 'box', variant: 'analogy', label: { en: 'A' }, html: { en: long('y') } }
+    const { cards } = toCards([html(long('a')), example, tip])
+    expect(cards.map((c) => c.map((b) => b.type))).toEqual([['html', 'box'], ['box']])
+  })
+
+  it('merges a short card, or a key idea, into the card before it while they fit one screen', () => {
+    const idea: Block = { type: 'keyIdea', html: { en: '<p>The one thing to remember.</p>' } }
+    const { cards } = toCards([html(long('a')), html('<p>A short follow-up.</p>'), idea])
+    expect(cards.map((c) => c.map((b) => b.type))).toEqual([['html', 'html', 'keyIdea']])
+  })
+
+  it('does not merge past a picture, a table, a question, a forced cut, or one screen of reading', () => {
+    const fig: Block = { type: 'diagram', fig: { en: 'F' }, title: { en: 'T' }, src: '/x.svg', alt: { en: 'A' }, caption: { en: 'C' } }
+    const table: Block = { type: 'table', headers: [], rows: [] }
+    const short = html('<p>Short.</p>')
+    expect(toCards([html(long('a')), fig, short]).cards).toHaveLength(2)
+    expect(toCards([table, short]).cards).toHaveLength(2)
+    expect(toCards([html(long('a')), { type: 'exercise', questionId: 'x-q001' }, short]).cards).toHaveLength(2)
+    expect(toCards([html(long('a')), { type: 'cardBreak' }, short]).cards).toHaveLength(2)
+    expect(toCards([html(long('a') + long('b')), short]).cards.map((c) => c.length)).toEqual([1, 2])
+    expect(toCards([html(long('a') + long('b') + long('c'))]).cards).toHaveLength(3)
   })
 
   it('cuts at cardBreak and records where each exercise was', () => {
     const { cards, exercises } = toCards([
-      html('<p>a</p>'),
+      html(long('a')),
       { type: 'exercise', questionId: 'x-q001' },
-      html('<p>b</p>'),
+      html(long('b')),
       { type: 'cardBreak' },
-      html('<p>c</p>'),
+      html(long('c')),
     ])
     expect(cards).toHaveLength(3)
     expect(exercises).toEqual([{ questionId: 'x-q001', afterCard: 0 }])

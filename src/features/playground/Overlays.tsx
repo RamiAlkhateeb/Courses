@@ -41,7 +41,7 @@ export function NewsOverlay({ id, year, paused, onContinue }: { id: EventId; yea
         </ul>
       </div>
       <div className={styles.newsGuide}>
-        <AbuShreek pose="point" height={130} />
+        <AbuShreek pose="news" height={130} />
         <p className={styles.bubble}>{t('pg_news_bubble')}</p>
       </div>
       <div className={styles.newsFoot}>

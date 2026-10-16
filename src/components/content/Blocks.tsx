@@ -10,8 +10,8 @@ import { AbuShreek, Icon } from '../ui'
 import { useTranslation } from 'react-i18next'
 import styles from './content.module.css'
 
-/** Abu Shreek gives the tips: he points at an analogy and winces at a common mistake. */
-const TIP_POSE = { analogy: 'point', mistake: 'oops' } as const
+/** Abu Shreek gives the tips: he points at an analogy, winces at a common mistake and reads out a real-world example. */
+const TIP_POSE = { analogy: 'point', mistake: 'oops', example: 'news' } as const
 
 export function Blocks({ blocks }: { blocks: Block[] }) {
   const t = useLocalized()
@@ -40,7 +40,7 @@ export function Blocks({ blocks }: { blocks: Block[] }) {
             )
 
           case 'box': {
-            const pose = block.variant === 'analogy' || block.variant === 'mistake' ? TIP_POSE[block.variant] : undefined
+            const pose = block.variant === 'keypoint' ? undefined : TIP_POSE[block.variant]
             return (
               <div key={i} className={`${styles.box} ${styles[block.variant]} ${pose ? styles.tip : ''}`}>
                 {pose && <AbuShreek pose={pose} height={72} className={styles.tipMascot} />}

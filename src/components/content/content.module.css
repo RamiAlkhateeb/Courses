@@ -1,5 +1,10 @@
-/* Content typography + block styling — ported from ../../../../course/_shared/styles/week.css.
-   Scoped under .content so tag selectors (h2, p, ul…) don't leak past the lesson card. */
+/* Lesson card content. One typography for every step: all text inherits --lesson-text from .content; only labels
+   (--lesson-label) and tables, captions and notes (--lesson-small) are smaller. tests/lesson-cards.test.ts holds this. */
+
+.content {
+  font-size: var(--lesson-text);
+  line-height: var(--lesson-line);
+}
 
 .content section {
   margin-bottom: 52px;
@@ -23,12 +28,12 @@
   letter-spacing: -0.01em;
 }
 .content :global(.standfirst) {
-  font-size: 1.08rem;
+  font-size: inherit;
   color: var(--ink-soft);
   margin: 0 0 18px 0;
 }
 .content h3 {
-  font-size: 1.25rem;
+  font-size: inherit;
   font-weight: 700;
   margin: 28px 0 10px 0;
 }
@@ -65,7 +70,7 @@
   margin: 0 0 22px 0;
 }
 .objLabel {
-  font-size: 11px;
+  font-size: var(--lesson-label);
   font-weight: 800;
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -78,7 +83,6 @@
 }
 .objectives li {
   margin-bottom: 4px;
-  font-size: 0.95rem;
 }
 .objectives li:last-child {
   margin-bottom: 0;
@@ -98,24 +102,22 @@
 }
 .takeaways li {
   margin-bottom: 6px;
-  font-size: 0.95rem;
 }
 .takeaways li:last-child {
   margin-bottom: 0;
 }
 
 .box {
-  border-radius: 10px;
+  border-radius: 16px;
   padding: 18px 20px;
   margin: 20px 0;
-  font-size: 0.98rem;
 }
 .box p:last-child {
   margin-bottom: 0;
 }
 .boxLabel {
   display: block;
-  font-size: 12px;
+  font-size: var(--lesson-label);
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -149,11 +151,6 @@
 .example .boxLabel {
   color: var(--brand);
 }
-/* Box text stays a step smaller than the lesson card's body text */
-.box div p {
-  font-size: 1.0625rem;
-  line-height: 1.5;
-}
 /* Analogy and mistake boxes: a small Abu Shreek beside the tip */
 .tip {
   display: flex;
@@ -182,7 +179,7 @@
   align-items: center;
   gap: 8px;
   margin-block-end: 10px;
-  font-size: 0.8125rem;
+  font-size: var(--lesson-label);
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -193,9 +190,6 @@
 }
 .keyIdea div p {
   margin: 0;
-  font-size: 1.375rem;
-  font-weight: 700;
-  line-height: 1.4;
   color: var(--white);
 }
 .keyIdea div p strong {
@@ -223,7 +217,7 @@
 .calc .calcSub,
 .calc .calcNote {
   margin: 0;
-  font-size: 0.9375rem;
+  font-size: var(--lesson-small);
   color: var(--muted);
 }
 .calcRow {
@@ -258,7 +252,7 @@
   line-height: 1.1;
 }
 .calcResult small {
-  font-size: 0.9375rem;
+  font-size: var(--lesson-small);
   color: var(--indigo);
 }
 
@@ -317,7 +311,7 @@
   margin: 20px 0;
 }
 .diagram .fig {
-  font-size: 0.75rem;
+  font-size: var(--lesson-label);
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -329,7 +323,7 @@
 }
 .diagram .figTitle {
   font-weight: 700;
-  font-size: 1.0625rem;
+  font-size: inherit;
   margin-bottom: 12px;
   color: var(--indigo);
 }
@@ -341,7 +335,7 @@
   direction: ltr;
 }
 .diagram figcaption {
-  font-size: 0.9375rem;
+  font-size: var(--lesson-small);
   color: var(--muted);
   border-top: 1px solid var(--line);
   padding-top: 10px;
@@ -365,7 +359,7 @@
 }
 .exerciseHead .boxLabel {
   margin: 0;
-  font-size: 12px;
+  font-size: var(--lesson-label);
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -385,7 +379,6 @@
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  font-size: 0.95rem;
   cursor: pointer;
 }
 .exerciseOptions input[type='radio'] {
@@ -397,7 +390,7 @@
   margin-top: 12px;
   padding: 10px 14px;
   border-radius: 8px;
-  font-size: 0.92rem;
+  font-size: var(--lesson-small);
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -426,14 +419,13 @@
   margin: 20px 0;
 }
 .formulaEq {
-  font-family: 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
-  font-size: 1.05rem;
+  font-size: inherit;
   font-weight: 700;
   color: var(--brand);
   direction: ltr;
 }
 .formulaNote {
-  font-size: 0.92rem;
+  font-size: var(--lesson-small);
   color: var(--ink-soft);
 }
 
@@ -445,13 +437,13 @@
 .tableScroll table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.95rem;
+  font-size: var(--lesson-small);
 }
 .tableScroll th {
   text-align: start;
   background: var(--paper-2);
   font-weight: 700;
-  font-size: 12px;
+  font-size: var(--lesson-label);
   letter-spacing: 0.03em;
   text-transform: uppercase;
   padding: 10px;

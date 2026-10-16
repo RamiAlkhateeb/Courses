@@ -21,3 +21,5 @@ Modules are typed TypeScript files (`Module` in `src/content/types.ts`). All tex
 - Raw `<script>` or event handlers inside `html` blocks are not allowed — content is rendered with `dangerouslySetInnerHTML`, so only author-controlled markup goes in.
 - Images/diagrams go in `public/diagrams/` (or `public/figures/<course>/<module>/`) and are referenced root-absolute (`/diagrams/...`); `resolveAssetPath` adds the GitHub Pages base path. Keep words out of the picture (numbers only, flat, brand colours): its `title`, `caption` and `alt` are `Localized`, so they follow the reader's language. A `diagram` shares the card of the paragraph before it.
 - Practice solutions the author wrote live in `solutions/` — link to them, don't copy rough code into the course; write the clean pattern solution.
+
+Before finishing, follow the `lesson-cards` skill (`.claude/skills/lesson-cards/SKILL.md`): no near-empty steps, one typography, the right Abu Shreek pose.
