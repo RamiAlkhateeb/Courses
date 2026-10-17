@@ -147,9 +147,10 @@
 .card :global(p) {
   color: color-mix(in srgb, var(--indigo) 90%, var(--white));
 }
-.cardMascot {
-  display: block;
-  margin: 24px auto 0;
+.spaceGuide {
+  display: flex;
+  justify-content: center;
+  margin-block-start: 24px;
 }
 /* Key terms ("inflation") stand out */
 .card :global(p strong) {

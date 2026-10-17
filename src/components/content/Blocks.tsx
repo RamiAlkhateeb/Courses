@@ -6,12 +6,11 @@ import { Exercise } from './Exercise'
 import { CodeBlock } from './CodeBlock'
 import { Tabs } from './Tabs'
 import { CompoundCalculator } from './CompoundCalculator'
-import { AbuShreek, Icon } from '../ui'
+import { Guide, Icon } from '../ui'
 import { useTranslation } from 'react-i18next'
+import { TIP_POSES } from '../../domain/guide'
 import styles from './content.module.css'
 
-/** Abu Shreek gives the tips: he points at an analogy, winces at a common mistake and reads out a real-world example. */
-const TIP_POSE = { analogy: 'point', mistake: 'oops', example: 'news' } as const
 
 export function Blocks({ blocks }: { blocks: Block[] }) {
   const t = useLocalized()
@@ -40,10 +39,10 @@ export function Blocks({ blocks }: { blocks: Block[] }) {
             )
 
           case 'box': {
-            const pose = block.variant === 'keypoint' ? undefined : TIP_POSE[block.variant]
+            const pose = TIP_POSES[block.variant]
             return (
               <div key={i} className={`${styles.box} ${styles[block.variant]} ${pose ? styles.tip : ''}`}>
-                {pose && <AbuShreek pose={pose} height={72} className={styles.tipMascot} />}
+                {pose && <Guide pose={pose} height={72} className={styles.tipMascot} />}
                 <div>
                   <span className={styles.boxLabel}>{t(block.label)}</span>
                   <div dangerouslySetInnerHTML={safeHtml(t(block.html))} />

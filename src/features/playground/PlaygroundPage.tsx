@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { AbuShreek, Button, Icon, type IconName } from '../../components/ui'
+import { Guide, Button, Icon, type IconName } from '../../components/ui'
 import { Change } from '../../components/Change'
 import { Money } from '../../components/Money'
 import { moneyText } from '../../i18n'
@@ -168,7 +168,7 @@ export function PlaygroundPage() {
       {empty && (
         <div className={styles.emptyCard}>
           <div className={styles.emptyRow}>
-            <AbuShreek pose="point" height={110} />
+            <Guide pose="point" height={110} />
             <p className={styles.bubble}>{t('pg_empty_bubble')}</p>
           </div>
           <Button onClick={() => setSheet({ asset: 'savings', side: 'buy' })} disabled={state.cash <= 0}>

@@ -1,6 +1,6 @@
 import { Navigate, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { AbuShreek, Button, Icon } from '../../components/ui'
+import { Guide, Button, Icon } from '../../components/ui'
 import { Money } from '../../components/Money'
 import { moneyText } from '../../i18n'
 import { CONFIG } from '../../domain/playground/config'
@@ -35,7 +35,7 @@ export function SummaryPage() {
       <p className={`${styles.kicker} ${styles.centre}`}>{t('pg_season_kicker', { n: s.season, years: t('pg_years_n', { count: CONFIG.seasonYears }) })}</p>
       <h1 className={`${styles.bigTitle} ${styles.centre}`}>{t('pg_season_complete')}</h1>
       <div className={styles.summaryMascot}>
-        <AbuShreek pose={up ? 'cheer' : 'oops'} height={220} />
+        <Guide pose={up ? 'cheer' : 'oops'} height={220} />
       </div>
       <div className={styles.twoCol}>
         <div className={styles.statCard}>
