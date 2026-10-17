@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { AbuShreek, Icon, ProgressBar, type MascotPose } from '../../components/ui'
+import { Guide, Icon, ProgressBar, type GuidePose } from '../../components/ui'
 import styles from './Account.module.css'
 
 /** The frame every account screen shares: a back button (optionally with a progress bar), an optional mascot with a
@@ -19,7 +19,7 @@ export function AccountScreen({
 }: {
   title?: string
   sub?: ReactNode
-  mascot?: MascotPose
+  mascot?: GuidePose
   bubble?: string
   /** A 0..1 share shown as a bar next to the back button (sign up) */
   progress?: number
@@ -45,7 +45,7 @@ export function AccountScreen({
       </header>
       {mascot && (
         <div className={styles.guide}>
-          <AbuShreek pose={mascot} height={150} />
+          <Guide pose={mascot} height={150} />
           {bubble && <p className={styles.bubble}>{bubble}</p>}
         </div>
       )}

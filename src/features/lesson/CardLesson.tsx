@@ -13,8 +13,7 @@ import { useWallet } from '../../state/usePlayground'
 import { ModuleQuestionsContext } from '../../components/content/moduleQuestions'
 import { payoutFor } from '../../domain/progress'
 import { lessonKey, lessonsFor, type Lesson } from '../../domain/lessons'
-import { needsIllustration } from '../../domain/chunks'
-import { AbuShreek } from '../../components/ui'
+import { SpaceGuide } from './SpaceGuide'
 import { moneyText } from '../../i18n'
 import {
   AnswerFeedback,
@@ -159,9 +158,8 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
               <div dangerouslySetInnerHTML={safeHtml(t(step.heading.html))} />
             )}
             <Blocks blocks={step.blocks} />
-            {/* A short step with nothing to look at (e.g. a key idea after a picture) gets Abu Shreek, so it never
-                reads as an empty screen. The first step carries the lesson title, so it never needs him. */}
-            {!step.heading && needsIllustration(step.blocks) && <AbuShreek pose="think" height={180} className={styles.cardMascot} />}
+            {/* Whatever room is left under the step, the guide fills it (nothing when the step fills the screen). */}
+            <SpaceGuide blocks={step.blocks} step={index} />
           </div>
         ) : (
           <div key={index} className={styles.card}>

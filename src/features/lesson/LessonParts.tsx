@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { Question } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
-import { Button, Card, Coin, Icon, AnswerOption, ProgressBar, AbuShreek, type AnswerState } from '../../components/ui'
+import { Button, Card, Coin, Icon, AnswerOption, ProgressBar, Guide, type AnswerState } from '../../components/ui'
 import { Sprout } from '../../components/GardenArt'
 import { currentStreak, localDay } from '../../domain/progress'
 import { PAY_PER_CORRECT } from '../../domain/money'
@@ -115,11 +115,11 @@ export function LessonFooter({
     <>
       {tone && (
         <div className={`${styles.result} ${right ? styles.resultRight : styles.resultWrong}`} role="status" aria-live="polite">
-          <AbuShreek pose={right ? (paid ? 'coins' : 'cheer') : 'oops'} height={64} className={styles.resultMascot} />
+          <Guide pose={right ? (paid ? 'coins' : 'cheer') : 'oops'} height={64} className={styles.resultMascot} />
           <div className={styles.feedback}>{feedback}</div>
         </div>
       )}
-      <div className={styles.footer}>
+      <div className={styles.footer} data-lesson-footer>
         {/* Keyed by action so the button remounts (and autofocuses) when Check turns into Continue. */}
         <Button key={action} disabled={disabled} onClick={onAction} autoFocus={!!tone}>
           {action}
@@ -233,7 +233,7 @@ export function LessonSummary({
     <div className={`${styles.lesson} ${styles.summary}`}>
       <div className={styles.hero}>
         <span className={styles.heroDisc} aria-hidden />
-        <AbuShreek pose={payout ? 'coins' : 'cheer'} height={210} />
+        <Guide pose={payout ? 'coins' : 'cheer'} height={210} />
         <Sprout size={44} style={{ position: 'absolute', insetInlineEnd: 56, insetBlockStart: 6 }} />
       </div>
       <h1>{tUi('lessonComplete')}</h1>
@@ -265,7 +265,7 @@ export function LessonSummary({
           <p className={styles.weekTitle}>
             <Icon name="calendar" size={22} /> {tUi('streakDays', { count: streak })}
           </p>
-          <AbuShreek pose="streak" height={64} className={styles.weekMascot} />
+          <Guide pose="streak" height={64} className={styles.weekMascot} />
         </div>
         <ProgressBar value={Math.min(streak, 7)} max={7} label={tUi('sum_streak_bar', { n: Math.min(streak, 7) })} />
         <p className={styles.weekNote}>{streak >= 7 ? tUi('sum_streak_full') : tUi('sum_streak_bar', { n: streak })}</p>

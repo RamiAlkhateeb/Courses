@@ -81,7 +81,7 @@ export function blockWords(block: Block): number {
 /** Words on a card. */
 export const cardWords = (blocks: Block[]) => blocks.reduce((n, b) => n + blockWords(b), 0)
 
-/** A card under this many words is "short": it joins the card before it, or (if it can't) gets an illustration. */
+/** A card under this many words is "short": it joins the card before it when it can. */
 export const SHORT_CARD = 35
 /** Two cards merge only while together they stay this short (one screen of reading); a key idea is a single
  *  sentence on its own coloured panel, so it may stretch a card a little further. */
@@ -90,9 +90,6 @@ const KEY_IDEA_WORDS = 110
 /** Blocks that fill a card on their own: such a card never takes on another, and is never "short". */
 const MEDIA = new Set<Block['type']>(['table', 'diagram', 'calculator', 'code', 'tabs'])
 export const hasMedia = (blocks: Block[]) => blocks.some((b) => MEDIA.has(b.type))
-/** A short card with nothing to look at: the lesson screen adds a small Abu Shreek under it. */
-export const needsIllustration = (blocks: Block[]) =>
-  cardWords(blocks) < SHORT_CARD && !hasMedia(blocks) && !blocks.some((b) => b.type === 'objectives' || b.type === 'takeaways' || b.type === 'formula')
 const isHeading = (b: Block) => b.type === 'html' && /^<h[34]\b/i.test(b.html.en)
 /** "Keep these sections, in this order:" — introduces the block after it, so they share a card. */
 const isLeadIn = (b: Block) => b.type === 'html' && /[:：]$/.test(plain(b.html.en))

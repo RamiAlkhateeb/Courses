@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { AbuShreek, buttonClass, Icon, StatPill } from '../../components/ui'
+import { Guide, buttonClass, Icon, StatPill } from '../../components/ui'
 import { MoneyChip } from '../../components/MoneyChip'
 import { practiceHref } from '../../content/courses'
 import { useLocalized } from '../../content/useLocalized'
@@ -61,7 +61,7 @@ export function PathPage() {
             </Link>
           </div>
           {/* He sits at the card's end edge, so he faces back and points at the lesson and Continue. */}
-          <AbuShreek pose="point" height={104} flip={i18n.dir() !== 'rtl'} className={styles.upMascot} />
+          <Guide pose="point" height={104} flip={i18n.dir() !== 'rtl'} className={styles.upMascot} />
         </section>
       )}
       {loaded && !next && chapters.length > 0 && <p className={styles.allDone}>{t('learn_all_done')}</p>}

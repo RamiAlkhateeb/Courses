@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { ParseKeys } from 'i18next'
-import { AbuShreek, AnswerOption, Button, Icon, ProgressBar, type MascotPose } from '../../components/ui'
+import { Guide, AnswerOption, Button, Icon, ProgressBar, type GuidePose } from '../../components/ui'
 import { Tree } from '../../components/GardenArt'
 import { Logo } from '../../components/Logo'
 import { LANGUAGES } from '../../i18n'
@@ -62,7 +62,7 @@ export function Welcome() {
           {t('welcomeHi', { lng: other })}
         </span>
       </div>
-      <AbuShreek pose="wave" height={363} className={styles.heroMascot} />
+      <Guide pose="wave" height={363} className={styles.heroMascot} />
       <div className={styles.welcomeSheet}>
         <Button onClick={() => navigate('/welcome/language')}>{t('startMyPath')}</Button>
         <Button
@@ -98,7 +98,7 @@ export function OnboardingStep() {
     navigate('/')
   }
   const other = otherLanguage(i18n.language)
-  const pose: MascotPose = step === 'language' ? 'wave' : 'point'
+  const pose: GuidePose = step === 'language' ? 'wave' : 'point'
 
   return (
     <div className={styles.step}>
@@ -109,7 +109,7 @@ export function OnboardingStep() {
         <ProgressBar value={index + 1} max={STEPS.length} label={t('stepOf', { n: index + 1, total: STEPS.length })} />
       </header>
       <div className={styles.guide}>
-        <AbuShreek pose={pose} height={136} />
+        <Guide pose={pose} height={136} />
         <p className={styles.bubbleSm}>
           {step === 'language' ? t('obLangBubble') : t('obTimeBubble')}
           {step === 'language' && (

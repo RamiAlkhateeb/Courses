@@ -1,6 +1,6 @@
 ---
 name: lesson-cards
-description: Write or review lesson steps (cards) so none is near-empty and every step shares one typography and the right Abu Shreek pose. Use when writing, editing or reviewing lesson content, or when a lesson step looks empty, too long, or styled differently from the others.
+description: Write or review lesson steps (cards) so none is near-empty and every step shares one typography and the right guide pose. Use when writing, editing or reviewing lesson content, or when a lesson step looks empty, too long, or styled differently from the others.
 ---
 
 # Lesson cards: full steps, one typography
@@ -20,9 +20,10 @@ Learners read one step per screen on a phone, so every step must be worth a scre
    colours; title, caption and alt are `Localized`. A picture stays on the card of the paragraph before it.
 4. **One key idea per lesson** (`keyIdea()`), just before the lesson's `exercise()` blocks; at least 2 quick checks per
    lesson, each with an `explain`.
-5. **If a short step can't merge** (a key idea after a picture), the lesson screen adds a small Abu Shreek (`think`)
-   under it (`needsIllustration`). Don't rely on this for plain text: `tests/lesson-cards.test.ts` fails on any short
-   text step that stands alone, naming the lesson and step.
+5. **Room left under a step is filled by the guide** (`SpaceGuide` in `src/features/lesson/`): it measures the space
+   between the step and the docked button and shows the guide (160–280px tall) only when it fits; the pose comes from
+   `fillerPose()` (`src/domain/guide.ts`). This is decoration, not a fix for thin text: `tests/lesson-cards.test.ts`
+   still fails on any short text step that stands alone, naming the lesson and step.
 
 ## Typography (one size and face on every step)
 
@@ -33,20 +34,25 @@ Learners read one step per screen on a phone, so every step must be worth a scre
 - Don't add `font-size` or `font-family` in `src/components/content/content.module.css` outside those tokens; the test
   checks it.
 
-## Abu Shreek on lesson screens
+## The guide (Saud or Sara) on lesson screens
+
+Two guides, **Saud (سعود)** and **Sara (سارة)**; `currentGuide` (`src/state/guide.ts`) picks one at random each
+session (`?guide=saud|sara` pins one). Every pose exists for both. The app name "Abu Shreek" is the brand only.
 
 | Pose | Where |
 | --- | --- |
 | `point` | analogy boxes |
 | `oops` | mistake boxes, a wrong answer |
 | `news` | example boxes (real-world cases), Playground market news |
-| `think` | a short step that could not merge |
+| `think` | the room under a key idea; quiz screens |
+| `wave`, `cheer`, `think`, `point` | the room under other steps, taking turns (never the pose of a tip box on the same step) |
 | `cheer` | a right answer, Lesson complete (replay or practice) |
 | `coins` | a right answer that pays +$10, Lesson complete when the lesson paid |
 | `streak` | the streak card on Lesson complete |
 
-New poses: a transparent PNG, 640px tall, facing right (the app mirrors him in Arabic), in `public/abu-shreek/`, and
-the name added to `MascotPose` (`src/components/ui/AbuShreek.tsx`).
+New poses: one transparent PNG per guide, 640px tall, facing right (the app mirrors the guide in Arabic):
+`public/guides/saud-<pose>.png` and `public/guides/sara-<pose>.png`, and the name added to `GuidePose`
+(`src/domain/guide.ts`).
 
 ## Checklist
 

@@ -4,9 +4,10 @@ Source: `Abu Shreek Mobile App Flow.html`, the Claude Design export (27 screens 
 style board and a tokens board). It is a visual spec only: the app is built from its own components (`src/components/ui/`),
 colours live in `src/styles/tokens.css`. Open the HTML in a browser to see every screen.
 
-`abu-shreek/` holds the mascot (Abu Shreek, أبو شريك): `wave` (welcome, language), `point` (guidance), `think` (quiz),
-`cheer` (correct, lesson complete, season summary), `oops` (not quite). They are copied to `public/abu-shreek/` and drawn
-by `src/components/ui/AbuShreek.tsx`.
+`abu-shreek/` holds the first mascot drawings (kept for reference). The app now has two guides, **Saud (سعود)** and
+**Sara (سارة)**, one picked at random each session, with 8 poses each (`wave`, `point`, `think`, `cheer`, `oops`,
+`coins`, `news`, `streak`) in `public/guides/<guide>-<pose>.png`, drawn by `src/components/ui/Guide.tsx`. "Abu Shreek"
+is the app's brand name.
 
 ## Screens and where they live
 

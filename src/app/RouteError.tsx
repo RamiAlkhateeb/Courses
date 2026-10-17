@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { isRouteErrorResponse, Link, useRouteError } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { AbuShreek, Button, buttonClass, Card, Icon } from '../components/ui'
+import { Guide, Button, buttonClass, Card, Icon } from '../components/ui'
 import { isChunkLoadError, reloadOnce } from './chunkReload'
 import styles from './RouteError.module.css'
 
@@ -20,7 +20,7 @@ export function RouteError() {
   return (
     <main className={styles.page} role="alert">
       <div className={styles.top}>
-        <AbuShreek pose="oops" height={240} />
+        <Guide pose="oops" height={240} />
         <h1>{t('errorTitle')}</h1>
         <Card className={styles.card}>
           <p>{stale ? t('errorUpdated') : t('errorGeneric')}</p>

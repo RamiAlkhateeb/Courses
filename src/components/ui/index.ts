@@ -1,6 +1,6 @@
 export { Button, buttonClass, Card, AnswerOption, ProgressBar, StatPill, TabBar, BottomSheet } from './ui'
 export type { AnswerState } from './ui'
 export { Icon, type IconName } from './Icon'
-export { AbuShreek, type MascotPose } from './AbuShreek'
+export { Guide, type GuidePose } from './Guide'
 export { Coin } from './Coin'
 export { TextField, CheckPill, type FieldState } from './TextField'

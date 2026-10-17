@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { AbuShreek, Button, Icon } from '../../components/ui'
+import { Guide, Button, Icon } from '../../components/ui'
 import { ASSET_IDS } from '../../domain/playground/config'
 import { direction, EVENTS, type EventId } from '../../domain/playground/events'
 import { assetName } from './shared'
@@ -41,7 +41,7 @@ export function NewsOverlay({ id, year, paused, onContinue }: { id: EventId; yea
         </ul>
       </div>
       <div className={styles.newsGuide}>
-        <AbuShreek pose="news" height={130} />
+        <Guide pose="news" height={130} />
         <p className={styles.bubble}>{t('pg_news_bubble')}</p>
       </div>
       <div className={styles.newsFoot}>
