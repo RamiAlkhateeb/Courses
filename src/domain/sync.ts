@@ -9,6 +9,7 @@
 //    bank and raises the Playground), so they are taken together from ONE side, the one saved more recently.
 //    Adding or taking the max of the two banks would create or destroy play money.
 //  - The profile (onboarding choices) comes from the newer side, except "finished onboarding" which sticks.
+//  - Preferences (sound, language) come whole from the newer side.
 import type { Profile } from './profile'
 import type { Progress } from './progress'
 
@@ -33,6 +34,7 @@ export function mergeProgress(local: Progress, remote: Progress, bankFrom: 'loca
     ...(newer.lastLesson ?? local.lastLesson ?? remote.lastLesson ? { lastLesson: newer.lastLesson ?? local.lastLesson ?? remote.lastLesson } : {}),
     activity: mergeRecords(local.activity, remote.activity, (x, y) => Math.max(x, y)),
     perfect: Math.max(local.perfect, remote.perfect),
+    freezes: newer.freezes, // spent and earned together with the streak, so they come from the same side
   }
 }
 
@@ -56,3 +58,16 @@ export function signInPlan(owner: string | null, userId: string): 'merge' | 'rep
 
 /** Has the learner done anything worth keeping? A pristine guest has nothing to lose or to upload. */
 export const progressIsEmpty = (p: Progress) => p.lessonsDone.length === 0 && Object.keys(p.answers).length === 0 && Object.keys(p.sectionsRead).length === 0
+
+/** Preferences that follow the account: sound and language (news alerts stay per device: each browser asks its own
+ *  permission). The newer side wins, like the profile. */
+export interface Prefs {
+  sound: boolean
+  lang: 'en' | 'ar'
+}
+
+export function parsePrefs(data: unknown): Prefs | null {
+  if (typeof data !== 'object' || data === null) return null
+  const d = data as Record<string, unknown>
+  return { sound: d.sound !== false, lang: d.lang === 'ar' ? 'ar' : 'en' }
+}

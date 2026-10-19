@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { appCourses, courses, flatNav, hasModule, type Course } from '../../content/courses'
+import { appCourses, COMING_SOON_IDS, courses, flatNav, hasModule, type Course } from '../../content/courses'
 import { useLocalized } from '../../content/useLocalized'
 import { ListScreen } from '../../components/SettingsList'
 import { Icon } from '../../components/ui'
@@ -11,14 +11,15 @@ import styles from './CoursesPage.module.css'
 /** The first sentence of a description, so every card stays short. */
 const firstSentence = (text: string) => text.match(/^.*?[.!؟?](\s|$)/)?.[0].trim() ?? text
 
-/** All courses: the offered ones first (open them to learn), then the rest of the catalogue as "Coming soon". */
+/** All courses: the offered ones first (open them to learn), then a few others as "Coming soon" (`COMING_SOON_IDS`). */
 export function CoursesPage() {
   const { t } = useTranslation()
   const tc = useLocalized()
   const navigate = useNavigate()
   const active = useTrailId()
   const offered = new Set(appCourses.map((c) => c.id))
-  const ordered = [...appCourses, ...courses.filter((c) => !offered.has(c.id))]
+  const soon = COMING_SOON_IDS.map((id) => courses.find((c) => c.id === id)).filter((c): c is Course => !!c && !offered.has(c.id))
+  const ordered = [...appCourses, ...soon]
 
   const open = (c: Course) => {
     updateProfile({ trail: c.id })

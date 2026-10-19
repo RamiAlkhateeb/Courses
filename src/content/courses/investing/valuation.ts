@@ -1,0 +1,296 @@
+// Original course content. Companies are fictional and every figure is an illustration, not a recommendation.
+import type { Module } from '../../types'
+import { L, box, cover, diagram, exercise, formula, html, keyIdea, mcq, objectives, section, table, takeaways } from '../../helpers'
+
+const W = 'valuation'
+const P = 'invv'
+
+const questions = [
+  mcq(P, W, 1, 'shares',
+    L('Owning a share of a company gives you…', 'امتلاك سهم في شركة يمنحك…'),
+    [L('A small part of the company and a claim on part of its profits', 'جزءًا صغيرًا من الشركة وحقًا في جزء من أرباحها'), L('A loan the company must repay with interest', 'قرضًا يجب على الشركة سداده بفائدة'), L('A guaranteed yearly payment', 'دفعة سنوية مضمونة')], 0,
+    L('A share is a slice of ownership: you share in the profits, but nothing is promised. A loan with interest is a bond.', 'السهم حصة من الملكية: تشارك في الأرباح، لكن لا شيء مضمون. أما القرض بفائدة فهو السند.')),
+  mcq(P, W, 2, 'shares',
+    L('Over many years, what mainly drives a share’s price?', 'على مدى سنوات طويلة، ما الذي يحرّك سعر السهم أساسًا؟'),
+    [L('The company’s profits, today’s and those buyers expect', 'أرباح الشركة، الحالية منها وتلك التي يتوقعها المشترون'), L('How many people talk about it online', 'عدد من يتحدثون عنه على الإنترنت'), L('The number of shares you own', 'عدد الأسهم التي تملكها')], 0,
+    L('News and moods move prices day to day, but over years the price tends to follow what the business earns and is expected to earn.', 'الأخبار والمزاج تحرّك الأسعار يومًا بيوم، لكن على مدى السنوات يميل السعر إلى اتباع ما تربحه الشركة وما يُتوقع أن تربحه.')),
+  mcq(P, W, 3, 'profit',
+    L('A company has revenue of 500 and costs of 400. What are its profit and profit margin?', 'شركة إيراداتها 500 وتكاليفها 400. ما ربحها وهامش ربحها؟'),
+    [L('Profit 100, margin 20%', 'ربح 100، وهامش 20%'), L('Profit 100, margin 25%', 'ربح 100، وهامش 25%'), L('Profit 400, margin 80%', 'ربح 400، وهامش 80%')], 0,
+    L('Profit = 500 − 400 = 100. The margin divides profit by revenue, not by costs: 100 ÷ 500 = 20%.', 'الربح = 500 − 400 = 100. الهامش يقسم الربح على الإيرادات لا على التكاليف: 100 ÷ 500 = 20%.')),
+  mcq(P, W, 4, 'profit',
+    L('A company’s revenue grew 10% this year, but its profit fell. What is the most likely reason?', 'نمت إيرادات شركة 10% هذا العام، لكن ربحها انخفض. ما السبب الأرجح؟'),
+    [L('Its costs grew faster than its revenue', 'تكاليفها نمت أسرع من إيراداتها'), L('Its share price fell', 'سعر سهمها انخفض'), L('It sold fewer products', 'باعت منتجات أقل')], 0,
+    L('Profit is revenue minus costs. If revenue rises and profit still falls, costs must have risen even more, so the margin shrank.', 'الربح هو الإيرادات ناقص التكاليف. إذا ارتفعت الإيرادات وانخفض الربح رغم ذلك، فلا بد أن التكاليف ارتفعت أكثر، فتقلّص الهامش.')),
+  mcq(P, W, 5, 'pe',
+    L('A share costs 40 and the company earns 4 per share a year. What is its P/E?', 'سعر السهم 40 والشركة تربح 4 للسهم سنويًا. ما نسبة P/E؟'),
+    [L('10', '10'), L('160', '160'), L('0.1', '0.1')], 0,
+    L('P/E = price ÷ earnings per share = 40 ÷ 4 = 10. You pay 10 for every 1 of yearly profit.', 'P/E = السعر ÷ ربحية السهم = 40 ÷ 4 = 10. تدفع 10 مقابل كل 1 من الربح السنوي.')),
+  mcq(P, W, 6, 'pe',
+    L('Two companies earn the same per share, but one has a P/E of 30 and the other 10. What does the higher P/E usually tell you?', 'شركتان تربحان المبلغ نفسه للسهم، لكن نسبة P/E لإحداهما 30 وللأخرى 10. ماذا تخبرك النسبة الأعلى عادةً؟'),
+    [L('Buyers expect its profits to grow faster', 'المشترون يتوقعون أن تنمو أرباحها أسرع'), L('It is guaranteed to be the better investment', 'إنها الاستثمار الأفضل حتمًا'), L('It earns three times as much', 'إنها تربح ثلاثة أضعاف')], 0,
+    L('Same profit, higher price: buyers are paying for growth they expect. If that growth does not come, the price can fall.', 'ربح واحد وسعر أعلى: المشترون يدفعون مقابل نمو يتوقعونه. وإذا لم يأتِ هذا النمو، قد ينخفض السعر.')),
+  mcq(P, W, 7, 'dividends',
+    L('A share costs 50 and pays a dividend of 2 a year. What is its dividend yield?', 'سعر السهم 50 ويدفع توزيعات أرباح قدرها 2 سنويًا. ما عائد التوزيعات؟'),
+    [L('4%', '4%'), L('25%', '25%'), L('2%', '2%')], 0,
+    L('Dividend yield = yearly dividend ÷ price = 2 ÷ 50 = 4%.', 'عائد التوزيعات = التوزيعات السنوية ÷ السعر = 2 ÷ 50 = 4%.')),
+  mcq(P, W, 8, 'dividends',
+    L('A company’s dividend yield jumps to 12% after its share price halves. What should you keep in mind?', 'قفز عائد التوزيعات لشركة إلى 12% بعد أن انخفض سعر سهمها إلى النصف. ماذا يجب أن تتذكر؟'),
+    [L('Investors may fear the dividend will be cut', 'ربما يخشى المستثمرون أن تُخفَّض التوزيعات'), L('The dividend is now guaranteed', 'التوزيعات أصبحت مضمونة الآن'), L('A higher yield always means a better company', 'العائد الأعلى يعني دائمًا شركة أفضل')], 0,
+    L('The yield rose because the price fell, not because the company pays more. Dividends are never guaranteed, and a falling price often signals trouble.', 'ارتفع العائد لأن السعر انخفض، لا لأن الشركة تدفع أكثر. التوزيعات ليست مضمونة أبدًا، وانخفاض السعر كثيرًا ما يشير إلى مشكلة.')),
+  mcq(P, W, 9, 'balance',
+    L('A company owns assets worth 900 and has liabilities of 600. What is its equity?', 'تملك شركة أصولًا قيمتها 900 وعليها التزامات قدرها 600. ما حقوق المساهمين؟'),
+    [L('300', '300'), L('1,500', '1,500'), L('600', '600')], 0,
+    L('Equity = assets − liabilities = 900 − 600 = 300: what would be left for shareholders after every debt is paid.', 'حقوق المساهمين = الأصول − الالتزامات = 900 − 600 = 300: ما يتبقى للمساهمين بعد سداد كل الديون.')),
+  mcq(P, W, 10, 'balance',
+    L('Why is heavy debt especially risky for a company when profits fall?', 'لماذا تكون الديون الكبيرة خطرة بشكل خاص على الشركة عندما تنخفض الأرباح؟'),
+    [L('Interest must still be paid, even in bad years', 'الفائدة يجب أن تُدفع رغم ذلك، حتى في السنوات السيئة'), L('Debt makes the share price fixed', 'الديون تجعل سعر السهم ثابتًا'), L('Lenders are paid only after shareholders', 'المقرضون يُدفع لهم بعد المساهمين فقط')], 0,
+    L('Lenders must be paid whatever happens, and before shareholders. When profits shrink, those fixed payments can push a company into trouble.', 'يجب أن يُدفع للمقرضين مهما حدث، وقبل المساهمين. وعندما تتقلص الأرباح، قد تدفع هذه المدفوعات الثابتة الشركة إلى المتاعب.')),
+  mcq(P, W, 11, 'value',
+    L('What does “price is not value” mean?', 'ماذا تعني عبارة «السعر ليس القيمة»؟'),
+    [L('The price is what you pay; the value depends on the profits the business will earn, so the two can differ', 'السعر هو ما تدفعه؛ أما القيمة فتعتمد على الأرباح التي ستحققها الشركة، لذا قد يختلفان'), L('Prices are always wrong', 'الأسعار خاطئة دائمًا'), L('A share’s value never changes', 'قيمة السهم لا تتغير أبدًا')], 0,
+    L('Value rests on future profits nobody knows for sure. The price is the market’s current guess, and it can be too high or too low.', 'القيمة تقوم على أرباح مستقبلية لا يعرفها أحد يقينًا. والسعر هو تخمين السوق الحالي، وقد يكون مرتفعًا جدًا أو منخفضًا جدًا.')),
+  mcq(P, W, 12, 'value',
+    L('A wonderful company with fast-growing profits trades at a very high P/E. Which is true?', 'شركة رائعة أرباحها تنمو بسرعة يُتداول سهمها بنسبة P/E مرتفعة جدًا. أي مما يلي صحيح؟'),
+    [L('Its share can still fall if growth is merely good instead of great', 'قد ينخفض سهمها رغم ذلك إذا جاء النمو جيدًا فقط لا ممتازًا'), L('Its share is certain to keep rising', 'سهمها سيواصل الارتفاع حتمًا'), L('A high P/E means the share is cheap', 'نسبة P/E المرتفعة تعني أن السهم رخيص')], 0,
+    L('A high price already assumes strong growth. A great business bought at a price that expects too much can still be a poor investment.', 'السعر المرتفع يفترض مسبقًا نموًا قويًا. والشركة الممتازة التي تُشترى بسعر يتوقع الكثير قد تكون استثمارًا ضعيفًا رغم ذلك.')),
+  mcq(P, W, 13, 'value',
+    L('Why do many beginners use a broad index fund instead of picking single stocks?', 'لماذا يلجأ كثير من المبتدئين إلى صندوق مؤشر واسع بدل انتقاء أسهم منفردة؟'),
+    [L('Picking winners consistently is hard, and an index fund owns them all at a low fee', 'انتقاء الرابحين باستمرار صعب، وصندوق المؤشر يملكها كلها برسوم منخفضة'), L('Index funds cannot lose money', 'صناديق المؤشرات لا يمكن أن تخسر'), L('Single stocks are not allowed for beginners', 'الأسهم المنفردة غير مسموحة للمبتدئين')], 0,
+    L('Most professional stock pickers fail to beat their index over long periods after fees. An index fund still falls with the market, but it never misses the winners.', 'معظم المحترفين في انتقاء الأسهم يفشلون في التفوق على مؤشرهم على المدى الطويل بعد الرسوم. صندوق المؤشر يهبط مع السوق، لكنه لا يفوّت الرابحين أبدًا.')),
+]
+
+export const valuation: Module = {
+  id: W,
+  courseId: 'investing',
+  order: 4,
+  cover: cover(
+    L('Going deeper · Module 4', 'التعمق أكثر · الوحدة 4'),
+    L('Reading a company: valuation basics', 'قراءة الشركة: أساسيات التقييم'),
+    L('≈ 30 min', '≈ 30 دقيقة'),
+  ),
+  sections: [
+    section({
+      id: 'shares',
+      lessons: ['shares'],
+      label: L('Intro', 'مقدمة'),
+      nav: L('What a share is', 'ما هو السهم'),
+      title: L('What you own when you own a share', 'ماذا تملك عندما تملك سهمًا'),
+      standfirst: L('A share is part of a real business, so its price over time depends on how that business does.', 'السهم جزء من شركة حقيقية، لذا يعتمد سعره مع الوقت على أداء تلك الشركة.'),
+      time: L('4 min', '4 دقائق'),
+      blocks: [
+        objectives([
+          L('Read the three lines of a simple income statement', 'قراءة الأسطر الثلاثة لقائمة دخل بسيطة'),
+          L('Calculate earnings per share, P/E and dividend yield', 'حساب ربحية السهم ونسبة P/E وعائد التوزيعات'),
+          L('Judge how much debt a company carries', 'تقدير حجم الديون التي تحملها الشركة'),
+          L('Explain why price is not value, and why picking single stocks is hard', 'شرح لماذا لا يساوي السعر القيمة، ولماذا يصعب انتقاء الأسهم المنفردة'),
+        ]),
+        html(L(
+          '<p>A <strong>share</strong> is a small slice of a company. Owning it gives you a claim on part of the company’s profits, now and in the future, and often a vote at shareholder meetings. If a company has 1,000,000 shares and you hold 1,000 of them, you own 0.1% of the business.</p>',
+          '<p><strong>السهم</strong> شريحة صغيرة من شركة. امتلاكه يمنحك حقًا في جزء من أرباح الشركة، الآن وفي المستقبل، وغالبًا صوتًا في اجتماعات المساهمين. إذا كان لدى شركة 1,000,000 سهم وتملك منها 1,000، فأنت تملك 0.1% من الشركة.</p>',
+        )),
+        html(L(
+          '<p>Day to day, prices move with news, moods and rumours. Over years, though, a share’s price tends to follow the company’s <strong>profits</strong>: what it earns today and what buyers expect it to earn later. That is why it helps to read a company’s numbers.</p>',
+          '<p>يومًا بيوم، تتحرك الأسعار مع الأخبار والمزاج والشائعات. لكن على مدى السنوات، يميل سعر السهم إلى اتباع <strong>أرباح</strong> الشركة: ما تربحه اليوم وما يتوقع المشترون أن تربحه لاحقًا. لهذا تفيد قراءة أرقام الشركة.</p>',
+        )),
+        box('example', L('Example', 'مثال'), L(
+          'Nile Foods (fictional) earns 150 million a year. If its profits double over ten years and buyers’ expectations stay the same, its share price would roughly double too. If profits shrink, the price usually follows them down. (Illustrative figures.)',
+          'تربح نايل فودز (خيالية) 150 مليونًا سنويًا. إذا تضاعفت أرباحها خلال عشر سنوات وبقيت توقعات المشترين كما هي، فسيتضاعف سعر سهمها تقريبًا أيضًا. وإذا تقلصت الأرباح، يتبعها السعر عادةً هبوطًا. (أرقام توضيحية.)',
+        )),
+        keyIdea(L(
+          '<p>Over the long run, a share’s price follows the company’s <strong>profits</strong>: today’s, and the ones buyers expect.</p>',
+          '<p>على المدى الطويل، يتبع سعر السهم <strong>أرباح</strong> الشركة: الحالية، وتلك التي يتوقعها المشترون.</p>',
+        )),
+        exercise('invv-q001'),
+        exercise('invv-q002'),
+      ],
+    }),
+    section({
+      id: 'profit',
+      lessons: ['profit'],
+      label: L('Part 1', 'الجزء ١'),
+      nav: L('Revenue, profit, margins', 'الإيرادات والربح والهوامش'),
+      title: L('Revenue, profit and margins', 'الإيرادات والربح والهوامش'),
+      standfirst: L('The income statement tells you how much a company sold and how much of it it kept.', 'قائمة الدخل تخبرك كم باعت الشركة وكم احتفظت منه.'),
+      time: L('5 min', '5 دقائق'),
+      blocks: [
+        html(L(
+          '<p>A company’s <strong>income statement</strong> sums up a year of business in three lines. <strong>Revenue</strong> is everything customers paid. <strong>Costs</strong> are what the company spent: ingredients, wages, rent, interest and tax. <strong>Profit</strong> (also called net income or earnings) is what is left: revenue minus costs.</p>',
+          '<p>تلخّص <strong>قائمة الدخل</strong> عامًا من نشاط الشركة في ثلاثة أسطر. <strong>الإيرادات</strong> هي كل ما دفعه العملاء. و<strong>التكاليف</strong> هي ما أنفقته الشركة: المواد والأجور والإيجار والفوائد والضرائب. و<strong>الربح</strong> (ويُسمى أيضًا صافي الدخل) هو ما يتبقى: الإيرادات ناقص التكاليف.</p>',
+        )),
+        diagram({
+          fig: L('Illustration', 'توضيح'),
+          title: L('A year at Nile Foods (fictional)', 'عام في نايل فودز (خيالية)'),
+          src: '/diagrams/valuation-income.svg',
+          alt: L(
+            'Bar chart in millions: revenue of 1,000, costs of 850 taken away, leaving a profit of 150, which is 15% of revenue.',
+            'رسم بالأعمدة بالملايين: إيرادات 1,000، تُطرح منها تكاليف 850، فيتبقى ربح 150، أي 15% من الإيرادات.',
+          ),
+          caption: L('Left to right: revenue, costs, profit, in millions. Illustrative figures.', 'من اليسار إلى اليمين: الإيرادات، التكاليف، الربح، بالملايين. أرقام توضيحية.'),
+        }),
+        html(L(
+          '<p><strong>Profit margin</strong> = profit ÷ revenue. Nile Foods keeps 150 of every 1,000 it sells: a 15% margin. Margins let you compare companies of different sizes, and their direction matters: revenue rising while the margin falls means costs are growing faster than sales, so each new sale earns less.</p>',
+          '<p><strong>هامش الربح</strong> = الربح ÷ الإيرادات. تحتفظ نايل فودز بـ150 من كل 1,000 تبيعها: هامش 15%. تتيح الهوامش مقارنة شركات بأحجام مختلفة، واتجاهها مهم: ارتفاع الإيرادات مع تراجع الهامش يعني أن التكاليف تنمو أسرع من المبيعات، فتربح كل عملية بيع جديدة أقل.</p>',
+        )),
+        box('mistake', L('Common mistake', 'خطأ شائع'), L(
+          'Looking only at revenue. A company can double its sales and still lose money if its costs grow even faster. Growth helps shareholders only when some of it reaches profit.',
+          'النظر إلى الإيرادات وحدها. قد تضاعف شركة مبيعاتها وتخسر رغم ذلك إذا نمت تكاليفها أسرع. النمو لا يفيد المساهمين إلا إذا وصل جزء منه إلى الربح.',
+        )),
+        keyIdea(L(
+          '<p>Revenue is what comes in; <strong>profit</strong> is what is left after costs. The margin shows how much of each sale the company keeps.</p>',
+          '<p>الإيرادات هي ما يدخل؛ و<strong>الربح</strong> هو ما يتبقى بعد التكاليف. والهامش يبيّن كم تحتفظ الشركة من كل عملية بيع.</p>',
+        )),
+        exercise('invv-q003'),
+        exercise('invv-q004'),
+      ],
+    }),
+    section({
+      id: 'pe',
+      lessons: ['pe'],
+      label: L('Part 2', 'الجزء ٢'),
+      nav: L('EPS and the P/E ratio', 'ربحية السهم ونسبة P/E'),
+      title: L('Earnings per share and the P/E ratio', 'ربحية السهم ونسبة السعر إلى الربح (P/E)'),
+      standfirst: L('P/E compares what you pay for a share with the profit behind it.', 'نسبة P/E تقارن ما تدفعه مقابل السهم بالربح الذي يقف وراءه.'),
+      time: L('6 min', '6 دقائق'),
+      blocks: [
+        html(L(
+          '<p>Profit describes the whole company, but you own shares. <strong>Earnings per share (EPS)</strong> divides the profit among them: Nile Foods (fictional) earns 150 million and has 75 million shares, so its EPS is 2. The <strong>price-to-earnings ratio (P/E)</strong> then compares the share price with that EPS.</p>',
+          '<p>الربح يصف الشركة كلها، لكنك تملك أسهمًا. <strong>ربحية السهم (EPS)</strong> تقسم الربح على الأسهم: تربح نايل فودز (خيالية) 150 مليونًا ولديها 75 مليون سهم، فربحية سهمها 2. ثم تقارن <strong>نسبة السعر إلى الربح (P/E)</strong> سعر السهم بهذه الربحية.</p>',
+        )),
+        formula('P/E = price ÷ EPS', L('Price-to-earnings = share price ÷ earnings per share', 'السعر إلى الربح = سعر السهم ÷ ربحية السهم')),
+        html(L(
+          '<p>At a price of 20, Nile Foods has a P/E of 10: you pay 10 for every 1 of yearly profit. Desert Tech (fictional) also earns 2 a share but trades at 60, a P/E of 30. Buyers pay three times as much for the same profit today because they expect its profits to grow much faster.</p>',
+          '<p>بسعر 20، تبلغ نسبة P/E لنايل فودز 10: تدفع 10 مقابل كل 1 من الربح السنوي. وتربح ديزرت تك (خيالية) أيضًا 2 للسهم لكن سعرها 60، أي P/E قدرها 30. يدفع المشترون ثلاثة أضعاف مقابل الربح نفسه اليوم لأنهم يتوقعون أن تنمو أرباحها أسرع بكثير.</p>',
+        )),
+        diagram({
+          fig: L('Illustration', 'توضيح'),
+          title: L('Same profit, different price', 'ربح واحد وسعر مختلف'),
+          src: '/diagrams/valuation-pe.svg',
+          alt: L(
+            'Bar chart: a share priced at 20 that earns 2 has a P/E of 10; a share priced at 60 that earns 2 has a P/E of 30.',
+            'رسم بالأعمدة: سهم سعره 20 وربحيته 2 نسبته P/E قدرها 10؛ وسهم سعره 60 وربحيته 2 نسبته P/E قدرها 30.',
+          ),
+          caption: L('Price ÷ EPS. Left: Nile Foods. Right: Desert Tech. Both fictional; illustrative figures.', 'السعر ÷ ربحية السهم. يسارًا: نايل فودز. يمينًا: ديزرت تك. كلتاهما خيالية؛ أرقام توضيحية.'),
+        }),
+        box('keypoint', L('Read it with care', 'اقرأها بحذر'), L(
+          'A high P/E is not “expensive” and a low one is not “cheap” on its own. A high P/E means the price already assumes strong growth, so a disappointment can hit hard. A low P/E can mean trouble that buyers already see. Compare P/Es within the same industry.',
+          'نسبة P/E المرتفعة ليست «غالية» والمنخفضة ليست «رخيصة» بحد ذاتها. النسبة المرتفعة تعني أن السعر يفترض مسبقًا نموًا قويًا، فقد تكون خيبة الأمل مؤلمة. والنسبة المنخفضة قد تعني متاعب يراها المشترون بالفعل. قارن نسب P/E داخل القطاع نفسه.',
+        )),
+        keyIdea(L(
+          '<p>P/E tells you how many years of today’s profit the price pays for; a high one means buyers <strong>expect growth</strong>.</p>',
+          '<p>نسبة P/E تخبرك بعدد سنوات الربح الحالي التي يدفعها السعر؛ والنسبة المرتفعة تعني أن المشترين <strong>يتوقعون نموًا</strong>.</p>',
+        )),
+        exercise('invv-q005'),
+        exercise('invv-q006'),
+      ],
+    }),
+    section({
+      id: 'dividends',
+      lessons: ['dividends'],
+      label: L('Part 3', 'الجزء ٣'),
+      nav: L('Dividends and yield', 'التوزيعات وعائدها'),
+      title: L('Dividends and dividend yield', 'توزيعات الأرباح وعائد التوزيعات'),
+      time: L('5 min', '5 دقائق'),
+      blocks: [
+        html(L(
+          '<p>Some companies pay part of their profit to shareholders in cash: a <strong>dividend</strong>. Others keep everything to grow the business, which can reward shareholders through a rising share price instead. Neither is better by itself; what matters is whether the money is used well.</p>',
+          '<p>تدفع بعض الشركات جزءًا من أرباحها للمساهمين نقدًا: وهذه <strong>توزيعات الأرباح</strong>. وتحتفظ شركات أخرى بكل شيء لتنمية أعمالها، ما قد يكافئ المساهمين بارتفاع سعر السهم بدلًا من ذلك. لا أحد الخيارين أفضل بذاته؛ المهم هو حسن استخدام المال.</p>',
+        )),
+        formula('Dividend yield = dividend ÷ price', L('The yearly dividend per share divided by the share price', 'التوزيعات السنوية للسهم مقسومة على سعر السهم')),
+        box('example', L('Example', 'مثال'), L(
+          'Nile Foods (fictional) pays 0.80 a share each year and its shares cost 20. Its dividend yield is 0.80 ÷ 20 = 4%. Buy 1,000 worth of its shares and you would receive about 40 a year, as long as the dividend stays the same. (Illustrative figures.)',
+          'تدفع نايل فودز (خيالية) 0.80 للسهم كل عام، وسعر سهمها 20. عائد توزيعاتها 0.80 ÷ 20 = 4%. اشترِ من أسهمها بقيمة 1,000 وستحصل على نحو 40 سنويًا، ما دامت التوزيعات على حالها. (أرقام توضيحية.)',
+        )),
+        box('mistake', L('Common mistake', 'خطأ شائع'), L(
+          'Chasing the highest yield. The yield rises when the price falls, so a very high yield often means investors fear the dividend will be cut. Dividends are never guaranteed: a company in trouble can reduce them or stop them altogether.',
+          'مطاردة أعلى عائد. يرتفع العائد عندما ينخفض السعر، لذا كثيرًا ما يعني العائد المرتفع جدًا أن المستثمرين يخشون خفض التوزيعات. التوزيعات ليست مضمونة أبدًا: الشركة المتعثرة قد تخفضها أو توقفها تمامًا.',
+        )),
+        keyIdea(L(
+          '<p>Dividend yield = yearly dividend ÷ price. A very high yield is often a <strong>warning</strong>, not a bargain.</p>',
+          '<p>عائد التوزيعات = التوزيعات السنوية ÷ السعر. والعائد المرتفع جدًا كثيرًا ما يكون <strong>إنذارًا</strong> لا صفقة.</p>',
+        )),
+        exercise('invv-q007'),
+        exercise('invv-q008'),
+      ],
+    }),
+    section({
+      id: 'balance-sheet',
+      lessons: ['balance-sheet'],
+      label: L('Part 4', 'الجزء ٤'),
+      nav: L('Balance sheet and debt', 'الميزانية العمومية والديون'),
+      title: L('The balance sheet and debt', 'الميزانية العمومية والديون'),
+      standfirst: L('What a company owns, what it owes, and what is left for its shareholders.', 'ما تملكه الشركة، وما عليها، وما يتبقى لمساهميها.'),
+      time: L('5 min', '5 دقائق'),
+      blocks: [
+        html(L(
+          '<p>The income statement covers a year; the <strong>balance sheet</strong> is a snapshot of one day. <strong>Assets</strong> are what the company owns: cash, buildings, machines, goods in the warehouse. <strong>Liabilities</strong> are what it owes: loans, bonds, unpaid bills. What is left for shareholders is <strong>equity</strong>.</p>',
+          '<p>تغطي قائمة الدخل عامًا كاملًا؛ أما <strong>الميزانية العمومية</strong> فلقطة ليوم واحد. <strong>الأصول</strong> هي ما تملكه الشركة: النقد والمباني والآلات والبضائع في المستودع. و<strong>الالتزامات</strong> هي ما عليها: القروض والسندات والفواتير غير المدفوعة. وما يتبقى للمساهمين هو <strong>حقوق المساهمين</strong>.</p>',
+        )),
+        formula('Equity = assets − liabilities', L('What shareholders would own if every debt were paid off', 'ما سيملكه المساهمون لو سُدّدت كل الديون')),
+        table(
+          [L('In millions (illustrative)', 'بالملايين (توضيحي)'), L('Assets', 'الأصول'), L('Debt', 'الديون'), L('Equity', 'حقوق المساهمين')],
+          [
+            [L('Nile Foods (fictional)', 'نايل فودز (خيالية)'), L('900', '900'), L('300', '300'), L('600', '600')],
+            [L('Desert Tech (fictional)', 'ديزرت تك (خيالية)'), L('900', '900'), L('750', '750'), L('150', '150')],
+          ],
+        ),
+        html(L(
+          '<p>Debt is not bad in itself: borrowing can help a company grow. But interest must be paid in good years and bad. If profits fall, a company with heavy debt may struggle to pay, cut its dividend or even go bankrupt, and shareholders are paid last, after every lender.</p>',
+          '<p>الديون ليست سيئة بذاتها: الاقتراض قد يساعد الشركة على النمو. لكن الفائدة يجب أن تُدفع في السنوات الجيدة والسيئة. وإذا انخفضت الأرباح، قد تتعثر الشركة المثقلة بالديون في السداد، أو تخفض توزيعاتها، أو حتى تُفلس، ويأتي المساهمون في آخر الصف بعد كل المقرضين.</p>',
+        )),
+        box('analogy', L('Analogy', 'تشبيه'), L(
+          'Two families each own a house worth 300,000. One owes 50,000 on it, the other 270,000. From the street they look the same, but only one could comfortably survive losing an income.',
+          'تملك عائلتان منزلًا قيمته 300,000 لكل منهما. على الأولى دين قدره 50,000، وعلى الثانية 270,000. من الشارع يبدوان متشابهين، لكن واحدة فقط تستطيع تحمّل خسارة أحد مصادر دخلها بسهولة.',
+        )),
+        keyIdea(L(
+          '<p>Equity is what is left after debts. Heavy debt makes a company <strong>fragile</strong> when profits fall.</p>',
+          '<p>حقوق المساهمين هي ما يتبقى بعد الديون. والديون الكبيرة تجعل الشركة <strong>هشّة</strong> عندما تنخفض الأرباح.</p>',
+        )),
+        exercise('invv-q009'),
+        exercise('invv-q010'),
+      ],
+    }),
+    section({
+      id: 'price-value',
+      lessons: ['price-value'],
+      label: L('Part 5', 'الجزء ٥'),
+      nav: L('Price vs value', 'السعر مقابل القيمة'),
+      title: L('Price is not value', 'السعر ليس القيمة'),
+      standfirst: L('Why a great company is not always a great investment, and why picking winners is hard.', 'لماذا لا تكون الشركة الممتازة دائمًا استثمارًا ممتازًا، ولماذا يصعب انتقاء الرابحين.'),
+      time: L('6 min', '6 دقائق'),
+      blocks: [
+        html(L(
+          '<p>The <strong>price</strong> is what you pay for a share today. Its <strong>value</strong> is what the business is worth, judged from all the profits it may earn in the future. Nobody knows those profits for sure, so the price moves every time buyers change their minds.</p>',
+          '<p><strong>السعر</strong> هو ما تدفعه مقابل السهم اليوم. أما <strong>قيمته</strong> فهي ما تساويه الشركة، بناءً على كل الأرباح التي قد تحققها مستقبلًا. لا أحد يعرف تلك الأرباح يقينًا، لذا يتحرك السعر كلما غيّر المشترون رأيهم.</p>',
+        )),
+        box('example', L('Example', 'مثال'), L(
+          'Desert Tech (fictional) is a great company with fast-growing profits. But at a P/E of 30, its price already assumes years of strong growth. If profits grow a little slower than hoped, the share can fall while the business is still doing well. (Illustrative figures.)',
+          'ديزرت تك (خيالية) شركة ممتازة أرباحها تنمو بسرعة. لكن بنسبة P/E قدرها 30، يفترض سعرها مسبقًا سنوات من النمو القوي. وإذا نمت الأرباح أبطأ قليلًا من المأمول، قد ينخفض السهم بينما الشركة ما زالت تعمل جيدًا. (أرقام توضيحية.)',
+        )),
+        html(L(
+          '<p>Picking single stocks that beat the market is hard. You compete with professionals who study the same numbers full time, news is reflected in prices within seconds, and a few big winners make up much of the market’s long-run gain, so missing them hurts. Most professional fund managers fail to beat their index over long periods, after fees.</p>',
+          '<p>انتقاء أسهم منفردة تتفوق على السوق أمر صعب. فأنت تنافس محترفين يدرسون الأرقام نفسها طوال الوقت، والأخبار تنعكس على الأسعار في ثوانٍ، وعدد قليل من الرابحين الكبار يصنع جزءًا كبيرًا من مكاسب السوق على المدى الطويل، فتفويتهم مكلف. ومعظم مديري الصناديق المحترفين يفشلون في التفوق على مؤشرهم على المدى الطويل بعد الرسوم.</p>',
+        )),
+        html(L(
+          '<p>An <strong>index fund</strong> takes the other route: it owns all the companies in a market for a low fee, so you hold the winners without having to find them. Reading company numbers still helps you understand what you own and why prices move, but you do not need to out-guess the market to invest.</p>',
+          '<p><strong>صندوق المؤشر</strong> يسلك الطريق الآخر: يملك كل شركات السوق برسوم منخفضة، فتملك الرابحين دون الحاجة إلى البحث عنهم. وتبقى قراءة أرقام الشركات مفيدة لتفهم ما تملكه ولماذا تتحرك الأسعار، لكنك لا تحتاج إلى التفوق على السوق في التخمين لكي تستثمر.</p>',
+        )),
+        keyIdea(L(
+          '<p>A great company is not always a great investment: it depends on the <strong>price</strong>. An index fund owns the whole market, so you do not have to pick winners.</p>',
+          '<p>الشركة الممتازة ليست دائمًا استثمارًا ممتازًا: الأمر يعتمد على <strong>السعر</strong>. وصندوق المؤشر يملك السوق كله، فلا تحتاج إلى انتقاء الرابحين.</p>',
+        )),
+        exercise('invv-q011'),
+        exercise('invv-q012'),
+        exercise('invv-q013'),
+        takeaways([
+          L('A share’s price follows the company’s profits over time', 'سعر السهم يتبع أرباح الشركة مع الوقت'),
+          L('Profit = revenue − costs; margin = profit ÷ revenue', 'الربح = الإيرادات − التكاليف؛ الهامش = الربح ÷ الإيرادات'),
+          L('P/E = price ÷ EPS; dividend yield = dividend ÷ price', 'P/E = السعر ÷ ربحية السهم؛ عائد التوزيعات = التوزيعات ÷ السعر'),
+          L('Heavy debt makes a company fragile', 'الديون الكبيرة تجعل الشركة هشّة'),
+          L('Price is not value; index funds avoid picking winners', 'السعر ليس القيمة؛ وصناديق المؤشرات تغنيك عن انتقاء الرابحين'),
+        ]),
+      ],
+    }),
+  ],
+  questions,
+}

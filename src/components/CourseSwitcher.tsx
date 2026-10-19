@@ -9,8 +9,9 @@ import { Sheet } from './SettingsList'
 import { Icon } from './ui'
 import styles from './CourseSwitcher.module.css'
 
-/** The active course's name as a dropdown (top of Learn and Me): the offered courses, and "All courses". */
-export function CourseSwitcher({ className }: { className?: string }) {
+/** The active course's name as a dropdown: the offered courses, and "All courses". `title` is Learn's heading (big, may
+ *  wrap onto two lines); `inline` sits under the name on Me. */
+export function CourseSwitcher({ className, variant = 'inline' }: { className?: string; variant?: 'inline' | 'title' }) {
   const { t } = useTranslation()
   const tc = useLocalized()
   const navigate = useNavigate()
@@ -20,10 +21,10 @@ export function CourseSwitcher({ className }: { className?: string }) {
 
   return (
     <>
-      <button type="button" className={`${styles.switcher} ${className ?? ''}`} aria-haspopup="dialog" aria-expanded={open} onClick={() => setOpen(true)}>
+      <button type="button" className={`${styles.switcher} ${variant === 'title' ? styles.title : ''} ${className ?? ''}`} aria-haspopup="dialog" aria-expanded={open} onClick={() => setOpen(true)}>
         <span className="visually-hidden">{t('courses_switch')}: </span>
         <span className={styles.name}>{course ? tc(course.title) : ''}</span>
-        <Icon name="chevronDown" size={20} />
+        <Icon name="chevronDown" size={variant === 'title' ? 24 : 20} className={styles.down} />
       </button>
       {open && (
         <Sheet title={t('courses_switch')} onClose={() => setOpen(false)}>

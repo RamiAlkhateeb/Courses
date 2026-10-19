@@ -11,7 +11,7 @@ import { emptyPlayground } from '../domain/playground/engine'
 import { parsePlayground } from '../domain/playground/persist'
 import { emptyProfile, parseProfile } from '../domain/profile'
 import { emptyProgress, parseProgress } from '../domain/progress'
-import { mergeProfile, mergeProgress, signInPlan, walletSide } from '../domain/sync'
+import { mergeProfile, mergeProgress, parsePrefs, signInPlan, walletSide, type Prefs } from '../domain/sync'
 import { loadSupabase } from './supabase'
 import { authStore, type AuthUser } from './auth'
 import { createPersistedStore } from './createPersistedStore'
@@ -19,10 +19,30 @@ import { playgroundStore } from './playground'
 import { profileStore } from './profile'
 import { progressStore } from './progress'
 import { useStore } from './useStore'
+import { settingsStore } from './settings'
+import { languageStore } from './language'
 
-type Key = 'progress' | 'profile' | 'playground'
-const KEYS: Key[] = ['progress', 'profile', 'playground']
-const stores = { progress: progressStore, profile: profileStore, playground: playgroundStore }
+type Key = 'progress' | 'profile' | 'playground' | 'settings'
+const KEYS: Key[] = ['progress', 'profile', 'playground', 'settings']
+
+/** Sound and language as one synced value (two local stores, so each keeps its own saved format). */
+const prefsStore = {
+  get: (): Prefs => ({ sound: settingsStore.get().sound, lang: languageStore.get() }),
+  update(fn: (p: Prefs) => Prefs) {
+    const next = fn(prefsStore.get())
+    settingsStore.update((s) => (s.sound === next.sound ? s : { ...s, sound: next.sound }))
+    languageStore.update(() => next.lang)
+  },
+  subscribe(listener: () => void) {
+    const a = settingsStore.subscribe(listener)
+    const b = languageStore.subscribe(listener)
+    return () => {
+      a()
+      b()
+    }
+  },
+}
+const stores = { progress: progressStore, profile: profileStore, playground: playgroundStore, settings: prefsStore }
 
 interface Meta {
   /** The account this device's data last belonged to (null: a pure guest) */
@@ -93,12 +113,16 @@ async function pull(u: AuthUser) {
   const playground = side === 'remote' && remoteProgress ? (remotePlayground ?? emptyPlayground) : localPlayground
   const profileNewer = rows.profile ? !meta.modified.profile || rows.profile.updated_at > meta.modified.profile : false
   const profile = remoteProfile ? mergeProfile(localProfile, remoteProfile, replace || profileNewer) : localProfile
+  const remotePrefs = rows.settings ? parsePrefs(rows.settings.data) : null
+  const prefsNewer = rows.settings ? replace || !meta.modified.settings || rows.settings.updated_at > meta.modified.settings : false
+  const prefs = remotePrefs && prefsNewer ? remotePrefs : prefsStore.get()
 
   applying = true
   try {
     if (!same(progress, progressStore.get())) progressStore.update(() => progress)
     if (!same(profile, profileStore.get())) profileStore.update(() => profile)
     if (!same(playground, playgroundStore.get())) playgroundStore.update(() => playground)
+    if (!same(prefs, prefsStore.get())) prefsStore.update(() => prefs)
   } finally {
     applying = false
   }
@@ -107,11 +131,21 @@ async function pull(u: AuthUser) {
   if (!rows.progress || !same(progress, remoteProgress)) dirty.add('progress')
   if (!rows.profile || !same(profile, remoteProfile)) dirty.add('profile')
   if (!rows.playground || !same(playground, remotePlayground)) dirty.add('playground')
+  if (!rows.settings || !same(prefs, remotePrefs)) dirty.add('settings')
   lastPull = Date.now()
 }
 
-/** Send the dirty stores in one request, so the bank and the Playground always reach the server together. */
+/** Send the dirty stores in one request, so the bank and the Playground always reach the server together.
+ *  Preferences go on their own: a project that has not run migration 0003 yet refuses that row, and that must never
+ *  hold back the learner's progress. */
 async function push(u: AuthUser) {
+  if (dirty.has('settings')) {
+    const sb = await loadSupabase()
+    const { data } = await sb.from('user_state').upsert([{ user_id: u.id, key: 'settings', data: prefsStore.get() }], { onConflict: 'user_id,key' }).select('key,updated_at')
+    dirty.delete('settings') // sent, or refused by an older table: either way, not retried in a loop
+    const at = (data as { updated_at: string }[] | null)?.[0]?.updated_at
+    if (at) setMeta((m) => ({ ...m, modified: { ...m.modified, settings: at } }))
+  }
   if (dirty.size === 0) return
   const keys = [...dirty]
   const sb = await loadSupabase()

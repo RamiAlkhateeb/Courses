@@ -1,6 +1,6 @@
 // The Playground as pure functions: (state, market) → state. The UI only draws it and dispatches to it.
 // Money is play money, rounded to cents. Nothing here touches React, storage or the clock.
-import { ASSET_IDS, ASSETS, CONFIG, MS_PER_WEEK, WEEKS_PER_SEASON, type AssetId } from './config'
+import { ASSET_IDS, ASSETS, CONFIG, MS_PER_WEEK, WEEKS_PER_SEASON, type AssetId, type GoalId } from './config'
 import type { EventId } from './events'
 import { buildMarket, type Market } from './market'
 
@@ -59,6 +59,10 @@ export interface PlaygroundState {
   reinvest: boolean
   /** Dividends, rent and interest paid out this season */
   income: number
+  /** The goal the player set for this season (checked on the summary) */
+  goal: GoalId | null
+  /** Simulated years whose recap card the player has seen */
+  recapSeen: number
 }
 
 export const emptyPlayground: PlaygroundState = {
@@ -80,6 +84,8 @@ export const emptyPlayground: PlaygroundState = {
   autoInvest: null,
   reinvest: true,
   income: 0,
+  goal: null,
+  recapSeen: 0,
 }
 
 export const cents = (n: number) => Math.round(n * 100) / 100
@@ -231,6 +237,7 @@ function payout(s: PlaygroundState, market: Market): PlaygroundState {
 
 export const setAutoInvest = (s: PlaygroundState, autoInvest: AutoInvest | null): PlaygroundState => ({ ...s, autoInvest })
 export const setReinvest = (s: PlaygroundState, reinvest: boolean): PlaygroundState => ({ ...s, reinvest })
+export const setGoal = (s: PlaygroundState, goal: GoalId | null): PlaygroundState => ({ ...s, goal })
 
 /** What the same money would be worth all in `asset`: each deposit bought (with the 1% fee) the week it came in, or
  *  when the season started, and held, payouts reinvested. One value per point of `history`, for the chart. */
@@ -288,7 +295,7 @@ export interface CashOut {
 export function cashOut(s: PlaygroundState, nextSeed: number): CashOut | null {
   if (!canWithdraw(s)) return null
   const amount = netWorth(s)
-  // Auto-invest and reinvest are the player's settings: they carry into the next season.
-  const state = { ...emptyPlayground, season: s.status === 'ended' ? s.season + 1 : s.season, seed: nextSeed, autoInvest: s.autoInvest, reinvest: s.reinvest }
+  // Auto-invest, reinvest and the goal are the player's choices: they carry into the next season.
+  const state = { ...emptyPlayground, season: s.status === 'ended' ? s.season + 1 : s.season, seed: nextSeed, autoInvest: s.autoInvest, reinvest: s.reinvest, goal: s.goal }
   return { amount, state }
 }

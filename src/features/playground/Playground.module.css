@@ -807,3 +807,55 @@ button.holding {
   vertical-align: middle;
   border-top: 3px dotted var(--ink-soft);
 }
+
+/* Season goal, rebalance and the yearly recap */
+.goalChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-block: 10px;
+}
+.goalChips button {
+  min-block-size: 44px;
+  padding: 8px 14px;
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  text-align: start;
+  color: var(--brand);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+.goalChips button[aria-pressed='true'] {
+  background: var(--dawn);
+  border: 1.5px solid var(--brand);
+}
+.goalOn,
+.goalOff {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-weight: 700;
+}
+.goalOn {
+  color: var(--correct);
+}
+.goalOff {
+  color: var(--muted);
+}
+.ringHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-block-end: 6px;
+}
+.ringHead h2 {
+  margin: 0;
+}
+.autoHead > :last-child {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}

@@ -61,14 +61,15 @@ for (const [lang, other, foreign] of [
   })
 }
 
-test('only the Investing course is offered; the courses page shows the rest as coming soon', async ({ page }) => {
+test('only the Investing course is offered; the courses page teases three more as coming soon', async ({ page }) => {
   await onboarded(page)
   await page.goto('')
-  await page.getByRole('button', { name: /Investing Fundamentals/ }).click()
+  // Learn's title is the course: its name opens the course dropdown
+  await page.getByRole('heading', { level: 1 }).getByRole('button', { name: /Investing Fundamentals/ }).click()
   await page.getByRole('link', { name: 'All courses' }).click()
   await expect(page).toHaveURL(/\/courses$/)
   await expect(page.getByRole('heading', { name: 'Courses', level: 1 })).toBeVisible()
-  await expect(page.getByText('Coming soon').first()).toBeVisible()
+  await expect(page.getByText('Coming soon', { exact: true })).toHaveCount(3)
   await page.getByRole('button', { name: /Investing Fundamentals/ }).click()
   await expect(page).toHaveURL(/\/Courses\/$/)
   await page.goto('course/tech-interview')

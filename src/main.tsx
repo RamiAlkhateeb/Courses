@@ -7,11 +7,15 @@ import './styles/global.css'
 import './i18n'
 import { Providers } from './app/providers'
 import { reloadOnStaleChunks } from './app/chunkReload'
+import { registerServiceWorker } from './app/serviceWorker'
 import { router } from './app/router'
 import { initAuth } from './state/auth'
+import { listenForInstall } from './state/install'
 import { startSync } from './state/sync'
 
 reloadOnStaleChunks()
+registerServiceWorker()
+listenForInstall()
 startSync() // listens for sign-in; does nothing unless accounts are configured
 void initAuth()
 

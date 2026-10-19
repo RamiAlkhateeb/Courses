@@ -33,11 +33,17 @@ export async function setNewsAlerts(on: boolean): Promise<boolean> {
 /** Show one alert, if the player turned them on and the browser still allows it. */
 export function showNewsAlert(title: string, body: string) {
   if (!newsAlertsStore.get() || alertSupport() !== 'ok' || Notification.permission !== 'granted') return
-  try {
-    new Notification(title, { body, icon: `${import.meta.env.BASE_URL}icon-192.png`, tag: `news-${title}` })
-  } catch {
-    // Some mobile browsers only allow notifications from a service worker: no alert, the news still waits in the app
-  }
+  const options = { body, icon: `${import.meta.env.BASE_URL}icon-192.png`, tag: `news-${title}` }
+  // Through the service worker when there is one (phones only allow that, and a tap opens the Playground)
+  const viaWorker = 'serviceWorker' in navigator ? navigator.serviceWorker.getRegistration() : Promise.resolve(undefined)
+  void viaWorker
+    .then((reg) => {
+      if (reg) return reg.showNotification(title, options)
+      new Notification(title, options)
+    })
+    .catch(() => {
+      // Not allowed here: no alert, the news still waits in the app
+    })
 }
 
 export const useNewsAlerts = () => useStore(newsAlertsStore)

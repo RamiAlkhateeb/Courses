@@ -1,5 +1,5 @@
-import { ASSET_IDS, CONFIG, type AssetId } from './config'
-import { maxDrawdown, realHistory, type PlaygroundState, type Trade } from './engine'
+import { ASSET_IDS, CONFIG, GOALS, type AssetId, type GoalId } from './config'
+import { maxDrawdown, netWorth, realHistory, type PlaygroundState, type Trade } from './engine'
 import { biggestBet } from './risk'
 
 /** Units held of each asset just after the trades up to and including week `tick` (replayed from the trade list). */
@@ -62,3 +62,25 @@ export function insights(s: PlaygroundState): { helped: Insight[]; hurt: Insight
   return { helped: helped.slice(0, 3), hurt: hurt.slice(0, 3) }
 }
 
+
+export interface GoalStatus {
+  goal: GoalId
+  met: boolean
+  /** The number the goal is measured by: the real (after-inflation) gain in dollars, the worst fall (0–1), or income */
+  value: number
+}
+
+/** How the season's goal stands now (on track / missed) or at the end (met / not met). */
+export function goalStatus(s: PlaygroundState): GoalStatus | null {
+  if (!s.goal) return null
+  if (s.goal === 'beat-inflation') {
+    const real = realHistory(s)
+    const value = (real[real.length - 1] ?? netWorth(s)) - s.funded
+    return { goal: s.goal, met: s.funded > 0 && value > 0, value }
+  }
+  if (s.goal === 'steady') {
+    const fall = maxDrawdown(s.history).fall
+    return { goal: s.goal, met: s.history.length > 0 && fall <= GOALS.steadyMaxFall, value: fall }
+  }
+  return { goal: s.goal, met: s.income >= GOALS.incomeTarget, value: s.income }
+}

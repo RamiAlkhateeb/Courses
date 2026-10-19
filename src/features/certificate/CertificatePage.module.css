@@ -1,0 +1,27 @@
+.cert {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+}
+.actions {
+  display: grid;
+  gap: 12px;
+  margin-block-start: 20px;
+}
+.note {
+  margin: 0;
+  min-block-size: 1.5em;
+  text-align: center;
+  color: var(--correct);
+  font-weight: 600;
+}
+.locked {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  text-align: center;
+  color: var(--muted);
+}
+.locked p {
+  margin: 0;
+}

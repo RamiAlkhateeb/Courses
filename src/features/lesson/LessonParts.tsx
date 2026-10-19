@@ -183,6 +183,7 @@ export function useLessonKeys(opts: {
     function onKey(e: KeyboardEvent) {
       const { onEnter, question, checked, onPick } = latest.current
       if (e.target instanceof HTMLAnchorElement) return
+      if (e.target instanceof HTMLElement && e.target.closest('dfn[data-term], [role="dialog"]')) return // a glossary term or its card
       if (e.key === 'Enter') {
         e.preventDefault() // stop a focused button from also handling it
         onEnter()
@@ -207,6 +208,7 @@ export function LessonSummary({
   subtitle,
   action,
   onAction,
+  freezeEarned,
   secondary,
   onSecondary,
 }: {
@@ -218,13 +220,15 @@ export function LessonSummary({
   subtitle?: string
   action: string
   onAction: () => void
+  /** This finish earned a streak freeze (a perfect first finish) */
+  freezeEarned?: boolean
   /** "Review my mistake": only offered when something was missed */
   secondary?: string
   onSecondary?: () => void
 }) {
   const { t: tUi } = useTranslation()
   const { progress } = useProgress()
-  const streak = currentStreak(progress.streak, localDay())
+  const streak = currentStreak(progress.streak, localDay(), progress.freezes)
 
   useEffect(() => playSound('complete'), [])
   const clock = seconds === undefined ? '' : `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`
@@ -269,6 +273,11 @@ export function LessonSummary({
         </div>
         <ProgressBar value={Math.min(streak, 7)} max={7} label={tUi('sum_streak_bar', { n: Math.min(streak, 7) })} />
         <p className={styles.weekNote}>{streak >= 7 ? tUi('sum_streak_full') : tUi('sum_streak_bar', { n: streak })}</p>
+        {(freezeEarned || progress.freezes > 0) && (
+          <p className={styles.freezeNote}>
+            <Icon name="shield" size={18} /> {freezeEarned ? tUi('freeze_earned') : tUi('freeze_have', { count: progress.freezes })}
+          </p>
+        )}
       </Card>
       <div className={styles.actions}>
         <p className={styles.fine}>{payout === undefined ? tUi('practiceNoPay') : tUi('educationalOnly')}</p>

@@ -1,6 +1,9 @@
 import { useEffect, useRef } from 'react'
 import type { AssetId } from '../domain/playground/config'
-import { buy, cashOut, catchUp, fund, marketOf, netWorth, readNews, sell, setAutoInvest, setReinvest, type AutoInvest, type TradeResult } from '../domain/playground/engine'
+import { buy, cashOut, catchUp, fund, marketOf, netWorth, readNews, sell, setAutoInvest, setGoal, setReinvest, type AutoInvest, type TradeResult } from '../domain/playground/engine'
+import { MIXES, type GoalId, type MixId } from '../domain/playground/config'
+import { rebalance } from '../domain/playground/rebalance'
+import { seeRecap } from '../domain/playground/recap'
 import type { EventId } from '../domain/playground/events'
 import { progressStore } from './progress'
 import { playgroundStore } from './playground'
@@ -61,6 +64,14 @@ export function usePlayground() {
     readNews: () => playgroundStore.update(readNews),
     setAutoInvest: (plan: AutoInvest | null) => playgroundStore.update((s) => setAutoInvest(s, plan)),
     setReinvest: (on: boolean) => playgroundStore.update((s) => setReinvest(s, on)),
+    setGoal: (goal: GoalId | null) => playgroundStore.update((s) => setGoal(s, goal)),
+    /** Rebalance to an example mix; returns how many trades it took. */
+    rebalance(mix: MixId): number {
+      const r = rebalance(playgroundStore.get(), MIXES[mix])
+      if (r.trades.length) playgroundStore.update(() => r.state)
+      return r.trades.length
+    },
+    seeRecap: () => playgroundStore.update(seeRecap),
   }
 }
 

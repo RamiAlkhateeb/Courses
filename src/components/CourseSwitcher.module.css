@@ -20,6 +20,17 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.down {
+  flex: 0 0 auto;
+}
+/* Learn's heading: the course name is the page title */
+.title {
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+.title .name {
+  white-space: normal;
+}
 .list {
   margin: 0;
   padding: 0;

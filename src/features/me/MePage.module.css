@@ -181,3 +181,13 @@
   margin-block-start: 8px;
   font-size: 1.05rem;
 }
+
+/* Streak freezes in hand */
+.freeze {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-weight: 600;
+  color: var(--blue-text);
+}

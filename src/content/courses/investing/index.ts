@@ -41,5 +41,8 @@ export const investing: Course = {
     basics: () => import('./basics').then((m) => m.basics),
     'asset-classes': () => import('./asset-classes').then((m) => m.assetClasses),
     diversification: () => import('./diversification').then((m) => m.diversification),
+    valuation: () => import('./valuation').then((m) => m.valuation),
+    retirement: () => import('./retirement').then((m) => m.retirement),
+    plan: () => import('./plan').then((m) => m.plan),
   },
 }

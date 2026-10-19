@@ -69,6 +69,8 @@ export const courses: Course[] = [
 
 /** The courses the app offers. The rest stay in the repo (content, tests) but are hidden until they come back. */
 export const ENABLED_COURSE_IDS = ['investing']
+/** Hidden courses the courses page teases as "Coming soon" (a few, not the whole catalogue). */
+export const COMING_SOON_IDS = ['personal-finance', 'economics', 'entrepreneurship']
 export const appCourses = courses.filter((c) => ENABLED_COURSE_IDS.includes(c.id))
 
 /** An offered course by id. Hidden courses are not found, so their URLs show "not found" like any unknown id. */

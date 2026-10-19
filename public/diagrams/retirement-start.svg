@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 210" font-family="Instrument Sans, Helvetica, Arial, sans-serif">
+  <!-- 200 a month at 7% a year until 65, starting at 25 (40 years) or at 35 (30 years). Indigo = money put in
+       (96,000 / 72,000), sky = growth. Totals on top. Numbers only: the words are in the lesson. -->
+  <line x1="12" y1="176" x2="308" y2="176" stroke="#D0E7E6" stroke-width="2"/>
+  <rect x="60" y="26" width="80" height="150" rx="6" fill="#95CCDD"/>
+  <rect x="60" y="148.6" width="80" height="27.4" rx="0" fill="#293681"/>
+  <rect x="180" y="106.3" width="80" height="69.7" rx="6" fill="#95CCDD"/>
+  <rect x="180" y="155.4" width="80" height="20.6" rx="0" fill="#293681"/>
+  <g font-size="16" font-weight="700" fill="#293681" text-anchor="middle">
+    <text x="100" y="18">525,000</text>
+    <text x="220" y="98">244,000</text>
+  </g>
+  <g font-size="14" font-weight="600" fill="#5B678F" text-anchor="middle">
+    <text x="100" y="198">25</text>
+    <text x="220" y="198">35</text>
+  </g>
+</svg>

@@ -10,6 +10,7 @@ import { useProfile } from '../../state/profile'
 import { playSound } from '../../state/sound'
 import { useSettings } from '../../state/useSettings'
 import { alertSupport, setNewsAlerts, useNewsAlerts } from '../../state/newsAlerts'
+import { installApp, useCanInstall } from '../../state/install'
 
 /** Design 31, opened by the gear on Me: Account (when accounts are on), preferences, about, and Log out (signed in only).
  *  Guests see the same screen; their Account row opens Log in. */
@@ -22,6 +23,7 @@ export function SettingsPage() {
   const [sheet, setSheet] = useState<'language' | 'goal' | null>(null)
   const newsAlerts = useNewsAlerts()
   const [support, setSupport] = useState(alertSupport)
+  const canInstall = useCanInstall()
   const signedIn = accountsEnabled && auth.status === 'signedIn'
   const lang = LANGUAGES.find((l) => l.code === i18n.language)
 
@@ -76,6 +78,12 @@ export function SettingsPage() {
         {/* No study reminders yet: the row is shown, switched off and disabled. */}
         <ListSwitch icon="bell" label={t('set_reminder')} note={t('set_soon')} checked={false} disabled />
       </ListGroup>
+
+      {canInstall && (
+        <ListGroup>
+          <ListRow icon="arrowDown" label={t('set_install')} sub={t('set_install_sub')} onClick={() => void installApp()} />
+        </ListGroup>
+      )}
 
       <ListGroup title={t('acc_s_about')}>
         <ListRow icon="doc" label={t('acc_terms')} to="/legal/terms" />

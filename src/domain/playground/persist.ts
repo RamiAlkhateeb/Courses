@@ -1,4 +1,4 @@
-import { ASSET_IDS, MS_PER_WEEK, type AssetId } from './config'
+import { ASSET_IDS, CONFIG, GOAL_IDS, MS_PER_WEEK, type AssetId, type GoalId } from './config'
 import { emptyPlayground, type PlaygroundState } from './engine'
 import { EVENT_IDS } from './events'
 
@@ -53,6 +53,9 @@ export function parsePlayground(raw: string | null, now: number = Date.now()): P
           : null,
       reinvest: d.reinvest !== false,
       income: Math.max(0, num(d.income, 0)),
+      goal: (GOAL_IDS as unknown[]).includes(d.goal) ? (d.goal as GoalId) : null,
+      // Seasons from before the yearly recap: the years already gone count as seen
+      recapSeen: Math.max(0, Math.floor(num(d.recapSeen, Math.floor(tick / CONFIG.weeksPerYear)))),
     }
   } catch {
     return emptyPlayground

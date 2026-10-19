@@ -30,6 +30,9 @@ export interface Progress {
   activity: Record<string, number>
   /** Roadmap lessons finished with every question right on the first finish (the "Quiz ace" milestone) */
   perfect: number
+  /** Streak freezes in hand (0 … MAX_FREEZES): each covers one missed day, so the streak survives it. A perfect
+   *  lesson earns one. */
+  freezes: number
 }
 
 /** Nothing learned yet. Also what unreadable saved text parses to. */
@@ -42,9 +45,12 @@ export const emptyProgress: Progress = {
   lessonsDone: [],
   activity: {},
   perfect: 0,
+  freezes: 0,
 }
 
 export const MAX_BOX = 5
+/** Streak freezes you can hold at once */
+export const MAX_FREEZES = 2
 
 const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
 
@@ -74,6 +80,7 @@ export function parseProgress(raw: string | null): Progress {
       ...(typeof data.lastLesson === 'string' ? { lastLesson: data.lastLesson } : {}),
       activity: isRecord(data.activity) ? (data.activity as Progress['activity']) : {},
       perfect: typeof data.perfect === 'number' && data.perfect > 0 ? Math.floor(data.perfect) : 0,
+      freezes: typeof data.freezes === 'number' && data.freezes > 0 ? Math.min(MAX_FREEZES, Math.floor(data.freezes)) : 0,
     }
   } catch {
     return emptyProgress
@@ -106,11 +113,15 @@ export function daysBetween(from: string, to: string): number {
   return Math.round((toUtc(to) - toUtc(from)) / 86_400_000)
 }
 
-/** The streak to show on `today`: it survives until the end of the day after the last lesson. */
-export function currentStreak(streak: Streak, today: string): number {
+/** The streak to show on `today`: it survives until the end of the day after the last lesson, and one more day for
+ *  each streak freeze in hand (they are spent when the next lesson is finished). */
+export function currentStreak(streak: Streak, today: string, freezes = 0): number {
   const gap = daysBetween(streak.lastDay, today)
-  return gap === 0 || gap === 1 ? streak.count : 0
+  return gap >= 0 && gap <= 1 + freezes ? streak.count : 0
 }
+
+/** Days missed since the last lesson (0 when it was today or yesterday). */
+const missedDays = (streak: Streak, today: string) => Math.max(0, daysBetween(streak.lastDay, today) - 1)
 
 /** Streak after finishing a lesson on `today`: same day keeps it, next day extends it, a gap restarts it. */
 export function bumpStreak(streak: Streak, today: string): Streak {
@@ -135,16 +146,25 @@ export function payoutFor(p: Progress, correct: number, lessonKey?: string): num
 export function completeLesson(p: Progress, correct: number, today: string, lessonKey?: string, total = 0): Progress {
   const lessonsDone = lessonKey && !p.lessonsDone.includes(lessonKey) ? [...p.lessonsDone, lessonKey] : p.lessonsDone
   const payout = payoutFor(p, correct, lessonKey)
+  // Missed days covered by freezes keep the streak going (one freeze per missed day); otherwise it restarts.
+  const missed = p.streak.lastDay ? missedDays(p.streak, today) : 0
+  const frozen = missed > 0 && missed <= p.freezes
+  const streak = frozen ? { count: p.streak.count + 1, lastDay: today } : bumpStreak(p.streak, today)
+  const perfectNow = lessonKey && lessonsDone !== p.lessonsDone && total > 0 && correct === total ? 1 : 0
   return {
     ...p,
     bank: p.bank + payout,
-    streak: bumpStreak(p.streak, today),
+    streak,
     lessonsDone,
     lastLesson: lessonKey ?? p.lastLesson,
     activity: addActivity(p.activity, today, payout),
-    perfect: p.perfect + (lessonKey && lessonsDone !== p.lessonsDone && total > 0 && correct === total ? 1 : 0),
+    perfect: p.perfect + perfectNow,
+    freezes: Math.min(MAX_FREEZES, (frozen ? p.freezes - missed : p.freezes) + perfectNow),
   }
 }
+
+/** Did finishing this lesson earn a streak freeze? (For the Lesson complete screen.) */
+export const earnedFreeze = (before: Progress, after: Progress) => after.perfect > before.perfect && before.freezes < MAX_FREEZES
 
 /** Days of per-day earnings kept for the week strip; older days are dropped. */
 export const ACTIVITY_DAYS = 60
