@@ -38,7 +38,10 @@ export function PathPage() {
   return (
     <div className={styles.page}>
       <header className={styles.top}>
-        <h1 className={styles.title}>{t('tabLearn')}</h1>
+        {/* The course is the page's title: its name opens the course dropdown */}
+        <h1 className={styles.title}>
+          <CourseSwitcher variant="title" />
+        </h1>
         <div className={styles.pills}>
           <StatPill title={t('streakDays', { count: streak })}>
             <Icon name="calendar" size={20} />
@@ -47,7 +50,6 @@ export function PathPage() {
           <MoneyChip amount={wallet} />
         </div>
       </header>
-      <CourseSwitcher className={styles.switcher} />
       {/* Accounts are optional and only exist when Supabase is configured; the Log in screen links on to Create an account. */}
       {accountsEnabled && auth.status === 'signedOut' && (
         <Link to="/login" className={buttonClass({ variant: 'secondary', size: 'sm' }, styles.login)}>
