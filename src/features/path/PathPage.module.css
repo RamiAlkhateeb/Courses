@@ -206,3 +206,33 @@
 .rowLocked .rowText small {
   color: var(--locked-icon);
 }
+/* Past the guest's free lessons: a link to sign-up, so it keeps full contrast */
+.rowGated .mark {
+  background: var(--chip-bg);
+  color: var(--blue-text);
+}
+.rowGated .rowText small {
+  color: var(--blue-text);
+  font-weight: 700;
+}
+
+/* The course dropdown under the title */
+.switcher {
+  margin-block-start: -6px;
+  font-size: 1.05rem;
+}
+.upActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-block-start: 12px;
+}
+.upLink {
+  min-block-size: 44px;
+  display: inline-flex;
+  align-items: center;
+  font-weight: 700;
+  color: var(--on-indigo);
+  text-decoration: underline;
+}

@@ -9,6 +9,7 @@ import { signOut, useAuth } from '../../state/auth'
 import { useProfile } from '../../state/profile'
 import { playSound } from '../../state/sound'
 import { useSettings } from '../../state/useSettings'
+import { alertSupport, setNewsAlerts, useNewsAlerts } from '../../state/newsAlerts'
 
 /** Design 31, opened by the gear on Me: Account (when accounts are on), preferences, about, and Log out (signed in only).
  *  Guests see the same screen; their Account row opens Log in. */
@@ -19,6 +20,8 @@ export function SettingsPage() {
   const { minutes } = useProfile()
   const { settings, updateSettings } = useSettings()
   const [sheet, setSheet] = useState<'language' | 'goal' | null>(null)
+  const newsAlerts = useNewsAlerts()
+  const [support, setSupport] = useState(alertSupport)
   const signedIn = accountsEnabled && auth.status === 'signedIn'
   const lang = LANGUAGES.find((l) => l.code === i18n.language)
 
@@ -58,7 +61,19 @@ export function SettingsPage() {
             if (sound) playSound('correct') // a sample, so turning it on is audible
           }}
         />
-        {/* No notifications yet: the row is shown, switched off and disabled. */}
+        {/* A local notification when Playground news lands; with no backend, only while the app is open. */}
+        <ListSwitch
+          icon="megaphone"
+          label={t('set_news_alerts')}
+          note={t(support === 'unsupported' ? 'set_news_alerts_unsupported' : support === 'denied' ? 'set_news_alerts_blocked' : 'set_news_alerts_note')}
+          checked={newsAlerts && support === 'ok'}
+          disabled={support !== 'ok'}
+          onChange={async (on) => {
+            await setNewsAlerts(on)
+            setSupport(alertSupport())
+          }}
+        />
+        {/* No study reminders yet: the row is shown, switched off and disabled. */}
         <ListSwitch icon="bell" label={t('set_reminder')} note={t('set_soon')} checked={false} disabled />
       </ListGroup>
 

@@ -16,6 +16,9 @@ import {
   QuestionCard,
   useLessonKeys,
 } from './LessonParts'
+import { LessonGate } from './LessonGate'
+import { canOpenPractice } from '../../domain/access'
+import { useGuestLimited } from '../../state/useAccess'
 import styles from './LessonPage.module.css'
 
 /** Questions per lesson (fewer if the module has fewer). */
@@ -26,8 +29,10 @@ export function LessonPage() {
   const { courseId, moduleId } = useParams<{ courseId: string; moduleId: string }>()
   const { t: tUi } = useTranslation()
   const { mod, loading, notFound } = useModule(courseId, moduleId)
+  const guest = useGuestLimited()
 
   if (!getCourse(courseId) || notFound) return <p>{tUi('moduleNotFound')}</p>
+  if (!canOpenPractice(guest)) return <LessonGate />
   if (loading || !mod) return <p>{tUi('loading')}</p>
   if (mod.questions.length === 0) return <p>{tUi('lessonNoQuestions')}</p>
   return <LessonRunner mod={mod} />

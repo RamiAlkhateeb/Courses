@@ -1,0 +1,74 @@
+/* All courses: flat cards; offered ones open, the rest wait as "Coming soon" */
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 12px;
+}
+.card {
+  display: grid;
+  gap: 4px;
+  inline-size: 100%;
+  padding: 16px 18px;
+  box-sizing: border-box;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  font: inherit;
+  color: var(--indigo);
+  text-align: start;
+}
+button.card {
+  cursor: pointer;
+}
+.active {
+  border: 2px solid var(--blue);
+}
+.locked {
+  background: var(--mist);
+  border-style: dashed;
+  color: var(--muted);
+}
+.kicker {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blue-text);
+}
+:global(html[dir='rtl']) .kicker {
+  letter-spacing: 0;
+}
+.locked .kicker {
+  color: var(--muted);
+}
+.name {
+  font-size: 1.25rem;
+}
+.blurb {
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin-block-start: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.current {
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--chip-bg);
+  color: var(--indigo);
+}
+.soon {
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  border: 1px dashed var(--locked);
+  color: var(--muted);
+}

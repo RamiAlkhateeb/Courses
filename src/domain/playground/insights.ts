@@ -52,6 +52,7 @@ export function insights(s: PlaygroundState): { helped: Insight[]; hurt: Insight
   const year = Math.min(CONFIG.seasonYears, Math.floor(worst.tick / CONFIG.weeksPerYear) + 1)
   if (dip && !soldIntoDip) helped.push({ key: 'stayed', vars: { year } })
   if (wasSpread(s.trades)) helped.push({ key: 'spread' })
+  if (s.income >= 1) helped.push({ key: 'income', vars: { amount: Math.round(s.income) } })
   if (beatInflation(s)) helped.push({ key: 'beat' })
   if (soldIntoDip) hurt.push({ key: 'sold_dip', vars: { year } })
   if (s.fees > 0) hurt.push({ key: 'fees', vars: { n: s.trades.length, fee: Math.round(s.fees) } })

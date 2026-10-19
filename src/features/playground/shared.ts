@@ -5,13 +5,22 @@ import { CONFIG, type AssetId } from '../../domain/playground/config'
 export const ASSET_DOT: Record<AssetId | 'cash', string> = {
   cash: 'var(--locked)',
   savings: 'var(--correct)',
-  index: 'var(--brand)',
   bonds: 'var(--ink-soft)',
+  gold: 'var(--gold)',
+  index: 'var(--brand)',
+  us500: 'var(--code-bg)',
+  reit: 'var(--leaf-mid)',
+  tech: 'var(--sky)',
   nile: 'var(--accent)',
+  crypto: 'var(--oops)',
 }
 
-/** "Broad Index Fund"; with `full`, a made-up company says so: "Nile Foods (fictional)". */
-export const assetName = (t: TFunction, id: AssetId, full = false) => (full && id === 'nile' ? t('pg_asset_nile_full') : t(`pg_asset_${id}`))
+/** "World Stocks ETF"; with `full`, anything made up says so: "Nile Foods (fictional)", "Crypto Coin (fictional)". */
+export const assetName = (t: TFunction, id: AssetId, full = false) =>
+  full && id === 'nile' ? t('pg_asset_nile_full') : full && id === 'crypto' ? t('pg_asset_crypto_full') : t(`pg_asset_${id}`)
+
+/** The week within its simulated year (1–52). */
+export const weekOf = (tick: number) => (tick % CONFIG.weeksPerYear) + 1
 
 /** Which simulated year a week falls in (1-based). */
 export const yearOf = (tick: number) => Math.min(CONFIG.seasonYears, Math.floor(tick / CONFIG.weeksPerYear) + 1)

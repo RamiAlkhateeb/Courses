@@ -61,10 +61,16 @@ for (const [lang, other, foreign] of [
   })
 }
 
-test('only the Investing course is offered', async ({ page }) => {
+test('only the Investing course is offered; the courses page shows the rest as coming soon', async ({ page }) => {
   await onboarded(page)
-  await page.goto('courses')
-  await expect(page).toHaveURL(/\/course\/investing$/)
+  await page.goto('')
+  await page.getByRole('button', { name: /Investing Fundamentals/ }).click()
+  await page.getByRole('link', { name: 'All courses' }).click()
+  await expect(page).toHaveURL(/\/courses$/)
+  await expect(page.getByRole('heading', { name: 'Courses', level: 1 })).toBeVisible()
+  await expect(page.getByText('Coming soon').first()).toBeVisible()
+  await page.getByRole('button', { name: /Investing Fundamentals/ }).click()
+  await expect(page).toHaveURL(/\/Courses\/$/)
   await page.goto('course/tech-interview')
   await expect(page.getByText('Page not found', { exact: false }).or(page.getByText("doesn't exist", { exact: false }))).toBeVisible()
 })
@@ -126,8 +132,10 @@ for (const route of ['./', 'me', 'playground']) {
 test('the Playground uses the one wallet: buy Safe Savings, time starts, the bank moves in', async ({ page }) => {
   const errors = watchErrors(page)
   await onboarded(page, { 'progress:v2': JSON.stringify({ bank: 1240 }) })
+  await page.clock.install() // time follows the real clock: fake it so we can move it forward
   await page.goto('playground')
   await expect(page.getByText('Time starts when you make your first buy', { exact: true })).toBeVisible()
+  await expect(page.getByRole('button', { name: /speed|pause/i })).toHaveCount(0) // no play or speed controls
   await expect(page.getByText('Educational only, not financial advice')).toBeVisible()
   await page.getByRole('button', { name: 'Buy Safe Savings' }).click()
   await page.getByRole('button', { name: '$100', exact: true }).click()
@@ -137,6 +145,35 @@ test('the Playground uses the one wallet: buy Safe Savings, time starts, the ban
   expect(saved.bank).toBe(0) // the whole wallet is in the Playground
   expect(saved.pg.status).toBe('running')
   expect(saved.pg.cash + saved.pg.holdings.savings.units * 1).toBeCloseTo(1240 - 1, 0) // minus the 1% fee on $100
+  // one real day is one simulated year: two real hours later it is about four weeks on, with nothing pressed
+  await expect(page.getByText('Year 1 · Week 1')).toBeVisible()
+  await page.clock.fastForward('02:00:00')
+  await expect(page.getByText('Year 1 · Week 5')).toBeVisible()
+  expect(errors).toEqual([])
+})
+
+test('Playground auto-invest buys every month; payouts and the compare line show', async ({ page }) => {
+  const errors = watchErrors(page)
+  await onboarded(page, { 'progress:v2': JSON.stringify({ bank: 1000 }) })
+  await page.clock.install()
+  await page.goto('playground')
+  await page.getByRole('button', { name: 'Buy Safe Savings' }).click()
+  await page.getByRole('button', { name: '$100', exact: true }).click()
+  await page.getByRole('button', { name: /^Buy .*100/ }).click()
+  await page.getByRole('button', { name: 'Set up' }).click()
+  await page.getByRole('button', { name: '$50', exact: true }).click()
+  await page.getByRole('radio', { name: /World Stocks/ }).click()
+  await page.getByRole('button', { name: 'Start auto-invest' }).click()
+  await expect(page.getByText(/\$50.* a month into World Stocks/)).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Where your money is' })).toBeVisible()
+  // A month is 4 weeks, about 1 hour 51 minutes of real time
+  await page.clock.fastForward('02:00:00')
+  await expect(page.getByText('Year 1 · Week 5')).toBeVisible()
+  const pg = await page.evaluate(() => JSON.parse(localStorage.getItem('playground:v1')!))
+  expect(pg.trades.filter((t: { auto?: boolean }) => t.auto)).toHaveLength(1)
+  expect(pg.holdings.index.units).toBeGreaterThan(0)
+  await page.getByRole('button', { name: 'All in US 500' }).click()
+  await expect(page.locator('p', { hasText: /the same money all in US 500 Index ETF would be/ })).toBeVisible()
   expect(errors).toEqual([])
 })
 

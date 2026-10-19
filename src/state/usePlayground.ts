@@ -1,6 +1,7 @@
-import { useEffect } from 'react'
-import { tickMs, type AssetId } from '../domain/playground/config'
-import { advance, buy, cashOut, dismissEvent, fund, netWorth, sell, setSpeed, type PlaygroundState, type Speed, type TradeResult } from '../domain/playground/engine'
+import { useEffect, useRef } from 'react'
+import type { AssetId } from '../domain/playground/config'
+import { buy, cashOut, catchUp, fund, marketOf, netWorth, readNews, sell, setAutoInvest, setReinvest, type AutoInvest, type TradeResult } from '../domain/playground/engine'
+import type { EventId } from '../domain/playground/events'
 import { progressStore } from './progress'
 import { playgroundStore } from './playground'
 import { useProgress } from './useProgress'
@@ -47,7 +48,7 @@ export function usePlayground() {
       sweepBank()
       // The first buy starts the season: pick its seed.
       const before = playgroundStore.get()
-      const r = buy(before.status === 'idle' ? { ...before, seed: newSeed() } : before, asset, amount)
+      const r = buy(before.status === 'idle' ? { ...before, seed: newSeed() } : before, asset, amount, Date.now())
       if (r.ok) playgroundStore.update(() => r.state)
       return r
     },
@@ -56,36 +57,43 @@ export function usePlayground() {
       if (r.ok) playgroundStore.update(() => r.state)
       return r
     },
-    setSpeed: (speed: Speed) => playgroundStore.update((s) => setSpeed(s, speed)),
-    dismissEvent: () => playgroundStore.update(dismissEvent),
+    /** The player read the oldest unread market story. */
+    readNews: () => playgroundStore.update(readNews),
+    setAutoInvest: (plan: AutoInvest | null) => playgroundStore.update((s) => setAutoInvest(s, plan)),
+    setReinvest: (on: boolean) => playgroundStore.update((s) => setReinvest(s, on)),
   }
 }
 
+/** How often the clock checks the real time. A simulated week is about 27.7 real minutes, so this is plenty. */
+const CHECK_MS = 30_000
+
 /**
- * The clock: while the Playground screen is open and visible, a week passes every `tickMs(speed)`. It stops while
- * `hold` is true (a sheet is open), when news is waiting, and whenever the screen is closed or the tab is hidden.
- * Markets only move while you watch, so a season that was running when the app opened (or the tab went to the
- * background) comes back paused, and the player taps play.
+ * The clock (`onNews` hears of the stories that just landed): time follows the real clock (one real day = one simulated year) and never stops, even while the app is
+ * closed. Mounted once for the whole app (AppFrame), so the wallet on Learn and Me is live too. It catches the season up
+ * on start, every 30 seconds and whenever the tab comes back into view; news that landed meanwhile waits in the queue.
  */
-export function usePlaygroundClock(state: PlaygroundState, hold: boolean) {
-  const pause = () => {
-    const s = playgroundStore.get()
-    if (s.status === 'running' && s.speed > 0) playgroundStore.update((x) => setSpeed(x, 0))
-  }
+export function usePlaygroundClock(onNews?: (ids: EventId[]) => void) {
+  const latest = useRef(onNews)
+  latest.current = onNews
   useEffect(() => {
-    pause()
-    const onVisibility = () => document.hidden && pause()
+    const tick = (opening = false) => {
+      const s = playgroundStore.get()
+      if (s.status !== 'running') return
+      playgroundStore.update((x) => catchUp(x, Date.now()))
+      // Stories that landed in this catch-up (for the news alerts). Not on opening: those wait on the Playground.
+      if (opening) return
+      const after = playgroundStore.get()
+      const fresh = after.seenEvents.filter((t) => !s.seenEvents.includes(t))
+      const events = marketOf(after).events
+      if (fresh.length) latest.current?.(fresh.map((t) => events.find((e) => e.tick === t)!.id))
+    }
+    tick(true)
+    const id = window.setInterval(tick, CHECK_MS)
+    const onVisibility = () => !document.hidden && tick()
     document.addEventListener('visibilitychange', onVisibility)
     return () => {
+      window.clearInterval(id)
       document.removeEventListener('visibilitychange', onVisibility)
-      pause()
     }
   }, [])
-
-  const running = state.status === 'running' && state.speed > 0 && !state.pendingEvent && !hold
-  useEffect(() => {
-    if (!running) return
-    const id = window.setInterval(() => playgroundStore.update(advance), tickMs(state.speed))
-    return () => window.clearInterval(id)
-  }, [running, state.speed])
 }

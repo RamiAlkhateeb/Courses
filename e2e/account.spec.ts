@@ -40,6 +40,32 @@ test('Learn shows a Log in button while signed out, and it goes away once signed
   await expect(page.getByRole('link', { name: 'Log in' })).toHaveCount(0)
 })
 
+test('guests get the first three lessons; the rest and the unit reviews ask for an account', async ({ page }) => {
+  await fakeSupabase(page)
+  await onboarded(page)
+  await page.goto('./')
+  await expect(page.getByRole('link', { name: /Sign up to unlock/ }).first()).toBeVisible()
+  await page.goto('course/investing/basics/learn/why')
+  await expect(page.getByRole('heading', { name: 'Create a free account to keep learning' })).toHaveCount(0)
+  await page.goto('course/investing/asset-classes/learn/stocks')
+  await expect(page.getByRole('heading', { name: 'Create a free account to keep learning' })).toBeVisible()
+  await page.goto('course/investing/basics/lesson')
+  await expect(page.getByRole('heading', { name: 'Create a free account to keep learning' })).toBeVisible()
+  await page.getByRole('link', { name: 'Create account' }).click()
+  await expect(page).toHaveURL(/\/signup$/)
+})
+
+test('signed in, every lesson opens', async ({ page }) => {
+  await fakeSupabase(page)
+  await onboarded(page)
+  await page.goto('login')
+  await logIn(page, 'learner@example.com', 'right-password')
+  await expect(page).toHaveURL(/\/Courses\/$/)
+  await expect(page.getByRole('link', { name: /Sign up to unlock/ })).toHaveCount(0)
+  await page.goto('course/investing/asset-classes/learn/stocks')
+  await expect(page.getByRole('heading', { name: 'Create a free account to keep learning' })).toHaveCount(0)
+})
+
 test('Welcome: "I already have an account" opens Log in', async ({ page }) => {
   await fakeSupabase(page)
   await page.goto('welcome')

@@ -3,7 +3,7 @@
 import { readFileSync } from 'node:fs'
 import { gzipSync } from 'node:zlib'
 
-const BUDGET_KB = 170 // gzipped; about 135 KB today
+const BUDGET_KB = 175 // gzipped; about 170 KB today (the Playground clock and both locales load up front)
 const html = readFileSync('dist/index.html', 'utf8')
 const files = [...html.matchAll(/(?:src|href)="[^"]*?(\/assets\/[^"]+\.js)"/g)].map((m) => m[1])
 let total = 0

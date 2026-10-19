@@ -29,6 +29,8 @@
   --leaf-mid: #3e9b73;
   --leaf-soft: #4fae87;
   --leaf-dark: #2b7a58;
+  /* Playground asset dot for Gold */
+  --gold: #c9962b;
 
   /* ---- Path nodes (3D bottom edge) ---- */
   --blue-halo: rgba(66, 116, 217, 0.16);

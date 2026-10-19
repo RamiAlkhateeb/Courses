@@ -1,0 +1,63 @@
+/* The course dropdown at the top of Learn and Me */
+.switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-inline-size: 100%;
+  min-block-size: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 700;
+  color: var(--indigo);
+  cursor: pointer;
+  text-align: start;
+}
+.name {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  inline-size: 100%;
+  min-block-size: 56px;
+  padding: 0 16px;
+  box-sizing: border-box;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-btn);
+  background: var(--card);
+  font: inherit;
+  font-weight: 700;
+  color: var(--indigo);
+  text-align: start;
+  cursor: pointer;
+}
+.row[aria-current='true'] {
+  border: 2px solid var(--blue);
+  background: var(--chip-bg);
+}
+.all {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-block-size: 44px;
+  font-weight: 700;
+  color: var(--blue-text);
+  text-decoration: none;
+}
+:global(html[dir='rtl']) .chev {
+  transform: scaleX(-1);
+}

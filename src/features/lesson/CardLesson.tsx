@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Blocks } from '../../components/content/Blocks'
@@ -14,6 +14,10 @@ import { ModuleQuestionsContext } from '../../components/content/moduleQuestions
 import { payoutFor } from '../../domain/progress'
 import { lessonKey, lessonsFor, type Lesson } from '../../domain/lessons'
 import { SpaceGuide } from './SpaceGuide'
+import { LessonGate } from './LessonGate'
+import { canOpenLesson, lessonOrder } from '../../domain/access'
+import { useGuestLimited } from '../../state/useAccess'
+import { useTrail } from '../../state/useTrail'
 import { moneyText } from '../../i18n'
 import {
   AnswerFeedback,
@@ -38,7 +42,23 @@ export function LessonRoute() {
   if (loading || !mod) return <p>{t('loading')}</p>
   if (index === -1) return <p>{t('pageNotFound')}</p>
   // Keyed by lesson so "Continue" to the next lesson starts fresh.
-  return <CardRun key={lessonId} mod={mod} lesson={lessons[index]} />
+  return (
+    <GuestCheck courseId={mod.courseId} moduleId={mod.id} lessonId={lessons[index].id}>
+      <CardRun key={lessonId} mod={mod} lesson={lessons[index]} />
+    </GuestCheck>
+  )
+}
+
+/** Guests open only the first lessons of a course (when accounts exist) and the ones they already finished; the rest show
+ *  the sign-up gate. */
+function GuestCheck({ courseId, moduleId, lessonId, children }: { courseId: string; moduleId: string; lessonId: string; children: ReactNode }) {
+  const { t } = useTranslation()
+  const guest = useGuestLimited()
+  const { chapters, loaded } = useTrail(courseId)
+  const { progress } = useProgress()
+  if (!guest || progress.lessonsDone.includes(lessonKey(courseId, moduleId, lessonId))) return children
+  if (!loaded) return <p>{t('loading')}</p>
+  return canOpenLesson(lessonOrder(chapters), moduleId, lessonId, guest) ? children : <LessonGate />
 }
 
 /** A lesson run: its small content cards, then its questions. Keyed by lesson, so the next lesson starts fresh. */
