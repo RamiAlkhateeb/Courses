@@ -39,6 +39,8 @@ export const router = createBrowserRouter(
         { path: 'settings', ...page(() => import('../features/settings/SettingsPage'), 'SettingsPage') },
         // All courses: opened from the course dropdown at the top of Learn and Me
         { path: 'courses', ...page(() => import('../features/courses/CoursesPage'), 'CoursesPage') },
+        // A finished unit's certificate (linked from its header on Learn)
+        { path: 'certificate/:courseId/:moduleId', ...page(() => import('../features/certificate/CertificatePage'), 'CertificatePage') },
         { path: 'legal/:page', ...page(() => import('../features/account/LegalPage'), 'LegalPage') },
         {
           // Optional accounts (sign up, log in, reset, account, delete): only when Supabase is configured.

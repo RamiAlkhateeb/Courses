@@ -16,7 +16,7 @@ import {
   recordReview,
 } from '../src/domain/progress'
 
-const EMPTY = { answers: {}, sectionsRead: {}, bank: 1000, streak: { count: 0, lastDay: '' }, boxes: {}, lessonsDone: [], activity: {}, perfect: 0 }
+const EMPTY = { answers: {}, sectionsRead: {}, bank: 1000, streak: { count: 0, lastDay: '' }, boxes: {}, lessonsDone: [], activity: {}, perfect: 0, freezes: 0 }
 
 describe('progress store helpers', () => {
   it('parses missing or corrupt storage as empty progress', () => {

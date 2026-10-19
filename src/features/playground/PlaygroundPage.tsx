@@ -13,6 +13,8 @@ import { assetName, ASSET_DOT, riskWord, weekOf, yearOf } from './shared'
 import { Chart } from './Chart'
 import { AllocationRing } from './AllocationRing'
 import { AutoInvestCard } from './AutoInvest'
+import { GoalCard, RebalanceSheet, RecapOverlay } from './SeasonExtras'
+import { pendingRecap } from '../../domain/playground/recap'
 import { NewsOverlay } from './Overlays'
 import { TradeSheet } from './TradeSheet'
 import styles from './Playground.module.css'
@@ -39,6 +41,7 @@ export function PlaygroundPage() {
   const [sheet, setSheet] = useState<{ asset?: AssetId; side?: 'buy' | 'sell' } | null>(null)
   const [reading, setReading] = useState(false)
   const [compare, setCompare] = useState<'none' | 'savings' | 'us500'>('none')
+  const [rebalancing, setRebalancing] = useState(false)
   const now = useNow()
 
   const market = marketOf(state)
@@ -54,6 +57,7 @@ export function PlaygroundPage() {
   const worst = maxDrawdown(state.history)
   const year = yearOf(state.tick)
   const unread = nextNews(state, market)
+  const recapYear = pendingRecap(state)
   const nextUpdate = Math.max(1, Math.ceil(msToNextWeek(state, now) / MINUTE))
   const daysLeft = Math.max(0, Math.ceil((state.startedAt + CONFIG.seasonYears * CONFIG.msPerYear - now) / (CONFIG.msPerYear)))
 
@@ -160,7 +164,7 @@ export function PlaygroundPage() {
         ) : null}
       </div>
 
-      {running && <AllocationRing state={state} />}
+      {running && <AllocationRing state={state} onRebalance={state.status === 'running' && holdings.length > 0 ? () => setRebalancing(true) : undefined} />}
 
       <ul className={styles.holdings}>
         <li className={styles.holding}>
@@ -194,6 +198,8 @@ export function PlaygroundPage() {
           )
         })}
       </ul>
+
+      {state.status !== 'ended' && <GoalCard state={state} onGoal={pg.setGoal} />}
 
       {state.status !== 'ended' && <AutoInvestCard state={state} onAutoInvest={pg.setAutoInvest} onReinvest={pg.setReinvest} />}
 
@@ -232,6 +238,22 @@ export function PlaygroundPage() {
           onBuy={(asset, amount) => pg.buy(asset, amount).ok && setSheet(null)}
           onSell={(asset, amount) => pg.sell(asset, amount).ok && setSheet(null)}
         />
+      )}
+
+      {rebalancing && (
+        <RebalanceSheet
+          state={state}
+          onClose={() => setRebalancing(false)}
+          onConfirm={(mix) => {
+            pg.rebalance(mix)
+            setRebalancing(false)
+          }}
+        />
+      )}
+
+      {/* After the news, a finished year's recap (once; years that passed while away show as the latest one) */}
+      {!sheet && !rebalancing && !unread && !reading && recapYear !== null && (
+        <RecapOverlay state={state} year={recapYear} onContinue={pg.seeRecap} />
       )}
 
       {/* Unread news opens by itself, one story at a time; time keeps running meanwhile. The strip re-opens the latest. */}

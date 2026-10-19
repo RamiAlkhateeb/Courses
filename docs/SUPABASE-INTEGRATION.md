@@ -66,7 +66,7 @@ Deleting the account removes the online copy only; this device keeps its own cop
 
 ## Set-up (one time)
 
-1. **Database.** Supabase dashboard → SQL Editor → New query → paste `supabase/migrations/0001_user_state.sql` → Run. It
+1. **Database.** Supabase dashboard → SQL Editor → New query → paste `supabase/migrations/0001_user_state.sql` → Run (then the later files in `supabase/migrations/` in order; `0003_user_state_settings.sql` lets preferences sync). It
    can be run twice safely.
 2. **Auth settings** (Authentication → URL Configuration):
    - Site URL: `https://ramialkhateeb.github.io/Courses/`

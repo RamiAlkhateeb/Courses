@@ -5,7 +5,7 @@ import { MoneyChip } from '../../components/MoneyChip'
 import { CourseSwitcher } from '../../components/CourseSwitcher'
 import { practiceHref } from '../../content/courses'
 import { useLocalized } from '../../content/useLocalized'
-import { currentStreak, localDay } from '../../domain/progress'
+import { currentStreak, localDay, mistakes } from '../../domain/progress'
 import { learnHref, lessonMinutes, type Lesson } from '../../domain/lessons'
 import { useAuth } from '../../state/auth'
 import { canOpenLesson, canOpenPractice, FREE_LESSONS, lessonOrder } from '../../domain/access'
@@ -27,13 +27,14 @@ export function PathPage() {
   const { progress } = useProgress()
   const wallet = useWallet()
   const auth = useAuth()
-  const streak = currentStreak(progress.streak, localDay())
+  const streak = currentStreak(progress.streak, localDay(), progress.freezes)
   const nextChapter = next ? chapters.find((c) => c.id === next.mod.id) : undefined
   const nextIndex = nextChapter && next ? nextChapter.lessons.findIndex((l) => l.id === next.lesson.id) : -1
   const guest = useGuestLimited()
   const order = lessonOrder(chapters)
   const gated = (moduleId: string, lessonId: string) => !canOpenLesson(order, moduleId, lessonId, guest)
   const nextGated = !!next && gated(next.mod.id, next.lesson.id)
+  const toReview = loaded ? mistakes(chapters.flatMap((c) => c.mod?.questions.map((q) => q.id) ?? []), progress.answers).length : 0
 
   return (
     <div className={styles.page}>
@@ -95,6 +96,22 @@ export function PathPage() {
       )}
       {loaded && !next && chapters.length > 0 && <p className={styles.allDone}>{t('learn_all_done')}</p>}
 
+      {/* Daily review: the questions whose latest answer was wrong, a couple of minutes to put right */}
+      {toReview > 0 && (
+        <Link to={`/course/${course.id}/review`} className={styles.review}>
+          <span className={styles.reviewIcon}>
+            <Icon name="review" size={22} />
+          </span>
+          <span className={styles.rowText}>
+            <strong>{t('review_card_title')}</strong>
+            <small>{t('review_card_sub', { count: toReview })}</small>
+          </span>
+          <span className={styles.chip} aria-hidden>
+            {t('learn_start')}
+          </span>
+        </Link>
+      )}
+
       {loaded &&
         chapters.map((chapter, i) => (
           <UnitList
@@ -139,7 +156,13 @@ function UnitList({
           <Icon name="sprout" size={18} />
           {t('learn_unit', { n: index + 1, title: tc(chapter.title) })}
         </h2>
-        <span className={styles.unitDone}>{t('learn_done_of', { done: chapter.done, total })}</span>
+        {allDone ? (
+          <Link to={`/certificate/${mod.courseId}/${mod.id}`} className={styles.certLink}>
+            <Icon name="star" size={16} /> {t('cert_link')}
+          </Link>
+        ) : (
+          <span className={styles.unitDone}>{t('learn_done_of', { done: chapter.done, total })}</span>
+        )}
       </header>
       <ol className={styles.rows}>
         {chapter.lessons.map((lesson, li) => {

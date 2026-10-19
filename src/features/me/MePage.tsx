@@ -32,7 +32,7 @@ export function MePage() {
   const { progress } = useProgress()
   const wallet = useWallet()
   const { minutes } = useProfile()
-  const streak = currentStreak(progress.streak, localDay())
+  const streak = currentStreak(progress.streak, localDay(), progress.freezes)
   const { course, totalLessons, doneLessons } = useTrail(useTrailId())
   const auth = useAuth()
   const guest = accountsEnabled && auth.status === 'signedOut'
@@ -77,6 +77,12 @@ export function MePage() {
           </Card>
         ))}
       </div>
+
+      {progress.freezes > 0 && (
+        <p className={styles.freeze}>
+          <Icon name="shield" size={20} /> {t('freeze_have', { count: progress.freezes })}
+        </p>
+      )}
 
       {guest && (
         <Card tone="indigo" className={styles.save}>

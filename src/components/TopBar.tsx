@@ -11,7 +11,7 @@ export function TopBar() {
   const { t } = useTranslation()
   const { progress } = useProgress()
   const wallet = useWallet()
-  const streak = currentStreak(progress.streak, localDay())
+  const streak = currentStreak(progress.streak, localDay(), progress.freezes)
 
   return (
     <div className={styles.langbar}>

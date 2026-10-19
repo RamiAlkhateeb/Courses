@@ -11,7 +11,7 @@ import { useModule } from '../../content/useModule'
 import { useProgress } from '../../state/useProgress'
 import { useWallet } from '../../state/usePlayground'
 import { ModuleQuestionsContext } from '../../components/content/moduleQuestions'
-import { payoutFor } from '../../domain/progress'
+import { MAX_FREEZES, payoutFor } from '../../domain/progress'
 import { lessonKey, lessonsFor, type Lesson } from '../../domain/lessons'
 import { SpaceGuide } from './SpaceGuide'
 import { LessonGate } from './LessonGate'
@@ -73,6 +73,8 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
   const startedAt = useRef(Date.now())
   // Does finishing this lesson pay? Decided once, on arrival: finishing it marks it done.
   const [pays] = useState(() => payoutFor(progress, 1, lessonKey(mod.courseId, mod.id, lesson.id)) > 0)
+  // A perfect first finish earns a streak freeze, unless the learner already holds the most
+  const [freezeRoom] = useState(() => progress.freezes < MAX_FREEZES)
 
   const [index, setIndex] = useState(0)
   const [selected, setSelected] = useState<number | null>(null)
@@ -150,6 +152,7 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
         payout={pays ? paid : undefined}
         correct={correctCount}
         total={total}
+        freezeEarned={pays && freezeRoom && total > 0 && correctCount === total}
         action={tUi('lessonContinue')}
         onAction={() => navigate('/')}
         secondary={correctCount < total ? tUi('reviewMyMistake') : undefined}

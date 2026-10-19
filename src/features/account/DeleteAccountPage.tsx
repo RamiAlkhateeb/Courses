@@ -27,7 +27,7 @@ export function DeleteAccountPage() {
   if (auth.status === 'loading') return <AccountScreen title={t('loading')} />
   if (auth.status !== 'signedIn') return <Navigate to="/login" replace />
 
-  const streak = currentStreak(progress.streak, localDay())
+  const streak = currentStreak(progress.streak, localDay(), progress.freezes)
 
   async function remove() {
     setBusy(true)

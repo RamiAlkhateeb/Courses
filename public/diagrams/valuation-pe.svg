@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 210" font-family="Instrument Sans, Helvetica, Arial, sans-serif">
+  <!-- Two fictional companies that both earn 2 a share: price 20 gives a P/E of 10 (sky), price 60 a P/E of 30 (indigo).
+       Bar height = P/E (30 = 150px). Numbers only: the words are in the lesson. -->
+  <line x1="12" y1="176" x2="308" y2="176" stroke="#D0E7E6" stroke-width="2"/>
+  <rect x="62" y="126" width="64" height="50" rx="6" fill="#95CCDD"/>
+  <rect x="194" y="26" width="64" height="150" rx="6" fill="#293681"/>
+  <g font-size="16" font-weight="700" fill="#293681" text-anchor="middle">
+    <text x="94" y="118">10</text>
+    <text x="226" y="18">30</text>
+  </g>
+  <g font-size="14" font-weight="600" fill="#5B678F" text-anchor="middle">
+    <text x="94" y="198">20 ÷ 2</text>
+    <text x="226" y="198">60 ÷ 2</text>
+  </g>
+</svg>

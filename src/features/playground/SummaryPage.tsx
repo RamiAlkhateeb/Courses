@@ -5,7 +5,8 @@ import { Money } from '../../components/Money'
 import { moneyText } from '../../i18n'
 import { CONFIG } from '../../domain/playground/config'
 import { gain, marketOf, netWorth, realHistory } from '../../domain/playground/engine'
-import { insights } from '../../domain/playground/insights'
+import { goalStatus, insights } from '../../domain/playground/insights'
+import { goalText } from './SeasonExtras'
 import { usePlayground } from '../../state/usePlayground'
 import styles from './Playground.module.css'
 
@@ -22,6 +23,7 @@ export function SummaryPage() {
   const realEnd = real[real.length - 1] ?? net
   const up = gain(s, market) >= 0
   const { helped, hurt } = insights(s)
+  const goal = goalStatus(s)
   const text = (i: { key: string; vars?: Record<string, number> }) => {
     const vars: Record<string, unknown> = { ...i.vars }
     if (i.key === 'fees') {
@@ -55,6 +57,13 @@ export function SummaryPage() {
       <p className={styles.callout}>
         <span>{t(realEnd >= s.funded ? 'pg_after_inflation_line' : 'pg_after_inflation_behind', { real: moneyText(realEnd) })}</span>
       </p>
+
+      {goal && (
+        <p className={`${styles.callout} ${goal.met ? styles.goalOn : styles.goalOff}`}>
+          <Icon name={goal.met ? 'check' : 'alert'} size={20} />
+          <span>{t(goal.met ? 'pg_goal_met' : 'pg_goal_missed', { goal: goalText(t, goal.goal) })}</span>
+        </p>
+      )}
 
       <h2 className={styles.kicker}>{t('pg_what_helped')}</h2>
       <ul className={styles.insightList}>

@@ -28,10 +28,10 @@ function Review({ course }: { course: Course }) {
   const mods: Record<string, Module> = useModules(course.id, ids)
   const loaded = ids.every((id) => mods[id])
   if (!loaded) return <p>{t('loading')}</p>
-  return <ReviewRunner course={course} questions={ids.flatMap((id) => mods[id].questions)} />
+  return <ReviewRunner questions={ids.flatMap((id) => mods[id].questions)} />
 }
 
-function ReviewRunner({ course, questions }: { course: Course; questions: Question[] }) {
+function ReviewRunner({ questions }: { questions: Question[] }) {
   const { t } = useTranslation()
   const { progress } = useProgress()
   const pickWrong = () => {
@@ -51,8 +51,8 @@ function ReviewRunner({ course, questions }: { course: Course; questions: Questi
         <h1>{t('noMistakes')}</h1>
         <p className={styles.emptyNote}>{t('noMistakesNote')}</p>
         <div className={styles.actions}>
-          <Link className={buttonClass()} to={`/course/${course.id}`}>
-            {t('backToCourse')}
+          <Link className={buttonClass()} to="/">
+            {t('backToLearning')}
           </Link>
         </div>
       </div>
@@ -62,7 +62,7 @@ function ReviewRunner({ course, questions }: { course: Course; questions: Questi
     <QuizLesson
       key={round}
       kicker={t('reviewKicker')}
-      quitTo={`/course/${course.id}`}
+      quitTo="/"
       questions={picks}
       againLabel={t('reviewAgain')}
       onRestart={() => {

@@ -1,4 +1,4 @@
-import type { Block } from '../../content/types'
+import type { Block, Localized } from '../../content/types'
 import { resolveAssetPath } from '../../content/resolveAssetPath'
 import { safeHtml } from './safeHtml'
 import { useLocalized } from '../../content/useLocalized'
@@ -9,22 +9,47 @@ import { CompoundCalculator } from './CompoundCalculator'
 import { Guide, Icon } from '../ui'
 import { useTranslation } from 'react-i18next'
 import { TIP_POSES } from '../../domain/guide'
+import { markTerms } from '../../domain/glossary'
+import { GlossarySheet } from './GlossarySheet'
 import styles from './content.module.css'
+import { useState, type KeyboardEvent, type MouseEvent } from 'react'
 
+/** The glossary term a click or Enter / Space landed on (terms are <dfn data-term> marked by `markTerms`). */
+function termAt(e: MouseEvent | KeyboardEvent): string | null {
+  const el = (e.target as HTMLElement).closest?.('dfn[data-term]')
+  return el?.getAttribute('data-term') ?? null
+}
 
 export function Blocks({ blocks }: { blocks: Block[] }) {
   const t = useLocalized()
-  const { t: tUi } = useTranslation()
+  const { t: tUi, i18n } = useTranslation()
+  const [term, setTerm] = useState<string | null>(null)
+  const lang = i18n.language === 'ar' ? 'ar' : 'en'
+  const seen = new Set<string>() // each term is explained once per card, where it first appears
+  const html = (source: Localized) => safeHtml(markTerms(t(source), lang, seen))
+  const onClick = (e: MouseEvent) => {
+    const id = termAt(e)
+    if (id) setTerm(id)
+  }
+  const onKeyDown = (e: KeyboardEvent) => {
+    const id = (e.key === 'Enter' || e.key === ' ') && termAt(e)
+    if (id) {
+      e.preventDefault()
+      setTerm(id)
+    }
+  }
+  const textProps = { onClick, onKeyDown }
 
   return (
     <>
+      {term && <GlossarySheet id={term} onClose={() => setTerm(null)} />}
       {blocks.map((block, i) => {
         switch (block.type) {
           case 'cardBreak':
             return null
 
           case 'html':
-            return <div key={i} dangerouslySetInnerHTML={safeHtml(t(block.html))} />
+            return <div key={i} {...textProps} dangerouslySetInnerHTML={html(block.html)} />
 
           case 'objectives':
             return (
@@ -45,7 +70,7 @@ export function Blocks({ blocks }: { blocks: Block[] }) {
                 {pose && <Guide pose={pose} height={72} className={styles.tipMascot} />}
                 <div>
                   <span className={styles.boxLabel}>{t(block.label)}</span>
-                  <div dangerouslySetInnerHTML={safeHtml(t(block.html))} />
+                  <div {...textProps} dangerouslySetInnerHTML={html(block.html)} />
                 </div>
               </div>
             )

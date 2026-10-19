@@ -73,6 +73,26 @@ export const CONFIG = {
   eventsPerSeason: 4,
 }
 
+/** A season goal the player can set; checked on the summary (never advice: they are habits to practise). */
+export type GoalId = 'beat-inflation' | 'steady' | 'income'
+export const GOAL_IDS: GoalId[] = ['beat-inflation', 'steady', 'income']
+export const GOALS = {
+  /** "Steady": never more than this fall from a peak */
+  steadyMaxFall: 0.15,
+  /** "Income": at least this much paid out in dividends and interest */
+  incomeTarget: 50,
+}
+
+/** Example mixes for one-tap rebalancing (shares of net worth; illustrations to practise with, not recommendations).
+ *  Stocks are World Stocks ETF, bonds are Government Bonds, cash is Safe Savings. */
+export type MixId = 'cautious' | 'balanced' | 'growth'
+export const MIX_IDS: MixId[] = ['cautious', 'balanced', 'growth']
+export const MIXES: Record<MixId, Partial<Record<AssetId, number>>> = {
+  cautious: { index: 0.2, bonds: 0.5, savings: 0.3 },
+  balanced: { index: 0.6, bonds: 0.3, savings: 0.1 },
+  growth: { index: 0.8, bonds: 0.15, savings: 0.05 },
+}
+
 export const WEEKS_PER_SEASON = CONFIG.seasonYears * CONFIG.weeksPerYear
 /** Real milliseconds per simulated week (about 27.7 minutes) */
 export const MS_PER_WEEK = CONFIG.msPerYear / CONFIG.weeksPerYear

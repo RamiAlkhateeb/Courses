@@ -307,3 +307,12 @@
     animation: none;
   }
 }
+
+.freezeNote {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 0;
+  font-weight: 600;
+  color: var(--blue-text);
+}
