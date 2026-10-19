@@ -1,28 +1,34 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Guide, Button, Icon, type IconName } from '../../components/ui'
+import { Guide, Button, Icon } from '../../components/ui'
 import { Change } from '../../components/Change'
 import { Money } from '../../components/Money'
 import { moneyText } from '../../i18n'
-import { ASSETS, ASSET_IDS, type AssetId } from '../../domain/playground/config'
-import { gain, marketOf, maxDrawdown, netWorth, realHistory, valueOf, type Speed } from '../../domain/playground/engine'
+import { ASSETS, ASSET_IDS, CONFIG, type AssetId } from '../../domain/playground/config'
+import { gain, marketOf, maxDrawdown, msToNextWeek, netWorth, nextNews, realHistory, valueOf } from '../../domain/playground/engine'
 import { EVENTS } from '../../domain/playground/events'
-import { usePlayground, usePlaygroundClock } from '../../state/usePlayground'
-import { assetName, ASSET_DOT, riskWord, yearOf } from './shared'
+import { usePlayground } from '../../state/usePlayground'
+import { assetName, ASSET_DOT, riskWord, weekOf, yearOf } from './shared'
 import { Chart } from './Chart'
 import { NewsOverlay } from './Overlays'
 import { TradeSheet } from './TradeSheet'
 import styles from './Playground.module.css'
 
-const SPEEDS: { speed: Speed; icon: IconName; key: 'pg_pause' | 'pg_speed_1' | 'pg_speed_2' | 'pg_speed_3' }[] = [
-  { speed: 0, icon: 'pause', key: 'pg_pause' },
-  { speed: 1, icon: 'play', key: 'pg_speed_1' },
-  { speed: 2, icon: 'fast', key: 'pg_speed_2' },
-  { speed: 3, icon: 'faster', key: 'pg_speed_3' },
-]
+const MINUTE = 60_000
 
-/** The Playground tab: net worth, the chart, the clock, what you hold, and Buy or sell. */
+/** The current time, refreshed every 30 seconds: enough for "next update in N min" (the season clock is in AppFrame). */
+function useNow() {
+  const [now, setNow] = useState(() => Date.now())
+  useEffect(() => {
+    const id = window.setInterval(() => setNow(Date.now()), 30_000)
+    return () => window.clearInterval(id)
+  }, [])
+  return now
+}
+
+/** The Playground tab: net worth, the chart, the season's time, what you hold, and Buy or sell. Time follows the real
+ *  clock (one real day = one year) and never stops; there are no play or speed controls. */
 export function PlaygroundPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -30,7 +36,7 @@ export function PlaygroundPage() {
   const { state } = pg
   const [sheet, setSheet] = useState<{ asset?: AssetId; side?: 'buy' | 'sell' } | null>(null)
   const [reading, setReading] = useState(false)
-  usePlaygroundClock(state, sheet !== null)
+  const now = useNow()
 
   const market = marketOf(state)
   const net = netWorth(state, market)
@@ -44,6 +50,9 @@ export function PlaygroundPage() {
   const real = running ? realHistory(state, market) : []
   const worst = maxDrawdown(state.history)
   const year = yearOf(state.tick)
+  const unread = nextNews(state, market)
+  const nextUpdate = Math.max(1, Math.ceil(msToNextWeek(state, now) / MINUTE))
+  const daysLeft = Math.max(0, Math.ceil((state.startedAt + CONFIG.seasonYears * CONFIG.msPerYear - now) / (CONFIG.msPerYear)))
 
   const chartLabel = running
     ? t('pg_chart_alt', { year, now: moneyText(net), start: moneyText(state.funded), real: moneyText(real[real.length - 1] ?? net), worst: Math.round(worst.fall * 100) })
@@ -92,33 +101,31 @@ export function PlaygroundPage() {
       {latest && (
         <button type="button" className={styles.newsStrip} onClick={() => setReading(true)}>
           <i className={styles.newsDot} />
-          <span>{t('pg_market_news_strip', { title: t(`pg_event_${EVENTS[latest.id].id}_title`) })}</span>
+          <span>
+            {state.newsQueue.length > 0
+              ? t('pg_news_unread', { count: state.newsQueue.length })
+              : t('pg_market_news_strip', { title: t(`pg_event_${EVENTS[latest.id].id}_title`) })}
+          </span>
           <Icon name="chevron" size={18} />
         </button>
       )}
 
-      <div className={styles.speed}>
-        <span className={styles.speedBtns} role="group" aria-label={t('pg_speed')}>
-          {SPEEDS.map((s) => (
-            <button
-              key={s.speed}
-              type="button"
-              aria-pressed={state.status === 'running' && state.speed === s.speed}
-              aria-label={t(s.key)}
-              disabled={state.status !== 'running'}
-              onClick={() => pg.setSpeed(s.speed)}
-            >
-              <Icon name={s.icon} size={s.speed === 0 ? 20 : 22} />
-            </button>
-          ))}
-        </span>
+      <div className={styles.clock}>
         {state.status === 'running' ? (
-          <Button size="sm" className={styles.buyBtn} disabled={state.cash <= 0 && holdings.length === 0} onClick={() => setSheet({})}>
-            <Icon name="plus" size={18} /> {t('pg_buy_or_sell')}
-          </Button>
-        ) : (
-          <span className={styles.muted}>{t('pg_years_per_minute', { count: 1 })}</span>
-        )}
+          <>
+            <p className={styles.clockText}>
+              <strong>{t('pg_status_week', { year, week: weekOf(state.tick) })}</strong>
+              <span>
+                {t('pg_next_update', { count: nextUpdate })} · {t('pg_days_left', { count: daysLeft })}
+              </span>
+            </p>
+            <Button size="sm" className={styles.buyBtn} disabled={state.cash <= 0 && holdings.length === 0} onClick={() => setSheet({})}>
+              <Icon name="plus" size={18} /> {t('pg_buy_or_sell')}
+            </Button>
+          </>
+        ) : state.status === 'idle' ? (
+          <p className={styles.muted}>{t('pg_day_is_year')}</p>
+        ) : null}
       </div>
 
       <ul className={styles.holdings}>
@@ -191,14 +198,14 @@ export function PlaygroundPage() {
         />
       )}
 
-      {(state.pendingEvent || reading) && (
+      {/* Unread news opens by itself, one story at a time; time keeps running meanwhile. The strip re-opens the latest. */}
+      {!sheet && (unread || (reading && latest)) && (
         <NewsOverlay
-          id={state.pendingEvent ?? latest!.id}
-          year={state.pendingEvent ? year : yearOf(latest!.tick)}
-          paused={!!state.pendingEvent}
+          id={(unread ?? latest)!.id}
+          year={yearOf((unread ?? latest)!.tick)}
           onContinue={() => {
-            if (state.pendingEvent) pg.dismissEvent()
-            setReading(false)
+            if (unread) pg.readNews()
+            else setReading(false)
           }}
         />
       )}

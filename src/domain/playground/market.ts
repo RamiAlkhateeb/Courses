@@ -20,7 +20,9 @@ export interface Market {
   events: ScheduledEvent[]
 }
 
-const STREAM = { rate: 0, inflation: 1, bonds: 2, index: 3, nile: 4, schedule: 9 }
+const STREAM = { rate: 0, inflation: 1, bonds: 2, index: 3, nile: 4, gold: 5, us500: 6, reit: 7, tech: 8, schedule: 9, crypto: 10 }
+/** The assets that move partly with world stocks (`beta`): each shares the world-stocks weekly shock, plus its own. */
+const FOLLOWERS = ['gold', 'us500', 'reit', 'tech', 'crypto'] as const
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v))
 
 /** When the season's news lands and what it is: spread over the season, never repeating a kind. */
@@ -77,6 +79,20 @@ export function buildMarket(seed: number): Market {
     for (const id of ['index', 'nile'] as const) {
       const a = ASSETS[id]
       const logReturn = (a.mean - (a.vol * a.vol) / 2) / W + (a.vol / Math.sqrt(W)) * normal(seed, t, STREAM[id]) + (e?.shock[id] ?? 0)
+      price[id].push(price[id][t - 1] * Math.exp(logReturn))
+    }
+    const marketShock = normal(seed, t, STREAM.index) // the same world-stocks move as `index` this week
+    const marketVol = ASSETS.index.vol
+    for (const id of FOLLOWERS) {
+      const a = ASSETS[id]
+      const beta = a.beta ?? 0
+      const totalVar = beta * beta * marketVol * marketVol + a.vol * a.vol
+      const logReturn =
+        (a.mean - totalVar / 2) / W +
+        ((beta * marketVol) / Math.sqrt(W)) * marketShock +
+        (a.vol / Math.sqrt(W)) * normal(seed, t, STREAM[id]) +
+        (a.rateSensitivity ?? 0) * (r1 - r0) +
+        (e?.shock[id] ?? 0)
       price[id].push(price[id][t - 1] * Math.exp(logReturn))
     }
   }

@@ -49,7 +49,7 @@ export function TradeSheet({
                   <button key={id} type="button" className={styles.assetRow} onClick={() => setAsset(id)}>
                     <span className={styles.dot} style={{ background: ASSET_DOT[id] }} />
                     <span className={styles.assetText}>
-                      <strong>{assetName(t, id)}</strong>
+                      <strong>{assetName(t, id, true)}</strong>
                       <small>{t(`pg_asset_${id}_blurb`)}</small>
                     </span>
                     <RiskPills level={ASSETS[id].risk} />

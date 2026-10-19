@@ -1,5 +1,6 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useProfile } from '../state/profile'
+import { usePlaygroundClock } from '../state/usePlayground'
 import { TabBar } from './ui'
 import styles from './AppFrame.module.css'
 
@@ -10,6 +11,7 @@ const FIRST_TIMER_OK = /^\/(account|login|signup|forgot-password|check-email|new
 export function AppFrame() {
   const { onboarded } = useProfile()
   const { pathname } = useLocation()
+  usePlaygroundClock() // Playground time follows the real clock on every screen (the wallet shows it)
   if (!onboarded && !pathname.startsWith('/welcome') && !FIRST_TIMER_OK.test(pathname)) return <Navigate to="/welcome" replace />
   return (
     <div className={styles.frame}>

@@ -1,10 +1,9 @@
 // The Playground as pure functions: (state, market) → state. The UI only draws it and dispatches to it.
 // Money is play money, rounded to cents. Nothing here touches React, storage or the clock.
-import { ASSET_IDS, CONFIG, WEEKS_PER_SEASON, type AssetId } from './config'
+import { ASSET_IDS, CONFIG, MS_PER_WEEK, WEEKS_PER_SEASON, type AssetId } from './config'
 import type { EventId } from './events'
 import { buildMarket, type Market } from './market'
 
-export type Speed = 0 | 1 | 2 | 3
 export type Status = 'idle' | 'running' | 'ended'
 
 export interface Holding {
@@ -30,7 +29,8 @@ export interface PlaygroundState {
   status: Status
   /** Weeks since the season began (0 … WEEKS_PER_SEASON) */
   tick: number
-  speed: Speed
+  /** When the first buy started the season (epoch ms). Time then follows the real clock: one real day = one year. */
+  startedAt: number
   cash: number
   holdings: Partial<Record<AssetId, Holding>>
   trades: Trade[]
@@ -41,9 +41,9 @@ export interface PlaygroundState {
   /** Dollars moved in this season, and fees paid */
   funded: number
   fees: number
-  /** News already shown, and news waiting for the player to press Continue (time is paused until then) */
+  /** News that has landed (its week), and the stories the player has not read yet (time never waits for them) */
   seenEvents: number[]
-  pendingEvent?: EventId
+  newsQueue: number[]
 }
 
 export const emptyPlayground: PlaygroundState = {
@@ -51,7 +51,7 @@ export const emptyPlayground: PlaygroundState = {
   seed: 1,
   status: 'idle',
   tick: 0,
-  speed: 0,
+  startedAt: 0,
   cash: 0,
   holdings: {},
   trades: [],
@@ -60,6 +60,7 @@ export const emptyPlayground: PlaygroundState = {
   funded: 0,
   fees: 0,
   seenEvents: [],
+  newsQueue: [],
 }
 
 export const cents = (n: number) => Math.round(n * 100) / 100
@@ -98,8 +99,8 @@ export function maxBuy(cash: number): number {
 
 export type TradeResult = { ok: true; state: PlaygroundState; trade: Trade } | { ok: false; reason: 'amount' | 'cash' | 'holding' | 'ended' }
 
-/** Buy `amount` dollars of `asset`. The first buy starts the clock. */
-export function buy(s: PlaygroundState, asset: AssetId, amount: number): TradeResult {
+/** Buy `amount` dollars of `asset` at time `now` (epoch ms). The first buy starts the clock. */
+export function buy(s: PlaygroundState, asset: AssetId, amount: number, now: number): TradeResult {
   if (s.status === 'ended') return { ok: false, reason: 'ended' }
   const a = cents(amount)
   if (!(a > 0)) return { ok: false, reason: 'amount' }
@@ -115,7 +116,7 @@ export function buy(s: PlaygroundState, asset: AssetId, amount: number): TradeRe
     trades: [...s.trades, trade],
     fees: cents(s.fees + fee),
   }
-  return { ok: true, trade, state: s.status === 'idle' ? start(next) : { ...next, history: replaceLast(next.history, netWorth(next)) } }
+  return { ok: true, trade, state: s.status === 'idle' ? start(next, now) : { ...next, history: replaceLast(next.history, netWorth(next)) } }
 }
 
 /** Sell `amount` dollars' worth of `asset` (at most what you hold). */
@@ -137,18 +138,30 @@ export function sell(s: PlaygroundState, asset: AssetId, amount: number): TradeR
   return { ok: true, trade, state: { ...next, history: replaceLast(next.history, netWorth(next)) } }
 }
 
-/** The first buy: time starts, at 1x, and the chart begins. */
-function start(s: PlaygroundState): PlaygroundState {
-  return { ...s, status: 'running', speed: 1, historyStart: s.tick, history: [netWorth(s)] }
+/** The first buy: time starts now, on the real clock, and the chart begins. */
+function start(s: PlaygroundState, now: number): PlaygroundState {
+  return { ...s, status: 'running', startedAt: now - s.tick * MS_PER_WEEK, historyStart: s.tick, history: [netWorth(s)] }
 }
 
-export function setSpeed(s: PlaygroundState, speed: Speed): PlaygroundState {
-  return s.status === 'running' && s.speed !== speed ? { ...s, speed } : s
+/** The week the season has reached at time `now` (one real day = one simulated year). */
+export const weekAt = (s: PlaygroundState, now: number) =>
+  s.status === 'idle' ? s.tick : Math.max(s.tick, Math.min(WEEKS_PER_SEASON, Math.floor((now - s.startedAt) / MS_PER_WEEK + 1e-9)))
+
+/** Brings the season up to time `now`, week by week (so history and news are the same as if you had watched). */
+export function catchUp(s: PlaygroundState, now: number): PlaygroundState {
+  const target = weekAt(s, now)
+  let next = s
+  while (next.status === 'running' && next.tick < target) next = advance(next)
+  return next
 }
 
-/** One week passes. Does nothing while news is waiting, or before the season starts or after it ends. */
+/** Real milliseconds until the next market update (the next simulated week), or 0 when the season is not running. */
+export const msToNextWeek = (s: PlaygroundState, now: number) =>
+  s.status !== 'running' ? 0 : Math.max(0, s.startedAt + (s.tick + 1) * MS_PER_WEEK - now)
+
+/** One week passes. Does nothing before the season starts or after it ends. News lands in the queue; time never waits. */
 export function advance(s: PlaygroundState): PlaygroundState {
-  if (s.status !== 'running' || s.pendingEvent || s.tick >= WEEKS_PER_SEASON) return s
+  if (s.status !== 'running' || s.tick >= WEEKS_PER_SEASON) return s
   const market = marketOf(s)
   const tick = s.tick + 1
   const moved = { ...s, tick }
@@ -156,17 +169,20 @@ export function advance(s: PlaygroundState): PlaygroundState {
   const next: PlaygroundState = { ...moved, history: [...s.history, netWorth(moved, market)] }
   if (event) {
     next.seenEvents = [...s.seenEvents, event.tick]
-    next.pendingEvent = event.id
+    next.newsQueue = [...s.newsQueue, event.tick]
   }
-  if (tick >= WEEKS_PER_SEASON) {
-    next.status = 'ended'
-    next.speed = 0
-  }
+  if (tick >= WEEKS_PER_SEASON) next.status = 'ended'
   return next
 }
 
-/** The player pressed Continue on the news: time runs again. */
-export const dismissEvent = (s: PlaygroundState): PlaygroundState => (s.pendingEvent ? { ...s, pendingEvent: undefined } : s)
+/** The player read the oldest unread story. */
+export const readNews = (s: PlaygroundState): PlaygroundState => (s.newsQueue.length ? { ...s, newsQueue: s.newsQueue.slice(1) } : s)
+
+/** The unread story at the front of the queue, if any. */
+export function nextNews(s: PlaygroundState, market: Market = marketOf(s)): { tick: number; id: EventId } | undefined {
+  const tick = s.newsQueue[0]
+  return tick === undefined ? undefined : market.events.find((e) => e.tick === tick)
+}
 
 /** Money can only leave the Playground between seasons: before the first buy, or after the season ends. */
 export const canWithdraw = (s: PlaygroundState) => s.status !== 'running'

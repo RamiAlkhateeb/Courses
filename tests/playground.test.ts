@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { ASSET_IDS, ASSETS, CONFIG, WEEKS_PER_SEASON } from '../src/domain/playground/config'
-import { advance, buy, canWithdraw, cashOut, dismissEvent, emptyPlayground, fund, gain, maxBuy, maxDrawdown, netWorth, realHistory, sell, setSpeed, type PlaygroundState } from '../src/domain/playground/engine'
+import { ASSET_IDS, ASSETS, CONFIG, MS_PER_WEEK, WEEKS_PER_SEASON, type AssetId } from '../src/domain/playground/config'
+import { advance, buy as buyAt, canWithdraw, cashOut, catchUp, emptyPlayground, fund, gain, maxBuy, maxDrawdown, msToNextWeek, netWorth, nextNews, readNews, realHistory, sell, weekAt, type PlaygroundState } from '../src/domain/playground/engine'
 import { direction, EVENTS } from '../src/domain/playground/events'
 import { buildMarket } from '../src/domain/playground/market'
 import { normal, uniform } from '../src/domain/playground/prng'
@@ -8,6 +8,10 @@ import { insights, unitsAt, wasSpread } from '../src/domain/playground/insights'
 import { allocation, biggestBet } from '../src/domain/playground/risk'
 
 const funded = (cash = 1000, seed = 7): PlaygroundState => fund({ ...emptyPlayground, seed }, cash)
+/** The moment of the first buy in these tests (time follows the real clock from there) */
+const T0 = 1_760_000_000_000
+const DAY = CONFIG.msPerYear
+const buy = (s: PlaygroundState, asset: AssetId, amount: number) => buyAt(s, asset, amount, T0)
 const must = <T extends { ok: boolean }>(r: T) => {
   expect(r.ok).toBe(true)
   return r as Extract<T, { ok: true }>
@@ -92,6 +96,56 @@ describe('the market', () => {
     expect(direction(EVENTS.scandal, 'nile')).toBe('down')
     expect(direction(EVENTS.scandal, 'index')).toBe('flat')
     expect(direction(EVENTS.recession, 'bonds')).toBe('up')
+    expect(direction(EVENTS.recession, 'gold')).toBe('up')
+    expect(direction(EVENTS.recession, 'tech')).toBe('down')
+    expect(direction(EVENTS.recession, 'crypto')).toBe('down')
+    expect(direction(EVENTS['rates-rise'], 'reit')).toBe('down')
+    expect(direction(EVENTS.inflation, 'gold')).toBe('up')
+    expect(direction(EVENTS['crypto-crash'], 'crypto')).toBe('down')
+    expect(direction(EVENTS['crypto-crash'], 'savings')).toBe('flat')
+  })
+  it('has nine investments, safest first, with fictional ones marked', () => {
+    expect(ASSET_IDS).toHaveLength(9)
+    const risks = ASSET_IDS.map((id) => ASSETS[id].risk)
+    expect(risks).toEqual([...risks].sort((a, b) => a - b))
+    expect(ASSET_IDS.filter((id) => ASSETS[id].fictional)).toEqual(['nile', 'crypto'])
+  })
+  it('the new investments behave believably over many seasons', () => {
+    const n = 80
+    const yearly = (id: AssetId, m: ReturnType<typeof buildMarket>) => Math.log(m.price[id][WEEKS_PER_SEASON] / m.price[id][0]) / CONFIG.seasonYears
+    const avg: Record<string, number> = {}
+    const corr = { gold: 0, us500: 0 }
+    for (let seed = 1; seed <= n; seed++) {
+      const m = buildMarket(seed)
+      for (const id of ['gold', 'us500', 'reit', 'tech', 'crypto'] as const) avg[id] = (avg[id] ?? 0) + yearly(id, m) / n
+      // weekly moves: US 500 moves with world stocks, gold barely does
+      const r = (id: AssetId) => m.price[id].slice(1).map((p, t) => Math.log(p / m.price[id][t]))
+      const c = (a: number[], b: number[]) => {
+        const ma = a.reduce((x, y) => x + y) / a.length
+        const mb = b.reduce((x, y) => x + y) / b.length
+        const cov = a.reduce((x, y, i) => x + (y - ma) * (b[i] - mb), 0)
+        return cov / Math.sqrt(a.reduce((x, y) => x + (y - ma) ** 2, 0) * b.reduce((x, y) => x + (y - mb) ** 2, 0))
+      }
+      corr.us500 += c(r('us500'), r('index')) / n
+      corr.gold += c(r('gold'), r('index')) / n
+    }
+    expect(avg.us500).toBeGreaterThan(0.02)
+    expect(avg.us500).toBeLessThan(0.12)
+    expect(avg.gold).toBeGreaterThan(-0.03)
+    expect(avg.gold).toBeLessThan(0.09)
+    expect(avg.crypto).toBeGreaterThan(-0.25)
+    expect(avg.crypto).toBeLessThan(0.25)
+    expect(corr.us500).toBeGreaterThan(0.8)
+    expect(Math.abs(corr.gold)).toBeLessThan(0.3)
+  })
+  it('crypto swings far more than world stocks', () => {
+    const m = buildMarket(5)
+    const sd = (p: number[]) => {
+      const r = p.slice(1).map((x, t) => Math.log(x / p[t]))
+      const mean = r.reduce((a, b) => a + b) / r.length
+      return Math.sqrt(r.reduce((a, b) => a + (b - mean) ** 2, 0) / r.length)
+    }
+    expect(sd(m.price.crypto)).toBeGreaterThan(3 * sd(m.price.index))
   })
 })
 
@@ -117,15 +171,15 @@ describe('funding and trading', () => {
     must(buy(s, 'index', maxBuy(100)))
     expect(buy(s, 'index', 0)).toEqual({ ok: false, reason: 'amount' })
   })
-  it('the first buy starts the clock at 1x and the chart; later buys do not restart it', () => {
+  it('the first buy starts the clock (now, on the real clock) and the chart; later buys do not restart it', () => {
     const s = funded(1000)
     expect(s.status).toBe('idle')
     const a = must(buy(s, 'savings', 100)).state
     expect(a.status).toBe('running')
-    expect(a.speed).toBe(1)
+    expect(a.startedAt).toBe(T0)
     expect(a.history).toHaveLength(1)
-    const b = must(buy(setSpeed(a, 3), 'index', 100)).state
-    expect(b.speed).toBe(3)
+    const b = must(buyAt(a, 'index', 100, T0 + DAY)).state
+    expect(b.startedAt).toBe(T0)
     expect(b.history).toHaveLength(1)
   })
   it('selling returns the amount minus the 1% fee and keeps the cost basis in proportion', () => {
@@ -141,7 +195,7 @@ describe('funding and trading', () => {
   })
   it('only money you moved in can be lost: net worth never drops below zero and the gain is value minus funded', () => {
     let s = must(buy(funded(500), 'nile', 400)).state
-    for (let i = 0; i < 80; i++) s = advance(dismissEvent(s))
+    for (let i = 0; i < 80; i++) s = advance(s)
     expect(netWorth(s)).toBeGreaterThanOrEqual(0)
     expect(gain(s)).toBe(Math.round((netWorth(s) - 500) * 100) / 100)
   })
@@ -160,31 +214,48 @@ describe('time', () => {
     expect(s.history).toHaveLength(3)
     expect(netWorth(s)).toBeGreaterThan(990) // savings earn interest; the fee cost $5
   })
-  it('pauses on news until Continue is pressed, then carries on', () => {
+  it('follows the real clock: one real day is one simulated year, one week every ~27.7 minutes', () => {
+    expect(MS_PER_WEEK).toBeCloseTo((24 * 60 * 60 * 1000) / 52, 5)
+    const s = must(buy(funded(1000), 'savings', 500)).state
+    expect(weekAt(s, T0 + MS_PER_WEEK - 1)).toBe(0)
+    expect(weekAt(s, T0 + MS_PER_WEEK)).toBe(1)
+    expect(weekAt(s, T0 + DAY)).toBe(CONFIG.weeksPerYear)
+    expect(msToNextWeek(s, T0 + 1000)).toBeCloseTo(MS_PER_WEEK - 1000, 0)
+    expect(catchUp(funded(1000), T0 + DAY)).toEqual(funded(1000)) // nothing moves before the first buy
+  })
+  it('catches up after the app was closed, week by week, with every history point and the news queued', () => {
+    const start = must(buy(funded(1000, 9), 'index', 300)).state
+    const later = catchUp(start, T0 + 2 * DAY) // two real days away: two simulated years
+    expect(later.tick).toBe(2 * CONFIG.weeksPerYear)
+    expect(later.history).toHaveLength(2 * CONFIG.weeksPerYear + 1)
+    let stepped = start
+    for (let i = 0; i < 2 * CONFIG.weeksPerYear; i++) stepped = advance(stepped)
+    expect(later).toEqual(stepped) // the same as watching every week
+    const landed = buildMarket(9).events.filter((e) => e.tick <= later.tick)
+    expect(later.newsQueue).toEqual(landed.map((e) => e.tick))
+  })
+  it('never waits for the news: unread stories queue up and are read one at a time', () => {
     let s = must(buy(funded(1000, 9), 'index', 300)).state
     const first = buildMarket(9).events[0]
-    for (let i = 0; i < first.tick - 1; i++) s = advance(s)
-    expect(s.pendingEvent).toBeUndefined()
-    s = advance(s)
-    expect(s.tick).toBe(first.tick)
-    expect(s.pendingEvent).toBe(first.id)
-    expect(advance(s)).toBe(s) // time is stopped while the news is up
-    s = advance(dismissEvent(s))
-    expect(s.tick).toBe(first.tick + 1)
-    expect(s.pendingEvent).toBeUndefined()
+    for (let i = 0; i < first.tick; i++) s = advance(s)
+    expect(nextNews(s)!.id).toBe(first.id)
+    expect(advance(s).tick).toBe(first.tick + 1) // time keeps running with news unread
+    s = readNews(s)
+    expect(s.newsQueue).toEqual([])
+    expect(nextNews(s)).toBeUndefined()
+    expect(readNews(s)).toBe(s)
   })
-  it('ends after ten years and stops the clock', () => {
-    let s = must(buy(funded(1000), 'savings', 500)).state
-    for (let i = 0; i < WEEKS_PER_SEASON + 10; i++) s = advance(dismissEvent(s))
+  it('ends after ten years (ten real days) and stops', () => {
+    const s = catchUp(must(buy(funded(1000), 'savings', 500)).state, T0 + 30 * DAY)
     expect(s.tick).toBe(WEEKS_PER_SEASON)
     expect(s.status).toBe('ended')
-    expect(s.speed).toBe(0)
-    expect(buy(s, 'index', 10)).toEqual({ ok: false, reason: 'ended' })
+    expect(msToNextWeek(s, T0 + 30 * DAY)).toBe(0)
+    expect(buyAt(s, 'index', 10, T0 + 30 * DAY)).toEqual({ ok: false, reason: 'ended' })
   })
   it('is deterministic: the same seed and trades give the same season', () => {
     const run = () => {
       let s = must(buy(funded(1000, 42), 'index', 600)).state
-      for (let i = 0; i < 120; i++) s = advance(dismissEvent(s))
+      for (let i = 0; i < 120; i++) s = advance(s)
       return netWorth(s)
     }
     expect(run()).toBe(run())
@@ -207,7 +278,7 @@ describe('leaving the Playground', () => {
   })
   it('cashing out a finished season values everything and starts the next', () => {
     let s = must(buy(funded(1000, 4), 'index', 800)).state
-    for (let i = 0; i < WEEKS_PER_SEASON; i++) s = advance(dismissEvent(s))
+    for (let i = 0; i < WEEKS_PER_SEASON; i++) s = advance(s)
     const out = cashOut(s, 99)!
     expect(out.amount).toBe(netWorth(s))
     expect(out.state.season).toBe(2)
@@ -256,21 +327,30 @@ describe('saved Playground', () => {
     expect(parsePlayground(null)).toEqual(emptyPlayground)
     expect(parsePlayground('{nope')).toEqual(emptyPlayground)
     expect(parsePlayground('[]')).toEqual(emptyPlayground)
-    const p = parsePlayground(JSON.stringify({ season: 3, cash: 12.5, status: 'running', speed: 2, holdings: { index: { units: 4, cost: 90 }, junk: { units: 1 } }, pendingEvent: 'nope' }))
-    expect(p).toMatchObject({ season: 3, cash: 12.5, status: 'running', speed: 2, holdings: { index: { units: 4, cost: 90 } } })
-    expect(p.pendingEvent).toBeUndefined()
+    const p = parsePlayground(JSON.stringify({ season: 3, cash: 12.5, status: 'running', tick: 10, speed: 2, holdings: { index: { units: 4, cost: 90 }, junk: { units: 1 } }, pendingEvent: 'nope' }), T0)
+    expect(p).toMatchObject({ season: 3, cash: 12.5, status: 'running', tick: 10, holdings: { index: { units: 4, cost: 90 } }, newsQueue: [] })
+    expect('speed' in p).toBe(false)
+  })
+  it('carries an old season (saved before time followed the real clock) on from the week it was at', async () => {
+    const { parsePlayground } = await import('../src/domain/playground/persist')
+    const old = { season: 2, seed: 9, status: 'running', tick: 60, speed: 1, cash: 5, holdings: {}, history: [1], historyStart: 0, funded: 5, fees: 0, seenEvents: [40], pendingEvent: 'recession' }
+    const p = parsePlayground(JSON.stringify(old), T0)
+    expect(p.startedAt).toBe(T0 - 60 * MS_PER_WEEK)
+    expect(weekAt(p, T0)).toBe(60)
+    expect(weekAt(p, T0 + MS_PER_WEEK)).toBe(61)
+    expect(p.newsQueue).toEqual([40]) // the story it was showing stays unread
   })
   it('round-trips a real season through JSON', async () => {
     const { parsePlayground } = await import('../src/domain/playground/persist')
     let s = must(buy(funded(1000, 8), 'index', 400)).state
-    for (let i = 0; i < 30; i++) s = advance(dismissEvent(s))
+    for (let i = 0; i < 30; i++) s = advance(s)
     expect(parsePlayground(JSON.stringify(s))).toEqual(s)
   })
 })
 
 describe('season insights', () => {
   const finish = (s: PlaygroundState) => {
-    for (let i = 0; i < WEEKS_PER_SEASON; i++) s = advance(dismissEvent(s))
+    for (let i = 0; i < WEEKS_PER_SEASON; i++) s = advance(s)
     return s
   }
 

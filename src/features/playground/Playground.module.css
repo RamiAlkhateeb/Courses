@@ -188,14 +188,28 @@
   background: var(--oops);
 }
 
-/* ---------- clock ---------- */
-.speed {
+/* ---------- clock: time follows the real clock, so this is a status line, not controls ---------- */
+.clock {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 10px 12px;
   margin-block: 14px;
+}
+.clockText {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  min-inline-size: 0;
+}
+.clockText strong {
+  color: var(--indigo);
+}
+.clockText span,
+.clock .muted {
+  font-size: 0.9rem;
+  color: var(--muted);
 }
 .title {
   font-size: 2.3rem;
@@ -207,34 +221,6 @@
   white-space: nowrap;
   display: inline-flex;
   gap: 6px;
-}
-.speed .muted {
-  text-align: end;
-  font-size: 0.9rem;
-}
-.speedBtns {
-  display: inline-flex;
-  gap: 6px;
-}
-.speedBtns button {
-  inline-size: 46px;
-  block-size: 46px;
-  display: grid;
-  place-items: center;
-  background: var(--surface);
-  border: 1px solid var(--rule);
-  border-radius: 14px;
-  color: var(--brand);
-  cursor: pointer;
-}
-.speedBtns button[aria-pressed='true'] {
-  background: var(--brand);
-  border-color: var(--brand);
-  color: var(--sky);
-}
-.speedBtns button:disabled {
-  opacity: 0.45;
-  cursor: default;
 }
 
 /* ---------- holdings ---------- */
@@ -357,6 +343,10 @@ button.holding {
   flex-direction: column;
   gap: 10px;
   margin-block-end: 12px;
+  /* nine investments: the list scrolls inside the sheet on short screens */
+  max-block-size: 58dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 .assetRow {
   display: flex;
