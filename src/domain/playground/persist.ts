@@ -1,4 +1,4 @@
-import { ASSET_IDS, MS_PER_WEEK } from './config'
+import { ASSET_IDS, MS_PER_WEEK, type AssetId } from './config'
 import { emptyPlayground, type PlaygroundState } from './engine'
 import { EVENT_IDS } from './events'
 
@@ -41,6 +41,18 @@ export function parsePlayground(raw: string | null, now: number = Date.now()): P
       fees: Math.max(0, num(d.fees, 0)),
       seenEvents,
       newsQueue: Array.isArray(d.newsQueue) ? numbers(d.newsQueue).filter((t) => seenEvents.includes(t)) : oldPending,
+      // Seasons from before the deposit log: all the money as if it came in when the season started
+      deposits: Array.isArray(d.deposits)
+        ? d.deposits.filter(isRecord).map((x) => ({ tick: Math.max(0, Math.floor(num(x.tick, 0))), amount: num(x.amount, 0) })).filter((x) => x.amount > 0)
+        : num(d.funded, 0) > 0
+          ? [{ tick: Math.max(0, Math.floor(num(d.historyStart, 0))), amount: num(d.funded, 0) }]
+          : [],
+      autoInvest:
+        isRecord(d.autoInvest) && (ASSET_IDS as unknown[]).includes(d.autoInvest.asset) && num(d.autoInvest.amount, 0) > 0
+          ? { asset: d.autoInvest.asset as AssetId, amount: num(d.autoInvest.amount, 0) }
+          : null,
+      reinvest: d.reinvest !== false,
+      income: Math.max(0, num(d.income, 0)),
     }
   } catch {
     return emptyPlayground

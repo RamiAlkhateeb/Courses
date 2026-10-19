@@ -1,6 +1,5 @@
 import type { ComponentType } from 'react'
-import { Link, Navigate, createBrowserRouter, type RouteObject } from 'react-router-dom'
-import { ENABLED_COURSE_IDS } from '../content/courses'
+import { Link, createBrowserRouter, type RouteObject } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { AppShell } from '../components/AppShell'
 import { RouteError } from './RouteError'
@@ -38,6 +37,8 @@ export const router = createBrowserRouter(
         { path: 'playground/summary', ...page(() => import('../features/playground/SummaryPage'), 'SummaryPage') },
         // Settings (from the gear on Me) and the legal pages it links to work with or without accounts.
         { path: 'settings', ...page(() => import('../features/settings/SettingsPage'), 'SettingsPage') },
+        // All courses: opened from the course dropdown at the top of Learn and Me
+        { path: 'courses', ...page(() => import('../features/courses/CoursesPage'), 'CoursesPage') },
         { path: 'legal/:page', ...page(() => import('../features/account/LegalPage'), 'LegalPage') },
         {
           // Optional accounts (sign up, log in, reset, account, delete): only when Supabase is configured.
@@ -82,7 +83,6 @@ export const router = createBrowserRouter(
       errorElement: <RouteError />,
       children: [
         // The catalog listed every course; with Investing the only one, its old URL opens that course.
-        { path: 'courses', element: <Navigate to={`/course/${ENABLED_COURSE_IDS[0]}`} replace /> },
         {
           path: 'course/:courseId',
           lazy: async () => {

@@ -2,11 +2,14 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Guide, buttonClass, Icon, StatPill } from '../../components/ui'
 import { MoneyChip } from '../../components/MoneyChip'
+import { CourseSwitcher } from '../../components/CourseSwitcher'
 import { practiceHref } from '../../content/courses'
 import { useLocalized } from '../../content/useLocalized'
 import { currentStreak, localDay } from '../../domain/progress'
 import { learnHref, lessonMinutes, type Lesson } from '../../domain/lessons'
 import { useAuth } from '../../state/auth'
+import { canOpenLesson, canOpenPractice, FREE_LESSONS, lessonOrder } from '../../domain/access'
+import { useGuestLimited } from '../../state/useAccess'
 import { accountsEnabled } from '../../state/supabase'
 import { useProgress } from '../../state/useProgress'
 import { useWallet } from '../../state/usePlayground'
@@ -27,6 +30,10 @@ export function PathPage() {
   const streak = currentStreak(progress.streak, localDay())
   const nextChapter = next ? chapters.find((c) => c.id === next.mod.id) : undefined
   const nextIndex = nextChapter && next ? nextChapter.lessons.findIndex((l) => l.id === next.lesson.id) : -1
+  const guest = useGuestLimited()
+  const order = lessonOrder(chapters)
+  const gated = (moduleId: string, lessonId: string) => !canOpenLesson(order, moduleId, lessonId, guest)
+  const nextGated = !!next && gated(next.mod.id, next.lesson.id)
 
   return (
     <div className={styles.page}>
@@ -40,6 +47,7 @@ export function PathPage() {
           <MoneyChip amount={wallet} />
         </div>
       </header>
+      <CourseSwitcher className={styles.switcher} />
       {/* Accounts are optional and only exist when Supabase is configured; the Log in screen links on to Create an account. */}
       {accountsEnabled && auth.status === 'signedOut' && (
         <Link to="/login" className={buttonClass({ variant: 'secondary', size: 'sm' }, styles.login)}>
@@ -50,7 +58,26 @@ export function PathPage() {
       {!loaded && <p className={styles.loading}>{t('loading')}</p>}
       {loaded && chapters.length === 0 && <p className={styles.loading}>{t('contentComing')}</p>}
 
-      {loaded && next && nextChapter && (
+      {loaded && next && nextGated && (
+        <section className={styles.upNext} aria-labelledby="gate-title">
+          <div className={styles.upText}>
+            <p className={styles.upKicker}>{t('gate_kicker', { count: FREE_LESSONS })}</p>
+            <h2 id="gate-title" className={styles.upTitle}>
+              {t('gate_title')}
+            </h2>
+            <div className={styles.upActions}>
+              <Link className={buttonClass({ variant: 'white', size: 'sm' })} to="/signup">
+                {t('acc_create')}
+              </Link>
+              <Link className={styles.upLink} to="/login">
+                {t('acc_sign_in')}
+              </Link>
+            </div>
+          </div>
+          <Guide pose="point" height={104} flip={i18n.dir() !== 'rtl'} className={styles.upMascot} />
+        </section>
+      )}
+      {loaded && next && nextChapter && !nextGated && (
         <section className={styles.upNext} aria-label={t('learn_up_next', { n: nextIndex + 1, total: nextChapter.lessons.length })}>
           <div className={styles.upText}>
             <p className={styles.upKicker}>{t('learn_up_next', { n: nextIndex + 1, total: nextChapter.lessons.length })}</p>
@@ -68,7 +95,14 @@ export function PathPage() {
 
       {loaded &&
         chapters.map((chapter, i) => (
-          <UnitList key={chapter.id} chapter={chapter} index={i} nextLessonId={next?.mod.id === chapter.id ? next.lesson.id : undefined} />
+          <UnitList
+            key={chapter.id}
+            chapter={chapter}
+            index={i}
+            nextLessonId={next?.mod.id === chapter.id ? next.lesson.id : undefined}
+            gated={(lessonId) => gated(chapter.id, lessonId)}
+            reviewGated={!canOpenPractice(guest)}
+          />
         ))}
       <span className="visually-hidden">{tc(course.title)}</span>
     </div>
@@ -76,7 +110,20 @@ export function PathPage() {
 }
 
 /** One unit: a header with its progress, then a row per lesson and the unit review (a quiz-only practice run). */
-function UnitList({ chapter, index, nextLessonId }: { chapter: Chapter; index: number; nextLessonId?: string }) {
+function UnitList({
+  chapter,
+  index,
+  nextLessonId,
+  gated,
+  reviewGated,
+}: {
+  chapter: Chapter
+  index: number
+  nextLessonId?: string
+  /** Guests: lessons past the free ones link to sign-up instead. */
+  gated: (lessonId: string) => boolean
+  reviewGated: boolean
+}) {
   const { t } = useTranslation()
   const tc = useLocalized()
   const mod = chapter.mod!
@@ -98,6 +145,21 @@ function UnitList({ chapter, index, nextLessonId }: { chapter: Chapter; index: n
           const isNext = lesson.id === nextLessonId
           const meta = t('learn_meta', { min: lessonMinutes(lesson), count: questionsIn(lesson) })
           const href = learnHref(mod.courseId, mod.id, lesson.id)
+          // A gated row is never a dead end: it opens sign-up. Lessons already done stay open.
+          if (!done && gated(lesson.id))
+            return (
+              <li key={lesson.id}>
+                <Link to="/signup" className={`${styles.row} ${styles.rowGated}`}>
+                  <span className={styles.mark}>
+                    <Icon name="lock" size={16} />
+                  </span>
+                  <span className={styles.rowText}>
+                    <strong>{tc(lesson.title)}</strong>
+                    <small>{t('gate_unlock')}</small>
+                  </span>
+                </Link>
+              </li>
+            )
           if (done)
             return (
               <li key={lesson.id}>
@@ -144,7 +206,17 @@ function UnitList({ chapter, index, nextLessonId }: { chapter: Chapter; index: n
         })}
         {reviewQuestions > 0 && (
           <li>
-            {allDone ? (
+            {allDone && reviewGated ? (
+              <Link to="/signup" className={`${styles.row} ${styles.rowGated}`}>
+                <span className={styles.mark}>
+                  <Icon name="lock" size={16} />
+                </span>
+                <span className={styles.rowText}>
+                  <strong>{t('learn_unit_review')}</strong>
+                  <small>{t('gate_unlock')}</small>
+                </span>
+              </Link>
+            ) : allDone ? (
               <Link to={practiceHref(mod.courseId, mod.id)} className={styles.row}>
                 <span className={styles.mark}>
                   <Icon name="review" size={16} />

@@ -15,6 +15,7 @@ export function Chart({
   label,
   markers = [],
   compareTone = 'saffron',
+  compare,
 }: {
   nominal: number[]
   real?: number[]
@@ -25,9 +26,11 @@ export function Chart({
   markers?: number[]
   /** The second line's colour: saffron text for "after inflation", green for "buy once and hold" */
   compareTone?: 'saffron' | 'green'
+  /** A dotted "what if it was all in one asset" line (the label describes it) */
+  compare?: number[]
 }) {
   const { t } = useTranslation()
-  const all = [...nominal, ...(real ?? []), ...(start === undefined ? [] : [start])]
+  const all = [...nominal, ...(real ?? []), ...(compare ?? []), ...(start === undefined ? [] : [start])]
   const lo = Math.min(...all)
   const hi = Math.max(...all)
   const span = hi - lo || 1
@@ -53,6 +56,7 @@ export function Chart({
           <line key={m} x1={x(m)} x2={x(m)} y1={PAD} y2={H - PAD} className={styles.marker} />
         ))}
         {real && real.length > 1 && <path d={line(real)} className={`${styles.realLine} ${compareTone === 'green' ? styles.realGreen : ''}`} />}
+        {compare && compare.length > 1 && <path d={line(compare)} className={styles.compareLine} />}
         {nominal.length > 1 && <path d={line(nominal)} className={styles.nominalLine} />}
         {worst > 0 && worst < nominal.length - 1 && nominal[worst] < Math.max(...nominal) * 0.97 && <circle cx={x(worst)} cy={y(nominal[worst])} r="4.5" className={styles.low} />}
         {nominal.length > 0 && <circle cx={lastX} cy={lastY} r="5" className={styles.now} />}

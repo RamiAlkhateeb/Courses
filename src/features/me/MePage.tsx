@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { ReactNode } from 'react'
 import { Logo } from '../../components/Logo'
+import { CourseSwitcher } from '../../components/CourseSwitcher'
 import { Money } from '../../components/Money'
 import { Bush, Mound, Sprout, Tree } from '../../components/GardenArt'
 import { Card, Coin, Icon, buttonClass, type IconName } from '../../components/ui'
@@ -65,6 +66,7 @@ export function MePage() {
           <Icon name="gear" size={24} />
         </Link>
       </header>
+      <CourseSwitcher className={styles.switcher} />
 
       <div className={styles.stats}>
         {stats.map((s) => (

@@ -176,3 +176,8 @@
   padding-inline: 12px;
   font-size: 1.0625rem;
 }
+
+.switcher {
+  margin-block-start: 8px;
+  font-size: 1.05rem;
+}

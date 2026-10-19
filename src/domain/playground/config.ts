@@ -20,6 +20,9 @@ export interface AssetConfig {
   beta?: number
   /** Price change per 1-point interest-rate rise (−3 = falls about 3%): property funds, like bonds, dislike rate rises */
   rateSensitivity?: number
+  /** Dividends (or rent) paid out each year as a share of the price, every quarter. The price drifts up by that much
+   *  less, so the total return stays `mean`. Bonds pay the current interest rate instead (`bondsPayRate`). */
+  yield?: number
   /** How far it typically falls in a bad year (0.2 = 20%) */
   badYearFall: number
   /** A made-up company or coin: always labelled "(fictional)" */
@@ -30,10 +33,10 @@ export const ASSETS: Record<AssetId, AssetConfig> = {
   savings: { id: 'savings', risk: 1, startPrice: 1, mean: 0.02, vol: 0, badYearFall: 0 },
   bonds: { id: 'bonds', risk: 2, startPrice: 50, mean: 0.03, vol: 0.06, badYearFall: 0.08 },
   gold: { id: 'gold', risk: 3, startPrice: 180, mean: 0.04, vol: 0.14, beta: -0.1, badYearFall: 0.15 },
-  index: { id: 'index', risk: 3, startPrice: 24.8, mean: 0.07, vol: 0.15, badYearFall: 0.2 },
-  us500: { id: 'us500', risk: 3, startPrice: 41, mean: 0.08, vol: 0.05, beta: 1.05, badYearFall: 0.22 },
-  reit: { id: 'reit', risk: 3, startPrice: 30, mean: 0.06, vol: 0.12, beta: 0.8, rateSensitivity: -3, badYearFall: 0.25 },
-  tech: { id: 'tech', risk: 4, startPrice: 62, mean: 0.1, vol: 0.14, beta: 1.3, badYearFall: 0.33 },
+  index: { id: 'index', yield: 0.02, risk: 3, startPrice: 24.8, mean: 0.07, vol: 0.15, badYearFall: 0.2 },
+  us500: { id: 'us500', yield: 0.015, risk: 3, startPrice: 41, mean: 0.08, vol: 0.05, beta: 1.05, badYearFall: 0.22 },
+  reit: { id: 'reit', yield: 0.04, risk: 3, startPrice: 30, mean: 0.06, vol: 0.12, beta: 0.8, rateSensitivity: -3, badYearFall: 0.25 },
+  tech: { id: 'tech', yield: 0.007, risk: 4, startPrice: 62, mean: 0.1, vol: 0.14, beta: 1.3, badYearFall: 0.33 },
   nile: { id: 'nile', risk: 5, startPrice: 12, mean: 0.09, vol: 0.35, badYearFall: 0.4, fictional: true },
   crypto: { id: 'crypto', risk: 5, startPrice: 8, mean: 0.1, vol: 0.65, beta: 1.5, badYearFall: 0.7, fictional: true },
 }
@@ -61,6 +64,11 @@ export const CONFIG = {
   bondWeeklyNoise: 0.04,
   /** Quick amounts */
   tradePresets: [50, 100],
+  /** Dividends, rent and bond interest land in cash every quarter (13 weeks); reinvesting them costs no fee */
+  payoutEveryWeeks: 13,
+  /** Auto-invest buys once a month (every 4 weeks), if cash covers the amount and its fee */
+  autoInvestEveryWeeks: 4,
+  autoInvestPresets: [25, 50, 100],
   /** Market news per season (spread over it, so a story lands every couple of days) */
   eventsPerSeason: 4,
 }

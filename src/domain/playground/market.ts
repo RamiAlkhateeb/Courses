@@ -74,11 +74,13 @@ export function buildMarket(seed: number): Market {
     cpi.push(cpi[t - 1] * (1 + i1 / W))
 
     price.savings.push(price.savings[t - 1] * (1 + Math.max(CONFIG.savingsFloor, r1 - CONFIG.savingsSpread) / W))
-    const bondReturn = r0 / W - CONFIG.bondDuration * (r1 - r0) + (CONFIG.bondWeeklyNoise / Math.sqrt(W)) * normal(seed, t, STREAM.bonds) + (e?.shock.bonds ?? 0)
+    // Bonds pay the rate as interest in cash every quarter (see `payout` in engine.ts), so the price carries only the
+    // rate moves and noise. Assets with a `yield` likewise drift up by that much less.
+    const bondReturn = -CONFIG.bondDuration * (r1 - r0) + (CONFIG.bondWeeklyNoise / Math.sqrt(W)) * normal(seed, t, STREAM.bonds) + (e?.shock.bonds ?? 0)
     price.bonds.push(price.bonds[t - 1] * Math.exp(bondReturn))
     for (const id of ['index', 'nile'] as const) {
       const a = ASSETS[id]
-      const logReturn = (a.mean - (a.vol * a.vol) / 2) / W + (a.vol / Math.sqrt(W)) * normal(seed, t, STREAM[id]) + (e?.shock[id] ?? 0)
+      const logReturn = (a.mean - (a.yield ?? 0) - (a.vol * a.vol) / 2) / W + (a.vol / Math.sqrt(W)) * normal(seed, t, STREAM[id]) + (e?.shock[id] ?? 0)
       price[id].push(price[id][t - 1] * Math.exp(logReturn))
     }
     const marketShock = normal(seed, t, STREAM.index) // the same world-stocks move as `index` this week
@@ -88,7 +90,7 @@ export function buildMarket(seed: number): Market {
       const beta = a.beta ?? 0
       const totalVar = beta * beta * marketVol * marketVol + a.vol * a.vol
       const logReturn =
-        (a.mean - totalVar / 2) / W +
+        (a.mean - (a.yield ?? 0) - totalVar / 2) / W +
         ((beta * marketVol) / Math.sqrt(W)) * marketShock +
         (a.vol / Math.sqrt(W)) * normal(seed, t, STREAM[id]) +
         (a.rateSensitivity ?? 0) * (r1 - r0) +

@@ -677,3 +677,133 @@ button.holding {
 .insightList svg {
   flex-shrink: 0;
 }
+
+/* Compare-with line, its chips, the allocation ring and the auto-invest card */
+.compareLine {
+  fill: none;
+  stroke: var(--ink-soft);
+  stroke-width: 2.5px;
+  stroke-dasharray: 1 5;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+.compareRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  margin-block-start: 8px;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+.compareRow button {
+  min-block-size: 36px;
+  padding-inline: 12px;
+  font: inherit;
+  font-weight: 700;
+  color: var(--brand);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+}
+.compareRow button[aria-pressed='true'] {
+  background: var(--dawn);
+  border-color: var(--brand);
+}
+.compareText {
+  margin: 6px 0 0;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+.ringCard,
+.autoCard {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+}
+.ringRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.ring {
+  flex: 0 0 auto;
+  inline-size: 112px;
+  block-size: 112px;
+}
+.ringTrack {
+  fill: none;
+  stroke: var(--rule);
+}
+.ringList {
+  flex: 1;
+  min-inline-size: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+  font-size: 0.9375rem;
+  color: var(--brand);
+}
+.ringList li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ringName {
+  flex: 1;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.autoHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-block-end: 10px;
+}
+.autoHead p {
+  margin: 4px 0 0;
+}
+.autoTitle {
+  margin: 0;
+  font-size: 1.125rem;
+  color: var(--brand);
+}
+.autoSwitch {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.income {
+  margin: 0;
+  font-weight: 700;
+  color: var(--correct);
+}
+.autoAssets {
+  max-block-size: 34dvh;
+}
+.assetOn {
+  background: var(--dawn);
+  border: 1.5px solid var(--brand);
+}
+.sheetActions {
+  display: grid;
+  gap: 10px;
+  margin-block: 8px;
+}
+.keyCompare {
+  display: inline-block;
+  inline-size: 22px;
+  block-size: 0;
+  margin-inline-end: 4px;
+  vertical-align: middle;
+  border-top: 3px dotted var(--ink-soft);
+}

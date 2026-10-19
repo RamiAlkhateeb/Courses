@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { ASSET_IDS, ASSETS, CONFIG, MS_PER_WEEK, WEEKS_PER_SEASON, type AssetId } from '../src/domain/playground/config'
-import { advance, buy as buyAt, canWithdraw, cashOut, catchUp, emptyPlayground, fund, gain, maxBuy, maxDrawdown, msToNextWeek, netWorth, nextNews, readNews, realHistory, sell, weekAt, type PlaygroundState } from '../src/domain/playground/engine'
+import { advance, benchmark, buy as buyAt, canWithdraw, setAutoInvest, setReinvest, cashOut, catchUp, emptyPlayground, fund, gain, maxBuy, maxDrawdown, msToNextWeek, netWorth, nextNews, readNews, realHistory, sell, weekAt, type PlaygroundState } from '../src/domain/playground/engine'
 import { direction, EVENTS } from '../src/domain/playground/events'
 import { buildMarket } from '../src/domain/playground/market'
 import { normal, uniform } from '../src/domain/playground/prng'
@@ -321,6 +321,78 @@ describe('charts and risk', () => {
   })
 })
 
+describe('auto-invest, payouts and the compare line', () => {
+  const weeks = (s: PlaygroundState, n: number) => {
+    for (let i = 0; i < n; i++) s = advance(s)
+    return s
+  }
+  it('auto-invest buys once a month, with the 1% fee, as a normal trade, and skips a month it cannot afford', () => {
+    let s = setAutoInvest(must(buy(funded(260), 'savings', 100)).state, { asset: 'index', amount: 50 })
+    s = weeks(s, CONFIG.autoInvestEveryWeeks - 1)
+    expect(s.trades).toHaveLength(1)
+    s = advance(s)
+    const auto = s.trades[1]
+    expect(auto).toMatchObject({ asset: 'index', side: 'buy', amount: 50, fee: 0.5, auto: true, tick: CONFIG.autoInvestEveryWeeks })
+    expect(s.cash).toBeCloseTo(260 - 101 - 50.5, 2)
+    s = weeks(s, CONFIG.autoInvestEveryWeeks * 3) // cash for two more buys (108.50 → 58 → 7.50), then a month skipped
+    expect(s.trades.filter((t) => t.auto)).toHaveLength(3)
+    expect(s.cash).toBeCloseTo(7.5, 2)
+  })
+  it('the chart point of an auto-buy week is that week (it never rewrites the week before)', () => {
+    let s = setAutoInvest(must(buy(funded(500), 'savings', 100)).state, { asset: 'index', amount: 100 })
+    const before = weeks(s, CONFIG.autoInvestEveryWeeks - 1)
+    s = advance(before)
+    expect(s.history.slice(0, -1)).toEqual(before.history)
+    expect(s.history[s.history.length - 1]).toBe(netWorth(s))
+  })
+  it('dividends and bond interest arrive every quarter: reinvested (no fee) or as cash, and are counted as income', () => {
+    const start = must(buy(must(buy(funded(1000), 'index', 500)).state, 'bonds', 300)).state
+    const kept = weeks(start, CONFIG.payoutEveryWeeks)
+    const cashed = weeks(setReinvest(start, false), CONFIG.payoutEveryWeeks)
+    expect(kept.income).toBeGreaterThan(0)
+    expect(kept.income).toBeCloseTo(cashed.income, 1)
+    expect(kept.cash).toBe(start.cash)
+    expect(cashed.cash).toBeCloseTo(start.cash + cashed.income, 2)
+    expect(kept.holdings.index!.units).toBeGreaterThan(start.holdings.index!.units)
+    expect(kept.fees).toBe(start.fees)
+    // A quarter of world stocks' 2% a year on about $500: about $2.50
+    expect(kept.income).toBeGreaterThan(2)
+    expect(kept.income).toBeLessThan(6)
+    expect(weeks(start, CONFIG.payoutEveryWeeks - 1).income).toBe(0)
+    // Safe Savings, gold and fictional assets pay nothing out (savings grows in its price)
+    expect(weeks(must(buy(funded(1000), 'gold', 500)).state, CONFIG.payoutEveryWeeks).income).toBe(0)
+  })
+  it('with payouts reinvested, world stocks still return about their mean over many seasons', () => {
+    const years: number[] = []
+    for (let seed = 1; seed <= 40; seed++) {
+      let s = must(buy(funded(1000, seed), 'index', 990)).state
+      s = weeks(s, WEEKS_PER_SEASON)
+      years.push(Math.pow(netWorth(s) / 1000, 1 / CONFIG.seasonYears) - 1)
+    }
+    const avg = years.reduce((a, b) => a + b, 0) / years.length
+    expect(avg).toBeGreaterThan(0.03)
+    expect(avg).toBeLessThan(0.11)
+  })
+  it('the compare line replays the money moved in, all in one asset, from the week it came', () => {
+    let s = must(buy(funded(1000), 'index', 500)).state
+    s = weeks(s, 20)
+    s = fund(s, 200)
+    s = weeks(s, 20)
+    const line = benchmark(s, 'savings')
+    expect(line).toHaveLength(s.history.length)
+    expect(line[0]).toBeCloseTo(1000 / 1.01, 2)
+    const p = buildMarket(s.seed).price.savings
+    expect(line[20]).toBeCloseTo(line[19] * (p[20] / p[19]) + 200 / 1.01, 1) // the $200 came in week 20
+    expect(line[line.length - 1]).toBeGreaterThan(1200 / 1.01)
+    expect(benchmark(s, 'us500')).toHaveLength(s.history.length)
+  })
+  it('cashing out keeps the auto-invest and reinvest choices for the next season', () => {
+    const s = setReinvest(setAutoInvest(funded(100), { asset: 'us500', amount: 25 }), false)
+    const out = cashOut(s, 3)!
+    expect(out.state).toMatchObject({ autoInvest: { asset: 'us500', amount: 25 }, reinvest: false, deposits: [], income: 0 })
+  })
+})
+
 describe('saved Playground', () => {
   it('reads nothing, garbage and partial values as a fresh, empty Playground', async () => {
     const { parsePlayground } = await import('../src/domain/playground/persist')
@@ -339,11 +411,14 @@ describe('saved Playground', () => {
     expect(weekAt(p, T0)).toBe(60)
     expect(weekAt(p, T0 + MS_PER_WEEK)).toBe(61)
     expect(p.newsQueue).toEqual([40]) // the story it was showing stays unread
+    expect(p).toMatchObject({ deposits: [{ tick: 0, amount: 5 }], autoInvest: null, reinvest: true, income: 0 })
   })
   it('round-trips a real season through JSON', async () => {
     const { parsePlayground } = await import('../src/domain/playground/persist')
     let s = must(buy(funded(1000, 8), 'index', 400)).state
+    s = setAutoInvest(s, { asset: 'reit', amount: 25 })
     for (let i = 0; i < 30; i++) s = advance(s)
+    expect(s.income).toBeGreaterThan(0)
     expect(parsePlayground(JSON.stringify(s))).toEqual(s)
   })
 })

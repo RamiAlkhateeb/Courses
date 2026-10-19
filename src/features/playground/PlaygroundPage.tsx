@@ -6,11 +6,13 @@ import { Change } from '../../components/Change'
 import { Money } from '../../components/Money'
 import { moneyText } from '../../i18n'
 import { ASSETS, ASSET_IDS, CONFIG, type AssetId } from '../../domain/playground/config'
-import { gain, marketOf, maxDrawdown, msToNextWeek, netWorth, nextNews, realHistory, valueOf } from '../../domain/playground/engine'
+import { benchmark, gain, marketOf, maxDrawdown, msToNextWeek, netWorth, nextNews, realHistory, valueOf } from '../../domain/playground/engine'
 import { EVENTS } from '../../domain/playground/events'
 import { usePlayground } from '../../state/usePlayground'
 import { assetName, ASSET_DOT, riskWord, weekOf, yearOf } from './shared'
 import { Chart } from './Chart'
+import { AllocationRing } from './AllocationRing'
+import { AutoInvestCard } from './AutoInvest'
 import { NewsOverlay } from './Overlays'
 import { TradeSheet } from './TradeSheet'
 import styles from './Playground.module.css'
@@ -36,6 +38,7 @@ export function PlaygroundPage() {
   const { state } = pg
   const [sheet, setSheet] = useState<{ asset?: AssetId; side?: 'buy' | 'sell' } | null>(null)
   const [reading, setReading] = useState(false)
+  const [compare, setCompare] = useState<'none' | 'savings' | 'us500'>('none')
   const now = useNow()
 
   const market = marketOf(state)
@@ -54,8 +57,15 @@ export function PlaygroundPage() {
   const nextUpdate = Math.max(1, Math.ceil(msToNextWeek(state, now) / MINUTE))
   const daysLeft = Math.max(0, Math.ceil((state.startedAt + CONFIG.seasonYears * CONFIG.msPerYear - now) / (CONFIG.msPerYear)))
 
+  const compareLine = running && compare !== 'none' ? benchmark(state, compare, market) : undefined
+  const compareNow = compareLine?.[compareLine.length - 1]
+  const compareText =
+    compare !== 'none' && compareNow !== undefined ? t('pg_compare_alt', { asset: assetName(t, compare), amount: moneyText(compareNow) }) : ''
   const chartLabel = running
-    ? t('pg_chart_alt', { year, now: moneyText(net), start: moneyText(state.funded), real: moneyText(real[real.length - 1] ?? net), worst: Math.round(worst.fall * 100) })
+    ? [
+        t('pg_chart_alt', { year, now: moneyText(net), start: moneyText(state.funded), real: moneyText(real[real.length - 1] ?? net), worst: Math.round(worst.fall * 100) }),
+        compareText,
+      ].join(' ').trim()
     : t('pg_chart_empty')
 
   return (
@@ -89,7 +99,29 @@ export function PlaygroundPage() {
           <span className={styles.year}>{running ? t('pg_year_n', { n: year }) : ''}</span>
         </div>
         {running ? (
-          <Chart nominal={state.history} real={real} start={state.funded} label={chartLabel} markers={seen.map((e) => e.tick - state.historyStart).filter((i) => i >= 0)} />
+          <>
+            <Chart
+              nominal={state.history}
+              real={real}
+              compare={compareLine}
+              start={state.funded}
+              label={chartLabel}
+              markers={seen.map((e) => e.tick - state.historyStart).filter((i) => i >= 0)}
+            />
+            <div className={styles.compareRow} role="group" aria-label={t('pg_compare')}>
+              <span>{t('pg_compare')}</span>
+              {(['none', 'savings', 'us500'] as const).map((c) => (
+                <button key={c} type="button" aria-pressed={compare === c} onClick={() => setCompare(c)}>
+                  {t(`pg_compare_${c}`)}
+                </button>
+              ))}
+            </div>
+            {compareText && (
+              <p className={styles.compareText} aria-live="polite">
+                <i className={styles.keyCompare} aria-hidden /> {compareText}
+              </p>
+            )}
+          </>
         ) : (
           <div className={styles.emptyChart}>
             <Chart nominal={[net, net]} label={chartLabel} />
@@ -128,6 +160,8 @@ export function PlaygroundPage() {
         ) : null}
       </div>
 
+      {running && <AllocationRing state={state} />}
+
       <ul className={styles.holdings}>
         <li className={styles.holding}>
           <span className={styles.dot} style={{ background: ASSET_DOT.cash }} />
@@ -160,6 +194,8 @@ export function PlaygroundPage() {
           )
         })}
       </ul>
+
+      {state.status !== 'ended' && <AutoInvestCard state={state} onAutoInvest={pg.setAutoInvest} onReinvest={pg.setReinvest} />}
 
       {state.status === 'ended' && (
         <div className={styles.endCard}>

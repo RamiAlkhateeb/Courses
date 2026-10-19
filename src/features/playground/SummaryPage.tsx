@@ -27,6 +27,7 @@ export function SummaryPage() {
     if (i.key === 'fees') {
       return t('pg_insight_fees', { count: i.vars!.n, fee: moneyText(i.vars!.fee) })
     }
+    if (i.key === 'income') return t('pg_insight_income', { amount: moneyText(i.vars!.amount) })
     return t(`pg_insight_${i.key}` as 'pg_insight_stayed', vars)
   }
 

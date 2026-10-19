@@ -1,6 +1,6 @@
 // The Playground as pure functions: (state, market) → state. The UI only draws it and dispatches to it.
 // Money is play money, rounded to cents. Nothing here touches React, storage or the clock.
-import { ASSET_IDS, CONFIG, MS_PER_WEEK, WEEKS_PER_SEASON, type AssetId } from './config'
+import { ASSET_IDS, ASSETS, CONFIG, MS_PER_WEEK, WEEKS_PER_SEASON, type AssetId } from './config'
 import type { EventId } from './events'
 import { buildMarket, type Market } from './market'
 
@@ -20,6 +20,14 @@ export interface Trade {
   amount: number
   fee: number
   price: number
+  /** Bought by auto-invest, not by hand */
+  auto?: true
+}
+
+/** A monthly buy the player set up: `amount` dollars of `asset`, every `CONFIG.autoInvestEveryWeeks` weeks. */
+export interface AutoInvest {
+  asset: AssetId
+  amount: number
 }
 
 export interface PlaygroundState {
@@ -44,6 +52,13 @@ export interface PlaygroundState {
   /** News that has landed (its week), and the stories the player has not read yet (time never waits for them) */
   seenEvents: number[]
   newsQueue: number[]
+  /** Money moved in, and the week it came: what the "compare with" lines replay */
+  deposits: { tick: number; amount: number }[]
+  autoInvest: AutoInvest | null
+  /** Dividends, rent and bond interest buy more of the same (no fee) instead of landing in cash */
+  reinvest: boolean
+  /** Dividends, rent and interest paid out this season */
+  income: number
 }
 
 export const emptyPlayground: PlaygroundState = {
@@ -61,6 +76,10 @@ export const emptyPlayground: PlaygroundState = {
   fees: 0,
   seenEvents: [],
   newsQueue: [],
+  deposits: [],
+  autoInvest: null,
+  reinvest: true,
+  income: 0,
 }
 
 export const cents = (n: number) => Math.round(n * 100) / 100
@@ -83,7 +102,7 @@ export const gain = (s: PlaygroundState, market?: Market) => cents(netWorth(s, m
 export function fund(s: PlaygroundState, amount: number): PlaygroundState {
   if (!(amount > 0)) return s
   const a = cents(amount)
-  const next = { ...s, cash: cents(s.cash + a), funded: cents(s.funded + a) }
+  const next = { ...s, cash: cents(s.cash + a), funded: cents(s.funded + a), deposits: [...s.deposits, { tick: s.tick, amount: a }] }
   return s.status === 'running' ? { ...next, history: replaceLast(s.history, netWorth(next)) } : next
 }
 
@@ -101,6 +120,13 @@ export type TradeResult = { ok: true; state: PlaygroundState; trade: Trade } | {
 
 /** Buy `amount` dollars of `asset` at time `now` (epoch ms). The first buy starts the clock. */
 export function buy(s: PlaygroundState, asset: AssetId, amount: number, now: number): TradeResult {
+  const r = buyNow(s, asset, amount)
+  if (!r.ok) return r
+  return { ...r, state: s.status === 'idle' ? start(r.state, now) : { ...r.state, history: replaceLast(r.state.history, netWorth(r.state)) } }
+}
+
+/** The buy itself, at this week's price (the chart is the caller's job). */
+function buyNow(s: PlaygroundState, asset: AssetId, amount: number, auto = false): TradeResult {
   if (s.status === 'ended') return { ok: false, reason: 'ended' }
   const a = cents(amount)
   if (!(a > 0)) return { ok: false, reason: 'amount' }
@@ -108,15 +134,15 @@ export function buy(s: PlaygroundState, asset: AssetId, amount: number, now: num
   if (a + fee > s.cash + 1e-9) return { ok: false, reason: 'cash' }
   const price = priceOf(s, asset)
   const held = s.holdings[asset] ?? { units: 0, cost: 0 }
-  const trade: Trade = { tick: s.tick, asset, side: 'buy', amount: a, fee, price }
-  const next: PlaygroundState = {
+  const trade: Trade = { tick: s.tick, asset, side: 'buy', amount: a, fee, price, ...(auto ? { auto: true as const } : {}) }
+  const state: PlaygroundState = {
     ...s,
     cash: cents(s.cash - a - fee),
     holdings: { ...s.holdings, [asset]: { units: held.units + a / price, cost: cents(held.cost + a) } },
     trades: [...s.trades, trade],
     fees: cents(s.fees + fee),
   }
-  return { ok: true, trade, state: s.status === 'idle' ? start(next, now) : { ...next, history: replaceLast(next.history, netWorth(next)) } }
+  return { ok: true, trade, state }
 }
 
 /** Sell `amount` dollars' worth of `asset` (at most what you hold). */
@@ -164,7 +190,12 @@ export function advance(s: PlaygroundState): PlaygroundState {
   if (s.status !== 'running' || s.tick >= WEEKS_PER_SEASON) return s
   const market = marketOf(s)
   const tick = s.tick + 1
-  const moved = { ...s, tick }
+  let moved: PlaygroundState = { ...s, tick }
+  if (tick % CONFIG.payoutEveryWeeks === 0) moved = payout(moved, market)
+  if (s.autoInvest && tick % CONFIG.autoInvestEveryWeeks === 0) {
+    const r = buyNow(moved, s.autoInvest.asset, s.autoInvest.amount, true)
+    if (r.ok) moved = r.state // not enough cash: this month is skipped
+  }
   const event = market.events.find((e) => e.tick === tick && !s.seenEvents.includes(e.tick))
   const next: PlaygroundState = { ...moved, history: [...s.history, netWorth(moved, market)] }
   if (event) {
@@ -173,6 +204,48 @@ export function advance(s: PlaygroundState): PlaygroundState {
   }
   if (tick >= WEEKS_PER_SEASON) next.status = 'ended'
   return next
+}
+
+/** A year's payout rate of an asset in week `tick`: its dividend yield, or for bonds the interest rate. */
+export const yieldOf = (asset: AssetId, tick: number, market: Market) => (asset === 'bonds' ? market.rate[tick] : (ASSETS[asset].yield ?? 0))
+
+/** The quarter's dividends, rent and bond interest: into cash, or (with `reinvest`) more of the same, without a fee. */
+function payout(s: PlaygroundState, market: Market): PlaygroundState {
+  const share = CONFIG.payoutEveryWeeks / CONFIG.weeksPerYear
+  const holdings = { ...s.holdings }
+  let cash = s.cash
+  let income = 0
+  for (const id of ASSET_IDS) {
+    const h = holdings[id]
+    const rate = yieldOf(id, s.tick, market)
+    if (!h || !(rate > 0)) continue
+    const price = market.price[id][s.tick]
+    const paid = cents(h.units * price * rate * share)
+    if (!(paid > 0)) continue
+    income += paid
+    if (s.reinvest) holdings[id] = { ...h, units: h.units + paid / price }
+    else cash += paid
+  }
+  return income > 0 ? { ...s, holdings, cash: cents(cash), income: cents(s.income + income) } : s
+}
+
+export const setAutoInvest = (s: PlaygroundState, autoInvest: AutoInvest | null): PlaygroundState => ({ ...s, autoInvest })
+export const setReinvest = (s: PlaygroundState, reinvest: boolean): PlaygroundState => ({ ...s, reinvest })
+
+/** What the same money would be worth all in `asset`: each deposit bought (with the 1% fee) the week it came in, or
+ *  when the season started, and held, payouts reinvested. One value per point of `history`, for the chart. */
+export function benchmark(s: PlaygroundState, asset: AssetId, market: Market = marketOf(s)): number[] {
+  const p = market.price[asset]
+  const y = ASSETS[asset].yield ?? 0
+  return s.history.map((_, i) => {
+    const week = s.historyStart + i
+    let v = 0
+    for (const d of s.deposits) {
+      const from = Math.max(d.tick, s.historyStart)
+      if (from <= week) v += (d.amount / (1 + CONFIG.feeRate)) * (p[week] / p[from]) * Math.exp((y * (week - from)) / CONFIG.weeksPerYear)
+    }
+    return cents(v)
+  })
 }
 
 /** The player read the oldest unread story. */
@@ -215,5 +288,7 @@ export interface CashOut {
 export function cashOut(s: PlaygroundState, nextSeed: number): CashOut | null {
   if (!canWithdraw(s)) return null
   const amount = netWorth(s)
-  return { amount, state: { ...emptyPlayground, season: s.status === 'ended' ? s.season + 1 : s.season, seed: nextSeed } }
+  // Auto-invest and reinvest are the player's settings: they carry into the next season.
+  const state = { ...emptyPlayground, season: s.status === 'ended' ? s.season + 1 : s.season, seed: nextSeed, autoInvest: s.autoInvest, reinvest: s.reinvest }
+  return { amount, state }
 }

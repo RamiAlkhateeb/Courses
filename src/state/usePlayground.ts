@@ -1,6 +1,7 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import type { AssetId } from '../domain/playground/config'
-import { buy, cashOut, catchUp, fund, netWorth, readNews, sell, type TradeResult } from '../domain/playground/engine'
+import { buy, cashOut, catchUp, fund, marketOf, netWorth, readNews, sell, setAutoInvest, setReinvest, type AutoInvest, type TradeResult } from '../domain/playground/engine'
+import type { EventId } from '../domain/playground/events'
 import { progressStore } from './progress'
 import { playgroundStore } from './playground'
 import { useProgress } from './useProgress'
@@ -58,6 +59,8 @@ export function usePlayground() {
     },
     /** The player read the oldest unread market story. */
     readNews: () => playgroundStore.update(readNews),
+    setAutoInvest: (plan: AutoInvest | null) => playgroundStore.update((s) => setAutoInvest(s, plan)),
+    setReinvest: (on: boolean) => playgroundStore.update((s) => setReinvest(s, on)),
   }
 }
 
@@ -65,17 +68,26 @@ export function usePlayground() {
 const CHECK_MS = 30_000
 
 /**
- * The clock: time follows the real clock (one real day = one simulated year) and never stops, even while the app is
+ * The clock (`onNews` hears of the stories that just landed): time follows the real clock (one real day = one simulated year) and never stops, even while the app is
  * closed. Mounted once for the whole app (AppFrame), so the wallet on Learn and Me is live too. It catches the season up
  * on start, every 30 seconds and whenever the tab comes back into view; news that landed meanwhile waits in the queue.
  */
-export function usePlaygroundClock() {
+export function usePlaygroundClock(onNews?: (ids: EventId[]) => void) {
+  const latest = useRef(onNews)
+  latest.current = onNews
   useEffect(() => {
-    const tick = () => {
+    const tick = (opening = false) => {
       const s = playgroundStore.get()
-      if (s.status === 'running') playgroundStore.update((x) => catchUp(x, Date.now()))
+      if (s.status !== 'running') return
+      playgroundStore.update((x) => catchUp(x, Date.now()))
+      // Stories that landed in this catch-up (for the news alerts). Not on opening: those wait on the Playground.
+      if (opening) return
+      const after = playgroundStore.get()
+      const fresh = after.seenEvents.filter((t) => !s.seenEvents.includes(t))
+      const events = marketOf(after).events
+      if (fresh.length) latest.current?.(fresh.map((t) => events.find((e) => e.tick === t)!.id))
     }
-    tick()
+    tick(true)
     const id = window.setInterval(tick, CHECK_MS)
     const onVisibility = () => !document.hidden && tick()
     document.addEventListener('visibilitychange', onVisibility)

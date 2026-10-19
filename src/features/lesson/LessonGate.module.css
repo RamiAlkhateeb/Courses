@@ -1,0 +1,36 @@
+.gate {
+  min-block-size: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px 24px;
+  background: var(--mist);
+  text-align: center;
+}
+.quit {
+  align-self: flex-start;
+  inline-size: 44px;
+  block-size: 44px;
+  display: grid;
+  place-items: center;
+  color: var(--indigo);
+}
+.title {
+  margin: 8px 0 0;
+  font-size: 1.5rem;
+  color: var(--indigo);
+}
+.body {
+  margin: 0;
+  max-inline-size: 32ch;
+  color: var(--muted);
+  font-size: 1.0625rem;
+  line-height: 1.5;
+}
+.actions {
+  margin-block-start: auto;
+  inline-size: 100%;
+  display: grid;
+  gap: 12px;
+}
