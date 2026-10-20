@@ -1,17 +1,31 @@
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import { languageStore } from '../state/language'
-import { ar } from './locales/ar'
 import { en } from './locales/en'
 
-const resources = { en: { translation: en }, ar: { translation: ar } }
+// English ships in the first download; Arabic is its own chunk, fetched only when Arabic is chosen (about 8 KB less to
+// load for everyone else). i18next asks this tiny "backend" for any language it does not have yet and waits for it, so
+// switching language never shows untranslated keys.
+const lazyLocales = {
+  type: 'backend' as const,
+  init() {},
+  read(lng: string, _ns: string, done: (err: unknown, data?: Record<string, unknown>) => void) {
+    if (lng === 'ar') import('./locales/ar').then((m) => done(null, m.ar), (err) => done(err))
+    else done(null, en)
+  },
+}
 
-i18n.use(initReactI18next).init({
-  resources,
-  lng: languageStore.get(),
-  fallbackLng: 'en',
-  interpolation: { escapeValue: false },
-})
+/** Resolves once the saved language's translations are in (main.tsx waits for it before the first render). */
+export const i18nReady = i18n
+  .use(lazyLocales)
+  .use(initReactI18next)
+  .init({
+    resources: { en: { translation: en } },
+    partialBundledLanguages: true,
+    lng: languageStore.get(),
+    fallbackLng: 'en',
+    interpolation: { escapeValue: false },
+  })
 
 const RTL_LANGS = ['ar']
 

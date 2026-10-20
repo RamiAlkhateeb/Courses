@@ -52,7 +52,7 @@
   border: 1px solid var(--line);
   border-radius: var(--radius-card);
   color: var(--indigo);
-  font-size: 1.1rem;
+  font-size: 0.875rem;
   line-height: 1.35;
 }
 .title {
@@ -64,7 +64,7 @@
 .sub {
   margin: 0;
   color: var(--muted);
-  font-size: 1.1rem;
+  font-size: 0.875rem;
   line-height: 1.4;
 }
 .form {
@@ -86,7 +86,7 @@
   margin: 0;
   text-align: center;
   color: var(--muted);
-  font-size: 1.05rem;
+  font-size: 0.8125rem;
 }
 /* A text-only action under a button (Skip for now, Use a different email) */
 .center {
@@ -117,7 +117,7 @@
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  font-size: 1rem;
+  font-size: 0.8125rem;
   line-height: 1.45;
   color: var(--muted);
 }
@@ -139,7 +139,7 @@
   margin: 0;
   color: var(--oops);
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.75rem;
 }
 .status {
   margin: 0;
@@ -190,7 +190,7 @@
 .small {
   margin: 0;
   color: var(--muted);
-  font-size: 1rem;
+  font-size: 0.8125rem;
 }
 
 /* ---------- Account ---------- */
@@ -217,7 +217,7 @@
 }
 .lose strong {
   display: block;
-  font-size: 1.05rem;
+  font-size: 0.8125rem;
 }
 
 /* ---------- Legal ---------- */
@@ -229,7 +229,7 @@
 }
 .prose h2 {
   margin: 10px 0 0;
-  font-size: 1.15rem;
+  font-size: 0.9375rem;
 }
 .prose p {
   margin: 0;
@@ -240,7 +240,7 @@
   border-radius: 999px;
   background: var(--chip-bg);
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 700;
 }
 

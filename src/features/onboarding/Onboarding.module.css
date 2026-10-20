@@ -24,14 +24,14 @@
   flex-direction: column;
   line-height: 1.1;
   font-weight: 600;
-  font-size: 1.25rem;
+  font-size: 1rem;
   letter-spacing: -0.01em;
   white-space: nowrap;
 }
 .brandName span + span {
   color: var(--blue-text);
   font-weight: 700;
-  font-size: 1.0625rem;
+  font-size: 0.875rem;
   margin-block-start: 2px;
 }
 .brandName span {
@@ -49,7 +49,7 @@
 .langSwitch button {
   font: inherit;
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   border: 0;
   background: none;
   color: var(--muted);
@@ -104,7 +104,7 @@
   inset-block-start: 372px;
   max-inline-size: 150px;
   padding: 10px 14px;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   display: flex;
   flex-direction: column;
   z-index: 1;
@@ -183,13 +183,13 @@
   min-inline-size: 0;
   margin-block-end: 30px;
   padding: 12px 14px;
-  font-size: 1rem;
+  font-size: 0.8125rem;
   display: flex;
   flex-direction: column;
 }
 .bubbleAlt {
   color: var(--muted);
-  font-size: 0.9375rem;
+  font-size: 0.75rem;
   margin-block-start: 4px;
 }
 .title {
@@ -200,7 +200,7 @@
 }
 .sub {
   color: var(--muted);
-  font-size: 0.9375rem;
+  font-size: 0.75rem;
   line-height: 1.4;
 }
 .list {
@@ -213,11 +213,11 @@
   display: block;
   color: var(--muted);
   font-weight: 400;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
 }
 .langName {
   display: block;
-  font-size: 1.125rem;
+  font-size: 0.875rem;
 }
 .minutes {
   display: flex;
@@ -228,11 +228,11 @@
   min-inline-size: 4.5rem;
   white-space: nowrap;
   font-weight: 600;
-  font-size: 1.375rem;
+  font-size: 1.125rem;
 }
 .minutes .hint,
 .paceOn {
-  font-size: 1rem;
+  font-size: 0.8125rem;
 }
 .paceOn {
   font-weight: 700;
@@ -242,7 +242,7 @@
 }
 .step .fine {
   color: var(--muted);
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   margin-block-start: 16px;
 }
 
@@ -252,7 +252,7 @@
     font-size: var(--title-page);
   }
   .welcomeAlt {
-    font-size: 1.15rem;
+    font-size: 0.9375rem;
   }
   .bubble {
     inset-block-start: 340px;

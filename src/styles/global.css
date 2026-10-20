@@ -12,7 +12,7 @@ body {
   background: var(--mist);
   color: var(--indigo);
   font-family: var(--font);
-  font-size: 17px;
+  font-size: 14px; /* compact UI: about 20% under the old 17px; lessons use --lesson-text */
   line-height: 1.65;
   transition: background-color 0.15s, color 0.15s;
 }

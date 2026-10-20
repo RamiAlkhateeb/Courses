@@ -4,7 +4,7 @@ import { RouterProvider } from 'react-router-dom'
 import './styles/fonts.css'
 import './styles/tokens.css'
 import './styles/global.css'
-import './i18n'
+import { i18nReady } from './i18n'
 import { Providers } from './app/providers'
 import { reloadOnStaleChunks } from './app/chunkReload'
 import { registerServiceWorker } from './app/serviceWorker'
@@ -19,10 +19,13 @@ listenForInstall()
 startSync() // listens for sign-in; does nothing unless accounts are configured
 void initAuth()
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <Providers>
-      <RouterProvider router={router} />
-    </Providers>
-  </StrictMode>,
+// First render once the saved language is loaded (Arabic is fetched on demand), so nothing flashes in English.
+void i18nReady.finally(() =>
+  createRoot(document.getElementById('root')!).render(
+    <StrictMode>
+      <Providers>
+        <RouterProvider router={router} />
+      </Providers>
+    </StrictMode>,
+  ),
 )

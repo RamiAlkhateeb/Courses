@@ -267,7 +267,7 @@ export function LessonSummary({
       <Card className={styles.weekCard}>
         <div className={styles.weekHead}>
           <p className={styles.weekTitle}>
-            <Icon name="calendar" size={22} /> {tUi('streakDays', { count: streak })}
+            <Icon name="flame" size={22} className={styles.flame} /> {tUi('streakDays', { count: streak })}
           </p>
           <Guide pose="streak" height={64} className={styles.weekMascot} />
         </div>

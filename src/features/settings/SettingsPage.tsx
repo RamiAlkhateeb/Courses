@@ -11,6 +11,10 @@ import { playSound } from '../../state/sound'
 import { useSettings } from '../../state/useSettings'
 import { alertSupport, setNewsAlerts, useNewsAlerts } from '../../state/newsAlerts'
 import { installApp, useCanInstall } from '../../state/install'
+import { setReminderHour, setReminderOn, useReminder } from '../../state/reminder'
+import { REMINDER_HOURS } from '../../domain/reminder'
+import { AnswerOption } from '../../components/ui'
+import { Sheet } from '../../components/SettingsList'
 
 /** Design 31, opened by the gear on Me: Account (when accounts are on), preferences, about, and Log out (signed in only).
  *  Guests see the same screen; their Account row opens Log in. */
@@ -20,7 +24,9 @@ export function SettingsPage() {
   const auth = useAuth()
   const { minutes } = useProfile()
   const { settings, updateSettings } = useSettings()
-  const [sheet, setSheet] = useState<'language' | 'goal' | null>(null)
+  const [sheet, setSheet] = useState<'language' | 'goal' | 'reminder' | null>(null)
+  const reminder = useReminder()
+  const hourText = (h: number) => new Intl.DateTimeFormat(i18n.language === 'ar' ? 'ar-u-nu-latn' : 'en', { hour: 'numeric', minute: '2-digit' }).format(new Date(2026, 0, 1, h))
   const newsAlerts = useNewsAlerts()
   const [support, setSupport] = useState(alertSupport)
   const canInstall = useCanInstall()
@@ -75,8 +81,19 @@ export function SettingsPage() {
             setSupport(alertSupport())
           }}
         />
-        {/* No study reminders yet: the row is shown, switched off and disabled. */}
-        <ListSwitch icon="bell" label={t('set_reminder')} note={t('set_soon')} checked={false} disabled />
+        {/* The daily study reminder: a local notification at the chosen time if no lesson was done that day */}
+        <ListSwitch
+          icon="bell"
+          label={t('set_reminder')}
+          note={support === 'ok' ? (reminder.on ? t('set_reminder_on', { time: hourText(reminder.hour) }) : t('set_news_alerts_note')) : t(support === 'denied' ? 'set_news_alerts_blocked' : 'set_news_alerts_unsupported')}
+          checked={reminder.on && support === 'ok'}
+          disabled={support !== 'ok'}
+          onChange={async (on) => {
+            await setReminderOn(on)
+            setSupport(alertSupport())
+          }}
+        />
+        {reminder.on && support === 'ok' && <ListRow icon="clock" label={t('set_reminder_time')} value={hourText(reminder.hour)} onClick={() => setSheet('reminder')} />}
       </ListGroup>
 
       {canInstall && (
@@ -93,6 +110,25 @@ export function SettingsPage() {
 
       {sheet === 'language' && <LanguageSheet onClose={() => setSheet(null)} />}
       {sheet === 'goal' && <GoalSheet onClose={() => setSheet(null)} />}
+      {sheet === 'reminder' && (
+        <Sheet title={t('set_reminder_time')} onClose={() => setSheet(null)}>
+          {REMINDER_HOURS.map((h) => (
+            <AnswerOption
+              key={h}
+              choice
+              radio
+              role="radio"
+              state={reminder.hour === h ? 'selected' : 'idle'}
+              onClick={() => {
+                setReminderHour(h)
+                setSheet(null)
+              }}
+            >
+              {hourText(h)}
+            </AnswerOption>
+          ))}
+        </Sheet>
+      )}
     </ListScreen>
   )
 }

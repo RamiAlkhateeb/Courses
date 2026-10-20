@@ -5,12 +5,15 @@ import { playgroundStore } from '../../state/playground'
 import { useStore } from '../../state/useStore'
 import { Icon } from '../ui'
 import { PlaygroundPanel } from './PlaygroundPanel'
+import { Tour } from './Tour'
+import { useTourSeen } from '../../state/tour'
 import styles from './Playground.module.css'
 
 /** A practice lesson's hands-on card: the task, then the live simulator. The lesson moves on once the task is done. */
 export function PracticeBlock({ task }: { task: PracticeTask }) {
   const { t } = useTranslation()
   const done = practiceDone(task, useStore(playgroundStore))
+  const tourSeen = useTourSeen()
   return (
     <section className={styles.practice} aria-labelledby="practice-task">
       <div className={`${styles.task} ${done ? styles.taskDone : ''}`} role="status" aria-live="polite">
@@ -23,6 +26,7 @@ export function PracticeBlock({ task }: { task: PracticeTask }) {
           {!done && <span className={styles.taskHint}>{t('practice_hint')}</span>}
         </span>
       </div>
+      {task === 'first-buy' && !tourSeen && <Tour />}
       <PlaygroundPanel />
     </section>
   )

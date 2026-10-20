@@ -1,5 +1,5 @@
-// Seeded randomness: the same seed always gives the same market, so a season can be replayed and "what if I had
-// waited?" can be computed. Counter-based (the draw for week t of stream s needs no earlier draws), so any week
+// Seeded randomness: the same seed always gives the same market, so a season can be replayed and the "compare with"
+// lines can be computed from the same prices. Counter-based (the draw for week t of stream s needs no earlier draws), so any week
 // can be recomputed on its own.
 
 /** A 32-bit integer hash (the mulberry32 mixer): every input bit changes the output. */

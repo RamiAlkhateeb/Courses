@@ -38,3 +38,11 @@ export function practiceDone(task: PracticeTask, s: PlaygroundState): boolean {
       return s.goal !== null
   }
 }
+
+/** The first practice lesson: it opens the simulator, and once it is done (or a season is running) the portfolio
+ *  has its own shortcut on Learn (`/portfolio`). */
+export const FIRST_PRACTICE = { courseId: 'investing', moduleId: 'basics', lessonId: 'practice-first-buy' } as const
+export const firstPracticeHref = `/course/${FIRST_PRACTICE.courseId}/${FIRST_PRACTICE.moduleId}/learn/${FIRST_PRACTICE.lessonId}`
+
+export const portfolioOpen = (s: PlaygroundState, lessonsDone: string[]) =>
+  s.status !== 'idle' || lessonsDone.includes(`${FIRST_PRACTICE.courseId}/${FIRST_PRACTICE.moduleId}/${FIRST_PRACTICE.lessonId}`)

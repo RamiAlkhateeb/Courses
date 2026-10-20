@@ -79,7 +79,7 @@
   min-block-size: 40px;
   padding: 0 20px;
   border-radius: 12px;
-  font-size: 0.9375rem;
+  font-size: 0.75rem;
 }
 /* Small text is not "large": a small primary uses the darker blue so white text keeps AA contrast */
 .sm.primary {
@@ -123,7 +123,7 @@
   border-radius: var(--radius-btn);
   font: inherit;
   font-weight: 600;
-  font-size: 1.125rem;
+  font-size: 0.875rem;
   color: inherit;
   cursor: pointer;
   box-sizing: border-box;
@@ -146,7 +146,7 @@
   block-size: 32px;
   border-radius: 10px;
   border: 1px solid var(--line);
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--muted);
 }
@@ -157,7 +157,7 @@
   border: 0;
   background: var(--chip-bg);
   color: var(--indigo);
-  font-size: 1rem;
+  font-size: 0.8125rem;
 }
 .optionBody {
   flex: 1;
@@ -266,7 +266,7 @@
   border: 1px solid var(--line);
   border-radius: var(--radius-pill);
   background: var(--card);
-  font-size: 1rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: var(--indigo);
   text-decoration: none;

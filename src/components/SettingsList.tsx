@@ -94,8 +94,11 @@ export function ListSwitch({ icon, label, note, checked, disabled, onChange }: {
         <span className={styles.tile}>
           <Icon name={icon} size={22} />
         </span>
-        <span className={styles.label}>{label}</span>
-        {note && <span className={styles.value}>{note}</span>}
+        {/* The note sits under the label (like a row's sub line), so long notes never squeeze it */}
+        <span className={styles.label}>
+          {label}
+          {note && <small>{note}</small>}
+        </span>
         <span className={`${styles.switch} ${checked ? styles.switchOn : ''}`} aria-hidden>
           <span />
         </span>

@@ -22,7 +22,7 @@
   color: var(--indigo);
 }
 .counter {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
@@ -85,7 +85,7 @@
 }
 .feedbackTitle {
   flex: 1;
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: 700;
   line-height: 1.2;
 }
@@ -94,13 +94,13 @@
   border-radius: var(--radius-pill);
   background: var(--card);
   border: 1px solid var(--correct);
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--correct);
 }
 .feedbackNote {
   flex-basis: 100%;
-  font-size: 0.9375rem;
+  font-size: 0.75rem;
   line-height: 1.45;
   color: var(--indigo);
 }
@@ -127,7 +127,7 @@
   border: 0;
   font: inherit;
   font-weight: 600;
-  font-size: 0.9375rem;
+  font-size: 0.75rem;
   color: var(--muted);
   text-decoration: underline;
   cursor: pointer;
@@ -189,7 +189,7 @@
 .subtitle {
   position: relative;
   color: color-mix(in srgb, var(--indigo) 82%, var(--white));
-  font-size: 1rem;
+  font-size: 0.8125rem;
   line-height: 1.45;
   margin-block: 8px 20px;
 }
@@ -230,7 +230,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 1.25rem;
+  font-size: 1rem;
   color: var(--indigo);
 }
 .statGood strong {
@@ -238,7 +238,7 @@
 }
 .weekNote {
   margin-block-start: 10px;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   color: var(--muted);
 }
 .weekCard {
@@ -261,7 +261,7 @@
   align-items: center;
   gap: 10px;
   font-weight: 700;
-  font-size: 1.0625rem;
+  font-size: 0.875rem;
   margin-block-end: 14px;
   color: var(--indigo);
 }
@@ -315,4 +315,9 @@
   margin: 8px 0 0;
   font-weight: 600;
   color: var(--blue-text);
+}
+
+/* The streak flame */
+.flame {
+  color: var(--streak);
 }

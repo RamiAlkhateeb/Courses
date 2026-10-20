@@ -90,3 +90,57 @@ test('installable and offline: the service worker keeps lessons available withou
   await expect(page.locator('main, [class*=card]').first()).toBeVisible()
   await context.setOffline(false)
 })
+
+test('portfolio shortcut: after the first practice lesson, Learn links to the simulator on its own screen', async ({ page }) => {
+  await onboarded(page, { 'progress:v2': withPractice() })
+  await page.goto('./')
+  await page.getByRole('link', { name: /Your portfolio/ }).click()
+  await expect(page).toHaveURL(/\/portfolio$/)
+  await expect(page.getByRole('heading', { name: 'Your portfolio', level: 1 })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Buy Safe Savings' })).toBeVisible()
+})
+
+test('Me shows the last seven days: days learning, play money earned', async ({ page }) => {
+  const d = new Date()
+  const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  await onboarded(page, { 'progress:v2': JSON.stringify({ bank: 1020, activity: { [today]: 20 } }) })
+  await page.goto('me')
+  const recap = page.getByRole('list', { name: 'Your last 7 days' })
+  await expect(recap).toContainText('1 day learning')
+  await expect(recap).toContainText('+$20 earned')
+})
+
+test('the simulator tour shows three tips once', async ({ page }) => {
+  await onboarded(page, { 'progress:v2': withPractice() })
+  await openSimulator(page)
+  await expect(page.getByText('Tip 1 of 3')).toBeVisible()
+  await page.getByRole('button', { name: 'Next tip' }).click()
+  await page.getByRole('button', { name: 'Next tip' }).click()
+  await expect(page.getByText('Tip 3 of 3')).toBeVisible()
+  await page.getByRole('button', { name: 'Got it' }).click()
+  await expect(page.getByText(/Tip \d of 3/)).toHaveCount(0)
+  expect(await page.evaluate(() => localStorage.getItem('tour:simulator'))).toBe('seen')
+  await openSimulator(page) // a fresh visit: the lesson starts again, the tour does not
+  await expect(page.getByText(/Tip \d of 3/)).toHaveCount(0)
+})
+
+test('the daily study reminder can be switched on and given a time', async ({ page }) => {
+  // Headless Chromium reports notifications as denied even when granted: stand in a browser that allows them
+  await page.addInitScript(() => {
+    class FakeNotification {
+      static permission = 'granted'
+      static requestPermission = async () => 'granted'
+    }
+    Object.defineProperty(window, 'Notification', { value: FakeNotification, configurable: true })
+  })
+  await onboarded(page)
+  await page.goto('settings')
+  await page.getByRole('switch', { name: /Daily reminder/ }).click()
+  await expect(page.getByRole('switch', { name: /Daily reminder/ })).toHaveAttribute('aria-checked', 'true')
+  await expect(page.getByText(/Daily at 6:00/)).toBeVisible()
+  await page.getByRole('button', { name: /Reminder time/ }).click()
+  await page.getByRole('radio', { name: /8:00\sAM/ }).click()
+  await expect(page.getByText(/Daily at 8:00\sAM/)).toBeVisible()
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('reminder:v1')!))
+  expect(saved).toMatchObject({ on: true, hour: 8 })
+})

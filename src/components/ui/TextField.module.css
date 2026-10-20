@@ -6,7 +6,7 @@
 }
 .label {
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.8125rem;
   color: var(--indigo);
 }
 .box {
@@ -51,7 +51,7 @@
   outline: 0; /* the box shows the focus ring */
   background: transparent;
   font: inherit;
-  font-size: 1.0625rem;
+  font-size: 0.875rem;
   color: var(--indigo);
   text-align: start;
 }
@@ -75,7 +75,7 @@
   align-items: flex-start;
   gap: 8px;
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 0.75rem;
   font-weight: 600;
   line-height: 1.35;
   color: var(--muted);
@@ -97,7 +97,7 @@
   align-items: center;
   gap: 6px;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   color: var(--muted);
 }
 .pillDot {
