@@ -9,8 +9,7 @@ import { Card, Coin, Icon, buttonClass, type IconName } from '../../components/u
 import { useLocalized } from '../../content/useLocalized'
 import { currentStreak, localDay, weekSummary } from '../../domain/progress'
 import { Change } from '../../components/Change'
-import { netWorth } from '../../domain/playground/engine'
-import { netWorthWeekAgo } from '../../domain/playground/recap'
+import { portfolioWeekMove } from '../../domain/playground/recap'
 import { playgroundStore } from '../../state/playground'
 import { useStore } from '../../state/useStore'
 import { useProgress } from '../../state/useProgress'
@@ -46,8 +45,7 @@ export function MePage() {
   // The weekly recap: days learned and play money earned in the last 7 days, and how the portfolio moved
   const week = weekSummary(progress.activity, localDay())
   const pg = useStore(playgroundStore)
-  const pgWeekAgo = netWorthWeekAgo(pg)
-  const pgMove = pgWeekAgo === null ? null : netWorth(pg) - pgWeekAgo
+  const pgMove = portfolioWeekMove(pg, Date.now())
   const pct = totalLessons ? Math.round((doneLessons / totalLessons) * 100) : 0
   const stage = STAGES.reduce((at, s, i) => (pct >= s.from ? i : at), 0)
 

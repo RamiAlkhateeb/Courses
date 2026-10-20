@@ -55,7 +55,7 @@ export function RebalanceSheet({ state, onClose, onConfirm }: { state: Playgroun
   return (
     <div className={styles.scrim} onClick={onClose}>
       <div onClick={(e) => e.stopPropagation()}>
-        <BottomSheet>
+        <BottomSheet label={t('pg_rebalance_title')} onClose={onClose}>
           <div className={styles.grab} aria-hidden />
           <h2 className={styles.sheetTitle}>{t('pg_rebalance_title')}</h2>
           <p className={styles.note}>{t('pg_rebalance_sub')}</p>

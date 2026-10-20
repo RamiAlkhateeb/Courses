@@ -6,14 +6,13 @@
   padding: 28px 16px 24px;
 }
 .top {
+  /* One row: the course name (it truncates if it must) and the two compact pills */
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-wrap: wrap;
 }
 .title {
-  /* The course name needs room: below about 11rem the pills move to the next line */
-  flex: 1 1 11rem;
+  flex: 1 1 auto;
   min-inline-size: 0;
   margin: 0;
   font-size: var(--title-page);
@@ -21,8 +20,9 @@
   color: var(--indigo);
 }
 .pills {
+  flex: 0 0 auto;
   display: flex;
-  gap: 8px;
+  gap: 6px;
 }
 .login {
   justify-self: end;

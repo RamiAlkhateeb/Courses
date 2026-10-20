@@ -50,6 +50,8 @@ test('simulator: a season goal, the yearly recap, and rebalancing to an example 
   await onboarded(page, { 'progress:v2': withPractice() })
   await page.clock.install()
   await openSimulator(page)
+  // The tools are folded away under "More tools"
+  await page.getByRole('button', { name: /More tools/ }).click()
   await page.getByRole('button', { name: 'Beat inflation' }).click()
   await expect(page.getByRole('button', { name: 'Beat inflation' })).toHaveAttribute('aria-pressed', 'true')
   await page.getByRole('button', { name: 'Buy Safe Savings' }).click()
@@ -65,7 +67,7 @@ test('simulator: a season goal, the yearly recap, and rebalancing to an example 
   await expect(recap).toBeVisible()
   await page.getByRole('button', { name: 'Continue' }).click()
   await expect(recap).toHaveCount(0)
-  await page.getByRole('button', { name: 'Rebalance', exact: true }).click()
+  await page.getByRole('button', { name: 'Choose a mix' }).click()
   await page.getByRole('radio', { name: /Balanced/ }).click()
   await expect(page.getByText(/trades? · fees about/)).toBeVisible()
   await page.getByRole('button', { name: 'Rebalance now' }).click()
@@ -143,4 +145,54 @@ test('the daily study reminder can be switched on and given a time', async ({ pa
   await expect(page.getByText(/Daily at 8:00\sAM/)).toBeVisible()
   const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('reminder:v1')!))
   expect(saved).toMatchObject({ on: true, hour: 8 })
+})
+
+test('a lesson can go back a step; an answered question stays answered (read-only)', async ({ page }) => {
+  await onboarded(page, { 'progress:v2': JSON.stringify({ bank: 1000 }) })
+  await page.goto('course/investing/basics/learn/why')
+  await expect(page.getByRole('button', { name: 'Previous step' })).toHaveCount(0) // nothing before the first step
+  await page.getByRole('button', { name: 'Next', exact: true }).click()
+  await page.getByRole('button', { name: 'Previous step' }).click()
+  await expect(page.getByRole('button', { name: 'Previous step' })).toHaveCount(0)
+  // Walk to the first question and answer it right (the right option is marked by its id in the content: answer 0)
+  for (let i = 0; i < 8 && (await page.getByRole('radio').count()) === 0; i++) await page.getByRole('button', { name: 'Next', exact: true }).click()
+  const radios = page.getByRole('radio')
+  const n = await radios.count()
+  let right = 0
+  for (let i = 0; i < n; i++) {
+    await radios.nth(i).click()
+    await page.getByRole('button', { name: 'Check' }).click()
+    const tryAgain = page.getByRole('button', { name: 'Try again' })
+    await page.waitForTimeout(200)
+    if (!(await tryAgain.isVisible())) {
+      right = i
+      break
+    }
+    await tryAgain.click()
+  }
+  await page.getByRole('button', { name: /Continue|Next/ }).last().click()
+  // Back to the answered question: it shows read-only, as answered
+  await page.getByRole('button', { name: 'Previous step' }).click()
+  await expect(radios.nth(right)).toBeDisabled()
+  await expect(page.getByRole('button', { name: 'Check' })).toHaveCount(0)
+})
+
+test('the Learn header keeps the course name, streak and money on one row at 320px', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 700 })
+  await onboarded(page, { 'progress:v2': JSON.stringify({ bank: 12_345 }) })
+  await page.goto('./')
+  const title = await page.getByRole('heading', { level: 1 }).boundingBox()
+  const pills = await page.getByText('$12.3K').boundingBox()
+  expect(title && pills).toBeTruthy()
+  expect(Math.abs(title!.y + title!.height / 2 - (pills!.y + pills!.height / 2))).toBeLessThan(8)
+  await expect(page.getByText('$12.3K')).toBeVisible()
+})
+
+test('simulator sheets close with Escape', async ({ page }) => {
+  await onboarded(page, { 'progress:v2': withPractice() })
+  await openSimulator(page)
+  await page.getByRole('button', { name: 'Buy Safe Savings' }).click()
+  await expect(page.getByRole('dialog')).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(page.getByRole('dialog')).toHaveCount(0)
 })

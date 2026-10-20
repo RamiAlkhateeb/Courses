@@ -53,11 +53,13 @@ export function PathPage() {
           <CourseSwitcher variant="title" />
         </h1>
         <div className={styles.pills}>
-          <StatPill title={t('streakDays', { count: streak })}>
-            <Icon name="flame" size={20} className={styles.flame} />
-            {t('learn_days', { count: streak })}
+          {/* Compact, beside the course name: the flame and the number (the words are for screen readers) */}
+          <StatPill compact title={t('streakDays', { count: streak })}>
+            <Icon name="flame" size={18} className={styles.flame} />
+            <span aria-hidden>{streak}</span>
+            <span className="visually-hidden">{t('learn_days', { count: streak })}</span>
           </StatPill>
-          <MoneyChip amount={wallet} />
+          <MoneyChip amount={wallet} compact />
         </div>
       </header>
       {/* Accounts are optional and only exist when Supabase is configured; the Log in screen links on to Create an account. */}

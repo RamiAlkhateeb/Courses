@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react'
+import { useEffect, useRef, type ButtonHTMLAttributes, type ReactNode } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { ParseKeys } from 'i18next'
@@ -54,6 +54,7 @@ export function AnswerOption({
   radio,
   choice,
   ring,
+  picked,
 }: {
   state?: AnswerState
   letter?: ReactNode
@@ -68,13 +69,17 @@ export function AnswerOption({
   choice?: boolean
   /** Quiz answers: a leading ring (filled when chosen, a check / cross once checked) instead of a letter badge */
   ring?: boolean
+  /** Whether the learner chose this option (screen readers hear it as checked), when that differs from how it looks
+   *  once checked: the revealed right answer is green but was not picked */
+  picked?: boolean
 }) {
+  const { t } = useTranslation()
   const badge = state === 'correct' ? <Icon name="check" size={18} /> : state === 'wrong' ? <Icon name="close" size={16} /> : icon ? <Icon name={icon} size={22} /> : letter
   return (
     <button
       type="button"
       role={role}
-      aria-checked={role ? state === 'selected' || state === 'correct' : undefined}
+      aria-checked={role ? (picked ?? (state === 'selected' || state === 'correct')) : undefined}
       className={cx(styles.option, choice && styles.choice, styles[`opt_${state}`])}
       onClick={onClick}
       disabled={disabled}
@@ -88,6 +93,7 @@ export function AnswerOption({
         badge && <span className={styles.badge}>{badge}</span>
       )}
       <span className={styles.optionBody}>{children}</span>
+      {(state === 'correct' || state === 'wrong') && <span className="visually-hidden">{t(state === 'correct' ? 'opt_correct' : 'opt_wrong')}</span>}
       {radio && <span className={cx(styles.radio, state === 'selected' && styles.radioOn)}>{state === 'selected' && <Icon name="check" size={16} />}</span>}
     </button>
   )
@@ -104,9 +110,9 @@ export function ProgressBar({ value, max = 1, label }: { value: number; max?: nu
 }
 
 /** A small rounded pill with an icon and a value: the streak, the play-money balance. */
-export function StatPill({ children, className, title }: { children: ReactNode; className?: string; title?: string }) {
+export function StatPill({ children, className, title, compact }: { children: ReactNode; className?: string; title?: string; compact?: boolean }) {
   return (
-    <span className={cx(styles.stat, className)} title={title}>
+    <span className={cx(styles.stat, compact && styles.statCompact, className)} title={title}>
       {children}
     </span>
   )
@@ -132,18 +138,48 @@ export function TabBar() {
   )
 }
 
-/** A panel rising from the bottom edge: green or red lesson feedback (`tone`), or a plain sheet. */
+/** A panel rising from the bottom edge: green or red lesson feedback (`tone`), or a plain sheet. Given `onClose`, a
+ *  sheet is a proper modal dialog: named by `label`, focused when it opens, closed by Escape or its ✕ button. */
 export function BottomSheet({
   tone,
   children,
   className,
+  label,
+  onClose,
 }: {
   tone?: 'correct' | 'oops'
   children: ReactNode
   className?: string
+  label?: string
+  onClose?: () => void
 }) {
+  const { t } = useTranslation()
+  const ref = useRef<HTMLDivElement>(null)
+  const close = useRef(onClose)
+  close.current = onClose
+  const modal = !tone && !!onClose
+  useEffect(() => {
+    if (!modal) return
+    ref.current?.focus()
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && close.current?.()
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [modal])
   return (
-    <div className={cx(styles.sheet, tone && styles[`sheet_${tone}`], className)} role={tone ? 'status' : 'dialog'} aria-live={tone ? 'polite' : undefined}>
+    <div
+      ref={ref}
+      className={cx(styles.sheet, tone && styles[`sheet_${tone}`], className)}
+      role={tone ? 'status' : 'dialog'}
+      aria-live={tone ? 'polite' : undefined}
+      aria-modal={modal || undefined}
+      aria-label={label}
+      tabIndex={modal ? -1 : undefined}
+    >
+      {modal && (
+        <button type="button" className={styles.sheetClose} onClick={onClose} aria-label={t('close')}>
+          <Icon name="close" size={22} />
+        </button>
+      )}
       {children}
     </div>
   )

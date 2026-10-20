@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { appCourses } from '../src/content/courses'
 import type { Block, Module } from '../src/content/types'
-import { cardWords, hasMedia, SHORT_CARD } from '../src/domain/chunks'
+import { CARD_WORDS, cardWords, hasMedia, SHORT_CARD } from '../src/domain/chunks'
 import { lessonsFor } from '../src/domain/lessons'
 
 // Lesson steps: none near-empty, all in one typography. The rules are explained in .claude/skills/lesson-cards.
@@ -32,6 +32,17 @@ describe('lesson cards', () => {
       }
     }
     // Fix: lengthen the text, move it next to related text (it then merges), or add a diagram.
+    expect(offenders).toEqual([])
+  })
+
+  it(`no text step of an offered course is longer than ${CARD_WORDS} words (long ones are cut in two)`, async () => {
+    const offenders: string[] = []
+    for (const mod of await offeredModules())
+      for (const lesson of lessonsFor(mod))
+        lesson.steps.forEach((step, i) => {
+          if (step.kind === 'content' && !hasMedia(step.blocks) && cardWords(step.blocks) > CARD_WORDS)
+            offenders.push(`${mod.courseId}/${mod.id}/${lesson.id} step ${i + 1}: ${cardWords(step.blocks)} words`)
+        })
     expect(offenders).toEqual([])
   })
 

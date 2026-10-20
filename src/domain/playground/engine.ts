@@ -198,7 +198,7 @@ export function advance(s: PlaygroundState): PlaygroundState {
   const tick = s.tick + 1
   let moved: PlaygroundState = { ...s, tick }
   if (tick % CONFIG.payoutEveryWeeks === 0) moved = payout(moved, market)
-  if (s.autoInvest && tick % CONFIG.autoInvestEveryWeeks === 0) {
+  if (s.autoInvest && tick % CONFIG.autoInvestEveryWeeks === 0 && tick < WEEKS_PER_SEASON) { // not in the last week: a fee for nothing
     const r = buyNow(moved, s.autoInvest.asset, s.autoInvest.amount, true)
     if (r.ok) moved = r.state // not enough cash: this month is skipped
   }

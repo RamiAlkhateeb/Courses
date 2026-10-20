@@ -83,7 +83,10 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
   const [index, setIndex] = useState(0)
   const [selected, setSelected] = useState<number | null>(null)
   const [checked, setChecked] = useState(false)
-  const [correctCount, setCorrectCount] = useState(0)
+  // Each question's answer, by step: the first try is the score (and the review boxes); `settled` once it was right or
+  // tried twice. Going back to it shows it as answered; nothing is scored twice, however the learner moves around.
+  const [answers, setAnswers] = useState<Record<number, { first: boolean; selected: number; settled: boolean }>>({})
+  const correctCount = Object.values(answers).filter((a) => a.first).length
   const [done, setDone] = useState(false)
   const [paid, setPaid] = useState(0)
   // 0 = first try at this question; 1 = a second try (the first was wrong): that one reveals the answer and carries on.
@@ -111,12 +114,11 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
   function check() {
     if (!question || selected === null || checked) return
     const right = selected === question.answer
+    const firstTry = !answers[index]
     setChecked(true)
-    if (attempt === 0) {
-      // Only the first try counts for the score and the review boxes.
-      if (right) setCorrectCount((c) => c + 1)
-      recordLessonAnswer(question.id, selected, right)
-    }
+    setAnswers((a) => ({ ...a, [index]: { first: firstTry ? right : a[index].first, selected, settled: right || !firstTry } }))
+    // Only the first try counts for the score and the review boxes.
+    if (firstTry) recordLessonAnswer(question.id, selected, right)
     playAnswerSound(right)
   }
 
@@ -126,14 +128,25 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
     setChecked(false)
   }
 
+  /** Show step `i` as the learner left it: an answered question read-only, a question tried once on its second try. */
+  function enter(i: number) {
+    const a = answers[i]
+    setIndex(i)
+    setSelected(a?.settled ? a.selected : null)
+    setChecked(!!a?.settled)
+    setAttempt(a && !(a.settled && a.first) ? 1 : 0)
+  }
+
+  /** The step before this one (the arrow by ✕). */
+  function back() {
+    if (index > 0) enter(index - 1)
+  }
+
   /** "Re-read the lesson card": back to the last content card before this question. */
   function reread() {
-    const back = steps.slice(0, index).map((s, i) => [s, i] as const).filter(([s]) => s.kind === 'content').pop()
-    if (!back) return tryAgain()
-    setIndex(back[1])
-    setAttempt(0)
-    setSelected(null)
-    setChecked(false)
+    const before = steps.slice(0, index).map((s, i) => [s, i] as const).filter(([s]) => s.kind === 'content').pop()
+    if (!before) return tryAgain()
+    enter(before[1])
   }
 
   function advance() {
@@ -144,10 +157,7 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
       setDone(true)
       return
     }
-    setIndex((i) => i + 1)
-    setSelected(null)
-    setChecked(false)
-    setAttempt(0)
+    enter(index + 1)
   }
 
   const onEnter = question && !checked ? check : retry ? tryAgain : advance
@@ -176,7 +186,7 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
   return (
     <ModuleQuestionsContext.Provider value={mod.questions}>
       <div className={styles.lesson}>
-        <LessonTopBar quitTo="/" done={index + (settled ? 1 : 0)} total={steps.length} />
+        <LessonTopBar quitTo="/" done={index + (settled ? 1 : 0)} total={steps.length} onBack={index > 0 ? back : undefined} />
 
         {step.kind === 'content' ? (
           // key: a new card replays the entrance animation.
@@ -214,8 +224,8 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
         ) : (
           <LessonFooter
             tone={question ? (isCorrect ? 'right' : 'wrong') : undefined}
-            paid={!!question && isCorrect && pays}
-            feedback={question && <AnswerFeedback question={question} correct={isCorrect} pays={pays} firstTry={retry} />}
+            paid={!!question && isCorrect && pays && !!answers[index]?.first}
+            feedback={question && <AnswerFeedback question={question} correct={isCorrect} pays={pays && !!answers[index]?.first} firstTry={retry} />}
             action={question ? (retry ? tUi('tryAgain') : continueLabel) : tUi('nextBtn')}
             disabled={blocked}
             onAction={retry ? tryAgain : advance}

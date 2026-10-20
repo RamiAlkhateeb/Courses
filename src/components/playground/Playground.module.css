@@ -791,10 +791,7 @@ button.holding {
   gap: 16px;
 }
 .ring {
-  flex: 0 0 auto;
-  inline-size: clamp(80px, 30%, 112px);
-  block-size: auto;
-  aspect-ratio: 1;
+  flex: 0 0 auto; /* sized by its width / height (56px at the head of "What you own") */
 }
 .ringTrack {
   fill: none;
@@ -958,4 +955,99 @@ button.holding {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+/* The simpler portfolio: summary, one chart line, what you own, and the tools folded away */
+.summary {
+  display: grid;
+  gap: 2px;
+}
+.summary p {
+  margin: 0;
+}
+.sinceStart {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
+  font-weight: 700;
+}
+.sinceStart > span:last-child {
+  font-weight: 500;
+  color: var(--muted);
+}
+.explore {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-block-size: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--blue-text);
+  cursor: pointer;
+}
+.ownCard {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+}
+.ownHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-block-end: 8px;
+}
+.ownHead h2 {
+  margin: 0;
+  font-size: var(--title-small);
+  color: var(--indigo);
+}
+.ownCard .holdings .holding {
+  border: 0;
+  border-block-start: 1px solid var(--line);
+  border-radius: 0;
+  padding-inline: 0;
+  background: none;
+}
+.tools {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  overflow: hidden;
+}
+.toolsToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  inline-size: 100%;
+  min-block-size: 56px;
+  padding: 10px 16px;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--indigo);
+  text-align: start;
+  cursor: pointer;
+}
+.toolsToggle > span {
+  display: grid;
+}
+.toolsToggle small {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.flipUp {
+  transform: rotate(180deg);
+}
+.toolsBody {
+  display: grid;
+  gap: 12px;
+  padding: 0 12px 12px;
 }

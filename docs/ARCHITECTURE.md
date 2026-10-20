@@ -103,7 +103,10 @@ Modules load on demand through `useModule` / `useModules` (`src/content/useModul
 2. `mergeShort` joins a short card (under 35 words, or a lone key idea) to the one before it, while the pair stays
    within one screen of reading (90 words). Cards with media (table, diagram, calculator, code, tabs, practice)
    never merge.
-3. The cards are shared out evenly between the section's `lessonIds`. Exercise blocks become question steps in the
+3. `splitLong` cuts any text card still over 90 words in two: between blocks where the halves are most even (never
+   just before a key idea or after a heading), or a lone long paragraph at the sentence end nearest its middle, in each
+   language on its own sentences. Media cards are never cut.
+4. The cards are shared out evenly between the section's `lessonIds`. Exercise blocks become question steps in the
    part where they appeared.
 
 Because the ids are fixed per section, editing text never moves a learner's ✓. To split a long section, add an id;
@@ -141,9 +144,11 @@ Routes live in `src/app/router.tsx`. Every route except the shells and Learn is 
   appearance of each term from `src/content/glossary.ts` in `<dfn data-term>`, never inside links, code or headings.
   A tap or Enter opens `GlossarySheet`.
 - **Questions** come after the cards. The first try counts for the score and the review boxes; a wrong first try
-  can be tried again.
+  can be tried again. Each question's result is kept by step (`answers` in `CardRun`), so the **back arrow** by ✕
+  can return to any earlier step: an answered question shows read-only, and nothing is scored twice.
 - **Practice cards** (`{ type: 'practice', task }`) render `PracticeBlock`: a task banner plus the live
-  `PlaygroundPanel`. The lesson's Next button waits until `practiceDone(task, state)` is true. A lesson that was
+  `PlaygroundPanel` (summary, one chart line, Buy or sell, What you own, and "More tools" folded away; a practice
+  task that needs a tool opens it). The lesson's Next button waits until `practiceDone(task, state)` is true. A lesson that was
   already finished never blocks.
 - **On the last step**, `completeLesson` (`src/domain/progress.ts`, called through `useProgress`) runs:
   - adds $10 per right answer to the bank, but only on the first finish of that lesson (replays pay nothing);

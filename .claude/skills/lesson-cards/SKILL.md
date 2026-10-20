@@ -14,6 +14,10 @@ Learners read one step per screen on a phone, so every step must be worth a scre
    - A short step joins the step before it automatically while the two stay within 90 words (`CARD_WORDS`).
    - A key idea joins the step before it while the two stay within 110 words.
    - Nothing merges past a question, a `cardBreak`, or a step holding a table, picture, calculator or code.
+   - A step over 90 words is cut in two (`splitLong`): between blocks where the halves come out most even (never just
+     before a key idea or after a heading / lead-in), or a lone long paragraph at the sentence end nearest its middle,
+     in each language on its own sentences (an inline tag straddling the cut keeps it whole). Media steps are never cut.
+     `tests/lesson-cards.test.ts` fails on any text step over 90 words.
 2. **Group what belongs together** in the content order so merging can work: a definition, then its example box, then
    the key idea. An example box right after a lone paragraph always shares its card.
 3. **Pictures where there is a number or a comparison** (`diagram()`): flat SVG in `public/diagrams/`, numbers only, brand

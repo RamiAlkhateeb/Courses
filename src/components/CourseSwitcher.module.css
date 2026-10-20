@@ -28,9 +28,6 @@
   font-size: var(--title-switcher);
   line-height: 1.2;
 }
-.title .name {
-  white-space: normal;
-}
 .list {
   margin: 0;
   padding: 0;

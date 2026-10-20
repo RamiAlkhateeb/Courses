@@ -37,7 +37,7 @@ export function TradeSheet({
   return (
     <div className={styles.scrim} onClick={onClose}>
       <div onClick={(e) => e.stopPropagation()}>
-        <BottomSheet>
+        <BottomSheet label={t('pg_trade_what')} onClose={onClose}>
           <div className={styles.grab} aria-hidden />
           {asset ? (
             <TradeForm state={state} asset={asset} side={side} setSide={setSide} onBuy={onBuy} onSell={onSell} onBack={() => setAsset(undefined)} />

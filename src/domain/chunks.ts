@@ -87,6 +87,8 @@ export const SHORT_CARD = 35
  *  sentence on its own coloured panel, so it may stretch a card a little further. */
 export const CARD_WORDS = 90
 const KEY_IDEA_WORDS = 110
+/** A card over this many words is too long for one screen: `splitLong` cuts it in two. */
+export const LONG_CARD = CARD_WORDS
 /** Blocks that fill a card on their own: such a card never takes on another, and is never "short". */
 const MEDIA = new Set<Block['type']>(['table', 'diagram', 'calculator', 'code', 'tabs', 'practice'])
 export const hasMedia = (blocks: Block[]) => blocks.some((b) => MEDIA.has(b.type))
@@ -142,7 +144,7 @@ export function toCards(blocks: Block[]): Cards {
     glue = isHeading(piece) || isLeadIn(piece)
   }
   close()
-  return mergeShort(cards, exercises, forced)
+  return splitLong(mergeShort(cards, exercises, forced))
 }
 
 /** No near-empty steps: a short card (or a key idea) joins the card before it, as long as no question sits between
@@ -165,6 +167,84 @@ function mergeShort(cards: Block[][], exercises: Cards['exercises'], forced: Set
       cardWords(prev) + cardWords(card) <= (idea ? KEY_IDEA_WORDS : CARD_WORDS)
     if (canJoin) prev.push(...card)
     else out.push([...card])
+    remap.push(out.length - 1)
+  })
+  return { cards: out, exercises: exercises.map((e) => ({ ...e, afterCard: e.afterCard < 0 ? e.afterCard : remap[e.afterCard] })) }
+}
+
+/** The sentences of a paragraph's text (inline tags kept), or null when it is not one plain `<p>`. */
+function sentences(html: string): { open: string; parts: string[]; close: string } | null {
+  const m = /^(<p\b[^>]*>)([\s\S]*)(<\/p>)$/i.exec(html.trim())
+  const inner = m ? m[2] : html.trim()
+  if (/<(p|ul|ol|table|div|h\d|pre|blockquote)\b/i.test(inner)) return null
+  // A sentence ends at . ! ? or the Arabic ؟ followed by a space (decimals like 3.5 have no space after the dot)
+  const parts = inner.split(/(?<=[.!?؟])\s+/).filter(Boolean)
+  return parts.length > 1 ? { open: m?.[1] ?? '<p>', parts, close: m?.[3] ?? '</p>' } : null
+}
+
+/** Tags opened and closed in step (an inline <strong> must not straddle the cut). */
+const balanced = (html: string) => (html.match(/<[a-z][^>]*>/gi) ?? []).length === (html.match(/<\/[a-z][^>]*>/gi) ?? []).length
+
+/** Cut one long paragraph in two at the sentence end nearest its middle, in each language on its own sentences. */
+function splitParagraph(text: Localized): [Localized, Localized] | null {
+  const cut = (html: string): [string, string] | null => {
+    const s = sentences(html)
+    if (!s) return null
+    const total = wordCount(stripTags(s.parts.join(' ')))
+    let best: [string, string] | null = null
+    let bestGap = Infinity
+    for (let i = 1; i < s.parts.length; i++) {
+      const head = s.parts.slice(0, i).join(' ')
+      const gap = Math.abs(wordCount(stripTags(head)) * 2 - total)
+      if (gap < bestGap && balanced(head)) {
+        bestGap = gap
+        best = [`${s.open}${head}${s.close}`, `${s.open}${s.parts.slice(i).join(' ')}${s.close}`]
+      }
+    }
+    return best
+  }
+  const en = cut(text.en)
+  if (!en) return null
+  if (!text.ar) return [{ en: en[0] }, { en: en[1] }]
+  const ar = cut(text.ar)
+  return ar ? [{ en: en[0], ar: ar[0] }, { en: en[1], ar: ar[1] }] : null
+}
+
+/** Cut a long card in two: between blocks where the halves come out most even (never just before a key idea or
+ *  right after a heading or a lead-in, which belong with their neighbour), or a lone long paragraph at a sentence. */
+function halve(card: Block[]): [Block[], Block[]] | null {
+  if (card.length === 1) {
+    const b = card[0]
+    const parts = b.type === 'html' ? splitParagraph(b.html) : null
+    return parts ? [[{ type: 'html', html: parts[0] }], [{ type: 'html', html: parts[1] }]] : null
+  }
+  const total = cardWords(card)
+  let best: [Block[], Block[]] | null = null
+  let bestGap = Infinity
+  for (let k = 1; k < card.length; k++) {
+    if (card[k].type === 'keyIdea' || isHeading(card[k - 1]) || isLeadIn(card[k - 1])) continue
+    const gap = Math.abs(cardWords(card.slice(0, k)) * 2 - total)
+    if (gap < bestGap) {
+      bestGap = gap
+      best = [card.slice(0, k), card.slice(k)]
+    }
+  }
+  return best
+}
+
+/** No step longer than one screen: a card over LONG_CARD words (pictures, tables, code and the simulator aside) is
+ *  cut in two, again if a half is still too long. Questions stay after the same content. */
+function splitLong({ cards, exercises }: Cards): Cards {
+  const out: Block[][] = []
+  const remap: number[] = [] // old card index -> index of its last piece
+  const push = (card: Block[], depth: number) => {
+    const halves = !hasMedia(card) && cardWords(card) > LONG_CARD && depth < 3 ? halve(card) : null
+    if (!halves) return out.push(card)
+    push(halves[0], depth + 1)
+    push(halves[1], depth + 1)
+  }
+  cards.forEach((card) => {
+    push(card, 0)
     remap.push(out.length - 1)
   })
   return { cards: out, exercises: exercises.map((e) => ({ ...e, afterCard: e.afterCard < 0 ? e.afterCard : remap[e.afterCard] })) }

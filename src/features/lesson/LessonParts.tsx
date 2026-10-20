@@ -14,14 +14,19 @@ import { optionOrder } from '../../domain/optionOrder'
 import { playSound } from '../../state/sound'
 import styles from './LessonPage.module.css'
 
-/** ✕ (quit), the blue progress bar and an "n/total" counter. */
-export function LessonTopBar({ quitTo, done, total }: { quitTo: string; done: number; total: number }) {
+/** ✕ (quit), the arrow back to the previous step (when there is one), the blue progress bar and an "n/total" counter. */
+export function LessonTopBar({ quitTo, done, total, onBack }: { quitTo: string; done: number; total: number; onBack?: () => void }) {
   const { t } = useTranslation()
   return (
     <div className={styles.top}>
       <Link to={quitTo} className={styles.quit} aria-label={t('lessonQuit')}>
         <Icon name="close" size={26} />
       </Link>
+      {onBack && (
+        <button type="button" className={`${styles.quit} ${styles.prev}`} onClick={onBack} aria-label={t('lesson_prev')}>
+          <Icon name="back" size={24} />
+        </button>
+      )}
       <ProgressBar value={done} max={total} label={t('lesson_progress')} />
       <span className={styles.counter}>
         {Math.min(done + 1, total)}/{total}
@@ -73,6 +78,7 @@ export function QuestionCard({
               role="radio"
               ring
               state={state}
+              picked={selected === i}
               disabled={checked}
               onClick={() => onSelect(i)}
             >
@@ -182,10 +188,11 @@ export function useLessonKeys(opts: {
     if (!opts.enabled) return
     function onKey(e: KeyboardEvent) {
       const { onEnter, question, checked, onPick } = latest.current
-      if (e.target instanceof HTMLAnchorElement) return
+      // A focused link or button handles its own Enter (the arrow back, Re-read, an answer, the main action)
+      if (e.target instanceof HTMLAnchorElement || e.target instanceof HTMLButtonElement) return
       if (e.target instanceof HTMLElement && e.target.closest('dfn[data-term], [role="dialog"]')) return // a glossary term or its card
       if (e.key === 'Enter') {
-        e.preventDefault() // stop a focused button from also handling it
+        e.preventDefault()
         onEnter()
         return
       }
