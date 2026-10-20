@@ -192,7 +192,24 @@
   color: var(--blue-text);
 }
 
-/* The streak flame */
+/* The streak flame (beats `.stat svg`) */
+.stat svg.flame,
 .flame {
   color: var(--streak);
+}
+
+/* The weekly recap under the bars */
+.recap {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 12px 0 0;
+  border-block-start: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+.recap strong {
+  color: var(--indigo);
 }

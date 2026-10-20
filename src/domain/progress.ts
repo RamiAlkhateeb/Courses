@@ -1,5 +1,5 @@
 // Learner progress: the shape, how it is read from saved text, and every rule that changes it (streaks, the play-money
-// bank, spaced review, rest day, activity). Pure functions only: no React, no storage, no clock unless passed in, so
+// bank, spaced review, streak freezes, activity). Pure functions only: no React, no storage, no clock unless passed in, so
 // everything here is unit-tested directly. Saving and subscribing live in src/state/progress.ts.
 
 import { lessonPayout, START_BANK, PAY_PER_CORRECT } from './money'
@@ -177,6 +177,15 @@ export function addActivity(activity: Record<string, number>, today: string, dol
   }
   next[today] = (next[today] ?? 0) + dollars
   return next
+}
+
+/** The last seven days (today included) from the per-day activity: days with a finished lesson, and play money earned. */
+export function weekSummary(activity: Record<string, number>, today: string): { days: number; earned: number } {
+  const recent = Object.entries(activity).filter(([day]) => {
+    const gap = daysBetween(day, today)
+    return gap >= 0 && gap < 7
+  })
+  return { days: recent.length, earned: recent.reduce((n, [, v]) => n + v, 0) }
 }
 
 /** Ids of the questions whose latest answer was wrong, in the given order: "Review mistakes". */

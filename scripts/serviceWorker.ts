@@ -57,13 +57,14 @@ self.addEventListener('fetch', (event) => {
   )
 })
 
-// A market news alert was tapped: open (or focus) the Playground.
+// A notification was tapped: open (or focus) the app on its page (news alerts: the portfolio; the reminder: Learn).
 self.addEventListener('notificationclick', (event) => {
   event.notification.close()
+  const page = new URL('./' + ((event.notification.data && event.notification.data.open) || 'portfolio'), self.registration.scope).href
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => {
       const open = list.find((c) => 'focus' in c)
-      return open ? open.focus().then((c) => c && 'navigate' in c ? c.navigate(new URL('./playground', self.registration.scope).href) : c) : self.clients.openWindow('./playground')
+      return open ? open.focus().then((c) => c && 'navigate' in c ? c.navigate(page) : c) : self.clients.openWindow(page)
     }),
   )
 })

@@ -121,3 +121,21 @@ describe('synced preferences', async () => {
     expect(parsePrefs('x')).toBeNull()
   })
 })
+
+describe('weekly recap on Me', async () => {
+  const { weekSummary } = await import('../src/domain/progress')
+  const { netWorthWeekAgo } = await import('../src/domain/playground/recap')
+  it('counts the last seven days of learning and what they paid', () => {
+    const activity = { '2026-10-20': 20, '2026-10-18': 0, '2026-10-14': 30, '2026-10-13': 50 }
+    expect(weekSummary(activity, '2026-10-20')).toEqual({ days: 3, earned: 50 })
+    expect(weekSummary({}, '2026-10-20')).toEqual({ days: 0, earned: 0 })
+  })
+  it('finds the net worth seven real days (simulated years) ago, or the season start', () => {
+    expect(netWorthWeekAgo(emptyPlayground)).toBeNull()
+    let s = running(1000, 3)
+    s = weeks(s, 10)
+    expect(netWorthWeekAgo(s)).toBe(s.history[0])
+    s = weeks(s, 7 * CONFIG.weeksPerYear)
+    expect(netWorthWeekAgo(s)).toBe(s.history[s.tick - 7 * CONFIG.weeksPerYear - s.historyStart])
+  })
+})

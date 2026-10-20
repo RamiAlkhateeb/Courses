@@ -10,6 +10,12 @@ import { learnHref, lessonMinutes, type Lesson } from '../../domain/lessons'
 import { useAuth } from '../../state/auth'
 import { canOpenLesson, canOpenPractice, FREE_LESSONS, lessonOrder } from '../../domain/access'
 import { useGuestLimited } from '../../state/useAccess'
+import { Change } from '../../components/Change'
+import { Money } from '../../components/Money'
+import { gain, netWorth } from '../../domain/playground/engine'
+import { portfolioOpen } from '../../domain/playground/practice'
+import { playgroundStore } from '../../state/playground'
+import { useStore } from '../../state/useStore'
 import { accountsEnabled } from '../../state/supabase'
 import { useProgress } from '../../state/useProgress'
 import { useWallet } from '../../state/usePlayground'
@@ -34,6 +40,9 @@ export function PathPage() {
   const order = lessonOrder(chapters)
   const gated = (moduleId: string, lessonId: string) => !canOpenLesson(order, moduleId, lessonId, guest)
   const nextGated = !!next && gated(next.mod.id, next.lesson.id)
+  const pg = useStore(playgroundStore)
+  const showPortfolio = portfolioOpen(pg, progress.lessonsDone)
+  const pgGain = gain(pg)
   const toReview = loaded ? mistakes(chapters.flatMap((c) => c.mod?.questions.map((q) => q.id) ?? []), progress.answers).length : 0
 
   return (
@@ -95,6 +104,23 @@ export function PathPage() {
         </section>
       )}
       {loaded && !next && chapters.length > 0 && <p className={styles.allDone}>{t('learn_all_done')}</p>}
+
+      {/* The portfolio shortcut: once the simulator has been introduced, it is one tap away */}
+      {showPortfolio && (
+        <Link to="/portfolio" className={styles.review}>
+          <span className={styles.reviewIcon}>
+            <Icon name="chart" size={22} />
+          </span>
+          <span className={styles.rowText}>
+            <strong>{t('portfolio_title')}</strong>
+            <small>{pg.status === 'idle' ? t('portfolio_idle') : t('portfolio_live')}</small>
+          </span>
+          <span className={styles.portfolioValue}>
+            <Money amount={netWorth(pg)} />
+            {pg.status !== 'idle' && pg.funded > 0 && <Change percent={(pgGain / pg.funded) * 100} />}
+          </span>
+        </Link>
+      )}
 
       {/* Daily review: the questions whose latest answer was wrong, a couple of minutes to put right */}
       {toReview > 0 && (

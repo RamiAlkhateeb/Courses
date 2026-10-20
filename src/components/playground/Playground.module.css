@@ -923,3 +923,39 @@ button.holding {
   flex: 0 0 auto;
   white-space: nowrap;
 }
+
+/* The first-time tour: a guide and one tip at a time */
+.tour {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 12px 14px 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+  overflow: hidden;
+}
+.tourGuide {
+  flex: 0 0 auto;
+}
+.tourText {
+  flex: 1;
+  min-inline-size: 0;
+  padding-block-end: 12px;
+}
+.tourText small {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--blue-text);
+}
+.tourText p {
+  margin: 4px 0 10px;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--indigo);
+}
+.tourActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}

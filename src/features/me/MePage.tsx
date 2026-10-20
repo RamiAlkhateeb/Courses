@@ -7,7 +7,12 @@ import { Money } from '../../components/Money'
 import { Bush, Mound, Sprout, Tree } from '../../components/GardenArt'
 import { Card, Coin, Icon, buttonClass, type IconName } from '../../components/ui'
 import { useLocalized } from '../../content/useLocalized'
-import { currentStreak, localDay } from '../../domain/progress'
+import { currentStreak, localDay, weekSummary } from '../../domain/progress'
+import { Change } from '../../components/Change'
+import { netWorth } from '../../domain/playground/engine'
+import { netWorthWeekAgo } from '../../domain/playground/recap'
+import { playgroundStore } from '../../state/playground'
+import { useStore } from '../../state/useStore'
 import { useProgress } from '../../state/useProgress'
 import { useWallet } from '../../state/usePlayground'
 import { accountsEnabled } from '../../state/supabase'
@@ -38,6 +43,11 @@ export function MePage() {
   const guest = accountsEnabled && auth.status === 'signedOut'
   const signedIn = accountsEnabled && auth.status === 'signedIn' ? auth.user : null
 
+  // The weekly recap: days learned and play money earned in the last 7 days, and how the portfolio moved
+  const week = weekSummary(progress.activity, localDay())
+  const pg = useStore(playgroundStore)
+  const pgWeekAgo = netWorthWeekAgo(pg)
+  const pgMove = pgWeekAgo === null ? null : netWorth(pg) - pgWeekAgo
   const pct = totalLessons ? Math.round((doneLessons / totalLessons) * 100) : 0
   const stage = STAGES.reduce((at, s, i) => (pct >= s.from ? i : at), 0)
 
@@ -105,6 +115,22 @@ export function MePage() {
           <span>{t('goalMinDay', { n: minutes })}</span>
         </p>
         <WeekBars activity={progress.activity} />
+        <ul className={styles.recap} aria-label={t('recap_label')}>
+          <li>
+            <strong>{week.days}</strong> {t('recap_days', { count: week.days })}
+          </li>
+          <li>
+            <strong>
+              <Money amount={week.earned} sign={week.earned > 0} />
+            </strong>{' '}
+            {t('recap_earned')}
+          </li>
+          {pgMove !== null && (
+            <li>
+              <Change amount={pgMove} /> {t('recap_portfolio')}
+            </li>
+          )}
+        </ul>
       </Card>
 
       <h2 className={styles.kicker}>{t('yourGarden')}</h2>

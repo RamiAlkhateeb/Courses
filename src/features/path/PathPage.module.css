@@ -274,3 +274,12 @@
 .flame {
   color: var(--streak);
 }
+
+/* The portfolio shortcut's value and change */
+.portfolioValue {
+  display: grid;
+  justify-items: end;
+  gap: 2px;
+  font-weight: 700;
+  white-space: nowrap;
+}

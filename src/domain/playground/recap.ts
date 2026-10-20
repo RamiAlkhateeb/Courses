@@ -45,3 +45,11 @@ export function pendingRecap(s: PlaygroundState): number | null {
 
 /** The player closed the recap: every finished year counts as seen (several years can pass while the app is closed). */
 export const seeRecap = (s: PlaygroundState): PlaygroundState => ({ ...s, recapSeen: yearsDone(s) })
+
+/** Net worth seven real days ago (seven simulated years, the time follows the real clock), or the first point on the
+ *  chart if the season is younger: the "portfolio this week" figure on Me. Null before the season starts. */
+export function netWorthWeekAgo(s: PlaygroundState): number | null {
+  if (s.status === 'idle' || s.history.length === 0) return null
+  const weekAgo = s.tick - 7 * CONFIG.weeksPerYear
+  return s.history[Math.max(0, weekAgo - s.historyStart)]
+}

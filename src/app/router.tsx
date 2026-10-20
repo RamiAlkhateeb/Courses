@@ -33,8 +33,10 @@ export const router = createBrowserRouter(
             { path: 'me', ...page(() => import('../features/me/MePage'), 'MePage') },
           ],
         },
-        // The simulator lives in the practice lessons now: old links (and a tapped news alert) go to the first one
-        { path: 'playground', element: <Navigate to="/course/investing/basics/learn/practice-first-buy" replace /> },
+        // The simulator: introduced by the practice lessons, then on its own screen (the shortcut on Learn). Old links and
+        // a tapped news alert go there; before the first practice lesson it opens that lesson instead.
+        { path: 'portfolio', ...page(() => import('../features/playground/PortfolioPage'), 'PortfolioPage') },
+        { path: 'playground', element: <Navigate to="/portfolio" replace /> },
         { path: 'playground/summary', ...page(() => import('../features/playground/SummaryPage'), 'SummaryPage') },
         // Settings (from the gear on Me) and the legal pages it links to work with or without accounts.
         { path: 'settings', ...page(() => import('../features/settings/SettingsPage'), 'SettingsPage') },
