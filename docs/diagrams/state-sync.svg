@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 740" width="900" height="740" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" role="img" aria-labelledby="title desc">
+<title id="title">State, storage and sync</title>
+<desc id="desc">Screens read stores with useStore and change them with update. Each store is a createPersistedStore that writes one localStorage key and re-reads it before every update. Another tab gets a storage event, refreshes and re-renders. When accounts are on, src/state/sync.ts subscribes to the stores, pulls the user_state rows from Supabase, merges them with the rules in src/domain/sync.ts and pushes changed rows back.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4274D9"/></marker>
+</defs>
+<rect width="900" height="740" fill="#F4FAFB"/>
+<text x="20" y="44" font-size="20" font-weight="700" fill="#293681">State: stores, localStorage, other tabs, Supabase</text>
+<rect x="20" y="70" width="240" height="96" rx="16" fill="#FFFFFF" stroke="#293681" stroke-width="1.5"/>
+<text x="36" y="100" font-size="16" font-weight="700" fill="#293681">Screens</text>
+<text x="36" y="126" font-size="14" fill="#5B678F">features, components</text>
+<text x="36" y="148" font-size="14" fill="#5B678F">useStore(store) to read</text>
+<rect x="360" y="70" width="520" height="96" rx="16" fill="#D0E7E6" stroke="#293681" stroke-width="1.5"/>
+<text x="376" y="100" font-size="16" font-weight="700" fill="#293681">createPersistedStore</text>
+<text x="376" y="126" font-size="14" fill="#293681">update(fn): re-read saved text, apply fn, write, notify</text>
+<text x="376" y="148" font-size="14" fill="#293681">parse(raw) holds the migrations (parseProgress, …)</text>
+<rect x="20" y="226" width="240" height="240" rx="16" fill="#FFFFFF" stroke="#293681" stroke-width="1.5"/>
+<text x="36" y="256" font-size="16" font-weight="700" fill="#293681">Stores (src/state/)</text>
+<text x="36" y="282" font-size="14" fill="#4274D9">progressStore</text>
+<text x="36" y="304" font-size="14" fill="#4274D9">profileStore</text>
+<text x="36" y="326" font-size="14" fill="#4274D9">playgroundStore</text>
+<text x="36" y="348" font-size="14" fill="#4274D9">settingsStore</text>
+<text x="36" y="370" font-size="14" fill="#4274D9">languageStore</text>
+<text x="36" y="392" font-size="14" fill="#4274D9">newsAlertsStore</text>
+<text x="36" y="414" font-size="14" fill="#4274D9">metaStore (sync.ts)</text>
+<rect x="360" y="226" width="260" height="240" rx="16" fill="#FFFFFF" stroke="#293681" stroke-width="1.5"/>
+<text x="376" y="256" font-size="16" font-weight="700" fill="#293681">localStorage keys</text>
+<text x="376" y="282" font-size="14" fill="#293681">progress:v2  (+ v1)</text>
+<text x="376" y="304" font-size="14" fill="#293681">profile:v1</text>
+<text x="376" y="326" font-size="14" fill="#293681">playground:v1</text>
+<text x="376" y="348" font-size="14" fill="#293681">sound</text>
+<text x="376" y="370" font-size="14" fill="#293681">lang</text>
+<text x="376" y="392" font-size="14" fill="#293681">newsAlerts</text>
+<text x="376" y="414" font-size="14" fill="#293681">sync:meta</text>
+<text x="376" y="436" font-size="14" fill="#293681">sb-…-auth-token</text>
+<text x="376" y="490" font-size="13" fill="#5B678F">last key: Supabase's own session</text>
+<rect x="720" y="226" width="160" height="130" rx="16" fill="#FFFFFF" stroke="#293681" stroke-width="1.5"/>
+<text x="736" y="256" font-size="16" font-weight="700" fill="#293681">Another tab</text>
+<text x="736" y="282" font-size="14" fill="#5B678F">same stores,</text>
+<text x="736" y="304" font-size="14" fill="#5B678F">same keys</text>
+<text x="736" y="326" font-size="14" fill="#5B678F">re-renders</text>
+<line x1="140" y1="170" x2="140" y2="222" stroke="#4274D9" stroke-width="2" fill="none" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="154" y="194" font-size="13" fill="#5B678F">read / update(fn)</text>
+<text x="154" y="212" font-size="13" fill="#5B678F">useSyncExternalStore</text>
+<line x1="264" y1="320" x2="356" y2="320" stroke="#4274D9" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<text x="310" y="310" font-size="13" fill="#5B678F" text-anchor="middle">write</text>
+<line x1="356" y1="380" x2="264" y2="380" stroke="#4274D9" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<text x="310" y="370" font-size="13" fill="#5B678F" text-anchor="middle">re-read</text>
+<text x="310" y="402" font-size="13" fill="#5B678F" text-anchor="middle">+ parse</text>
+<line x1="624" y1="290" x2="716" y2="290" stroke="#4274D9" stroke-width="2" fill="none" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="670" y="270" font-size="13" fill="#5B678F" text-anchor="middle">storage</text>
+<text x="670" y="314" font-size="13" fill="#5B678F" text-anchor="middle">event</text>
+<rect x="20" y="580" width="420" height="136" rx="16" fill="#FFFFFF" stroke="#293681" stroke-width="1.5"/>
+<text x="36" y="610" font-size="16" font-weight="700" fill="#293681">src/state/sync.ts  (accounts on)</text>
+<text x="36" y="636" font-size="14" fill="#293681">sign-in: pull → merge (domain/sync.ts) → push</text>
+<text x="36" y="658" font-size="14" fill="#293681">a store changes → dirty → push in 2 s</text>
+<text x="36" y="680" font-size="14" fill="#293681">(Playground batched: 10 s); offline: retry</text>
+<text x="36" y="702" font-size="14" fill="#293681">wallet = bank + Playground, from newer side</text>
+<text x="36" y="724" font-size="14" fill="#293681"></text>
+<rect x="560" y="580" width="320" height="136" rx="16" fill="#D0E7E6" stroke="#293681" stroke-width="1.5"/>
+<text x="576" y="610" font-size="16" font-weight="700" fill="#293681">Supabase · user_state</text>
+<text x="576" y="636" font-size="14" fill="#293681">one row per (user_id, key):</text>
+<text x="576" y="658" font-size="14" fill="#4274D9">progress · profile · playground</text>
+<text x="576" y="680" font-size="14" fill="#4274D9">· settings (migration 0003)</text>
+<text x="576" y="702" font-size="14" fill="#293681">RLS: own rows; server updated_at</text>
+<line x1="140" y1="470" x2="140" y2="576" stroke="#4274D9" stroke-width="2" fill="none" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="154" y="530" font-size="13" fill="#5B678F">subscribe (mark dirty)</text>
+<text x="154" y="548" font-size="13" fill="#5B678F">merged values written back</text>
+<line x1="444" y1="640" x2="556" y2="640" stroke="#4274D9" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<text x="500" y="630" font-size="13" fill="#5B678F" text-anchor="middle">push</text>
+<line x1="556" y1="690" x2="444" y2="690" stroke="#4274D9" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<text x="500" y="680" font-size="13" fill="#5B678F" text-anchor="middle">pull</text>
+</svg>

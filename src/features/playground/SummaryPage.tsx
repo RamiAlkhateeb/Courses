@@ -6,9 +6,9 @@ import { moneyText } from '../../i18n'
 import { CONFIG } from '../../domain/playground/config'
 import { gain, marketOf, netWorth, realHistory } from '../../domain/playground/engine'
 import { goalStatus, insights } from '../../domain/playground/insights'
-import { goalText } from './SeasonExtras'
+import { goalText } from '../../components/playground/SeasonExtras'
 import { usePlayground } from '../../state/usePlayground'
-import styles from './Playground.module.css'
+import styles from '../../components/playground/Playground.module.css'
 
 /** Season complete: start vs end, after inflation, what helped and what hurt. Play again cashes out into the bank. */
 export function SummaryPage() {
@@ -16,7 +16,7 @@ export function SummaryPage() {
   const navigate = useNavigate()
   const pg = usePlayground()
   const s = pg.state
-  if (s.status !== 'ended') return <Navigate to="/playground" replace />
+  if (s.status !== 'ended') return <Navigate to="/" replace />
   const market = marketOf(s)
   const net = netWorth(s, market)
   const real = realHistory(s, market)
@@ -88,7 +88,7 @@ export function SummaryPage() {
         <Button
           onClick={() => {
             pg.cashOut()
-            navigate('/playground', { replace: true })
+            navigate('/', { replace: true })
           }}
         >
           {t('pg_play_again')}

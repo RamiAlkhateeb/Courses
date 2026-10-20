@@ -1,6 +1,6 @@
 // Original course content. Portfolio mixes and fee figures are illustrative examples, not recommendations.
 import type { Module } from '../../types'
-import { L, box, cover, diagram, exercise, html, keyIdea, mcq, objectives, section, table, takeaways } from '../../helpers'
+import { L, box, cover, diagram, exercise, html, keyIdea, mcq, objectives, practice, section, table, takeaways } from '../../helpers'
 
 const W = 'diversification'
 const P = 'invd'
@@ -46,6 +46,14 @@ const questions = [
     L('Which of these can you control?', 'أي مما يلي يمكنك التحكم فيه؟'),
     [L('The fees you pay', 'الرسوم التي تدفعها'), L('Next year’s market return', 'عائد السوق في العام القادم'), L('Interest rate decisions', 'قرارات أسعار الفائدة')], 0,
     L('Nobody controls returns or rates, but you choose what you pay, and every saved fee keeps compounding for you.', 'لا أحد يتحكم في العوائد أو الفائدة، لكنك تختار ما تدفعه، وكل رسم توفّره يواصل التراكم لصالحك.')),
+  mcq(P, W, 11, 'rebalancing',
+    L('Your example mix is 60% stocks, 30% bonds and 10% cash. After a rally, stocks are 70%. What does rebalancing do?', 'مزيجك المثال 60% أسهم و30% سندات و10% نقد. بعد صعود قوي أصبحت الأسهم 70%. ماذا تفعل إعادة التوازن؟'),
+    [L('Sells some stocks and buys bonds and cash back to 60/30/10', 'تبيع بعض الأسهم وتشتري سندات ونقدًا للعودة إلى 60/30/10'), L('Buys more stocks, since they are rising', 'تشتري مزيدًا من الأسهم لأنها ترتفع'), L('Sells everything and holds cash', 'تبيع كل شيء وتحتفظ بالنقد')], 0,
+    L('The rally made the portfolio riskier than you chose. Rebalancing trims what grew and tops up what fell behind, back to your mix.', 'الصعود جعل المحفظة أكثر مخاطرة مما اخترت. إعادة التوازن تقلّص ما نما وتكمّل ما تأخر، لتعود إلى مزيجك.')),
+  mcq(P, W, 12, 'rebalancing',
+    L('Every trade in the simulator pays a 1% fee. Why not rebalance every single week?', 'كل صفقة في المحاكي تدفع رسومًا بنسبة 1%. لماذا لا تعيد التوازن كل أسبوع؟'),
+    [L('The fees add up, while small drifts barely change your risk', 'لأن الرسوم تتراكم، بينما الانحرافات الصغيرة بالكاد تغيّر مخاطرتك'), L('Rebalancing is not allowed more than once a season', 'لأن إعادة التوازن غير مسموحة أكثر من مرة في الموسم'), L('Rebalancing always loses money', 'لأن إعادة التوازن تخسر المال دائمًا')], 0,
+    L('Each trade costs something. Rebalancing on a schedule, or when the mix has drifted a lot, keeps the risk in line without paying fees for tiny moves.', 'لكل صفقة تكلفة. إعادة التوازن وفق جدول، أو عندما ينحرف المزيج كثيرًا، تُبقي المخاطرة في حدودها دون دفع رسوم على تحركات صغيرة.')),
 ]
 
 export const diversification: Module = {
@@ -230,6 +238,31 @@ export const diversification: Module = {
           L('Keep costs low — fees compound too', 'أبقِ التكاليف منخفضة — الرسوم تتراكم أيضًا'),
           L('Invest regularly, rebalance, and don’t panic', 'استثمر بانتظام، وأعد التوازن، ولا تهلع'),
         ]),
+      ],
+    }),
+    section({
+      id: 'practice-rebalance',
+      lessons: ['practice-rebalance'],
+      label: L('Practice', 'تدريب'),
+      nav: L('Rebalance', 'إعادة التوازن'),
+      title: L('Practice: rebalance to a mix', 'تدريب: أعد التوازن إلى مزيج'),
+      standfirst: L(
+        'Bring your holdings back to a chosen mix in one step.',
+        'أعِد ممتلكاتك إلى مزيج تختاره بخطوة واحدة.',
+      ),
+      time: L('3 min', '3 دقائق'),
+      blocks: [
+        html(L(
+          '<p>Try rebalancing with <strong>play money</strong> and simulated prices (practice, not advice). Make a first buy if you have not yet. Under <strong>Where your money is</strong>, tap <strong>Rebalance</strong> and pick an example mix: Cautious, Balanced or Growth, each split between the World Stocks ETF, Government Bonds and Safe Savings. Check the trades and fees, then tap <strong>Rebalance now</strong>.</p>',
+          '<p>جرّب إعادة التوازن بـ<strong>مال افتراضي</strong> وأسعار محاكاة (للتدريب، لا نصيحة). اشترِ أولًا إن لم تفعل بعد. تحت <strong>أين أموالك</strong>، اضغط <strong>إعادة التوازن</strong> واختر مزيجًا مثالًا: حذِر أو متوازن أو نمو، وكلٌّ منها موزّع بين صندوق الأسهم العالمية والسندات الحكومية والادخار الآمن. راجع الصفقات والرسوم، ثم اضغط <strong>أعد التوازن الآن</strong>.</p>',
+        )),
+        practice('rebalance'),
+        keyIdea(L(
+          '<p>Rebalancing <strong>sells what grew too big and buys what fell behind</strong>, so your risk stays where you chose it.</p>',
+          '<p>إعادة التوازن <strong>تبيع ما كبر أكثر من حصته وتشتري ما تأخر</strong>، فتبقى مخاطرتك حيث اخترتها.</p>',
+        )),
+        exercise('invd-q011'),
+        exercise('invd-q012'),
       ],
     }),
   ],

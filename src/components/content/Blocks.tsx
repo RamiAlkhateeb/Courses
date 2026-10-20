@@ -46,6 +46,7 @@ export function Blocks({ blocks }: { blocks: Block[] }) {
       {blocks.map((block, i) => {
         switch (block.type) {
           case 'cardBreak':
+          case 'practice': // drawn by the lesson under the card (the simulator has its own look), see CardLesson
             return null
 
           case 'html':

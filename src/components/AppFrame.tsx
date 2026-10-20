@@ -24,7 +24,7 @@ export function AppFrame() {
   )
 }
 
-/** The three main screens (Learn, Playground, Me): content above the floating tab bar. */
+/** The two main screens (Learn, Me): content above the floating tab bar. */
 export function TabsLayout() {
   return (
     <div className={styles.tabs}>

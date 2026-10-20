@@ -1,6 +1,6 @@
 // Original course content. Every mix and figure is an illustrative example, not a recommendation.
 import type { Module } from '../../types'
-import { L, box, cover, diagram, exercise, html, keyIdea, mcq, objectives, section, table, takeaways } from '../../helpers'
+import { L, box, cover, diagram, exercise, html, keyIdea, mcq, objectives, practice, section, table, takeaways } from '../../helpers'
 
 const W = 'plan'
 const P = 'invp'
@@ -54,6 +54,14 @@ const questions = [
     L('The market falls 30%. Your long-term money is 20 years from being needed, and your plan says to keep going. Following the plan means…', 'هبط السوق 30%. مالك طويل الأجل لن تحتاجه قبل 20 سنة، وخطتك تقول استمر. الالتزام بالخطة يعني…'),
     [L('Keeping the monthly amount going and not selling', 'الاستمرار في المبلغ الشهري وعدم البيع'), L('Selling now and buying back later', 'البيع الآن والشراء لاحقًا'), L('Rewriting the plan the same day', 'إعادة كتابة الخطة في اليوم نفسه')], 0,
     L('The crash rules were written while calm for exactly this moment: keep investing, don’t sell long-term money, rebalance on your usual date.', 'قواعد الانهيار كُتبت بهدوء من أجل هذه اللحظة تحديدًا: استمر في الاستثمار، ولا تبع المال طويل الأجل، وأعد التوازن في موعدك المعتاد.')),
+  mcq(P, W, 13, 'goals',
+    L('The season goal “never fall more than 15% from a peak” is mainly about…', 'هدف الموسم «لا تهبط أكثر من 15% عن أعلى قمة» يتعلق أساسًا بـ…'),
+    [L('Keeping the size of falls within what you can bear', 'إبقاء حجم الهبوط ضمن ما تتحمّله'), L('Earning the highest possible return', 'تحقيق أعلى عائد ممكن'), L('Collecting as many dividends as possible', 'جمع أكبر قدر من التوزيعات')], 0,
+    L('It is a risk goal: it rewards a mix calm enough to avoid deep drops, the same idea as matching your plan to your risk tolerance and capacity.', 'إنه هدف مخاطرة: يكافئ مزيجًا هادئًا بما يكفي لتجنّب الهبوط العميق، وهي الفكرة نفسها في مواءمة خطتك مع تحمّلك للمخاطر وقدرتك عليها.')),
+  mcq(P, W, 14, 'goals',
+    L('Why pick the goal before the season rather than after it ends?', 'لماذا تختار الهدف قبل الموسم لا بعد انتهائه؟'),
+    [L('A goal set in advance guides your choices and can be checked honestly', 'الهدف المحدد مسبقًا يوجّه اختياراتك ويمكن التحقق منه بأمانة'), L('Goals picked afterwards pay more', 'الأهداف المختارة لاحقًا تدفع أكثر'), L('It makes prices go up', 'يجعل الأسعار ترتفع')], 0,
+    L('Chosen afterwards, you would simply pick whichever goal you happened to meet. Set first, it works like a written plan: it shapes what you do.', 'لو اخترته لاحقًا لاخترت ببساطة الهدف الذي صادف أنك حققته. أما إذا حددته أولًا فيعمل كخطة مكتوبة: يوجّه ما تفعله.')),
 ]
 
 export const plan: Module = {
@@ -275,6 +283,31 @@ export const plan: Module = {
           L('Automate a fixed amount and rebalance on a schedule', 'أتمت مبلغًا ثابتًا وأعد التوازن وفق جدول'),
           L('Write one page, with crash rules, and follow it', 'اكتب صفحة واحدة بقواعد للانهيار والتزم بها'),
         ]),
+      ],
+    }),
+    section({
+      id: 'practice-goal',
+      lessons: ['practice-goal'],
+      label: L('Practice', 'تدريب'),
+      nav: L('Season goal', 'هدف الموسم'),
+      title: L('Practice: set a season goal', 'تدريب: حدّد هدف الموسم'),
+      standfirst: L(
+        'Choose what success means before the season plays out.',
+        'اختر معنى النجاح قبل أن يمضي الموسم.',
+      ),
+      time: L('3 min', '3 دقائق'),
+      blocks: [
+        html(L(
+          '<p>A plan starts with a goal. With <strong>play money</strong> and simulated prices (practice, not advice), open the <strong>Season goal</strong> card and pick one: beat inflation, never fall more than 15% from a peak, or earn $50 in dividends and interest. The season summary checks it at the end, so you see whether your choices matched your plan.</p>',
+          '<p>تبدأ الخطة بهدف. بـ<strong>مال افتراضي</strong> وأسعار محاكاة (للتدريب، لا نصيحة)، افتح بطاقة <strong>هدف الموسم</strong> واختر واحدًا: التفوّق على التضخم، أو ألا تهبط أكثر من 15% عن أعلى قمة، أو ربح 50 دولارًا من التوزيعات والفوائد. يتحقق ملخص الموسم منه في النهاية، فترى هل وافقت اختياراتك خطتك.</p>',
+        )),
+        practice('goal'),
+        keyIdea(L(
+          '<p>Decide what <strong>success</strong> means before you start, then judge your choices against it, not against the luckiest result.</p>',
+          '<p>حدّد معنى <strong>النجاح</strong> قبل أن تبدأ، ثم قِس اختياراتك عليه، لا على أكثر النتائج حظًا.</p>',
+        )),
+        exercise('invp-q013'),
+        exercise('invp-q014'),
       ],
     }),
   ],

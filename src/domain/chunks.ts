@@ -88,7 +88,7 @@ export const SHORT_CARD = 35
 export const CARD_WORDS = 90
 const KEY_IDEA_WORDS = 110
 /** Blocks that fill a card on their own: such a card never takes on another, and is never "short". */
-const MEDIA = new Set<Block['type']>(['table', 'diagram', 'calculator', 'code', 'tabs'])
+const MEDIA = new Set<Block['type']>(['table', 'diagram', 'calculator', 'code', 'tabs', 'practice'])
 export const hasMedia = (blocks: Block[]) => blocks.some((b) => MEDIA.has(b.type))
 const isHeading = (b: Block) => b.type === 'html' && /^<h[34]\b/i.test(b.html.en)
 /** "Keep these sections, in this order:" — introduces the block after it, so they share a card. */

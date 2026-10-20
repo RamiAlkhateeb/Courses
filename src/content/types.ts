@@ -37,6 +37,12 @@ export type Block =
   | { type: 'keyIdea'; html: Localized }
   /** A "try it" calculator; `compound` shows what a starting amount grows to */
   | { type: 'calculator'; kind: 'compound' }
+  /** A hands-on task in the live market simulator (the Playground): its own card; the lesson moves on once it is done
+   *  (src/domain/playground/practice.ts) */
+  | { type: 'practice'; task: PracticeTask }
+
+/** The simulator tasks a practice lesson can set (checked by `practiceDone` in src/domain/playground/practice.ts). */
+export type PracticeTask = 'first-buy' | 'spread' | 'rebalance' | 'income' | 'auto' | 'goal'
 
 export interface Section {
   id: string

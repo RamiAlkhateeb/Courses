@@ -114,11 +114,10 @@ export function StatPill({ children, className, title }: { children: ReactNode; 
 
 const TABS: { to: string; icon: IconName; key: ParseKeys; end?: boolean }[] = [
   { to: '/', icon: 'sprout', key: 'tabLearn', end: true },
-  { to: '/playground', icon: 'chart', key: 'tabPlayground' },
   { to: '/me', icon: 'me', key: 'tabMe' },
 ]
 
-/** The floating pill with the three tabs; the active one is an indigo pill with white text. The order mirrors in RTL. */
+/** The tab bar (Learn · Me; the simulator lives in the practice lessons); the active one is an indigo pill with white text. The order mirrors in RTL. */
 export function TabBar() {
   const { t } = useTranslation()
   return (

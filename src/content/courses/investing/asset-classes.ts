@@ -1,6 +1,6 @@
 // Original course content. Describes how asset classes work in general; no products are recommended.
 import type { Module } from '../../types'
-import { L, box, cover, exercise, html, keyIdea, mcq, objectives, section, table, takeaways } from '../../helpers'
+import { L, box, cover, exercise, html, keyIdea, mcq, objectives, practice, section, table, takeaways } from '../../helpers'
 
 const W = 'asset-classes'
 const P = 'inva'
@@ -54,6 +54,14 @@ const questions = [
     L('Why is property a poor place for an emergency fund?', 'لماذا العقار مكان غير مناسب لصندوق الطوارئ؟'),
     [L('It can take months to sell', 'قد يستغرق بيعه أشهرًا'), L('Its price never changes', 'سعره لا يتغير أبدًا'), L('It never pays rent', 'لا يدر إيجارًا أبدًا')], 0,
     L('An emergency needs money within days. Selling a property takes time and costs a lot.', 'الطوارئ تحتاج المال خلال أيام. أما بيع العقار فيستغرق وقتًا ويكلّف كثيرًا.')),
+  mcq(P, W, 13, 'overview',
+    L('Which of these holds three different kinds of investment?', 'أيٌّ مما يلي يضم ثلاثة أنواع مختلفة من الاستثمار؟'),
+    [L('Safe Savings, Government Bonds and Gold', 'الادخار الآمن والسندات الحكومية والذهب'), L('A World Stocks ETF, a US 500 Index ETF and a Tech Stocks ETF', 'صندوق الأسهم العالمية وصندوق مؤشر أكبر 500 شركة أمريكية وصندوق أسهم التقنية'), L('Three different tech company shares', 'أسهم ثلاث شركات تقنية مختلفة')], 0,
+    L('Cash, lending and gold are three kinds. Three stock funds, or three tech shares, are still one kind: stocks, which tend to fall together.', 'النقد والإقراض والذهب ثلاثة أنواع. أما ثلاثة صناديق أسهم أو ثلاثة أسهم تقنية فهي نوع واحد: الأسهم، التي تميل إلى الهبوط معًا.')),
+  mcq(P, W, 14, 'overview',
+    L('In the same simulated year, why can Safe Savings, bonds and a stock fund end up with very different results?', 'في السنة المحاكاة نفسها، لماذا قد تنتهي نتائج الادخار الآمن والسندات وصندوق الأسهم مختلفة جدًا؟'),
+    [L('They are different kinds of asset, driven by different things', 'لأنها أنواع مختلفة من الأصول، تحرّكها عوامل مختلفة'), L('The simulator picks a winner at random', 'لأن المحاكي يختار رابحًا عشوائيًا'), L('Only the amount you bought decides the result', 'لأن المبلغ الذي اشتريته وحده يحدد النتيجة')], 0,
+    L('Savings pay interest, bond prices move with interest rates, and stocks follow company profits, so the same news can push them in different directions.', 'الادخار يدفع فائدة، وأسعار السندات تتحرك مع أسعار الفائدة، والأسهم تتبع أرباح الشركات، فقد يدفعها الخبر نفسه في اتجاهات مختلفة.')),
 ]
 
 export const assetClasses: Module = {
@@ -234,6 +242,31 @@ export const assetClasses: Module = {
           L('Cash: stability for short-term needs', 'النقد: استقرار للاحتياجات قصيرة الأجل'),
           L('Funds bundle many holdings; always check the fee', 'الصناديق تجمع أصولًا كثيرة؛ تحقّق دائمًا من الرسوم'),
         ]),
+      ],
+    }),
+    section({
+      id: 'practice-spread',
+      lessons: ['practice-spread'],
+      label: L('Practice', 'تدريب'),
+      nav: L('Hold three kinds', 'امتلك ثلاثة أنواع'),
+      title: L('Practice: hold three kinds at once', 'تدريب: امتلك ثلاثة أنواع معًا'),
+      standfirst: L(
+        'Hold three different kinds of investment and watch each move in its own way.',
+        'امتلك ثلاثة أنواع مختلفة من الاستثمار وشاهد كلًّا منها يتحرك بطريقته.',
+      ),
+      time: L('3 min', '3 دقائق'),
+      blocks: [
+        html(L(
+          '<p>Now put the asset classes side by side. With <strong>play money</strong> and simulated prices (practice, not advice), hold <strong>three different investments</strong> at the same time, for example Safe Savings, Government Bonds and a stock fund. Tap each one, choose an amount and buy. Then watch how cash, lending and ownership move in their own ways.</p>',
+          '<p>ضع الآن فئات الأصول جنبًا إلى جنب. بـ<strong>مال افتراضي</strong> وأسعار محاكاة (للتدريب، لا نصيحة)، امتلك <strong>ثلاثة استثمارات مختلفة</strong> في الوقت نفسه، مثل الادخار الآمن والسندات الحكومية وصندوق أسهم. اضغط على كل منها، وحدّد مبلغًا، واشترِ. ثم شاهد كيف يتحرك النقد والإقراض والملكية كلٌّ بطريقته.</p>',
+        )),
+        practice('spread'),
+        keyIdea(L(
+          '<p>Each kind of asset carries a <strong>different risk</strong>: cash stays steady, bonds follow interest rates, stocks follow company profits.</p>',
+          '<p>لكل نوع من الأصول <strong>مخاطرة مختلفة</strong>: النقد يبقى مستقرًا، والسندات تتبع أسعار الفائدة، والأسهم تتبع أرباح الشركات.</p>',
+        )),
+        exercise('inva-q013'),
+        exercise('inva-q014'),
       ],
     }),
   ],

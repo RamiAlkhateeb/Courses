@@ -1,5 +1,5 @@
 // Small builders shared by every course's content files. They only shape data — no logic.
-import type { Block, Localized, Question, Section } from './types'
+import type { Block, Localized, PracticeTask, Question, Section } from './types'
 
 /** Bilingual text: `L('Budget', 'الميزانية')`. */
 export const L = (en: string, ar: string): Localized => ({ en, ar })
@@ -51,6 +51,9 @@ export const keyIdea = (value: Localized): Block => ({ type: 'keyIdea', html: va
 
 /** A "try it" calculator card: sliders for years and yearly return, and what 1,000 grows to. */
 export const compoundCalculator: Block = { type: 'calculator', kind: 'compound' }
+
+/** A hands-on simulator task (a practice lesson): the live Playground with the task on top. */
+export const practice = (task: PracticeTask): Block => ({ type: 'practice', task })
 
 /** Forces a new lesson card here (cards are otherwise cut automatically). */
 export const cardBreak: Block = { type: 'cardBreak' }

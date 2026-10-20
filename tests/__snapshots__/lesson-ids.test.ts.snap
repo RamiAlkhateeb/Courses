@@ -22,12 +22,14 @@ exports[`lesson ids > stay the same unless the change is deliberate 1`] = `
     "cash",
     "funds",
     "alternatives",
+    "practice-spread",
   ],
   "investing/basics": [
     "why",
     "compounding",
     "risk-return",
     "ready",
+    "practice-first-buy",
   ],
   "investing/diversification": [
     "diversify",
@@ -35,6 +37,7 @@ exports[`lesson ids > stay the same unless the change is deliberate 1`] = `
     "fees",
     "habits",
     "behaviour",
+    "practice-rebalance",
   ],
   "investing/plan": [
     "goals",
@@ -43,6 +46,7 @@ exports[`lesson ids > stay the same unless the change is deliberate 1`] = `
     "automate",
     "rebalance",
     "written-plan",
+    "practice-goal",
   ],
   "investing/retirement": [
     "start-early",
@@ -51,6 +55,7 @@ exports[`lesson ids > stay the same unless the change is deliberate 1`] = `
     "saving-rate",
     "lifecycle",
     "drawdown",
+    "practice-auto",
   ],
   "investing/valuation": [
     "shares",
@@ -59,6 +64,7 @@ exports[`lesson ids > stay the same unless the change is deliberate 1`] = `
     "dividends",
     "balance-sheet",
     "price-value",
+    "practice-income",
   ],
   "marketing/fundamentals": [
     "stp",

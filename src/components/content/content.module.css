@@ -21,7 +21,7 @@
 }
 
 .content h2 {
-  font-size: 1.85rem;
+  font-size: var(--title-section);
   line-height: 1.2;
   font-weight: 800;
   margin: 0 0 8px 0;
@@ -261,7 +261,7 @@
   color: var(--indigo);
 }
 .calcResult strong {
-  font-size: 2rem;
+  font-size: var(--title-page);
   line-height: 1.1;
 }
 .calcResult small {

@@ -3,6 +3,65 @@
   padding: 28px 16px 130px;
   overflow-x: clip;
 }
+.panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr); /* children may shrink to the column (narrow phones, long Arabic lines) */
+  gap: 12px;
+  overflow-x: clip;
+}
+/* A practice lesson: the task on top, then the panel */
+.practice {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+  padding-block-end: 24px; /* the lesson already pads the sides */
+}
+.task {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1.5px solid var(--blue);
+  border-radius: var(--radius-lg);
+  background: var(--chip-bg);
+  color: var(--indigo);
+}
+.task > span:last-child {
+  display: grid;
+  gap: 2px;
+}
+.task small {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--blue-text);
+}
+.task strong {
+  font-size: 1.0625rem;
+}
+.taskHint {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+.taskIcon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  inline-size: 36px;
+  block-size: 36px;
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--blue-text);
+}
+.taskDone {
+  border-color: var(--correct);
+  background: var(--correct-bg);
+}
+.taskDone small,
+.taskDone .taskIcon {
+  color: var(--correct);
+}
 .pageFull {
   overflow-x: clip;
   padding: 24px 24px 210px;
@@ -10,12 +69,12 @@
 }
 .head h1,
 .bigTitle {
-  font-size: 2.3rem;
+  font-size: var(--title-page);
   line-height: 1.1;
   color: var(--brand);
 }
 .bigTitle {
-  font-size: 2.3rem;
+  font-size: var(--title-page);
   margin-block: 18px 6px;
 }
 .kicker {
@@ -52,7 +111,7 @@
   align-items: baseline;
   flex-wrap: wrap;
   gap: 4px 12px;
-  font-size: 3rem;
+  font-size: var(--display);
   line-height: 1;
   font-weight: 600;
   color: var(--brand);
@@ -72,11 +131,15 @@
 }
 .legend {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 16px;
+  gap: 4px 16px;
   font-weight: 600;
   font-size: 0.95rem;
   color: var(--brand);
+}
+.legend > span {
+  white-space: nowrap;
 }
 .legend i {
   display: inline-block;
@@ -212,7 +275,7 @@
   color: var(--muted);
 }
 .title {
-  font-size: 2.3rem;
+  font-size: var(--title-page);
   line-height: 1.1;
   color: var(--indigo);
 }
@@ -312,7 +375,7 @@ button.holding {
   gap: 10px;
 }
 .endCard h2 {
-  font-size: 1.6rem;
+  font-size: var(--title-section);
   color: var(--brand);
 }
 .endCard p {
@@ -334,7 +397,7 @@ button.holding {
   background: var(--rule);
 }
 .sheetTitle {
-  font-size: 1.6rem;
+  font-size: var(--title-section);
   color: var(--brand);
   margin-block-end: 12px;
 }
@@ -368,7 +431,7 @@ button.holding {
   gap: 12px;
 }
 .tradeName {
-  font-size: 2rem;
+  font-size: var(--title-page);
   line-height: 1.1;
   color: var(--brand);
 }
@@ -376,7 +439,7 @@ button.holding {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  font-size: 1.6rem;
+  font-size: var(--title-section);
   color: var(--brand);
 }
 .priceBox > :last-child {
@@ -433,7 +496,7 @@ button.holding {
   cursor: pointer;
 }
 .amount {
-  font-size: 3.2rem;
+  font-size: var(--display);
   line-height: 1.1;
   font-weight: 600;
   color: var(--brand);
@@ -523,7 +586,7 @@ button.holding {
   align-content: start;
 }
 .statCard .amount {
-  font-size: 2.2rem;
+  font-size: var(--title-page);
 }
 .points .dot {
   margin-block-start: 6px;
@@ -559,7 +622,7 @@ button.holding {
   padding: 18px 18px;
 }
 .newsCard h1 {
-  font-size: 1.9rem;
+  font-size: var(--title-section);
   line-height: 1.1;
   color: var(--brand);
   margin-block: 4px 10px;
@@ -624,7 +687,7 @@ button.holding {
   color: var(--on-navy-dim);
 }
 .pauseCard .amount {
-  font-size: 2rem;
+  font-size: var(--title-page);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -729,8 +792,9 @@ button.holding {
 }
 .ring {
   flex: 0 0 auto;
-  inline-size: 112px;
-  block-size: 112px;
+  inline-size: clamp(80px, 30%, 112px);
+  block-size: auto;
+  aspect-ratio: 1;
 }
 .ringTrack {
   fill: none;

@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 640" width="900" height="640" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" role="img" aria-labelledby="title desc">
+<title id="title">The market simulator</title>
+<desc id="desc">A seed picked at the first buy goes into buildMarket, which derives the whole season's prices and news. The real clock drives usePlaygroundClock in AppFrame, which calls catchUp, and catchUp calls advance once per simulated week to apply payouts, auto-invest and news. The result is the PlaygroundState in playgroundStore. Practice lessons show PlaygroundPanel, which reads and changes that state; practiceDone checks the lesson's task against it. The wallet is the bank plus the Playground's net worth, and the season summary cashes out between seasons.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4274D9"/></marker>
+</defs>
+<rect width="900" height="640" fill="#F4FAFB"/>
+<text x="20" y="44" font-size="20" font-weight="700" fill="#293681">The simulator: seed, clock, state, practice, wallet</text>
+<rect x="20" y="70" width="260" height="110" rx="16" fill="#FFFFFF" stroke="#293681" stroke-width="1.5"/>
+<text x="36" y="100" font-size="16" font-weight="700" fill="#293681">Seed</text>
+<text x="36" y="124" font-size="13" fill="#4274D9">newSeed() at the first buy</text>
+<text x="36" y="150" font-size="14" fill="#5B678F">the only randomness, so a</text>
+<text x="36" y="170" font-size="14" fill="#5B678F">season replays exactly</text>
+<rect x="20" y="230" width="260" height="110" rx="16" fill="#FFFFFF" stroke="#293681" stroke-width="1.5"/>
+<text x="36" y="260" font-size="16" font-weight="700" fill="#293681">Real clock</text>
+<text x="36" y="286" font-size="14" fill="#5B678F">1 real day = 1 simulated year</text>
+<text x="36" y="306" font-size="14" fill="#5B678F">1 week ≈ 27.7 real minutes</text>
+<text x="36" y="326" font-size="14" fill="#5B678F">never paused, even when closed</text>
+<rect x="20" y="480" width="260" height="130" rx="16" fill="#FFFFFF" stroke="#293681" stroke-width="1.5"/>
+<text x="36" y="510" font-size="16" font-weight="700" fill="#293681">Season summary</text>
+<text x="36" y="534" font-size="13" fill="#4274D9">/playground/summary</text>
+<text x="36" y="560" font-size="14" fill="#5B678F">insights and goalStatus;</text>
+<text x="36" y="580" font-size="14" fill="#5B678F">Play again: cashOut</text>
+<text x="36" y="600" font-size="14" fill="#5B678F">starts a new idle season</text>
+<rect x="330" y="70" width="260" height="110" rx="16" fill="#FFFFFF" stroke="#293681" stroke-width="1.5"/>
+<text x="346" y="100" font-size="16" font-weight="700" fill="#293681">buildMarket(seed)</text>
+<text x="346" y="124" font-size="13" fill="#4274D9">domain/playground/market.ts</text>
+<text x="346" y="150" font-size="14" fill="#5B678F">9 asset prices, rate, cpi,</text>
+<text x="346" y="170" font-size="14" fill="#5B678F">4 news events per season</text>
+<rect x="330" y="230" width="260" height="190" rx="16" fill="#FFFFFF" stroke="#293681" stroke-width="1.5"/>
+<text x="346" y="260" font-size="16" font-weight="700" fill="#293681">catchUp(state, now)</text>
+<text x="346" y="284" font-size="13" fill="#4274D9">usePlaygroundClock (AppFrame)</text>
+<text x="346" y="310" font-size="14" fill="#5B678F">every 30 s and on tab focus,</text>
+<text x="346" y="330" font-size="14" fill="#5B678F">advance() once per week:</text>
+<text x="346" y="350" font-size="14" fill="#5B678F">· payouts every 13 weeks</text>
+<text x="346" y="370" font-size="14" fill="#5B678F">· auto-invest every 4 weeks</text>
+<text x="346" y="390" font-size="14" fill="#5B678F">· news joins newsQueue</text>
+<text x="346" y="410" font-size="14" fill="#5B678F">· week 520 ends the season</text>
+<rect x="330" y="480" width="260" height="130" rx="16" fill="#D0E7E6" stroke="#293681" stroke-width="1.5"/>
+<text x="346" y="510" font-size="16" font-weight="700" fill="#293681">PlaygroundState</text>
+<text x="346" y="534" font-size="13" fill="#4274D9">saved as playground:v1</text>
+<text x="346" y="560" font-size="14" fill="#5B678F">cash, holdings, trades,</text>
+<text x="346" y="580" font-size="14" fill="#5B678F">history, newsQueue, goal,</text>
+<text x="346" y="600" font-size="14" fill="#5B678F">autoInvest, recapSeen</text>
+<rect x="660" y="70" width="220" height="170" rx="16" fill="#FFFFFF" stroke="#293681" stroke-width="1.5"/>
+<text x="676" y="100" font-size="16" font-weight="700" fill="#293681">Practice lesson</text>
+<text x="676" y="124" font-size="13" fill="#4274D9">components/playground/</text>
+<text x="676" y="150" font-size="14" fill="#5B678F">PracticeBlock: task +</text>
+<text x="676" y="170" font-size="14" fill="#5B678F">PlaygroundPanel; reads</text>
+<text x="676" y="190" font-size="14" fill="#5B678F">the state, acts through</text>
+<text x="676" y="210" font-size="14" fill="#5B678F">usePlayground()</text>
+<rect x="660" y="290" width="220" height="140" rx="16" fill="#FFFFFF" stroke="#293681" stroke-width="1.5"/>
+<text x="676" y="320" font-size="16" font-weight="700" fill="#293681">practiceDone</text>
+<text x="676" y="344" font-size="13" fill="#4274D9">playground/practice.ts</text>
+<text x="676" y="370" font-size="14" fill="#5B678F">first-buy · spread ·</text>
+<text x="676" y="390" font-size="14" fill="#5B678F">rebalance · income ·</text>
+<text x="676" y="410" font-size="14" fill="#5B678F">auto · goal</text>
+<rect x="660" y="480" width="220" height="130" rx="16" fill="#FFFFFF" stroke="#293681" stroke-width="1.5"/>
+<text x="676" y="510" font-size="16" font-weight="700" fill="#293681">useWallet()</text>
+<text x="676" y="534" font-size="13" fill="#4274D9">bank + netWorth(state)</text>
+<text x="676" y="560" font-size="14" fill="#5B678F">sweepBank: bank → cash</text>
+<text x="676" y="580" font-size="14" fill="#5B678F">while a season is open</text>
+<line x1="284" y1="125" x2="326" y2="125" stroke="#4274D9" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<line x1="284" y1="285" x2="326" y2="285" stroke="#4274D9" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<line x1="460" y1="184" x2="460" y2="226" stroke="#4274D9" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<text x="472" y="210" font-size="13" fill="#5B678F">prices + news</text>
+<line x1="460" y1="424" x2="460" y2="476" stroke="#4274D9" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<text x="472" y="455" font-size="13" fill="#5B678F">next state</text>
+<polyline points="594,510 612,510 612,150 656,150" stroke="#4274D9" stroke-width="2" fill="none" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<polyline points="594,540 638,540 638,360 656,360" stroke="#4274D9" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<line x1="594" y1="580" x2="656" y2="580" stroke="#4274D9" stroke-width="2" fill="none" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<line x1="770" y1="286" x2="770" y2="244" stroke="#4274D9" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<text x="782" y="270" font-size="13" fill="#5B678F">unlocks Next</text>
+<line x1="326" y1="545" x2="284" y2="545" stroke="#4274D9" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+</svg>

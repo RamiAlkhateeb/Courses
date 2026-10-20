@@ -69,7 +69,7 @@
   max-inline-size: 330px;
 }
 .headline {
-  font-size: 2.875rem;
+  font-size: var(--display);
   line-height: 1.04;
   letter-spacing: -0.02em;
   color: var(--indigo);
@@ -84,7 +84,7 @@
 }
 .welcomeAlt {
   font-weight: 700;
-  font-size: 1.5rem;
+  font-size: var(--title-small);
   line-height: 1.5;
   color: var(--blue-text);
   max-inline-size: 260px;
@@ -193,7 +193,7 @@
   margin-block-start: 4px;
 }
 .title {
-  font-size: 1.875rem;
+  font-size: var(--title-section);
   line-height: 1.1;
   letter-spacing: -0.01em;
   margin-block: 24px 6px;
@@ -249,7 +249,7 @@
 /* Narrow phones (320px): the headline wraps to more lines, so everything under it moves up and the mascot shrinks. */
 @media (max-width: 359px) {
   .headline {
-    font-size: 2.1rem;
+    font-size: var(--title-page);
   }
   .welcomeAlt {
     font-size: 1.15rem;
