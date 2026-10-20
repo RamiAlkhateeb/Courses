@@ -74,7 +74,7 @@ function AutoInvestSheet({ plan, onClose, onSave }: { plan: AutoInvest | null; o
   return (
     <div className={styles.scrim} onClick={onClose}>
       <div onClick={(e) => e.stopPropagation()}>
-        <BottomSheet>
+        <BottomSheet label={t('pg_auto_sheet_title')} onClose={onClose}>
           <div className={styles.grab} aria-hidden />
           <h2 className={styles.sheetTitle}>{t('pg_auto_sheet_title')}</h2>
           <p className={styles.kicker}>{t('pg_auto_amount')}</p>

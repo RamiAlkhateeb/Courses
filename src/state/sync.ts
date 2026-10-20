@@ -84,6 +84,8 @@ export const syncStatusStore = {
 export const useSyncStatus = () => useStore(syncStatusStore)
 
 const dirty = new Set<Key>()
+/** Bumped on every local change: an upload clears a key's dirty flag only if nothing changed while it was in flight */
+const version: Partial<Record<Key, number>> = {}
 let applying = false // true while the merge is writing into the stores, so it is not mistaken for the learner's own change
 let timer: ReturnType<typeof setTimeout> | undefined
 let lastPull = 0
@@ -148,6 +150,7 @@ async function push(u: AuthUser) {
   }
   if (dirty.size === 0) return
   const keys = [...dirty]
+  const sent = Object.fromEntries(keys.map((k) => [k, version[k] ?? 0]))
   const sb = await loadSupabase()
   const { data, error } = await sb
     .from('user_state')
@@ -155,8 +158,11 @@ async function push(u: AuthUser) {
     .select('key,updated_at')
   if (error) throw error
   const times = Object.fromEntries((data ?? []).map((r: { key: Key; updated_at: string }) => [r.key, r.updated_at]))
-  keys.forEach((k) => dirty.delete(k))
-  setMeta((m) => ({ ...m, modified: { ...m.modified, ...times } })) // now this device and the server hold the same copy
+  // Keys changed during the upload stay dirty (and keep their newer local time): the next push sends them
+  const unchanged = keys.filter((k) => (version[k] ?? 0) === sent[k])
+  unchanged.forEach((k) => dirty.delete(k))
+  const synced = Object.fromEntries(Object.entries(times).filter(([k]) => unchanged.includes(k as Key)))
+  setMeta((m) => ({ ...m, modified: { ...m.modified, ...synced } })) // now this device and the server hold the same copy
 }
 
 async function cycle(withPull: boolean) {
@@ -180,6 +186,7 @@ function schedule(delay: number) {
 
 function onLocalChange(key: Key) {
   if (applying) return
+  version[key] = (version[key] ?? 0) + 1
   // Remember when this device last changed, signed in or not: a guest's money must be able to beat an older account copy.
   const now = Date.now()
   if (key !== 'playground' || now - (lastMark[key] ?? 0) > 5000) {

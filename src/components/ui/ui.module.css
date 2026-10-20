@@ -354,3 +354,29 @@
   }
 }
 
+
+/* A compact pill (the Learn header, beside the course name): icon and number only */
+.statCompact {
+  min-block-size: 32px;
+  padding: 0 10px;
+  gap: 4px;
+}
+
+/* A modal sheet's ✕ (top end corner) */
+.sheetClose {
+  position: absolute;
+  inset-block-start: 12px;
+  inset-inline-end: 12px;
+  inline-size: 44px;
+  block-size: 44px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--indigo);
+  cursor: pointer;
+}
+.sheet:focus {
+  outline: none;
+}

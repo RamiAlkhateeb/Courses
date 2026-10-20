@@ -321,3 +321,14 @@
 .flame {
   color: var(--streak);
 }
+
+/* The arrow back to the previous step: a plain icon button beside ✕ (mirrored in Arabic) */
+.prev {
+  border: 0;
+  background: none;
+  cursor: pointer;
+  margin-inline-start: -14px;
+}
+:global(html[dir='rtl']) .prev svg {
+  transform: scaleX(-1);
+}

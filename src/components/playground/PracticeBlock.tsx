@@ -27,7 +27,8 @@ export function PracticeBlock({ task }: { task: PracticeTask }) {
         </span>
       </div>
       {task === 'first-buy' && !tourSeen && <Tour />}
-      <PlaygroundPanel />
+      {/* The tools a task needs (rebalance, payouts and auto-invest, the goal) start unfolded */}
+      <PlaygroundPanel toolsOpenAtStart={task === 'rebalance' || task === 'income' || task === 'auto' || task === 'goal'} />
     </section>
   )
 }

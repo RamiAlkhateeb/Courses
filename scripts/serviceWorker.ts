@@ -1,9 +1,9 @@
-// Builds public/sw.js at build time: the installable app's service worker. It precaches the whole built app (HTML,
+// Writes sw.js into the build: the installable app's service worker. It precaches the whole built app (HTML,
 // scripts, styles, fonts, diagrams, icons: about 1.6 MB) so every lesson opens offline, and caches the guide pictures
 // as they are first shown (5 MB for all of them is too much to fetch up front). The cache name is a hash of the file
-// list, so a new deploy replaces the old cache. Only GETs to this site are handled: Supabase and the rest go untouched.
+// list and contents, so a new deploy replaces the old cache. Only GETs to this site are handled: Supabase and the rest go untouched.
 import { createHash } from 'node:crypto'
-import { readdirSync, statSync } from 'node:fs'
+import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join, relative } from 'node:path'
 import type { Plugin } from 'vite'
 
@@ -60,10 +60,12 @@ self.addEventListener('fetch', (event) => {
 // A notification was tapped: open (or focus) the app on its page (news alerts: the portfolio; the reminder: Learn).
 self.addEventListener('notificationclick', (event) => {
   event.notification.close()
-  const page = new URL('./' + ((event.notification.data && event.notification.data.open) || 'portfolio'), self.registration.scope).href
+  const data = event.notification.data || {}
+  const page = new URL('./' + (data.open ?? 'portfolio'), self.registration.scope).href
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => {
-      const open = list.find((c) => 'focus' in c)
+      // Only this app's own tabs (another app can share the github.io origin)
+      const open = list.find((c) => c.url.startsWith(self.registration.scope) && 'focus' in c)
       return open ? open.focus().then((c) => c && 'navigate' in c ? c.navigate(page) : c) : self.clients.openWindow(page)
     }),
   )
@@ -83,7 +85,15 @@ export function serviceWorker(): Plugin {
       const built = Object.keys(bundle).filter((f) => !f.endsWith('.map'))
       const pub = publicFiles(publicDir).filter((f) => !RUNTIME_ONLY.test(f))
       const files = ['./', './index.html', ...[...built, ...pub].filter((f) => f !== 'index.html').filter((f) => f !== 'sw.js').map((f) => `./${f}`)].sort()
-      const cache = `abu-shreek-${createHash('sha256').update(files.join('\n')).digest('hex').slice(0, 12)}`
+      // The cache name hashes what the files contain, not only their names: public files (a diagram, an icon) keep
+      // their name when edited, and are served cache-first, so a new copy must mean a new cache.
+      const hash = createHash('sha256').update(files.join('\n'))
+      for (const f of built) {
+        const out = bundle[f]
+        hash.update(out.type === 'chunk' ? out.code : typeof out.source === 'string' ? out.source : Buffer.from(out.source))
+      }
+      for (const f of pub) hash.update(readFileSync(join(publicDir, f)))
+      const cache = `abu-shreek-${hash.digest('hex').slice(0, 12)}`
       this.emitFile({ type: 'asset', fileName: 'sw.js', source: worker(cache, files) })
     },
   }

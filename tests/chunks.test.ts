@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Block } from '../src/content/types'
-import { splitHtml, splitLocalized, toCards } from '../src/domain/chunks'
+import { cardWords, CARD_WORDS, splitHtml, splitLocalized, toCards } from '../src/domain/chunks'
 
 const html = (en: string, ar = en): Block => ({ type: 'html', html: { en, ar } })
 /** A paragraph long enough (40 words) to stand on its own card */
@@ -91,5 +91,38 @@ describe('toCards', () => {
     ])
     expect(cards).toHaveLength(3)
     expect(exercises).toEqual([{ questionId: 'x-q001', afterCard: 0 }])
+  })
+})
+
+describe('long steps are cut in two', () => {
+  const sentence = (n: number, lang: 'en' | 'ar') => (lang === 'en' ? `Sentence ${n} has a few plain words in it to read.` : `الجملة ${n} فيها بعض الكلمات البسيطة للقراءة هنا.`)
+  const para = (count: number, lang: 'en' | 'ar') => `<p>${Array.from({ length: count }, (_, i) => sentence(i + 1, lang)).join(' ')}</p>`
+  it('a long paragraph splits at a sentence near its middle, in both languages', () => {
+    const { cards } = toCards([{ type: 'html', html: { en: para(16, 'en'), ar: para(16, 'ar') } }])
+    expect(cards).toHaveLength(2)
+    for (const card of cards) {
+      expect(cardWords(card)).toBeLessThanOrEqual(CARD_WORDS)
+      const b = card[0] as Extract<Block, { type: 'html' }>
+      expect(b.html.en).toMatch(/^<p>Sentence \d+ .*\.<\/p>$/)
+      expect(b.html.ar).toMatch(/^<p>الجملة/)
+    }
+  })
+  it('never cuts inside a tag, and leaves pictures and tables whole', () => {
+    const bold = `<p><strong>${Array.from({ length: 16 }, (_, i) => sentence(i + 1, 'en')).join(' ')}</strong></p>`
+    expect(toCards([{ type: 'html', html: { en: bold } }]).cards).toHaveLength(1)
+    const rows = Array.from({ length: 30 }, (_, i) => [{ en: `row ${i} with some words` }, { en: 'more words here' }])
+    expect(toCards([{ type: 'table', headers: [{ en: 'A' }, { en: 'B' }], rows }]).cards).toHaveLength(1)
+  })
+  it('keeps a key idea with the text before it and questions after the same content', () => {
+    const blocks: Block[] = [
+      { type: 'html', html: { en: para(6, 'en') } },
+      { type: 'html', html: { en: para(6, 'en') } },
+      { type: 'keyIdea', html: { en: '<p>Remember this one idea.</p>' } },
+      { type: 'exercise', questionId: 'x-q001' },
+    ]
+    const { cards, exercises } = toCards(blocks)
+    expect(cards.length).toBe(2)
+    expect(cards[1].at(-1)?.type).toBe('keyIdea')
+    expect(exercises).toEqual([{ questionId: 'x-q001', afterCard: 1 }])
   })
 })

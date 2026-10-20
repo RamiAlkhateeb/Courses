@@ -124,18 +124,27 @@ describe('synced preferences', async () => {
 
 describe('weekly recap on Me', async () => {
   const { weekSummary } = await import('../src/domain/progress')
-  const { netWorthWeekAgo } = await import('../src/domain/playground/recap')
+  const { portfolioWeekMove } = await import('../src/domain/playground/recap')
+  const { MS_PER_WEEK } = await import('../src/domain/playground/config')
   it('counts the last seven days of learning and what they paid', () => {
     const activity = { '2026-10-20': 20, '2026-10-18': 0, '2026-10-14': 30, '2026-10-13': 50 }
     expect(weekSummary(activity, '2026-10-20')).toEqual({ days: 3, earned: 50 })
     expect(weekSummary({}, '2026-10-20')).toEqual({ days: 0, earned: 0 })
   })
-  it('finds the net worth seven real days (simulated years) ago, or the season start', () => {
-    expect(netWorthWeekAgo(emptyPlayground)).toBeNull()
-    let s = running(1000, 3)
-    s = weeks(s, 10)
-    expect(netWorthWeekAgo(s)).toBe(s.history[0])
+  it('the portfolio move over the last seven real days counts market moves, not money moved in', () => {
+    const nowOf = (st: PlaygroundState) => st.startedAt + st.tick * MS_PER_WEEK
+    expect(portfolioWeekMove(emptyPlayground, T0)).toBeNull()
+    let s = weeks(running(1000, 3), 10)
+    // Younger than a week: measured from the first point
+    expect(portfolioWeekMove(s, nowOf(s))).toBeCloseTo(netWorth(s) - s.history[0], 6)
     s = weeks(s, 7 * CONFIG.weeksPerYear)
-    expect(netWorthWeekAgo(s)).toBe(s.history[s.tick - 7 * CONFIG.weeksPerYear - s.historyStart])
+    const before = s.history[s.tick - 7 * CONFIG.weeksPerYear - s.historyStart]
+    const move = portfolioWeekMove(s, nowOf(s))!
+    expect(move).toBeCloseTo(netWorth(s) - before, 6)
+    // A lesson reward moved in this week is not growth
+    expect(portfolioWeekMove(fund(s, 50), nowOf(s))).toBeCloseTo(move, 6)
+    // A season that ended more than a week ago no longer moves
+    const ended = weeks(s, 10 * CONFIG.weeksPerYear)
+    expect(portfolioWeekMove(ended, nowOf(ended) + 8 * CONFIG.msPerYear)).toBeNull()
   })
 })
