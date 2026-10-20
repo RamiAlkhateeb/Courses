@@ -1,7 +1,7 @@
 // Original course content. Explains retirement saving in general, country-neutral terms; no products or providers are
 // recommended, and every figure is an illustration, not a forecast. Rules differ by country.
 import type { Module } from '../../types'
-import { L, box, compoundCalculator, cover, diagram, exercise, html, keyIdea, mcq, objectives, section, table, takeaways } from '../../helpers'
+import { L, box, compoundCalculator, cover, diagram, exercise, html, keyIdea, mcq, objectives, practice, section, table, takeaways } from '../../helpers'
 
 const W = 'retirement'
 const P = 'invr'
@@ -67,6 +67,14 @@ const questions = [
     L('A saver wants retirement investments that follow Islamic finance principles. Which is true?', 'يريد مدّخر استثمارات تقاعد تتبع مبادئ التمويل الإسلامي. أي مما يلي صحيح؟'),
     [L('Sharia-compliant options exist in many markets, and the same ideas of regular saving, diversification and low costs still apply', 'توجد خيارات متوافقة مع الشريعة في أسواق كثيرة، وتبقى أفكار الادخار المنتظم والتنويع والتكاليف المنخفضة نفسها صالحة'), L('Such options never exist, so saving is impossible', 'لا توجد مثل هذه الخيارات أبدًا، فيستحيل الادخار'), L('They are guaranteed not to lose money', 'مضمون ألا تخسر المال')], 0,
     L('Sharia-compliant funds and plans are offered in many places. They still carry market risk, and the usual habits matter just as much.', 'تُعرض صناديق وخطط متوافقة مع الشريعة في أماكن كثيرة. وهي تحمل مخاطر السوق أيضًا، والعادات المعتادة تبقى مهمة بالقدر نفسه.')),
+  mcq(P, W, 16, 'pay-yourself-first',
+    L('Auto-invest buys a fixed amount every month. What is its main benefit?', 'الاستثمار التلقائي يشتري مبلغًا ثابتًا كل شهر. ما فائدته الرئيسية؟'),
+    [L('The habit keeps going without a decision each month', 'تستمر العادة دون الحاجة إلى قرار كل شهر'), L('It guarantees a profit', 'يضمن الربح'), L('It avoids every market fall', 'يتجنّب كل هبوط في السوق')], 0,
+    L('Automating takes willpower and timing out of it: the money goes in first, every month, in good and bad markets. It guarantees nothing about returns.', 'الأتمتة تُخرج الإرادة والتوقيت من المعادلة: يذهب المال أولًا كل شهر، في الأسواق الجيدة والسيئة. ولا تضمن شيئًا بشأن العوائد.')),
+  mcq(P, W, 17, 'pay-yourself-first',
+    L('In the simulator, when is a month of auto-invest skipped?', 'في المحاكي، متى يُتخطّى شهر من الاستثمار التلقائي؟'),
+    [L('When cash cannot cover the amount plus the 1% fee', 'عندما لا يكفي النقد للمبلغ ورسوم 1%'), L('When prices have fallen', 'عندما تهبط الأسعار'), L('When market news arrives', 'عندما تصل أخبار السوق')], 0,
+    L('Like a real standing order, it needs the money to be there. Falling prices do not stop it: the same amount simply buys more units.', 'كأمر تحويل دائم حقيقي، يحتاج إلى وجود المال. والأسعار الهابطة لا توقفه: المبلغ نفسه يشتري ببساطة وحدات أكثر.')),
 ]
 
 export const retirement: Module = {
@@ -319,6 +327,31 @@ export const retirement: Module = {
           L('Pay yourself first and avoid early withdrawals', 'ادفع لنفسك أولًا وتجنّب السحب المبكر'),
           L('Inflation and the 4% rule: plan for a long retirement, with rough guides only', 'التضخم وقاعدة 4%: خطّط لتقاعد طويل، بأدلة تقريبية فقط'),
         ]),
+      ],
+    }),
+    section({
+      id: 'practice-auto',
+      lessons: ['practice-auto'],
+      label: L('Practice', 'تدريب'),
+      nav: L('Auto-invest', 'الاستثمار التلقائي'),
+      title: L('Practice: pay yourself first, automatically', 'تدريب: ادفع لنفسك أولًا، تلقائيًا'),
+      standfirst: L(
+        'Set a fixed amount to invest every month without lifting a finger.',
+        'حدّد مبلغًا ثابتًا يُستثمر كل شهر دون أن تحرّك إصبعًا.',
+      ),
+      time: L('3 min', '3 دقائق'),
+      blocks: [
+        html(L(
+          '<p>Make saving automatic. With <strong>play money</strong> and simulated prices (practice, not advice), find the <strong>Auto-invest</strong> card and tap <strong>Set up</strong>. Choose an amount and an investment, then tap <strong>Start auto-invest</strong>. It buys once every simulated month, about every two real hours; a month your cash can’t cover, with its 1% fee, is skipped.</p>',
+          '<p>اجعل الادخار تلقائيًا. بـ<strong>مال افتراضي</strong> وأسعار محاكاة (للتدريب، لا نصيحة)، ابحث عن بطاقة <strong>الاستثمار التلقائي</strong> واضغط <strong>إعداد</strong>. اختر مبلغًا واستثمارًا، ثم اضغط <strong>ابدأ الاستثمار التلقائي</strong>. يشتري مرة كل شهر في المحاكاة، أي نحو كل ساعتين حقيقيتين؛ والشهر الذي لا يكفي فيه نقدك للمبلغ ورسوم 1% يُتخطّى.</p>',
+        )),
+        practice('auto'),
+        keyIdea(L(
+          '<p>Paying yourself first works best when it is <strong>automatic</strong>: the money is invested before you can spend it.</p>',
+          '<p>الدفع لنفسك أولًا ينجح أكثر حين يكون <strong>تلقائيًا</strong>: يُستثمر المال قبل أن تتمكن من إنفاقه.</p>',
+        )),
+        exercise('invr-q016'),
+        exercise('invr-q017'),
       ],
     }),
   ],

@@ -1,6 +1,6 @@
 // Original course content. Companies are fictional and every figure is an illustration, not a recommendation.
 import type { Module } from '../../types'
-import { L, box, cover, diagram, exercise, formula, html, keyIdea, mcq, objectives, section, table, takeaways } from '../../helpers'
+import { L, box, cover, diagram, exercise, formula, html, keyIdea, mcq, objectives, practice, section, table, takeaways } from '../../helpers'
 
 const W = 'valuation'
 const P = 'invv'
@@ -58,6 +58,14 @@ const questions = [
     L('Why do many beginners use a broad index fund instead of picking single stocks?', 'لماذا يلجأ كثير من المبتدئين إلى صندوق مؤشر واسع بدل انتقاء أسهم منفردة؟'),
     [L('Picking winners consistently is hard, and an index fund owns them all at a low fee', 'انتقاء الرابحين باستمرار صعب، وصندوق المؤشر يملكها كلها برسوم منخفضة'), L('Index funds cannot lose money', 'صناديق المؤشرات لا يمكن أن تخسر'), L('Single stocks are not allowed for beginners', 'الأسهم المنفردة غير مسموحة للمبتدئين')], 0,
     L('Most professional stock pickers fail to beat their index over long periods after fees. An index fund still falls with the market, but it never misses the winners.', 'معظم المحترفين في انتقاء الأسهم يفشلون في التفوق على مؤشرهم على المدى الطويل بعد الرسوم. صندوق المؤشر يهبط مع السوق، لكنه لا يفوّت الرابحين أبدًا.')),
+  mcq(P, W, 14, 'dividends',
+    L('Which of these simulator investments pays you income while you hold it?', 'أيٌّ من استثمارات المحاكي هذه يدفع لك دخلًا ما دمت تملكه؟'),
+    [L('Property Fund (REIT)', 'صندوق العقارات (REIT)'), L('Gold', 'الذهب'), L('Crypto Coin (fictional)', 'عملة رقمية (خيالية)')], 0,
+    L('A property fund passes on rent from its buildings. Gold and the coin pay nothing: their return comes only from the price moving.', 'صندوق العقارات ينقل إليك إيجارات مبانيه. أما الذهب والعملة فلا يدفعان شيئًا: عائدهما يأتي فقط من تحرّك السعر.')),
+  mcq(P, W, 15, 'dividends',
+    L('With reinvesting switched on, what happens to a dividend when it is paid?', 'عند تفعيل إعادة الاستثمار، ماذا يحدث للتوزيعات عندما تُدفع؟'),
+    [L('It buys more of the same investment, so the next payout is bigger', 'تشتري مزيدًا من الاستثمار نفسه، فتكبر التوزيعات التالية'), L('It waits in cash and earns nothing more', 'تنتظر نقدًا ولا تربح شيئًا آخر'), L('It is kept as a fee', 'تُحتجز كرسوم')], 0,
+    L('Reinvested payouts buy more units, and more units pay more next time: the income compounds, just like growth on growth.', 'التوزيعات المعاد استثمارها تشتري وحدات أكثر، والوحدات الأكثر تدفع أكثر في المرة التالية: يتراكم الدخل كما يتراكم النمو على النمو.')),
 ]
 
 export const valuation: Module = {
@@ -289,6 +297,31 @@ export const valuation: Module = {
           L('Heavy debt makes a company fragile', 'الديون الكبيرة تجعل الشركة هشّة'),
           L('Price is not value; index funds avoid picking winners', 'السعر ليس القيمة؛ وصناديق المؤشرات تغنيك عن انتقاء الرابحين'),
         ]),
+      ],
+    }),
+    section({
+      id: 'practice-income',
+      lessons: ['practice-income'],
+      label: L('Practice', 'تدريب'),
+      nav: L('Income from investments', 'دخل الاستثمارات'),
+      title: L('Practice: collect payouts', 'تدريب: اجمع التوزيعات'),
+      standfirst: L(
+        'Hold something that pays you while you own it.',
+        'امتلك شيئًا يدفع لك ما دمت تملكه.',
+      ),
+      time: L('3 min', '3 دقائق'),
+      blocks: [
+        html(L(
+          '<p>Some investments pay you for holding them: <strong>dividends</strong> from stock funds, <strong>rent</strong> from the Property Fund (REIT), <strong>interest</strong> from Government Bonds. With <strong>play money</strong> and simulated prices (practice, not advice), buy one of them. Payouts arrive every quarter: watch <strong>paid out this season</strong> grow, and keep <strong>Reinvest dividends</strong> on to buy more without a fee.</p>',
+          '<p>بعض الاستثمارات تدفع لك مقابل امتلاكها: <strong>أرباح موزّعة</strong> من صناديق الأسهم، و<strong>إيجارات</strong> من صندوق العقارات (REIT)، و<strong>فوائد</strong> من السندات الحكومية. بـ<strong>مال افتراضي</strong> وأسعار محاكاة (للتدريب، لا نصيحة)، اشترِ واحدًا منها. تصل التوزيعات كل ثلاثة أشهر: شاهد سطر <strong>دُفع لك هذا الموسم</strong> يكبر، وأبقِ <strong>إعادة استثمار الأرباح الموزّعة</strong> مفعّلة لتشتري المزيد بلا رسوم.</p>',
+        )),
+        practice('income'),
+        keyIdea(L(
+          '<p>Part of a company’s profit can reach you as <strong>dividends</strong>; reinvested, that income compounds too.</p>',
+          '<p>قد يصلك جزء من أرباح الشركة على شكل <strong>توزيعات</strong>؛ وإذا أعدت استثمارها، يتراكم هذا الدخل أيضًا.</p>',
+        )),
+        exercise('invv-q014'),
+        exercise('invv-q015'),
       ],
     }),
   ],

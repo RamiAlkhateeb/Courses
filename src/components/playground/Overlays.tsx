@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Guide, Button, Icon } from '../../components/ui'
+import { Guide, Button, Icon } from '../ui'
 import { ASSET_IDS } from '../../domain/playground/config'
 import { direction, EVENTS, type EventId } from '../../domain/playground/events'
 import { assetName } from './shared'

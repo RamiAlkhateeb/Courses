@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { Money } from '../../components/Money'
-import { Button } from '../../components/ui'
+import { Money } from '../Money'
+import { Button } from '../ui'
 import { allocation } from '../../domain/playground/risk'
 import type { PlaygroundState } from '../../domain/playground/engine'
 import { assetName, ASSET_DOT } from './shared'

@@ -17,7 +17,7 @@
   margin-block-start: 8vh;
 }
 .top h1 {
-  font-size: 2.2rem;
+  font-size: var(--title-page);
   line-height: 1.15;
   color: var(--brand);
 }

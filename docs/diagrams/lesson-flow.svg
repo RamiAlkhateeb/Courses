@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 540" width="900" height="540" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" role="img" aria-labelledby="title desc">
+<title id="title">From a module file to a lesson on screen</title>
+<desc id="desc">Six steps. A module file holds sections, blocks and questions with fixed lesson ids. lessonsFor cuts each section into lessons of cards. The lesson route checks the guest limit and renders CardRun, which shows cards and questions and waits for practice tasks. On the last step completeLesson pays the bank and marks the lesson done in progressStore. The Learn path reads lessonsDone to mark rows done, current or locked, and opens the next lesson.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4274D9"/></marker>
+</defs>
+<rect width="900" height="540" fill="#F4FAFB"/>
+<text x="20" y="44" font-size="20" font-weight="700" fill="#293681">From a module file to a lesson on screen</text>
+<rect x="20" y="78" width="260" height="160" rx="16" fill="#FFFFFF" stroke="#293681" stroke-width="1.5"/>
+<text x="36" y="108" font-size="16" font-weight="700" fill="#293681">1 · Module file</text>
+<text x="36" y="132" font-size="13" fill="#4274D9">content/courses/investing/*.ts</text>
+<text x="36" y="160" font-size="14" fill="#5B678F">Sections of blocks, plus the</text>
+<text x="36" y="180" font-size="14" fill="#5B678F">questions. Each section fixes</text>
+<text x="36" y="200" font-size="14" fill="#5B678F">its lesson ids (lessonIds).</text>
+<rect x="320" y="78" width="260" height="160" rx="16" fill="#D0E7E6" stroke="#293681" stroke-width="1.5"/>
+<text x="336" y="108" font-size="16" font-weight="700" fill="#293681">2 · lessonsFor(mod)</text>
+<text x="336" y="132" font-size="13" fill="#4274D9">domain/lessons.ts · chunks.ts</text>
+<text x="336" y="160" font-size="14" fill="#5B678F">toCards cuts blocks into cards,</text>
+<text x="336" y="180" font-size="14" fill="#5B678F">mergeShort joins short ones;</text>
+<text x="336" y="200" font-size="14" fill="#5B678F">cards are shared out per id.</text>
+<rect x="620" y="78" width="260" height="160" rx="16" fill="#FFFFFF" stroke="#293681" stroke-width="1.5"/>
+<text x="636" y="108" font-size="16" font-weight="700" fill="#293681">3 · Lesson route</text>
+<text x="636" y="132" font-size="13" fill="#4274D9">…/:moduleId/learn/:lessonId</text>
+<text x="636" y="160" font-size="14" fill="#5B678F">LessonRoute finds the lesson;</text>
+<text x="636" y="180" font-size="14" fill="#5B678F">GuestCheck shows LessonGate</text>
+<text x="636" y="200" font-size="14" fill="#5B678F">past FREE_LESSONS (3).</text>
+<rect x="20" y="348" width="260" height="160" rx="16" fill="#FFFFFF" stroke="#293681" stroke-width="1.5"/>
+<text x="36" y="378" font-size="16" font-weight="700" fill="#293681">4 · CardRun</text>
+<text x="36" y="402" font-size="13" fill="#4274D9">features/lesson/CardLesson.tsx</text>
+<text x="36" y="430" font-size="14" fill="#5B678F">Cards, then quick checks.</text>
+<text x="36" y="450" font-size="14" fill="#5B678F">Blocks marks glossary terms.</text>
+<text x="36" y="470" font-size="14" fill="#5B678F">A practice card waits for</text>
+<text x="36" y="490" font-size="14" fill="#5B678F">practiceDone(task, state).</text>
+<rect x="320" y="348" width="260" height="160" rx="16" fill="#D0E7E6" stroke="#293681" stroke-width="1.5"/>
+<text x="336" y="378" font-size="16" font-weight="700" fill="#293681">5 · completeLesson</text>
+<text x="336" y="402" font-size="13" fill="#4274D9">domain/progress.ts</text>
+<text x="336" y="430" font-size="14" fill="#5B678F">$10 per right answer (first</text>
+<text x="336" y="450" font-size="14" fill="#5B678F">finish only), streak, freezes,</text>
+<text x="336" y="470" font-size="14" fill="#5B678F">key added to lessonsDone;</text>
+<text x="336" y="490" font-size="14" fill="#5B678F">saved by progressStore.</text>
+<rect x="620" y="348" width="260" height="160" rx="16" fill="#FFFFFF" stroke="#293681" stroke-width="1.5"/>
+<text x="636" y="378" font-size="16" font-weight="700" fill="#293681">6 · Learn path</text>
+<text x="636" y="402" font-size="13" fill="#4274D9">state/useTrail.ts</text>
+<text x="636" y="430" font-size="14" fill="#5B678F">unitStates: each row done,</text>
+<text x="636" y="450" font-size="14" fill="#5B678F">current or locked;</text>
+<text x="636" y="470" font-size="14" fill="#5B678F">Up next = nextInCourse.</text>
+<line x1="282" y1="158" x2="316" y2="158" stroke="#4274D9" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<line x1="582" y1="158" x2="616" y2="158" stroke="#4274D9" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<line x1="282" y1="428" x2="316" y2="428" stroke="#4274D9" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<line x1="582" y1="428" x2="616" y2="428" stroke="#4274D9" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<polyline points="690,240 690,290 150,290 150,344" stroke="#4274D9" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<text x="420" y="282" font-size="13" fill="#5B678F" text-anchor="middle">renders the run of cards</text>
+<line x1="810" y1="346" x2="810" y2="242" stroke="#4274D9" stroke-width="2" fill="none" marker-end="url(#arrow)" stroke-dasharray="6 5"/>
+<text x="800" y="318" font-size="13" fill="#5B678F" text-anchor="end">a row opens a lesson</text>
+</svg>

@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 724" width="900" height="724" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" role="img" aria-labelledby="title desc">
+<title id="title">Abu Shreek layers</title>
+<desc id="desc">Seven layers stacked from app at the top to content at the bottom. Imports point down only: a layer may import the layers below it. A feature may import itself and the layers below, never another feature. The app layer may import anything. tests/architecture.test.ts enforces the rules.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4274D9"/></marker>
+</defs>
+<rect width="900" height="724" fill="#F4FAFB"/>
+<text x="30" y="44" font-size="20" font-weight="700" fill="#293681">Layers: imports point down only</text>
+<rect x="30" y="78" width="560" height="64" rx="14" fill="#FFFFFF" stroke="#293681" stroke-width="1.5"/>
+<text x="50" y="105" font-size="16" fill="#293681"><tspan font-weight="700">app</tspan><tspan fill="#5B678F" font-size="14" dx="10">router, providers, service worker registration</tspan></text>
+<text x="50" y="128" font-size="13" fill="#4274D9">src/app/router.tsx · providers.tsx · serviceWorker.ts</text>
+<line x1="310" y1="144" x2="310" y2="167" stroke="#4274D9" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="322" y="161" font-size="13" fill="#5B678F">may import</text>
+<rect x="30" y="170" width="560" height="64" rx="14" fill="#FFFFFF" stroke="#293681" stroke-width="1.5"/>
+<text x="50" y="197" font-size="16" fill="#293681"><tspan font-weight="700">features</tspan><tspan fill="#5B678F" font-size="14" dx="10">one screen area each, never another feature</tspan></text>
+<text x="50" y="220" font-size="13" fill="#4274D9">src/features/lesson · path · me · settings · account</text>
+<line x1="310" y1="236" x2="310" y2="259" stroke="#4274D9" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="322" y="253" font-size="13" fill="#5B678F">may import</text>
+<rect x="30" y="262" width="560" height="64" rx="14" fill="#FFFFFF" stroke="#293681" stroke-width="1.5"/>
+<text x="50" y="289" font-size="16" fill="#293681"><tspan font-weight="700">components</tspan><tspan fill="#5B678F" font-size="14" dx="10">shared UI, the design kit, the Playground panel</tspan></text>
+<text x="50" y="312" font-size="13" fill="#4274D9">src/components/ui · content/Blocks.tsx · playground/</text>
+<line x1="310" y1="328" x2="310" y2="351" stroke="#4274D9" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="322" y="345" font-size="13" fill="#5B678F">may import</text>
+<rect x="30" y="354" width="560" height="64" rx="14" fill="#FFFFFF" stroke="#293681" stroke-width="1.5"/>
+<text x="50" y="381" font-size="16" fill="#293681"><tspan font-weight="700">i18n</tspan><tspan fill="#5B678F" font-size="14" dx="10">translations and language setup</tspan></text>
+<text x="50" y="404" font-size="13" fill="#4274D9">src/i18n/index.ts · locales/en.ts · locales/ar.ts</text>
+<line x1="310" y1="420" x2="310" y2="443" stroke="#4274D9" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="322" y="437" font-size="13" fill="#5B678F">may import</text>
+<rect x="30" y="446" width="560" height="64" rx="14" fill="#FFFFFF" stroke="#293681" stroke-width="1.5"/>
+<text x="50" y="473" font-size="16" fill="#293681"><tspan font-weight="700">state</tspan><tspan fill="#5B678F" font-size="14" dx="10">persisted stores and the hooks over them</tspan></text>
+<text x="50" y="496" font-size="13" fill="#4274D9">src/state/progress.ts · usePlayground.ts · sync.ts</text>
+<line x1="310" y1="512" x2="310" y2="535" stroke="#4274D9" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="322" y="529" font-size="13" fill="#5B678F">may import</text>
+<rect x="30" y="538" width="560" height="64" rx="14" fill="#D0E7E6" stroke="#293681" stroke-width="1.5"/>
+<text x="50" y="565" font-size="16" fill="#293681"><tspan font-weight="700">domain</tspan><tspan fill="#5B678F" font-size="14" dx="10">pure rules: no React, no browser APIs</tspan></text>
+<text x="50" y="588" font-size="13" fill="#4274D9">src/domain/progress.ts · lessons.ts · playground/</text>
+<line x1="310" y1="604" x2="310" y2="627" stroke="#4274D9" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="322" y="621" font-size="13" fill="#5B678F">may import</text>
+<rect x="30" y="630" width="560" height="64" rx="14" fill="#FFFFFF" stroke="#293681" stroke-width="1.5"/>
+<text x="50" y="657" font-size="16" fill="#293681"><tspan font-weight="700">content</tspan><tspan fill="#5B678F" font-size="14" dx="10">typed course data and the course registry</tspan></text>
+<text x="50" y="680" font-size="13" fill="#4274D9">src/content/courses.ts · types.ts · courses/investing/</text>
+<rect x="620" y="78" width="250" height="429" rx="14" fill="#FFFFFF" stroke="#95CCDD" stroke-width="1.5"/>
+<text x="638" y="110" font-size="16" font-weight="700" fill="#293681">Rules</text>
+<text x="638" y="152" font-size="14" font-weight="400" fill="#293681">A layer may import itself</text>
+<text x="638" y="173" font-size="14" font-weight="400" fill="#293681">and every layer below it.</text>
+<text x="638" y="215" font-size="14" font-weight="400" fill="#293681">features/X may import X</text>
+<text x="638" y="236" font-size="14" font-weight="400" fill="#293681">and the layers below,</text>
+<text x="638" y="257" font-size="14" font-weight="400" fill="#293681">never another feature.</text>
+<text x="638" y="278" font-size="14" font-weight="400" fill="#293681">Shared code moves down</text>
+<text x="638" y="299" font-size="14" font-weight="400" fill="#293681">a layer instead.</text>
+<text x="638" y="341" font-size="14" font-weight="400" fill="#293681">app may import anything.</text>
+<text x="638" y="383" font-size="14" font-weight="400" fill="#293681">domain stays pure: no React,</text>
+<text x="638" y="404" font-size="14" font-weight="400" fill="#293681">no router, no i18n, no</text>
+<text x="638" y="425" font-size="14" font-weight="400" fill="#293681">storage, window or DOM.</text>
+<text x="638" y="467" font-size="14" font-weight="400" fill="#5B678F">Checked in CI by</text>
+<text x="638" y="488" font-size="13" font-weight="400" fill="#4274D9">tests/architecture.test.ts</text>
+<rect x="620" y="537" width="22" height="16" rx="4" fill="#D0E7E6" stroke="#293681"/>
+<text x="652" y="550" font-size="13" fill="#5B678F">pure functions, unit-tested</text>
+</svg>

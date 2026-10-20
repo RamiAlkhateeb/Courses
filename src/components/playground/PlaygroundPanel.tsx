@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Guide, Button, Icon } from '../../components/ui'
-import { Change } from '../../components/Change'
-import { Money } from '../../components/Money'
+import { Guide, Button, Icon } from '../ui'
+import { Change } from '../Change'
+import { Money } from '../Money'
 import { moneyText } from '../../i18n'
 import { ASSETS, ASSET_IDS, CONFIG, type AssetId } from '../../domain/playground/config'
 import { benchmark, gain, marketOf, maxDrawdown, msToNextWeek, netWorth, nextNews, realHistory, valueOf } from '../../domain/playground/engine'
@@ -31,9 +31,10 @@ function useNow() {
   return now
 }
 
-/** The Playground tab: net worth, the chart, the season's time, what you hold, and Buy or sell. Time follows the real
- *  clock (one real day = one year) and never stops; there are no play or speed controls. */
-export function PlaygroundPage() {
+/** The live market simulator, shown inside practice lessons: net worth, the chart, the season's time, the mix, what you
+ *  hold, Buy or sell, the goal and auto-invest, and the news and yearly recap overlays. Time follows the real clock (one
+ *  real day = one year) and never stops; there are no play or speed controls. */
+export function PlaygroundPanel() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const pg = usePlayground()
@@ -73,8 +74,7 @@ export function PlaygroundPage() {
     : t('pg_chart_empty')
 
   return (
-    <div className={styles.page}>
-      <h1 className={styles.title}>{t('pg_title')}</h1>
+    <div className={styles.panel}>
 
       <div className={styles.netRow}>
         <div>

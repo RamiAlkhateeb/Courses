@@ -60,6 +60,12 @@
   --radius-card: 24px;
   --radius-xl: 30px;
   --radius-pill: 26px;
+  /* Type scale for titles and big numbers (body and lesson text have their own tokens) */
+  --title-page: 1.625rem;
+  --title-section: 1.375rem;
+  --title-small: 1.25rem;
+  --title-switcher: 1.25rem;
+  --display: 2.25rem;
   --radius: 16px;
   /* Lesson typography: every step uses one text size and face (tests/lesson-cards.test.ts) */
   --lesson-text: 1.25rem;

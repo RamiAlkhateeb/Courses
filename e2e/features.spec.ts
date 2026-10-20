@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
+import { openSimulator, withPractice } from './practice'
 
 const onboarded = (page: Page, extra: Record<string, string> = {}) =>
   page.addInitScript((items) => {
@@ -6,7 +7,7 @@ const onboarded = (page: Page, extra: Record<string, string> = {}) =>
     for (const [k, v] of Object.entries(items)) if (!localStorage.getItem(k)) localStorage.setItem(k, v)
   }, extra)
 
-const basicsDone = ['why', 'compounding', 'risk-return', 'ready'].map((l) => `investing/basics/${l}`)
+const basicsDone = ['why', 'compounding', 'risk-return', 'ready', 'practice-first-buy'].map((l) => `investing/basics/${l}`)
 
 test('Daily review: a missed question shows a card on Learn that opens the review', async ({ page }) => {
   await onboarded(page, { 'progress:v2': JSON.stringify({ bank: 1000, answers: { 'invb-q001': { selected: 1, correct: false } } }) })
@@ -45,10 +46,10 @@ test('glossary: a term in a lesson opens a one-line definition', async ({ page }
   await expect(page.getByRole('button', { name: 'Got it' })).toHaveCount(0)
 })
 
-test('Playground: a season goal, the yearly recap, and rebalancing to an example mix', async ({ page }) => {
-  await onboarded(page, { 'progress:v2': JSON.stringify({ bank: 1000 }) })
+test('simulator: a season goal, the yearly recap, and rebalancing to an example mix', async ({ page }) => {
+  await onboarded(page, { 'progress:v2': withPractice() })
   await page.clock.install()
-  await page.goto('playground')
+  await openSimulator(page)
   await page.getByRole('button', { name: 'Beat inflation' }).click()
   await expect(page.getByRole('button', { name: 'Beat inflation' })).toHaveAttribute('aria-pressed', 'true')
   await page.getByRole('button', { name: 'Buy Safe Savings' }).click()

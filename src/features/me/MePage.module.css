@@ -14,14 +14,14 @@
   border-radius: var(--radius);
   overflow: hidden;
   font-family: var(--font);
-  font-size: 2rem;
+  font-size: var(--title-page);
   font-weight: 700;
 }
 .who {
   flex: 1;
 }
 .who h1 {
-  font-size: 1.9rem;
+  font-size: var(--title-section);
   color: var(--brand);
 }
 .who p {
@@ -54,7 +54,7 @@
 }
 .stat strong {
   font-family: var(--font);
-  font-size: 1.9rem;
+  font-size: var(--title-section);
   color: var(--brand);
   margin-block-start: 6px;
 }
@@ -159,7 +159,7 @@
 }
 .save h2 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: var(--title-small);
   color: var(--white);
 }
 .save p {

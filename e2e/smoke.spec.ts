@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test, type Page } from '@playwright/test'
+import { openSimulator, PRACTICE, withPractice } from './practice'
 
 /** Fails the test on any uncaught error or console error (e.g. a missing file under the base path). */
 function watchErrors(page: Page) {
@@ -52,8 +53,8 @@ for (const [lang, other, foreign] of [
       await page.waitForTimeout(300)
       expect((await textOutside(page, other)).match(foreign) ?? [], route).toEqual([])
     }
-    await onboarded(page, { lang })
-    for (const route of ['./', 'me', 'settings', 'playground']) {
+    await onboarded(page, { lang, 'progress:v2': withPractice() })
+    for (const route of ['./', 'me', 'settings', PRACTICE]) {
       await page.goto(route)
       await page.waitForTimeout(400)
       expect((await textOutside(page, other)).match(foreign) ?? [], route).toEqual([])
@@ -119,9 +120,9 @@ test('a deep link under the base path loads (assets resolve, no error screen)', 
   expect(errors).toEqual([])
 })
 
-for (const route of ['./', 'me', 'playground']) {
+for (const route of ['./', 'me', PRACTICE]) {
   test(`no serious accessibility violations on /${route === './' ? '' : route}`, async ({ page }) => {
-    await onboarded(page)
+    await onboarded(page, { 'progress:v2': withPractice() })
     await page.goto(route)
     await page.waitForTimeout(500)
     const { violations } = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze()
@@ -130,11 +131,11 @@ for (const route of ['./', 'me', 'playground']) {
   })
 }
 
-test('the Playground uses the one wallet: buy Safe Savings, time starts, the bank moves in', async ({ page }) => {
+test('the simulator (in a practice lesson) uses the one wallet: buy Safe Savings, time starts, the bank moves in', async ({ page }) => {
   const errors = watchErrors(page)
-  await onboarded(page, { 'progress:v2': JSON.stringify({ bank: 1240 }) })
+  await onboarded(page, { 'progress:v2': withPractice({ bank: 1240 }) })
   await page.clock.install() // time follows the real clock: fake it so we can move it forward
-  await page.goto('playground')
+  await openSimulator(page)
   await expect(page.getByText('Time starts when you make your first buy', { exact: true })).toBeVisible()
   await expect(page.getByRole('button', { name: /speed|pause/i })).toHaveCount(0) // no play or speed controls
   await expect(page.getByText('Educational only, not financial advice')).toBeVisible()
@@ -153,11 +154,11 @@ test('the Playground uses the one wallet: buy Safe Savings, time starts, the ban
   expect(errors).toEqual([])
 })
 
-test('Playground auto-invest buys every month; payouts and the compare line show', async ({ page }) => {
+test('simulator auto-invest buys every month; payouts and the compare line show', async ({ page }) => {
   const errors = watchErrors(page)
-  await onboarded(page, { 'progress:v2': JSON.stringify({ bank: 1000 }) })
+  await onboarded(page, { 'progress:v2': withPractice() })
   await page.clock.install()
-  await page.goto('playground')
+  await openSimulator(page)
   await page.getByRole('button', { name: 'Buy Safe Savings' }).click()
   await page.getByRole('button', { name: '$100', exact: true }).click()
   await page.getByRole('button', { name: /^Buy .*100/ }).click()
@@ -181,8 +182,8 @@ test('Playground auto-invest buys every month; payouts and the compare line show
 for (const lang of ['en', 'ar']) {
   test(`no sideways scroll at 320px in ${lang}`, async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 700 })
-    await onboarded(page, { lang, 'progress:v2': JSON.stringify({ bank: 1240 }) })
-    for (const route of ['./', 'playground', 'me', 'settings', 'course/investing/basics/learn/risk-return']) {
+    await onboarded(page, { lang, 'progress:v2': withPractice({ bank: 1240 }) })
+    for (const route of ['./', PRACTICE, 'me', 'settings', 'course/investing/basics/learn/risk-return']) {
       await page.goto(route)
       await page.waitForTimeout(400)
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), route).toBe(true)

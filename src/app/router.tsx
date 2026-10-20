@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react'
-import { Link, createBrowserRouter, type RouteObject } from 'react-router-dom'
+import { Link, Navigate, createBrowserRouter, type RouteObject } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { AppShell } from '../components/AppShell'
 import { RouteError } from './RouteError'
@@ -18,7 +18,7 @@ const page = <K extends string>(load: () => Promise<Record<K, ComponentType>>, n
 export const router = createBrowserRouter(
   [
     {
-      // The mobile app (designs in design/): onboarding, the four tabs, and full-screen lessons.
+      // The mobile app (designs in design/): onboarding, the two tabs (Learn, Me), and full-screen lessons (the simulator lives in the practice lessons).
       path: '/',
       element: <AppFrame />,
       errorElement: <RouteError />,
@@ -30,10 +30,11 @@ export const router = createBrowserRouter(
           element: <TabsLayout />,
           children: [
             { index: true, element: <PathPage /> },
-            { path: 'playground', ...page(() => import('../features/playground/PlaygroundPage'), 'PlaygroundPage') },
             { path: 'me', ...page(() => import('../features/me/MePage'), 'MePage') },
           ],
         },
+        // The simulator lives in the practice lessons now: old links (and a tapped news alert) go to the first one
+        { path: 'playground', element: <Navigate to="/course/investing/basics/learn/practice-first-buy" replace /> },
         { path: 'playground/summary', ...page(() => import('../features/playground/SummaryPage'), 'SummaryPage') },
         // Settings (from the gear on Me) and the legal pages it links to work with or without accounts.
         { path: 'settings', ...page(() => import('../features/settings/SettingsPage'), 'SettingsPage') },

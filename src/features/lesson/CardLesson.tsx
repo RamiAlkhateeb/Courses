@@ -14,6 +14,10 @@ import { ModuleQuestionsContext } from '../../components/content/moduleQuestions
 import { MAX_FREEZES, payoutFor } from '../../domain/progress'
 import { lessonKey, lessonsFor, type Lesson } from '../../domain/lessons'
 import { SpaceGuide } from './SpaceGuide'
+import { PracticeBlock } from '../../components/playground/PracticeBlock'
+import { practiceDone } from '../../domain/playground/practice'
+import { playgroundStore } from '../../state/playground'
+import { useStore } from '../../state/useStore'
 import { LessonGate } from './LessonGate'
 import { canOpenLesson, lessonOrder } from '../../domain/access'
 import { useGuestLimited } from '../../state/useAccess'
@@ -87,6 +91,11 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
 
   const step = steps[index]
   const isLast = index === steps.length - 1
+  // A practice step: the live simulator under the card, and Next waits for the task (not on a replay)
+  const pg = useStore(playgroundStore)
+  const practiceTask = step.kind === 'content' ? step.blocks.find((b) => b.type === 'practice')?.task : undefined
+  const replay = progress.lessonsDone.includes(lessonKey(mod.courseId, mod.id, lesson.id))
+  const blocked = !!practiceTask && !replay && !practiceDone(practiceTask, pg)
   const question = step.kind === 'question' ? step.question : undefined
   const isCorrect = checked && question !== undefined && selected === question.answer
   const retry = checked && !isCorrect && attempt === 0 // a wrong first try can be tried again
@@ -142,7 +151,8 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
   }
 
   const onEnter = question && !checked ? check : retry ? tryAgain : advance
-  useLessonKeys({ enabled: !done, onEnter, question, checked, onPick: setSelected })
+  // On a practice step, Enter belongs to the simulator's own buttons
+  useLessonKeys({ enabled: !done && !practiceTask, onEnter, question, checked, onPick: setSelected })
 
   if (done) {
     return (
@@ -182,7 +192,7 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
             )}
             <Blocks blocks={step.blocks} />
             {/* Whatever room is left under the step, the guide fills it (nothing when the step fills the screen). */}
-            <SpaceGuide blocks={step.blocks} step={index} />
+            {!practiceTask && <SpaceGuide blocks={step.blocks} step={index} />}
           </div>
         ) : (
           <div key={index} className={styles.card}>
@@ -197,6 +207,8 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
           </div>
         )}
 
+        {practiceTask && <PracticeBlock task={practiceTask} />}
+
         {question && !checked ? (
           <LessonFooter action={tUi('check')} disabled={selected === null} onAction={check} />
         ) : (
@@ -205,6 +217,7 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
             paid={!!question && isCorrect && pays}
             feedback={question && <AnswerFeedback question={question} correct={isCorrect} pays={pays} firstTry={retry} />}
             action={question ? (retry ? tUi('tryAgain') : continueLabel) : tUi('nextBtn')}
+            disabled={blocked}
             onAction={retry ? tryAgain : advance}
             secondary={retry ? tUi('reread') : undefined}
             onSecondary={reread}

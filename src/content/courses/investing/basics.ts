@@ -1,6 +1,6 @@
 // Original course content. Figures are illustrative examples, not forecasts.
 import type { Module } from '../../types'
-import { L, box, compoundCalculator, cover, diagram, exercise, formula, html, keyIdea, mcq, objectives, section, table, takeaways } from '../../helpers'
+import { L, box, compoundCalculator, cover, diagram, exercise, formula, html, keyIdea, mcq, objectives, practice, section, table, takeaways } from '../../helpers'
 
 const W = 'basics'
 const P = 'invb'
@@ -38,6 +38,14 @@ const questions = [
     L('Someone offers you 30% a year, guaranteed. What is the most likely explanation?', 'عرض عليك أحدهم 30% سنويًا مضمونة. ما التفسير الأرجح؟'),
     [L('It is probably a scam', 'على الأرجح احتيال'), L('It is a normal stock market return', 'إنه عائد عادي في سوق الأسهم'), L('Banks give it to new customers', 'البنوك تمنحه للعملاء الجدد')], 0,
     L('Real investments never guarantee high returns. A promise of high, guaranteed returns is a classic sign of fraud.', 'الاستثمارات الحقيقية لا تضمن عوائد مرتفعة أبدًا. وعد العوائد المرتفعة المضمونة علامة تقليدية على الاحتيال.')),
+  mcq(P, W, 9, 'fees',
+    L('In the simulator every buy and every sell costs 1%. You buy for $200 and sell straight away at the same price. About how much do you get back?', 'في المحاكي تكلّف كل عملية شراء وكل عملية بيع 1%. اشتريت بـ200 دولار ثم بعت فورًا بالسعر نفسه. كم تسترد تقريبًا؟'),
+    [L('About $196', 'نحو 196 دولارًا'), L('Exactly $200', '200 دولار بالضبط'), L('About $220', 'نحو 220 دولارًا')], 0,
+    L('About $2 goes on the buy and about $2 more on the sell, so a quick in-and-out loses roughly 2% even when the price has not moved.', 'يذهب نحو دولارين على الشراء ونحو دولارين آخرين على البيع، فالدخول والخروج السريع يخسر نحو 2% حتى لو لم يتحرك السعر.')),
+  mcq(P, W, 10, 'practice',
+    L('What is the simulator, with its play money and simulated prices, for?', 'ما الغرض من المحاكي، بماله الافتراضي وأسعاره المحاكاة؟'),
+    [L('Practising decisions without risking real money', 'التدرّب على القرارات دون المخاطرة بمال حقيقي'), L('Predicting tomorrow’s real prices', 'توقّع الأسعار الحقيقية للغد'), L('Choosing real products to buy', 'اختيار منتجات حقيقية لشرائها')], 0,
+    L('The prices are made up and the money is not real: it lets you feel fees, time and ups and downs safely. It says nothing about real markets.', 'الأسعار مُختلَقة والمال ليس حقيقيًا: يتيح لك أن تشعر بالرسوم والوقت والصعود والهبوط بأمان. ولا يقول شيئًا عن الأسواق الحقيقية.')),
 ]
 
 export const basics: Module = {
@@ -210,6 +218,31 @@ export const basics: Module = {
           L('Higher expected return means higher risk', 'العائد المتوقع الأعلى يعني مخاطرة أعلى'),
           L('Emergency fund and expensive debt come first', 'صندوق الطوارئ والديون المكلفة تأتي أولًا'),
         ]),
+      ],
+    }),
+    section({
+      id: 'practice-first-buy',
+      lessons: ['practice-first-buy'],
+      label: L('Practice', 'تدريب'),
+      nav: L('Your first investment', 'استثمارك الأول'),
+      title: L('Practice: your first investment', 'تدريب: استثمارك الأول'),
+      standfirst: L(
+        'Try it with play money: make one buy and watch time start.',
+        'جرّب بمال افتراضي: اشترِ مرة واحدة وشاهد الوقت يبدأ.',
+      ),
+      time: L('3 min', '3 دقائق'),
+      blocks: [
+        html(L(
+          '<p>Time to try it. Below is the simulator, with <strong>play money</strong> and simulated prices: practice only, not advice. Pick any investment, choose an amount and tap <strong>Buy</strong>. Your first buy starts the clock: one real day is one simulated year, and every buy and every sell pays a <strong>1% fee</strong>.</p>',
+          '<p>حان وقت التجربة. في الأسفل المحاكي، بـ<strong>مال افتراضي</strong> وأسعار محاكاة: للتدريب فقط، وليس نصيحة. اختر أي استثمار، وحدّد مبلغًا، واضغط <strong>شراء</strong>. أول عملية شراء تشغّل الساعة: كل يوم حقيقي يعادل سنة في المحاكاة، وكل عملية شراء أو بيع تدفع <strong>رسومًا بنسبة 1%</strong>.</p>',
+        )),
+        practice('first-buy'),
+        keyIdea(L(
+          '<p>Investing puts money to work for <strong>years</strong>: time, not the tap on Buy, does most of the growing.</p>',
+          '<p>الاستثمار يُشغّل المال <strong>لسنوات</strong>: الوقت، لا ضغطة الشراء، هو ما يصنع معظم النمو.</p>',
+        )),
+        exercise('invb-q009'),
+        exercise('invb-q010'),
       ],
     }),
   ],
