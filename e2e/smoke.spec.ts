@@ -67,6 +67,7 @@ test('only the Investing course is offered; the courses page teases three more a
   await page.goto('')
   // Learn's title is the course: its name opens the course dropdown
   await page.getByRole('heading', { level: 1 }).getByRole('button', { name: /Investing Fundamentals/ }).click()
+  await expect(page.getByRole('option', { name: /Investing Fundamentals/ })).toHaveAttribute('aria-selected', 'true')
   await page.getByRole('link', { name: 'All courses' }).click()
   await expect(page).toHaveURL(/\/courses$/)
   await expect(page.getByRole('heading', { name: 'Courses', level: 1 })).toBeVisible()
@@ -147,9 +148,10 @@ test('the simulator (in a practice lesson) uses the one wallet: buy Safe Savings
   expect(saved.bank).toBe(0) // the whole wallet is in the Playground
   expect(saved.pg.status).toBe('running')
   expect(saved.pg.cash + saved.pg.holdings.savings.units * 1).toBeCloseTo(1240 - 1, 0) // minus the 1% fee on $100
-  // one real day is one simulated year: two real hours later it is about four weeks on, with nothing pressed
+  // one real week is one simulated year: 13 real hours later it is four weeks on, with nothing pressed
   await expect(page.getByText('Year 1 · Week 1')).toBeVisible()
-  await page.clock.fastForward('02:00:00')
+  await expect(page.getByText(/Next market update in about 3 hours/)).toBeVisible()
+  await page.clock.fastForward('13:00:00')
   await expect(page.getByText('Year 1 · Week 5')).toBeVisible()
   expect(errors).toEqual([])
 })
@@ -169,8 +171,8 @@ test('simulator auto-invest buys every month; payouts and the compare line show'
   await page.getByRole('button', { name: 'Start auto-invest' }).click()
   await expect(page.getByText(/\$50.* a month into World Stocks/)).toBeVisible()
   await expect(page.getByRole('heading', { name: 'What you own' })).toBeVisible()
-  // A month is 4 weeks, about 1 hour 51 minutes of real time
-  await page.clock.fastForward('02:00:00')
+  // A month is 4 weeks, about 12 hours 55 minutes of real time
+  await page.clock.fastForward('13:00:00')
   await expect(page.getByText('Year 1 · Week 5')).toBeVisible()
   const pg = await page.evaluate(() => JSON.parse(localStorage.getItem('playground:v1')!))
   expect(pg.trades.filter((t: { auto?: boolean }) => t.auto)).toHaveLength(1)

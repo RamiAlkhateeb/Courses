@@ -42,11 +42,11 @@ export const ASSETS: Record<AssetId, AssetConfig> = {
 }
 
 export const CONFIG = {
-  /** A season lasts this many simulated years (as many real days) */
+  /** A season lasts this many simulated years (as many real weeks) */
   seasonYears: 10,
   weeksPerYear: 52,
-  /** Time follows the real clock: one real day is one simulated year, always running (even with the app closed) */
-  msPerYear: 24 * 60 * 60 * 1000,
+  /** Time follows the real clock: one real week is one simulated year, always running (even with the app closed) */
+  msPerYear: 7 * 24 * 60 * 60 * 1000,
   /** 1% of the amount, on every buy and every sell */
   feeRate: 0.01,
   /** Interest rate and inflation start here and drift (annual rates) */
@@ -69,7 +69,7 @@ export const CONFIG = {
   /** Auto-invest buys once a month (every 4 weeks), if cash covers the amount and its fee */
   autoInvestEveryWeeks: 4,
   autoInvestPresets: [25, 50, 100],
-  /** Market news per season (spread over it, so a story lands every couple of days) */
+  /** Market news per season (spread over it, so a story lands every couple of weeks) */
   eventsPerSeason: 4,
 }
 
@@ -94,5 +94,7 @@ export const MIXES: Record<MixId, Partial<Record<AssetId, number>>> = {
 }
 
 export const WEEKS_PER_SEASON = CONFIG.seasonYears * CONFIG.weeksPerYear
-/** Real milliseconds per simulated week (about 27.7 minutes) */
+/** One real day, in milliseconds (the weekly recap on Me looks back seven of them) */
+export const DAY_MS = 24 * 60 * 60 * 1000
+/** Real milliseconds per simulated week (about 3.2 hours) */
 export const MS_PER_WEEK = CONFIG.msPerYear / CONFIG.weeksPerYear

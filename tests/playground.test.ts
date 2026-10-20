@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ASSET_IDS, ASSETS, CONFIG, MS_PER_WEEK, WEEKS_PER_SEASON, type AssetId } from '../src/domain/playground/config'
+import { ASSET_IDS, ASSETS, CONFIG, DAY_MS, MS_PER_WEEK, WEEKS_PER_SEASON, type AssetId } from '../src/domain/playground/config'
 import { advance, benchmark, buy as buyAt, canWithdraw, setAutoInvest, setReinvest, cashOut, catchUp, emptyPlayground, fund, gain, maxBuy, maxDrawdown, msToNextWeek, netWorth, nextNews, readNews, realHistory, sell, weekAt, type PlaygroundState } from '../src/domain/playground/engine'
 import { direction, EVENTS } from '../src/domain/playground/events'
 import { buildMarket } from '../src/domain/playground/market'
@@ -10,7 +10,7 @@ import { allocation, biggestBet } from '../src/domain/playground/risk'
 const funded = (cash = 1000, seed = 7): PlaygroundState => fund({ ...emptyPlayground, seed }, cash)
 /** The moment of the first buy in these tests (time follows the real clock from there) */
 const T0 = 1_760_000_000_000
-const DAY = CONFIG.msPerYear
+const YEAR = CONFIG.msPerYear
 const buy = (s: PlaygroundState, asset: AssetId, amount: number) => buyAt(s, asset, amount, T0)
 const must = <T extends { ok: boolean }>(r: T) => {
   expect(r.ok).toBe(true)
@@ -178,7 +178,7 @@ describe('funding and trading', () => {
     expect(a.status).toBe('running')
     expect(a.startedAt).toBe(T0)
     expect(a.history).toHaveLength(1)
-    const b = must(buyAt(a, 'index', 100, T0 + DAY)).state
+    const b = must(buyAt(a, 'index', 100, T0 + YEAR)).state
     expect(b.startedAt).toBe(T0)
     expect(b.history).toHaveLength(1)
   })
@@ -214,18 +214,18 @@ describe('time', () => {
     expect(s.history).toHaveLength(3)
     expect(netWorth(s)).toBeGreaterThan(990) // savings earn interest; the fee cost $5
   })
-  it('follows the real clock: one real day is one simulated year, one week every ~27.7 minutes', () => {
-    expect(MS_PER_WEEK).toBeCloseTo((24 * 60 * 60 * 1000) / 52, 5)
+  it('follows the real clock: one real week is one simulated year, one week every ~3.2 hours', () => {
+    expect(MS_PER_WEEK).toBeCloseTo((7 * 24 * 60 * 60 * 1000) / 52, 5)
     const s = must(buy(funded(1000), 'savings', 500)).state
     expect(weekAt(s, T0 + MS_PER_WEEK - 1)).toBe(0)
     expect(weekAt(s, T0 + MS_PER_WEEK)).toBe(1)
-    expect(weekAt(s, T0 + DAY)).toBe(CONFIG.weeksPerYear)
+    expect(weekAt(s, T0 + YEAR)).toBe(CONFIG.weeksPerYear)
     expect(msToNextWeek(s, T0 + 1000)).toBeCloseTo(MS_PER_WEEK - 1000, 0)
-    expect(catchUp(funded(1000), T0 + DAY)).toEqual(funded(1000)) // nothing moves before the first buy
+    expect(catchUp(funded(1000), T0 + YEAR)).toEqual(funded(1000)) // nothing moves before the first buy
   })
   it('catches up after the app was closed, week by week, with every history point and the news queued', () => {
     const start = must(buy(funded(1000, 9), 'index', 300)).state
-    const later = catchUp(start, T0 + 2 * DAY) // two real days away: two simulated years
+    const later = catchUp(start, T0 + 2 * YEAR) // two real weeks away: two simulated years
     expect(later.tick).toBe(2 * CONFIG.weeksPerYear)
     expect(later.history).toHaveLength(2 * CONFIG.weeksPerYear + 1)
     let stepped = start
@@ -245,12 +245,12 @@ describe('time', () => {
     expect(nextNews(s)).toBeUndefined()
     expect(readNews(s)).toBe(s)
   })
-  it('ends after ten years (ten real days) and stops', () => {
-    const s = catchUp(must(buy(funded(1000), 'savings', 500)).state, T0 + 30 * DAY)
+  it('ends after ten years (ten real weeks) and stops', () => {
+    const s = catchUp(must(buy(funded(1000), 'savings', 500)).state, T0 + 30 * YEAR)
     expect(s.tick).toBe(WEEKS_PER_SEASON)
     expect(s.status).toBe('ended')
-    expect(msToNextWeek(s, T0 + 30 * DAY)).toBe(0)
-    expect(buyAt(s, 'index', 10, T0 + 30 * DAY)).toEqual({ ok: false, reason: 'ended' })
+    expect(msToNextWeek(s, T0 + 30 * YEAR)).toBe(0)
+    expect(buyAt(s, 'index', 10, T0 + 30 * YEAR)).toEqual({ ok: false, reason: 'ended' })
   })
   it('is deterministic: the same seed and trades give the same season', () => {
     const run = () => {
@@ -412,6 +412,19 @@ describe('saved Playground', () => {
     expect(weekAt(p, T0 + MS_PER_WEEK)).toBe(61)
     expect(p.newsQueue).toEqual([40]) // the story it was showing stays unread
     expect(p).toMatchObject({ deposits: [{ tick: 0, amount: 5 }], autoInvest: null, reinvest: true, income: 0 })
+  })
+  it('keeps the week a season had reached at the old pace (one real day per year) and goes on at one real week', async () => {
+    const { parsePlayground } = await import('../src/domain/playground/persist')
+    const dayWeek = DAY_MS / CONFIG.weeksPerYear
+    // Saved at week 30 when the old clock had already reached week 70
+    const old = { season: 1, seed: 4, status: 'running', tick: 30, startedAt: T0 - 70 * dayWeek, cash: 5, history: [5], historyStart: 0 }
+    const p = parsePlayground(JSON.stringify(old), T0)
+    expect(p.msPerYear).toBe(CONFIG.msPerYear)
+    expect(weekAt(p, T0)).toBe(70)
+    expect(weekAt(p, T0 + MS_PER_WEEK)).toBe(71)
+    // Saved at today's pace: read as is
+    const now = { ...old, msPerYear: CONFIG.msPerYear, startedAt: T0 - 70 * MS_PER_WEEK }
+    expect(parsePlayground(JSON.stringify(now), T0).startedAt).toBe(now.startedAt)
   })
   it('round-trips a real season through JSON', async () => {
     const { parsePlayground } = await import('../src/domain/playground/persist')

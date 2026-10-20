@@ -34,7 +34,7 @@ function useNow() {
 
 /** The live market simulator, shown inside practice lessons: net worth, the chart, the season's time, the mix, what you
  *  hold, Buy or sell, the goal and auto-invest, and the news and yearly recap overlays. Time follows the real clock (one
- *  real day = one year) and never stops; there are no play or speed controls. */
+ *  real week = one year) and never stops; there are no play or speed controls. */
 export function PlaygroundPanel({ toolsOpenAtStart = false }: { toolsOpenAtStart?: boolean } = {}) {
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -63,6 +63,7 @@ export function PlaygroundPanel({ toolsOpenAtStart = false }: { toolsOpenAtStart
   const unread = nextNews(state, market)
   const recapYear = pendingRecap(state)
   const nextUpdate = Math.max(1, Math.ceil(msToNextWeek(state, now) / MINUTE))
+  // A week is about 3.2 real hours: from an hour away, say it in (rounded) hours
 
   const compareLine = running && compare !== 'none' ? benchmark(state, compare, market) : undefined
   const compareNow = compareLine?.[compareLine.length - 1]
@@ -96,7 +97,7 @@ export function PlaygroundPanel({ toolsOpenAtStart = false }: { toolsOpenAtStart
         )}
         <p className={styles.muted}>
           {state.status === 'running'
-            ? `${t('pg_status_week', { year, week: weekOf(state.tick) })} · ${t('pg_next_update', { count: nextUpdate })}`
+            ? `${t('pg_status_week', { year, week: weekOf(state.tick) })} · ${(nextUpdate >= 60 ? t('pg_next_update_hours', { count: Math.round(nextUpdate / 60) }) : t('pg_next_update', { count: nextUpdate }))}`
             : state.status === 'idle'
               ? t('pg_day_is_year')
               : t('pg_season_complete')}

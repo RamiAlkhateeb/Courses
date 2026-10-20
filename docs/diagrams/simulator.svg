@@ -13,8 +13,8 @@
 <text x="36" y="170" font-size="14" fill="#5B678F">season replays exactly</text>
 <rect x="20" y="230" width="260" height="110" rx="16" fill="#FFFFFF" stroke="#293681" stroke-width="1.5"/>
 <text x="36" y="260" font-size="16" font-weight="700" fill="#293681">Real clock</text>
-<text x="36" y="286" font-size="14" fill="#5B678F">1 real day = 1 simulated year</text>
-<text x="36" y="306" font-size="14" fill="#5B678F">1 week ≈ 27.7 real minutes</text>
+<text x="36" y="286" font-size="14" fill="#5B678F">1 real week = 1 simulated year</text>
+<text x="36" y="306" font-size="14" fill="#5B678F">1 week ≈ 3.2 real hours</text>
 <text x="36" y="326" font-size="14" fill="#5B678F">never paused, even when closed</text>
 <rect x="20" y="480" width="260" height="130" rx="16" fill="#FFFFFF" stroke="#293681" stroke-width="1.5"/>
 <text x="36" y="510" font-size="16" font-weight="700" fill="#293681">Season summary</text>

@@ -180,3 +180,13 @@
     font-size: var(--title-section);
   }
 }
+
+/* A picker row's ▾ (its list opens under it) */
+.down {
+  flex-shrink: 0;
+  color: var(--muted);
+}
+.optionText small {
+  font-weight: 500;
+  color: var(--muted);
+}

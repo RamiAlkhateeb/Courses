@@ -179,11 +179,11 @@ test('Me gear opens Settings, Settings opens Account: edit the name, change the 
   await expect(page).toHaveURL(/\/settings$/)
   // daily goal
   await page.getByRole('button', { name: /Daily goal/ }).click()
-  await page.getByRole('radio', { name: /20 min/ }).click()
+  await page.getByRole('option', { name: /20 min/ }).click()
   expect(JSON.parse((await page.evaluate(() => localStorage.getItem('profile:v1')))!).minutes).toBe(20)
   // language
   await page.getByRole('button', { name: /Language/ }).click()
-  await page.getByRole('radio', { name: /العربية/ }).click()
+  await page.getByRole('option', { name: /العربية/ }).click()
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
   await page.evaluate(() => localStorage.setItem('lang', 'en'))
   await page.reload()

@@ -1,4 +1,5 @@
 export { Button, buttonClass, Card, AnswerOption, ProgressBar, StatPill, TabBar, BottomSheet } from './ui'
+export { Dropdown, type DropdownOption } from './Dropdown'
 export type { AnswerState } from './ui'
 export { Icon, type IconName } from './Icon'
 export { Guide, type GuidePose } from './Guide'

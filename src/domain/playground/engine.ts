@@ -37,8 +37,11 @@ export interface PlaygroundState {
   status: Status
   /** Weeks since the season began (0 … WEEKS_PER_SEASON) */
   tick: number
-  /** When the first buy started the season (epoch ms). Time then follows the real clock: one real day = one year. */
+  /** When the first buy started the season (epoch ms). Time then follows the real clock: one real week = one year. */
   startedAt: number
+  /** The pace `startedAt` was measured at (real ms per simulated year): a season saved at an older pace is rebased
+   *  when read (parsePlayground), so it keeps the week it had reached */
+  msPerYear: number
   cash: number
   holdings: Partial<Record<AssetId, Holding>>
   trades: Trade[]
@@ -71,6 +74,7 @@ export const emptyPlayground: PlaygroundState = {
   status: 'idle',
   tick: 0,
   startedAt: 0,
+  msPerYear: CONFIG.msPerYear,
   cash: 0,
   holdings: {},
   trades: [],
@@ -175,7 +179,7 @@ function start(s: PlaygroundState, now: number): PlaygroundState {
   return { ...s, status: 'running', startedAt: now - s.tick * MS_PER_WEEK, historyStart: s.tick, history: [netWorth(s)] }
 }
 
-/** The week the season has reached at time `now` (one real day = one simulated year). */
+/** The week the season has reached at time `now` (one real week = one simulated year). */
 export const weekAt = (s: PlaygroundState, now: number) =>
   s.status === 'idle' ? s.tick : Math.max(s.tick, Math.min(WEEKS_PER_SEASON, Math.floor((now - s.startedAt) / MS_PER_WEEK + 1e-9)))
 
