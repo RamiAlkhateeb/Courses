@@ -15,7 +15,7 @@ describe('streak freezes', () => {
     const before = p
     p = completeLesson(p, 2, '2026-10-01', lesson(1), 2)
     expect(p.freezes).toBe(1)
-    expect(earnedFreeze(before, p)).toBe(true)
+    expect(earnedFreeze(before, p, '2026-10-01')).toBe(true)
     p = completeLesson(p, 1, '2026-10-01', lesson(2), 2) // not perfect
     expect(p.freezes).toBe(1)
     for (let i = 3; i < 8; i++) p = completeLesson(p, 2, '2026-10-01', lesson(i), 2)
@@ -29,6 +29,17 @@ describe('streak freezes', () => {
     p = completeLesson(p, 0, '2026-10-03', lesson(2), 2)
     expect(p.streak).toEqual({ count: 2, lastDay: '2026-10-03' })
     expect(p.freezes).toBe(0)
+  })
+  it('a perfect finish that spends a freeze earns one back, and says so', () => {
+    let p = parseProgress(null)
+    for (let i = 1; i <= 2; i++) p = completeLesson(p, 2, '2026-10-01', lesson(i), 2)
+    expect(p.freezes).toBe(MAX_FREEZES)
+    const after = completeLesson(p, 2, '2026-10-03', lesson(3), 2) // missed the 2nd: spends one, earns one
+    expect(after.freezes).toBe(MAX_FREEZES)
+    expect(after.streak.count).toBe(2)
+    expect(earnedFreeze(p, after, '2026-10-03')).toBe(true)
+    // No missed day: already holding the most, so nothing is earned
+    expect(earnedFreeze(p, completeLesson(p, 2, '2026-10-02', lesson(3), 2), '2026-10-02')).toBe(false)
   })
   it('without enough freezes the streak restarts and they are kept', () => {
     let p = completeLesson(parseProgress(null), 2, '2026-10-01', lesson(1), 2)

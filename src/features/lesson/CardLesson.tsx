@@ -11,7 +11,7 @@ import { useModule } from '../../content/useModule'
 import { useProgress } from '../../state/useProgress'
 import { useWallet } from '../../state/usePlayground'
 import { ModuleQuestionsContext } from '../../components/content/moduleQuestions'
-import { MAX_FREEZES, payoutFor } from '../../domain/progress'
+import { completeLesson as afterLesson, earnedFreeze, localDay, payoutFor } from '../../domain/progress'
 import { lessonKey, lessonsFor, type Lesson } from '../../domain/lessons'
 import { SpaceGuide } from './SpaceGuide'
 import { PracticeBlock } from '../../components/playground/PracticeBlock'
@@ -77,8 +77,6 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
   const startedAt = useRef(Date.now())
   // Does finishing this lesson pay? Decided once, on arrival: finishing it marks it done.
   const [pays] = useState(() => payoutFor(progress, 1, lessonKey(mod.courseId, mod.id, lesson.id)) > 0)
-  // A perfect first finish earns a streak freeze, unless the learner already holds the most
-  const [freezeRoom] = useState(() => progress.freezes < MAX_FREEZES)
 
   const [index, setIndex] = useState(0)
   const [selected, setSelected] = useState<number | null>(null)
@@ -89,6 +87,7 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
   const correctCount = Object.values(answers).filter((a) => a.first).length
   const [done, setDone] = useState(false)
   const [paid, setPaid] = useState(0)
+  const [freezeEarned, setFreezeEarned] = useState(false)
   // 0 = first try at this question; 1 = a second try (the first was wrong): that one reveals the answer and carries on.
   const [attempt, setAttempt] = useState(0)
 
@@ -153,6 +152,8 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
     if (isLast) {
       const key = lessonKey(mod.courseId, mod.id, lesson.id)
       setPaid(payoutFor(progress, correctCount, key))
+      const today = localDay()
+      setFreezeEarned(earnedFreeze(progress, afterLesson(progress, correctCount, today, key, total), today))
       completeLesson(correctCount, key, total)
       setDone(true)
       return
@@ -172,7 +173,7 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
         payout={pays ? paid : undefined}
         correct={correctCount}
         total={total}
-        freezeEarned={pays && freezeRoom && total > 0 && correctCount === total}
+        freezeEarned={freezeEarned}
         action={tUi('lessonContinue')}
         onAction={() => navigate('/')}
         secondary={correctCount < total ? tUi('reviewMyMistake') : undefined}

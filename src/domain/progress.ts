@@ -142,14 +142,19 @@ export function payoutFor(p: Progress, correct: number, lessonKey?: string): num
   return lessonKey && !p.lessonsDone.includes(lessonKey) ? lessonPayout(correct) : 0
 }
 
+/** Freezes a lesson finished on `today` spends: one per missed day, when there are enough to cover them all. */
+export function freezesSpent(p: Progress, today: string): number {
+  const missed = p.streak.lastDay ? missedDays(p.streak, today) : 0
+  return missed > 0 && missed <= p.freezes ? missed : 0
+}
+
 /** Pay a finished lesson into the bank, count `today` towards the streak and mark the roadmap lesson (if given) done. */
 export function completeLesson(p: Progress, correct: number, today: string, lessonKey?: string, total = 0): Progress {
   const lessonsDone = lessonKey && !p.lessonsDone.includes(lessonKey) ? [...p.lessonsDone, lessonKey] : p.lessonsDone
   const payout = payoutFor(p, correct, lessonKey)
   // Missed days covered by freezes keep the streak going (one freeze per missed day); otherwise it restarts.
-  const missed = p.streak.lastDay ? missedDays(p.streak, today) : 0
-  const frozen = missed > 0 && missed <= p.freezes
-  const streak = frozen ? { count: p.streak.count + 1, lastDay: today } : bumpStreak(p.streak, today)
+  const spent = freezesSpent(p, today)
+  const streak = spent > 0 ? { count: p.streak.count + 1, lastDay: today } : bumpStreak(p.streak, today)
   const perfectNow = lessonKey && lessonsDone !== p.lessonsDone && total > 0 && correct === total ? 1 : 0
   return {
     ...p,
@@ -159,12 +164,14 @@ export function completeLesson(p: Progress, correct: number, today: string, less
     lastLesson: lessonKey ?? p.lastLesson,
     activity: addActivity(p.activity, today, payout),
     perfect: p.perfect + perfectNow,
-    freezes: Math.min(MAX_FREEZES, (frozen ? p.freezes - missed : p.freezes) + perfectNow),
+    freezes: Math.min(MAX_FREEZES, p.freezes - spent + perfectNow),
   }
 }
 
-/** Did finishing this lesson earn a streak freeze? (For the Lesson complete screen.) */
-export const earnedFreeze = (before: Progress, after: Progress) => after.perfect > before.perfect && before.freezes < MAX_FREEZES
+/** Did finishing this lesson on `today` earn a streak freeze? Freezes it spent on missed days make room first.
+ *  (For the Lesson complete screen.) */
+export const earnedFreeze = (before: Progress, after: Progress, today: string) =>
+  after.perfect > before.perfect && before.freezes - freezesSpent(before, today) < MAX_FREEZES
 
 /** Days of per-day earnings kept for the week strip; older days are dropped. */
 export const ACTIVITY_DAYS = 60
