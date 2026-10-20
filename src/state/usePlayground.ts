@@ -75,11 +75,11 @@ export function usePlayground() {
   }
 }
 
-/** How often the clock checks the real time. A simulated week is about 27.7 real minutes, so this is plenty. */
+/** How often the clock checks the real time. A simulated week is about 3.2 real hours, so this is plenty. */
 const CHECK_MS = 30_000
 
 /**
- * The clock (`onNews` hears of the stories that just landed): time follows the real clock (one real day = one simulated year) and never stops, even while the app is
+ * The clock (`onNews` hears of the stories that just landed): time follows the real clock (one real week = one simulated year) and never stops, even while the app is
  * closed. Mounted once for the whole app (AppFrame), so the wallet on Learn and Me is live too. It catches the season up
  * on start, every 30 seconds and whenever the tab comes back into view; news that landed meanwhile waits in the queue.
  */

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { completeLesson, currentStreak, earnedFreeze, MAX_FREEZES, parseProgress } from '../src/domain/progress'
-import { CONFIG, GOALS, MIXES } from '../src/domain/playground/config'
+import { CONFIG, DAY_MS, GOALS, MIXES } from '../src/domain/playground/config'
 import { advance, buy, emptyPlayground, fund, netWorth, setGoal, valueOf, type PlaygroundState } from '../src/domain/playground/engine'
 import { goalStatus } from '../src/domain/playground/insights'
 import { parsePlayground } from '../src/domain/playground/persist'
@@ -148,14 +148,14 @@ describe('weekly recap on Me', async () => {
     let s = weeks(running(1000, 3), 10)
     // Younger than a week: measured from the first point
     expect(portfolioWeekMove(s, nowOf(s))).toBeCloseTo(netWorth(s) - s.history[0], 6)
-    s = weeks(s, 7 * CONFIG.weeksPerYear)
-    const before = s.history[s.tick - 7 * CONFIG.weeksPerYear - s.historyStart]
+    s = weeks(s, 2 * CONFIG.weeksPerYear) // seven real days are one simulated year
+    const before = s.history[s.tick - CONFIG.weeksPerYear - s.historyStart]
     const move = portfolioWeekMove(s, nowOf(s))!
     expect(move).toBeCloseTo(netWorth(s) - before, 6)
     // A lesson reward moved in this week is not growth
     expect(portfolioWeekMove(fund(s, 50), nowOf(s))).toBeCloseTo(move, 6)
     // A season that ended more than a week ago no longer moves
     const ended = weeks(s, 10 * CONFIG.weeksPerYear)
-    expect(portfolioWeekMove(ended, nowOf(ended) + 8 * CONFIG.msPerYear)).toBeNull()
+    expect(portfolioWeekMove(ended, nowOf(ended) + 8 * DAY_MS)).toBeNull()
   })
 })

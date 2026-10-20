@@ -1,4 +1,4 @@
-import { ASSET_IDS, CONFIG, GOAL_IDS, MS_PER_WEEK, type AssetId, type GoalId } from './config'
+import { ASSET_IDS, CONFIG, DAY_MS, GOAL_IDS, MS_PER_WEEK, WEEKS_PER_SEASON, type AssetId, type GoalId } from './config'
 import { emptyPlayground, type PlaygroundState } from './engine'
 import { EVENT_IDS } from './events'
 
@@ -8,7 +8,8 @@ const numbers = (v: unknown) => (Array.isArray(v) ? v.filter((x): x is number =>
 
 /** Reads a saved Playground, tolerating garbage and missing fields (anything unreadable is a fresh, empty Playground).
  *  Seasons saved before time followed the real clock (no `startedAt`, a `speed`, a `pendingEvent`) carry on from the
- *  week they were at: `now` places their start in the past. */
+ *  week they were at: `now` places their start in the past. Seasons saved at another pace (before one real week was one
+ *  year, one real day was) keep the week they had reached by `now`, and go on at today's pace. */
 export function parsePlayground(raw: string | null, now: number = Date.now()): PlaygroundState {
   if (!raw) return emptyPlayground
   try {
@@ -23,6 +24,14 @@ export function parsePlayground(raw: string | null, now: number = Date.now()): P
       }
     }
     const tick = Math.max(0, Math.floor(num(d.tick, 0)))
+    // The start, measured at today's pace. Saves from before `msPerYear` ran at one real day per year.
+    const pace = num(d.msPerYear, DAY_MS)
+    const saved = typeof d.startedAt === 'number' && Number.isFinite(d.startedAt)
+    let startedAt = saved ? (d.startedAt as number) : status === 'idle' ? 0 : now - tick * MS_PER_WEEK
+    if (saved && status === 'running' && pace !== CONFIG.msPerYear && pace > 0) {
+      const reached = Math.max(tick, Math.min(WEEKS_PER_SEASON, Math.floor((now - startedAt) / (pace / CONFIG.weeksPerYear) + 1e-9)))
+      startedAt = now - reached * MS_PER_WEEK
+    }
     const seenEvents = numbers(d.seenEvents)
     // An old season's unread story was its `pendingEvent`: the last news it saw
     const oldPending = typeof d.pendingEvent === 'string' && (EVENT_IDS as string[]).includes(d.pendingEvent) && seenEvents.length ? [seenEvents[seenEvents.length - 1]] : []
@@ -31,7 +40,8 @@ export function parsePlayground(raw: string | null, now: number = Date.now()): P
       seed: Math.floor(num(d.seed, 1)),
       status,
       tick,
-      startedAt: typeof d.startedAt === 'number' && Number.isFinite(d.startedAt) ? d.startedAt : status === 'idle' ? 0 : now - tick * MS_PER_WEEK,
+      startedAt,
+      msPerYear: CONFIG.msPerYear,
       cash: Math.max(0, num(d.cash, 0)),
       holdings,
       trades: Array.isArray(d.trades) ? (d.trades.filter(isRecord) as unknown as PlaygroundState['trades']) : [],

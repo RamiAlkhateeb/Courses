@@ -1,10 +1,10 @@
 // Grouped list rows (Settings, Account): an icon tile, a label, an optional value, a chevron or a switch;
-// plus the bottom sheet the rows open, and the Language and Daily goal pickers both screens use.
-import { useEffect, type ReactNode } from 'react'
+// a row that opens a choice list right under itself (ListPicker: Language, Daily goal, Reminder time), and the bottom sheet for forms.
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { ParseKeys } from 'i18next'
-import { AnswerOption, BottomSheet, Icon, type IconName } from './ui'
+import { BottomSheet, Dropdown, Icon, type DropdownOption, type IconName } from './ui'
 import { LANGUAGES } from '../i18n'
 import { updateProfile, useProfile } from '../state/profile'
 import styles from './SettingsList.module.css'
@@ -127,52 +127,64 @@ export function Sheet({ title, onClose, children }: { title: string; onClose: ()
   )
 }
 
-export function LanguageSheet({ onClose }: { onClose: () => void }) {
-  const { t, i18n } = useTranslation()
+/** A row whose value is picked from a list that drops down right under it (Dropdown). */
+export function ListPicker({ icon, label, value, options }: { icon: IconName; label: string; value?: ReactNode; options: DropdownOption[] }) {
+  const [open, setOpen] = useState(false)
+  const row = useRef<HTMLButtonElement>(null)
+  const pick = (o: DropdownOption) => ({ ...o, onSelect: () => (o.onSelect(), setOpen(false)) })
   return (
-    <Sheet title={t('language')} onClose={onClose}>
-      {LANGUAGES.map((l) => (
-        <AnswerOption
-          choice
-          radio
-          key={l.code}
-          role="radio"
-          state={i18n.language === l.code ? 'selected' : 'idle'}
-          letter={<span lang={l.code}>{l.letter}</span>}
-          onClick={() => {
-            void i18n.changeLanguage(l.code)
-            onClose()
-          }}
-        >
-          <strong lang={l.code}>{l.name}</strong>
-        </AnswerOption>
-      ))}
-    </Sheet>
+    <li>
+      <button type="button" ref={row} className={styles.row} aria-haspopup="listbox" aria-expanded={open} onClick={() => setOpen(true)}>
+        <span className={styles.tile}>
+          <Icon name={icon} size={22} />
+        </span>
+        <span className={styles.label}>{label}</span>
+        {value && <span className={styles.value}>{value}</span>}
+        <Icon name="chevronDown" size={20} className={styles.down} />
+      </button>
+      {open && <Dropdown anchor={row} label={label} options={options.map(pick)} onClose={() => setOpen(false)} />}
+    </li>
+  )
+}
+
+export function LanguagePicker() {
+  const { t, i18n } = useTranslation()
+  const lang = LANGUAGES.find((l) => l.code === i18n.language)
+  return (
+    <ListPicker
+      icon="globe"
+      label={t('language')}
+      value={lang && <span lang={lang.code}>{lang.name}</span>}
+      options={LANGUAGES.map((l) => ({
+        key: l.code,
+        label: <span lang={l.code}>{l.name}</span>,
+        selected: i18n.language === l.code,
+        onSelect: () => void i18n.changeLanguage(l.code),
+      }))}
+    />
   )
 }
 
 const MINUTES = [5, 10, 15, 20]
 
-export function GoalSheet({ onClose }: { onClose: () => void }) {
+export function GoalPicker() {
   const { t } = useTranslation()
   const { minutes } = useProfile()
   return (
-    <Sheet title={t('acc_daily_goal')} onClose={onClose}>
-      {MINUTES.map((m) => (
-        <AnswerOption
-          choice
-          radio
-          key={m}
-          role="radio"
-          state={minutes === m ? 'selected' : 'idle'}
-          onClick={() => {
-            updateProfile({ minutes: m })
-            onClose()
-          }}
-        >
-          <strong>{t('minShort', { n: m })}</strong> <small>{t(`pace_${m}` as ParseKeys)}</small>
-        </AnswerOption>
-      ))}
-    </Sheet>
+    <ListPicker
+      icon="clock"
+      label={t('acc_daily_goal')}
+      value={t('minShort', { n: minutes })}
+      options={MINUTES.map((m) => ({
+        key: String(m),
+        label: (
+          <span className={styles.optionText}>
+            {t('minShort', { n: m })} <small>{t(`pace_${m}` as ParseKeys)}</small>
+          </span>
+        ),
+        selected: minutes === m,
+        onSelect: () => updateProfile({ minutes: m }),
+      }))}
+    />
   )
 }

@@ -1,0 +1,71 @@
+/* A choice list under its button (Dropdown): a flat white card, no shadow */
+.catcher {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+.box {
+  position: fixed;
+  z-index: 41;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  overflow-y: auto;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  animation: drop 0.14s ease-out;
+}
+.list {
+  display: grid;
+  gap: 2px;
+}
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  inline-size: 100%;
+  min-block-size: 48px;
+  padding: 0 12px;
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--indigo);
+  text-align: start;
+  cursor: pointer;
+}
+.option:hover {
+  background: var(--mist);
+}
+.option[aria-selected='true'] {
+  background: var(--chip-bg);
+}
+.option svg {
+  flex: 0 0 auto;
+  color: var(--blue);
+}
+.text {
+  min-inline-size: 0;
+}
+.footer {
+  margin-block-start: 4px;
+  padding: 4px 6px 0;
+  border-block-start: 1px solid var(--line);
+}
+@keyframes drop {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .box {
+    animation: none;
+  }
+}

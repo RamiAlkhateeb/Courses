@@ -57,8 +57,8 @@ test('simulator: a season goal, the yearly recap, and rebalancing to an example 
   await page.getByRole('button', { name: 'Buy Safe Savings' }).click()
   await page.getByRole('button', { name: '$100', exact: true }).click()
   await page.getByRole('button', { name: /^Buy .*100/ }).click()
-  // One real day is one simulated year: the year's news, then the recap
-  await page.clock.fastForward('24:05:00')
+  // One real week is one simulated year: the year's news, then the recap
+  await page.clock.fastForward(7 * 24 * 3600_000 + 5 * 60_000)
   const recap = page.getByRole('heading', { name: 'Year 1 is over' })
   for (let i = 0; i < 6 && !(await recap.isVisible()); i++) {
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -141,7 +141,7 @@ test('the daily study reminder can be switched on and given a time', async ({ pa
   await expect(page.getByRole('switch', { name: /Daily reminder/ })).toHaveAttribute('aria-checked', 'true')
   await expect(page.getByText(/Daily at 6:00/)).toBeVisible()
   await page.getByRole('button', { name: /Reminder time/ }).click()
-  await page.getByRole('radio', { name: /8:00\sAM/ }).click()
+  await page.getByRole('option', { name: /8:00\sAM/ }).click()
   await expect(page.getByText(/Daily at 8:00\sAM/)).toBeVisible()
   const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('reminder:v1')!))
   expect(saved).toMatchObject({ on: true, hour: 8 })
@@ -195,4 +195,37 @@ test('simulator sheets close with Escape', async ({ page }) => {
   await expect(page.getByRole('dialog')).toBeVisible()
   await page.keyboard.press('Escape')
   await expect(page.getByRole('dialog')).toHaveCount(0)
+})
+
+for (const lang of ['en', 'ar']) {
+  test(`the course list opens right under the course name (${lang}, 320px)`, async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 640 })
+    await onboarded(page, { lang })
+    await page.goto('')
+    const name = page.getByRole('heading', { level: 1 }).getByRole('button')
+    await name.click()
+    const list = page.getByRole('listbox')
+    await expect(list).toBeVisible()
+    const [b, l] = [(await name.boundingBox())!, (await list.boundingBox())!]
+    expect(l.y).toBeGreaterThan(b.y + b.height - 2) // under the name, not a sheet at the bottom
+    expect(l.y).toBeLessThan(b.y + b.height + 24)
+    await expect(page.getByRole('option').first()).toBeFocused()
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
+    await page.keyboard.press('Escape')
+    await expect(list).toHaveCount(0)
+    await expect(name).toBeFocused()
+    await expect(name).toHaveAttribute('aria-expanded', 'false')
+  })
+}
+
+test('Settings pickers open as a list under their row', async ({ page }) => {
+  await onboarded(page)
+  await page.goto('settings')
+  const row = page.getByRole('button', { name: /Daily goal/ })
+  await row.click()
+  const [b, l] = [(await row.boundingBox())!, (await page.getByRole('listbox').boundingBox())!]
+  expect(Math.abs(l.y - (b.y + b.height)) < 24 || Math.abs(l.y + l.height - b.y) < 24).toBe(true)
+  await page.getByRole('option', { name: /10 min/ }).click()
+  await expect(page.getByRole('listbox')).toHaveCount(0)
+  await expect(row).toContainText('10 min')
 })

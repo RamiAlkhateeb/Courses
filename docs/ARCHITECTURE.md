@@ -299,8 +299,9 @@ All rules are pure functions in `src/domain/playground/`. Every number is in `co
 
 ### Real clock to state
 
-- **1 real day = 1 simulated year.** One tick is one week (about 27.7 real minutes). A season is 10 years, so
-  520 weeks. There are no play, pause or speed controls.
+- **1 real week = 1 simulated year.** One tick is one week (about 3.2 real hours). A season is 10 years, so
+  520 weeks (10 real weeks). There are no play, pause or speed controls. The state saves its pace (`msPerYear`):
+  a season saved at an older pace keeps the week it had reached and goes on at today's (`parsePlayground`).
 - The first buy starts the season and records `startedAt`.
 - `usePlaygroundClock` runs in `AppFrame`, so it is live on every screen. On start, every 30 seconds and when the
   tab comes back into view, it calls `catchUp(state, Date.now())`.

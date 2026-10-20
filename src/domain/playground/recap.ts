@@ -1,4 +1,4 @@
-import { CONFIG, MS_PER_WEEK } from './config'
+import { CONFIG, DAY_MS, MS_PER_WEEK } from './config'
 import { marketOf, netWorth, type PlaygroundState } from './engine'
 import type { EventId } from './events'
 import type { Market } from './market'
@@ -46,12 +46,12 @@ export function pendingRecap(s: PlaygroundState): number | null {
 /** The player closed the recap: every finished year counts as seen (several years can pass while the app is closed). */
 export const seeRecap = (s: PlaygroundState): PlaygroundState => ({ ...s, recapSeen: yearsDone(s) })
 
-/** The portfolio's move over the last seven real days (seven simulated years: time follows the real clock), market
+/** The portfolio's move over the last seven real days (one simulated year: time follows the real clock), market
  *  moves only: money moved in during the week (lesson rewards) is not counted as growth. Measured from the season's
  *  first point when it is younger than a week. Null before the season starts, and once it ended more than a week ago. */
 export function portfolioWeekMove(s: PlaygroundState, now: number): number | null {
   if (s.status === 'idle' || s.history.length === 0) return null
-  const weekAgo = Math.floor((now - 7 * CONFIG.msPerYear - s.startedAt) / MS_PER_WEEK)
+  const weekAgo = Math.floor((now - 7 * DAY_MS - s.startedAt) / MS_PER_WEEK + 1e-9)
   if (weekAgo >= s.tick) return null // nothing has moved in the last seven days (the season ended long ago)
   const from = Math.max(s.historyStart, weekAgo)
   const before = s.history[Math.max(0, from - s.historyStart)]

@@ -233,8 +233,8 @@ export const basics: Module = {
       time: L('3 min', '3 دقائق'),
       blocks: [
         html(L(
-          '<p>Time to try it. Below is the simulator, with <strong>play money</strong> and simulated prices: practice only, not advice. Pick any investment, choose an amount and tap <strong>Buy</strong>. Your first buy starts the clock: one real day is one simulated year, and every buy and every sell pays a <strong>1% fee</strong>.</p>',
-          '<p>حان وقت التجربة. في الأسفل المحاكي، بـ<strong>مال افتراضي</strong> وأسعار محاكاة: للتدريب فقط، وليس نصيحة. اختر أي استثمار، وحدّد مبلغًا، واضغط <strong>شراء</strong>. أول عملية شراء تشغّل الساعة: كل يوم حقيقي يعادل سنة في المحاكاة، وكل عملية شراء أو بيع تدفع <strong>رسومًا بنسبة 1%</strong>.</p>',
+          '<p>Time to try it. Below is the simulator, with <strong>play money</strong> and simulated prices: practice only, not advice. Pick any investment, choose an amount and tap <strong>Buy</strong>. Your first buy starts the clock: one real week is one simulated year, and every buy and every sell pays a <strong>1% fee</strong>.</p>',
+          '<p>حان وقت التجربة. في الأسفل المحاكي، بـ<strong>مال افتراضي</strong> وأسعار محاكاة: للتدريب فقط، وليس نصيحة. اختر أي استثمار، وحدّد مبلغًا، واضغط <strong>شراء</strong>. أول عملية شراء تشغّل الساعة: كل أسبوع حقيقي يعادل سنة في المحاكاة، وكل عملية شراء أو بيع تدفع <strong>رسومًا بنسبة 1%</strong>.</p>',
         )),
         practice('first-buy'),
         keyIdea(L(
