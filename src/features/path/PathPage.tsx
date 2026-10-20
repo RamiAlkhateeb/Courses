@@ -45,7 +45,7 @@ export function PathPage() {
         </h1>
         <div className={styles.pills}>
           <StatPill title={t('streakDays', { count: streak })}>
-            <Icon name="calendar" size={20} />
+            <Icon name="flame" size={20} className={styles.flame} />
             {t('learn_days', { count: streak })}
           </StatPill>
           <MoneyChip amount={wallet} />

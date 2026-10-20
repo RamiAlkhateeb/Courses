@@ -174,6 +174,13 @@ const PATHS = {
       <path d="M12 7.5v5.5M12 16.3v.2" />
     </>
   ),
+  /** The streak: a flame with a solid core (coloured by `--streak` where it is used) */
+  flame: (
+    <>
+      <path d="M12 2.8c.9 3.4 5.6 5.7 5.6 11.1a5.6 5.6 0 01-11.2 0c0-2.7 1.3-4.6 2.9-5.9.2 2 1.1 3.2 2.3 3.6-.6-3.1-.3-6.1.4-8.8z" />
+      <path d="M12 20.6a2.4 2.4 0 01-2.4-2.4c0-1.5 1.1-2.5 2.4-3.8 1.3 1.3 2.4 2.3 2.4 3.8a2.4 2.4 0 01-2.4 2.4z" fill="currentColor" />
+    </>
+  ),
   flip: <path d="M20 11a8 8 0 00-14.5-4.5L4 8M4 4v4h4M4 13a8 8 0 0014.5 4.5L20 16M20 20v-4h-4" />,
 } satisfies Record<string, ReactNode>
 

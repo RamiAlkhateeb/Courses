@@ -42,13 +42,13 @@ export function MePage() {
   const stage = STAGES.reduce((at, s, i) => (pct >= s.from ? i : at), 0)
 
   const stats: { icon?: IconName; value: ReactNode; label: string }[] = [
-    { icon: 'calendar', value: String(streak), label: t('dayStreak') },
+    { icon: 'flame', value: String(streak), label: t('dayStreak') },
     { value: <Money amount={wallet} />, label: t('playMoneyShort') },
     { icon: 'check', value: String(progress.lessonsDone.length), label: t('lessonsDoneShort') },
   ]
   const milestones: { icon: IconName; label: string; got: boolean }[] = [
     { icon: 'sprout', label: t('msFirstStep'), got: progress.lessonsDone.length >= 1 },
-    { icon: 'calendar', label: t('msWeek'), got: streak >= 7 },
+    { icon: 'flame', label: t('msWeek'), got: streak >= 7 },
     { icon: 'star', label: t('msAce'), got: progress.perfect >= 1 },
   ]
 
@@ -71,7 +71,7 @@ export function MePage() {
       <div className={styles.stats}>
         {stats.map((s) => (
           <Card key={s.label} className={styles.stat}>
-            {s.icon ? <Icon name={s.icon} size={22} /> : <Coin size={22} />}
+            {s.icon ? <Icon name={s.icon} size={22} className={s.icon === 'flame' ? styles.flame : undefined} /> : <Coin size={22} />}
             <strong>{s.value}</strong>
             <span>{s.label}</span>
           </Card>

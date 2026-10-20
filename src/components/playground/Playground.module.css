@@ -31,17 +31,17 @@
   gap: 2px;
 }
 .task small {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--blue-text);
 }
 .task strong {
-  font-size: 1.0625rem;
+  font-size: 0.875rem;
 }
 .taskHint {
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   color: var(--muted);
 }
 .taskIcon {
@@ -78,7 +78,7 @@
   margin-block: 18px 6px;
 }
 .kicker {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -90,7 +90,7 @@
 .fine {
   text-align: center;
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   line-height: 1.4;
 }
 .centre {
@@ -117,7 +117,7 @@
   color: var(--brand);
 }
 .gain {
-  font-size: 1.1rem;
+  font-size: 0.875rem;
   display: inline-flex;
   gap: 6px;
 }
@@ -135,7 +135,7 @@
   align-items: center;
   gap: 4px 16px;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.75rem;
   color: var(--brand);
 }
 .legend > span {
@@ -271,7 +271,7 @@
 }
 .clockText span,
 .clock .muted {
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   color: var(--muted);
 }
 .title {
@@ -324,21 +324,21 @@ button.holding {
   flex-direction: column;
 }
 .assetText strong {
-  font-size: 1.15rem;
+  font-size: 0.9375rem;
 }
 .assetText small {
   color: var(--muted);
-  font-size: 0.95rem;
+  font-size: 0.75rem;
 }
 .holdValue {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   font-weight: 700;
-  font-size: 1.2rem;
+  font-size: 0.9375rem;
 }
 .holdValue > :last-child {
-  font-size: 0.95rem;
+  font-size: 0.75rem;
 }
 .emptyCard {
   margin-block-start: 16px;
@@ -443,7 +443,7 @@ button.holding {
   color: var(--brand);
 }
 .priceBox > :last-child {
-  font-size: 0.95rem;
+  font-size: 0.75rem;
 }
 .riskRow {
   display: flex;
@@ -462,7 +462,7 @@ button.holding {
   flex: 1;
   font: inherit;
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 0.875rem;
   border: 0;
   background: none;
   color: var(--muted);
@@ -545,7 +545,7 @@ button.holding {
 .callout {
   margin: 0 0 14px;
   color: var(--muted);
-  font-size: 0.95rem;
+  font-size: 0.75rem;
   line-height: 1.45;
 }
 .callout {
@@ -557,7 +557,7 @@ button.holding {
   border: 1px solid var(--accent);
   border-radius: var(--radius-lg);
   color: var(--brand);
-  font-size: 1rem;
+  font-size: 0.8125rem;
 }
 .backBtn {
   margin-block-start: 8px;
@@ -629,7 +629,7 @@ button.holding {
 }
 .newsBody {
   color: var(--ink-soft);
-  font-size: 1rem;
+  font-size: 0.8125rem;
   line-height: 1.4;
   margin-block-end: 12px;
 }
@@ -756,7 +756,7 @@ button.holding {
   align-items: center;
   gap: 6px 8px;
   margin-block-start: 8px;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   color: var(--muted);
 }
 .compareRow button {
@@ -775,7 +775,7 @@ button.holding {
 }
 .compareText {
   margin: 6px 0 0;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   color: var(--muted);
 }
 .ringCard,
@@ -808,7 +808,7 @@ button.holding {
   padding: 0;
   display: grid;
   gap: 6px;
-  font-size: 0.9375rem;
+  font-size: 0.75rem;
   color: var(--brand);
 }
 .ringList li {
@@ -835,7 +835,7 @@ button.holding {
 }
 .autoTitle {
   margin: 0;
-  font-size: 1.125rem;
+  font-size: 0.875rem;
   color: var(--brand);
 }
 .autoSwitch {
@@ -884,7 +884,7 @@ button.holding {
   padding: 8px 14px;
   font: inherit;
   font-weight: 700;
-  font-size: 0.9375rem;
+  font-size: 0.75rem;
   text-align: start;
   color: var(--brand);
   background: var(--surface);

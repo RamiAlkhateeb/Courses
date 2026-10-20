@@ -60,7 +60,7 @@
 }
 .stat span {
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 0.75rem;
 }
 .weekHead {
   display: flex;
@@ -69,12 +69,12 @@
   color: var(--muted);
 }
 .weekHead strong {
-  font-size: 1.15rem;
+  font-size: 0.9375rem;
   color: var(--brand);
 }
 .kicker {
   font-family: var(--font);
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -117,7 +117,7 @@
   margin-block-start: 10px;
   text-align: center;
   color: var(--indigo);
-  font-size: 0.9rem;
+  font-size: 0.75rem;
 }
 .miles {
   display: flex;
@@ -174,12 +174,12 @@
 }
 .saveActions a {
   padding-inline: 12px;
-  font-size: 1.0625rem;
+  font-size: 0.875rem;
 }
 
 .switcher {
   margin-block-start: 8px;
-  font-size: 1.05rem;
+  font-size: 0.8125rem;
 }
 
 /* Streak freezes in hand */
@@ -190,4 +190,9 @@
   margin: 0;
   font-weight: 600;
   color: var(--blue-text);
+}
+
+/* The streak flame */
+.flame {
+  color: var(--streak);
 }

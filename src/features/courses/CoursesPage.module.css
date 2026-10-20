@@ -44,10 +44,10 @@ button.card {
   color: var(--muted);
 }
 .name {
-  font-size: 1.25rem;
+  font-size: 1rem;
 }
 .blurb {
-  font-size: 0.95rem;
+  font-size: 0.75rem;
   line-height: 1.45;
   color: var(--muted);
 }
@@ -57,7 +57,7 @@ button.card {
   align-items: center;
   gap: 6px 10px;
   margin-block-start: 6px;
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 .current {
