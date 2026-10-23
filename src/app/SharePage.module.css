@@ -1,0 +1,201 @@
+/* A social slide: a 1080×1350 canvas drawn at phone scale (360×450) and zoomed ×3, so the app's own components,
+   tokens and fonts render as they do in the app, three times bigger. Flat: no shadows, gradients or blur. */
+.canvas {
+  inline-size: 1080px;
+  block-size: 1350px;
+  overflow: hidden;
+  background: var(--mist);
+}
+.slide {
+  zoom: 3;
+  box-sizing: border-box;
+  inline-size: 360px;
+  block-size: 450px;
+  padding: 20px 22px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--mist);
+  color: var(--indigo);
+}
+.dark {
+  background: var(--indigo);
+  color: var(--on-indigo);
+}
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: none;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+.count {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.dark .count {
+  color: var(--on-indigo-dim);
+}
+.body {
+  flex: 1;
+  min-block-size: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  overflow: hidden;
+}
+.card {
+  padding: 18px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+}
+.card > :first-child {
+  margin-block-start: 0;
+}
+.card > :last-child {
+  margin-block-end: 0;
+}
+.kickerDark {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--sky);
+}
+.headline {
+  margin: 0;
+  font-size: var(--display);
+  line-height: 1.2;
+  font-weight: 800;
+  color: inherit;
+}
+.sub {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--on-indigo-dim);
+}
+.stat {
+  margin: 4px 0 0;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 2.25rem;
+  font-weight: 800;
+  line-height: 1;
+}
+:global(html[dir='rtl']) .stat {
+  justify-content: flex-end;
+}
+.stat b {
+  font-size: 1.5rem;
+  color: var(--sky);
+}
+.statTo {
+  color: var(--sky);
+}
+.statNote {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--on-indigo-dim);
+}
+.guide {
+  align-self: flex-end;
+  margin-block-start: auto;
+  flex: none;
+}
+.hook {
+  justify-content: flex-start;
+  padding-block-start: 8px;
+}
+.hook {
+  position: relative;
+}
+/* The hook's guide stands in the bottom corner, out of the text's way */
+.hookGuide {
+  position: absolute;
+  inset-inline-end: 0;
+  inset-block-end: 0;
+}
+.cta {
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding-block-start: 8px;
+}
+.cta .headline {
+  font-size: 1.625rem;
+}
+.handle {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--sky);
+}
+.legal {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--on-indigo-dim);
+}
+.question,
+.answer {
+  justify-content: flex-start;
+}
+.swipe {
+  margin: 4px 0 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--blue-text);
+}
+.why {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 12px 14px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+.why p {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+.chip {
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--correct-bg);
+  color: var(--correct);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.progress {
+  display: flex;
+  gap: 4px;
+  flex: none;
+  block-size: 4px;
+}
+.progress i {
+  flex: 1;
+  border-radius: var(--radius-pill);
+  background: var(--line);
+}
+.dark .progress i {
+  background: var(--indigo-line);
+}
+.progress i.on {
+  background: var(--blue);
+}
+.dark .progress i.on {
+  background: var(--sky);
+}

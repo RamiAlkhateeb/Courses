@@ -83,6 +83,13 @@ export const router = createBrowserRouter(
       ],
     },
     {
+      // A social carousel slide cut from a lesson (scripts/social/export-post.mjs screenshots them): outside the app's
+      // frame, so no tab bar, onboarding redirect or simulator clock.
+      path: '/share/:courseId/:moduleId/:lessonId',
+      errorElement: <RouteError />,
+      ...page(() => import('./SharePage'), 'SharePage'),
+    },
+    {
       // Desktop views: a course's chapter list.
       element: <AppShell />,
       errorElement: <RouteError />,

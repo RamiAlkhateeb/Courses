@@ -31,3 +31,6 @@ dist-ssr
 # Playwright
 test-results/
 playwright-report/
+
+# Social exports (scripts/social/export-post.mjs)
+social/out/
