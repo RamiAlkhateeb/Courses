@@ -151,7 +151,7 @@ function SlideView({ slides, index, courseTitle, notice, lessonNumber, override 
                 </>
               )}
               {hook.standfirst && !override.stat && <p className={styles.sub} dangerouslySetInnerHTML={safeHtml(t(hook.standfirst))} />}
-              <Guide pose="point" height={160} className={styles.hookGuide} />
+              <Guide pose="point" height={136} className={styles.hookGuide} />
             </>
           )}
 

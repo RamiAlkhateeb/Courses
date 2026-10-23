@@ -119,6 +119,7 @@
 }
 .hook {
   position: relative;
+  padding-block-end: 128px; /* the guide's corner: text never runs under it */
 }
 /* The hook's guide stands in the bottom corner, out of the text's way */
 .hookGuide {
