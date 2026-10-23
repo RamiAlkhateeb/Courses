@@ -1,0 +1,14 @@
+{
+  "en": {
+    "kicker": "Learn investing · Lesson 1",
+    "hook": "Your money in the bank buys less every year",
+    "stat": { "from": "1,000", "to": "492", "note": "What 1,000 buys in 24 years at 3% inflation a year. Illustrative figures." },
+    "caption": "Your money in the bank buys less every year, even if the number never goes down 👀"
+  },
+  "ar": {
+    "kicker": "تعلّم الاستثمار · الدرس 1",
+    "hook": "مالك في الحساب… يشتري أقل كل عام",
+    "stat": { "from": "1,000", "to": "492", "note": "ما تشتريه 1,000 اليوم بعد 24 سنة، بتضخم 3% سنويًا. أرقام توضيحية." },
+    "caption": "مالك في الحساب يشتري أقل كل عام… حتى لو لم ينقص الرقم 👀"
+  }
+}

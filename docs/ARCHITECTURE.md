@@ -390,6 +390,20 @@ app is open (a background tab is enough). Stories that landed while it was close
 
 ---
 
+## 6b. Social carousels
+
+The share route draws one Instagram slide (1080×1350) from a lesson. It uses the app's own components, so the slides
+always match the app:
+
+- `shareSlides(lesson)` (`src/domain/share.ts`, pure) cuts `lessonsFor(mod)` into slides, in this order: a hook,
+  short text slides, the key idea, a question and answer pair for each quick check, and a call to action.
+- `SharePage` (`src/app/`) draws the slide `?slide=N` at phone scale (360×450, `zoom: 3`). It does so with
+  `Blocks`, `QuestionCard`, `AnswerOption`, `Guide` and `Logo`, plus the tokens and the per-language font. It shrinks
+  the content until it fits, then sets `data-ready` and `data-overflow`.
+- Hooks and captions written by hand are optional; they live in `social/posts/<course>/<module>/<lesson>.json`.
+- `scripts/social/export-post.mjs` builds the app and serves it with `vite preview` under `/Courses/`. It then
+  screenshots each slide with Playwright's Chromium and writes `contact-sheet.png` and a draft `caption.txt`.
+
 ## 7. i18n, RTL and design tokens
 
 - **Two languages, one at a time.** UI strings live in `src/i18n/locales/en.ts` and `ar.ts`; keys are type-checked
