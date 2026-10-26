@@ -26,9 +26,10 @@ const standfirstOf = (html?: Localized): Localized | undefined => {
   return en ? { en, ar: pick(html?.ar) } : undefined
 }
 
-/** The slides of a lesson: a hook, its text in short slides (a picture or table alone), the key idea, each question
- *  twice (asked, then answered with why), and a closing call to action. */
-export function shareSlides(lesson: Lesson): Slide[] {
+/** The slides of a lesson: a hook, its text in short slides (a picture or table alone), the key idea, and a closing
+ *  call to action. With `quiz`, each question also comes twice before the call to action (asked, then answered with
+ *  why); posts leave them out by default. */
+export function shareSlides(lesson: Lesson, { quiz = false }: { quiz?: boolean } = {}): Slide[] {
   const first = lesson.steps.find((s) => s.kind === 'content')
   const slides: Slide[] = [{ kind: 'hook', title: lesson.title, standfirst: standfirstOf(first?.kind === 'content' ? first.heading?.html : undefined) }]
   const ideas: Slide[] = []
@@ -55,7 +56,7 @@ export function shareSlides(lesson: Lesson): Slide[] {
     flush()
   }
   slides.push(...ideas)
-  for (const step of lesson.steps) {
+  for (const step of quiz ? lesson.steps : []) {
     if (step.kind === 'question') slides.push({ kind: 'question', question: step.question }, { kind: 'answer', question: step.question })
   }
   slides.push({ kind: 'cta' })

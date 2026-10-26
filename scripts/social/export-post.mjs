@@ -4,7 +4,9 @@
 // `vite preview` under the GitHub Pages base path, as in playwright.config.ts.
 //
 //   node scripts/social/export-post.mjs <courseId> <moduleId> <lessonId> [--lang ar|en] [--guide saud|sara]
-//        [--out dir] [--no-build] [--port 4174]
+//        [--quiz] [--out dir] [--no-build] [--port 4174]
+//
+// Posts carry the lesson only; --quiz adds each question and then its answer before the closing slide.
 //
 // Optional hand-written hooks, stats and captions: social/posts/<courseId>/<moduleId>/<lessonId>.json (see social/README.md).
 import { spawn, spawnSync } from 'node:child_process'
@@ -20,14 +22,21 @@ const flag = (name, fallback) => {
   args.splice(i, value === true ? 1 : 2)
   return value
 }
+// An on/off flag never takes the next argument (so `--quiz investing basics why` still works)
+const toggle = (name) => {
+  const i = args.indexOf(name)
+  if (i !== -1) args.splice(i, 1)
+  return i !== -1
+}
 const lang = flag('--lang', 'en') === 'ar' ? 'ar' : 'en'
 const guide = flag('--guide', lang === 'ar' ? 'saud' : 'sara')
-const noBuild = flag('--no-build', false) === true
+const noBuild = toggle('--no-build')
+const quiz = toggle('--quiz')
 const port = Number(flag('--port', '4174'))
 const outFlag = flag('--out', undefined)
 const [courseId, moduleId, lessonId] = args
 if (!courseId || !moduleId || !lessonId) {
-  console.error('usage: node scripts/social/export-post.mjs <courseId> <moduleId> <lessonId> [--lang ar|en] [--guide saud|sara] [--out dir] [--no-build]')
+  console.error('usage: node scripts/social/export-post.mjs <courseId> <moduleId> <lessonId> [--lang ar|en] [--guide saud|sara] [--quiz] [--out dir] [--no-build]')
   process.exit(1)
 }
 const out = resolve(typeof outFlag === 'string' ? outFlag : join('social', 'out', `${courseId}-${moduleId}-${lessonId}.${lang}`))
@@ -80,7 +89,7 @@ try {
     localStorage.setItem('lang', l)
   }, lang)
   const page = await context.newPage()
-  const url = (n) => `${base}share/${courseId}/${moduleId}/${lessonId}?slide=${n}&lang=${lang}&guide=${guide}`
+  const url = (n) => `${base}share/${courseId}/${moduleId}/${lessonId}?slide=${n}&lang=${lang}&guide=${guide}${quiz ? '&quiz=1' : ''}`
   const open = async (n) => {
     await page.goto(url(n))
     const root = page.locator('[data-slide-count]')

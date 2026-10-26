@@ -396,7 +396,8 @@ The share route draws one Instagram slide (1080×1350) from a lesson. It uses th
 always match the app:
 
 - `shareSlides(lesson)` (`src/domain/share.ts`, pure) cuts `lessonsFor(mod)` into slides, in this order: a hook,
-  short text slides, the key idea, a question and answer pair for each quick check, and a call to action.
+  short text slides, the key idea and a call to action. With `?quiz=1` (`--quiz` in the script), a question and
+  answer pair for each quick check comes before the call to action.
 - `SharePage` (`src/app/`) draws the slide `?slide=N` at phone scale (360×450, `zoom: 3`). It does so with
   `Blocks`, `QuestionCard`, `AnswerOption`, `Guide` and `Logo`, plus the tokens and the per-language font. It shrinks
   the content until it fits, then sets `data-ready` and `data-overflow`.
