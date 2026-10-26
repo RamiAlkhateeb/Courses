@@ -5,10 +5,21 @@ import { SLIDE_WORDS, shareSlides } from '../src/domain/share'
 import { blockWords } from '../src/domain/chunks'
 
 describe('share slides', () => {
-  it('turn investing/basics/why into a hook, short text slides, the key idea, question/answer pairs and a call to action', async () => {
+  it('leave the questions out of a post by default: hook, text, pictures, key idea, call to action', async () => {
     const mod = await loadModule('investing', 'basics')
     const lesson = lessonsFor(mod).find((l) => l.id === 'why')!
-    const slides = shareSlides(lesson)
+    const kinds = shareSlides(lesson).map((s) => s.kind)
+    expect(kinds).not.toContain('question')
+    expect(kinds).not.toContain('answer')
+    expect(kinds[0]).toBe('hook')
+    expect(kinds.at(-2)).toBe('idea')
+    expect(kinds.at(-1)).toBe('cta')
+  })
+
+  it('with quiz: turn investing/basics/why into a hook, short text slides, the key idea, question/answer pairs and a call to action', async () => {
+    const mod = await loadModule('investing', 'basics')
+    const lesson = lessonsFor(mod).find((l) => l.id === 'why')!
+    const slides = shareSlides(lesson, { quiz: true })
     expect(slides[0]).toMatchObject({ kind: 'hook', title: { en: 'Saving vs investing' } })
     expect(slides[0].kind === 'hook' && slides[0].standfirst?.en).toMatch(/^Saving keeps money safe/)
     expect(slides.at(-1)).toEqual({ kind: 'cta' })
@@ -22,13 +33,13 @@ describe('share slides', () => {
     expect(slides.some((s) => s.kind === 'content' && s.blocks.length === 1 && s.blocks[0].type === 'diagram')).toBe(true)
   })
 
-  it('every lesson of the offered courses makes at least 4 slides, none empty, none too long, nothing a picture cannot hold', async () => {
+  it('every lesson of the offered courses makes at least 3 slides, none empty, none too long, nothing a picture cannot hold', async () => {
     for (const course of appCourses) {
       for (const id of Object.keys(course.loaders)) {
         const mod = await loadModule(course.id, id)
         for (const lesson of lessonsFor(mod)) {
-          const slides = shareSlides(lesson)
-          expect(slides.length, lesson.id).toBeGreaterThanOrEqual(4)
+          const slides = shareSlides(lesson, { quiz: true })
+          expect(shareSlides(lesson).length, lesson.id).toBeGreaterThanOrEqual(3)
           for (const s of slides) {
             if (s.kind !== 'content') continue
             expect(s.blocks.length, lesson.id).toBeGreaterThan(0)

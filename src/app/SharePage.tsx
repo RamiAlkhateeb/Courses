@@ -1,4 +1,4 @@
-// Route `/share/:courseId/:moduleId/:lessonId?slide=N&lang=ar|en&guide=saud|sara`: one slide of a social carousel
+// Route `/share/:courseId/:moduleId/:lessonId?slide=N&lang=ar|en&guide=saud|sara&quiz=1`: one slide of a social carousel
 // (1080×1350) cut from a roadmap lesson (`shareSlides`, src/domain/share.ts), drawn with the app's own components.
 // scripts/social/export-post.mjs screenshots every slide and saves the draft caption. Lives in src/app because it
 // reuses the lesson feature's question card (a feature may not import another feature).
@@ -56,7 +56,8 @@ export function SharePage() {
 
   const lessons = useMemo(() => (mod ? lessonsFor(mod) : []), [mod])
   const at = lessons.findIndex((l) => l.id === lessonId)
-  const slides = useMemo(() => (at >= 0 ? shareSlides(lessons[at]) : []), [lessons, at])
+  const quiz = search.get('quiz') === '1' // the questions and answers too (left out of posts by default)
+  const slides = useMemo(() => (at >= 0 ? shareSlides(lessons[at], { quiz }) : []), [lessons, at, quiz])
 
   if (notFound || !getCourse(courseId) || (mod && at === -1)) return <p data-share-error="not-found">Not found</p>
   if (loading || !mod || !langReady || post === undefined) return null

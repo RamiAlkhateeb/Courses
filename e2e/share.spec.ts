@@ -13,7 +13,7 @@ for (const lang of ['en', 'ar'] as const) {
     }
     const first = await open(1)
     const count = Number(await first.getAttribute('data-slide-count'))
-    expect(count).toBeGreaterThan(5)
+    expect(count).toBeGreaterThan(4)
     await expect(page.locator('html')).toHaveAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr')
     await expect(page.getByText(lang === 'ar' ? 'أبو شريك' : 'Abu Shreek', { exact: true })).toBeVisible()
     await expect(page.getByRole('navigation')).toHaveCount(0) // no tab bar: the slide is the whole page
@@ -21,7 +21,11 @@ for (const lang of ['en', 'ar'] as const) {
       const root = n === 1 ? first : await open(n)
       await expect(root, `slide ${n}`).toHaveAttribute('data-overflow', 'false')
     }
+    // A post leaves the questions out; ?quiz=1 adds each question and its answer
+    await expect(page.getByText(lang === 'ar' ? 'اختبار سريع' : 'Quick check', { exact: true })).toHaveCount(0)
     const caption = await page.locator('#share-caption').textContent()
     expect(caption).toContain(lang === 'ar' ? 'ليس نصيحة مالية' : 'not financial advice')
+    await page.goto(`share/investing/basics/why?slide=1&lang=${lang}&quiz=1`)
+    await expect(page.locator('[data-ready]')).toHaveAttribute('data-slide-count', String(count + 4))
   })
 }
