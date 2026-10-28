@@ -164,7 +164,7 @@
 .example .boxLabel {
   color: var(--brand);
 }
-/* Analogy and mistake boxes: a small Abu Shreek beside the tip */
+/* Analogy and mistake boxes: the guide small beside the tip */
 .tip {
   display: flex;
   align-items: flex-start;

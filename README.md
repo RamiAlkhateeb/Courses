@@ -1,4 +1,4 @@
-# Abu Shreek · أبو شريك
+# Zubda · زبدة
 
 Learn investing in small steps, then practise with play money. Short card lessons with quick checks pay into a $1,000 play-money bank; the Playground is a seeded market simulator where that money can grow or shrink over five-year "seasons", with news, missions and a "what if I waited?" replay. English or Arabic (right-to-left), one language at a time. Free, no account: progress stays in your browser. Educational only, never financial advice.
 

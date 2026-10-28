@@ -1,4 +1,4 @@
-/* Design tokens: the "Abu Shreek · أبو شريك" garden identity. Cool mist, deep indigo ink, electric blue only where the
+/* Design tokens: the "Zubda · زبدة" garden identity. Cool mist, deep indigo ink, electric blue only where the
    next step is, leaf green for what you have grown. Every colour, radius, shadow and font lives here; components use
    these names only (a test enforces it). Change a value and every screen follows. */
 :root {
@@ -16,6 +16,11 @@
   --oops: #a8432b;
   --correct-bg: #dcefe4;
   --oops-bg: #f7ded5;
+
+  /* ---- The Zubda mark only (Logo): cream square, teal word, mustard burst ---- */
+  --logo-cream: #fcf5e4;
+  --logo-teal: #13534d;
+  --logo-sun: #f2ab22;
 
   /* ---- Indigo surfaces (the unit banner, the news screen) ---- */
   --indigo-2: #3a4da8;

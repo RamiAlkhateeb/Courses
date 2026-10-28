@@ -1,6 +1,6 @@
 # Architecture
 
-How the Abu Shreek (أبو شريك) app is put together, for a developer joining the project. `CLAUDE.md` holds the
+How the Zubda (زبدة) app is put together, for a developer joining the project. `CLAUDE.md` holds the
 working rules and the product rules; this file explains how the pieces fit. File paths are relative to the repo root.
 
 Contents:
@@ -18,7 +18,7 @@ Contents:
 
 ## 1. What the app is, and the layers
 
-Abu Shreek is a study app: an investing course plus a play-money market simulator (the Playground).
+Zubda is a study app: an investing course plus a play-money market simulator (the Playground).
 
 - **Stack:** Vite, React 19, TypeScript, React Router 7, TanStack Query (to load course modules), i18next.
 - **Guests first:** there is no backend that the app needs. Progress lives in the browser's localStorage.
@@ -368,7 +368,7 @@ Each Investing module ends with a practice lesson. Its ids:
 - **Precache:** the whole built app (HTML, scripts, styles, fonts) plus everything in `public/` (diagrams, icons),
   except `public/guides/`.
 - **Runtime cache:** the guide pictures are cached on first use (all of them are too heavy to fetch up front).
-- **Cache name:** `abu-shreek-<hash of the file list>`. A new deploy gets a new cache; old ones are deleted on
+- **Cache name:** `zubda-<hash of the file list>`. A new deploy gets a new cache; old ones are deleted on
   activate.
 - **Pages** are network-first, falling back to the cached `index.html` offline.
 - **Files** are cache-first; new same-origin files are added to the cache.

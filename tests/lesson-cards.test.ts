@@ -13,7 +13,7 @@ async function offeredModules() {
   return mods
 }
 
-/** A card that fills a screen on its own: a list, a formula, or a lone key idea (which gets Abu Shreek beside it). */
+/** A card that fills a screen on its own: a list, a formula, or a lone key idea (which gets the guide beside it). */
 const fullOnItsOwn = (blocks: Block[]) =>
   hasMedia(blocks) ||
   blocks.some((b) => b.type === 'objectives' || b.type === 'takeaways' || b.type === 'formula') ||

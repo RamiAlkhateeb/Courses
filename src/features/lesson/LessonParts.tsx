@@ -106,7 +106,7 @@ export function LessonFooter({
   paid,
 }: {
   tone?: 'right' | 'wrong'
-  /** A right answer that earned +$10: Abu Shreek tosses coins instead of cheering */
+  /** A right answer that earned +$10: the guide tosses coins instead of cheering */
   paid?: boolean
   feedback?: ReactNode
   action: string

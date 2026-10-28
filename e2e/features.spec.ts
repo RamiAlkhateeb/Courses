@@ -27,7 +27,7 @@ test('a finished unit has a certificate that can be saved as an image', async ({
   await expect(page.getByRole('img', { name: /finished every lesson of How investing works/ })).toBeVisible()
   const download = page.waitForEvent('download')
   await page.getByRole('button', { name: 'Save as image' }).click()
-  expect((await download).suggestedFilename()).toBe('abu-shreek-investing-basics.png')
+  expect((await download).suggestedFilename()).toBe('zubda-investing-basics.png')
   // An unfinished unit explains what is missing instead
   await page.goto('certificate/investing/asset-classes')
   await expect(page.getByText(/Finish every lesson in Asset classes/)).toBeVisible()
