@@ -28,7 +28,7 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k.startsWith('abu-shreek-') && k !== CACHE).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => (k.startsWith('zubda-') || k.startsWith('abu-shreek-')) && k !== CACHE).map((k) => caches.delete(k))))
       .then(() => self.clients.claim()),
   )
 })
@@ -75,7 +75,7 @@ self.addEventListener('notificationclick', (event) => {
 export function serviceWorker(): Plugin {
   let publicDir = 'public'
   return {
-    name: 'abu-shreek-service-worker',
+    name: 'zubda-service-worker',
     apply: 'build',
     enforce: 'post', // after index.html is emitted
     configResolved(config) {
@@ -93,7 +93,7 @@ export function serviceWorker(): Plugin {
         hash.update(out.type === 'chunk' ? out.code : typeof out.source === 'string' ? out.source : Buffer.from(out.source))
       }
       for (const f of pub) hash.update(readFileSync(join(publicDir, f)))
-      const cache = `abu-shreek-${hash.digest('hex').slice(0, 12)}`
+      const cache = `zubda-${hash.digest('hex').slice(0, 12)}`
       this.emitFile({ type: 'asset', fileName: 'sw.js', source: worker(cache, files) })
     },
   }

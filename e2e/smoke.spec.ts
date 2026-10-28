@@ -106,7 +106,7 @@ test('Arabic is right-to-left and uses its own font', async ({ page }) => {
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
   await expect(page.locator('html')).toHaveAttribute('lang', 'ar')
   expect(await page.evaluate(() => getComputedStyle(document.body).fontFamily)).toContain('IBM Plex Sans Arabic')
-  expect(await page.title()).toContain('أبو شريك')
+  expect(await page.title()).toContain('زبدة')
   // no sideways scroll on a phone
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
   expect(errors).toEqual([])

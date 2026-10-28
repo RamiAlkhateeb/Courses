@@ -1,6 +1,6 @@
 # Optional accounts (Supabase)
 
-Status: **built.** Abu Shreek is guest-first: with no account everything works and progress lives in this browser. An
+Status: **built.** Zubda is guest-first: with no account everything works and progress lives in this browser. An
 account only adds **sync**, so progress, the play-money bank and the Playground follow a learner across devices.
 
 Rules that hold:

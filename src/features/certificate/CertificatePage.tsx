@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ListScreen } from '../../components/SettingsList'
-import { LOGO_PATHS } from '../../components/Logo'
+import { LOGO_PATHS, LOGO_RADIUS } from '../../components/logoPaths'
 import { Button, buttonClass, Guide } from '../../components/ui'
 import { getCourse } from '../../content/courses'
 import { useLocalized } from '../../content/useLocalized'
@@ -67,7 +67,7 @@ function Certificate({ courseId, moduleId }: { courseId: string; moduleId: strin
     canvas.getContext('2d')!.drawImage(img, 0, 0, W * 2, H * 2)
     return new Promise((resolve, reject) => canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('png'))), 'image/png'))
   }
-  const fileName = `abu-shreek-${courseId}-${moduleId}.png`
+  const fileName = `zubda-${courseId}-${moduleId}.png`
 
   async function save() {
     const url = URL.createObjectURL(await toPng())
@@ -94,12 +94,9 @@ function Certificate({ courseId, moduleId }: { courseId: string; moduleId: strin
         <rect x="1" y="1" width={W - 2} height={H - 2} rx="24" fill="var(--white)" stroke="var(--line)" strokeWidth="2" />
         <rect x="16" y="16" width={W - 32} height={H - 32} rx="16" fill="none" stroke="var(--sky)" strokeWidth="2" />
         <g transform={`translate(${rtl ? 48 : W - 48 - 56} 40) scale(0.875)`}>
-          <rect width="64" height="64" rx="16" fill="var(--indigo)" />
-          {LOGO_PATHS.bars.map((b) => (
-            <rect key={b.x} x={b.x} y={b.y} width="8" height={b.h} rx="2" fill="var(--sky)" />
-          ))}
-          <path d={LOGO_PATHS.trend} fill="none" stroke="var(--white)" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
-          <path d={LOGO_PATHS.arrow} fill="none" stroke="var(--white)" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+          <rect width="64" height="64" rx={LOGO_RADIUS} fill="var(--logo-cream)" />
+          <path d={LOGO_PATHS.word} fill="var(--logo-teal)" fillRule="evenodd" />
+          <path d={LOGO_PATHS.burst} fill="var(--logo-sun)" />
         </g>
         <text x={x} y="70" textAnchor={anchor} fill="var(--blue-text)" fontSize="16" fontWeight="700" letterSpacing={rtl ? 0 : 2}>
           {t('cert_kicker')}

@@ -41,7 +41,7 @@ Learners read one step per screen on a phone, so every step must be worth a scre
 ## The guide (Saud or Sara) on lesson screens
 
 Two guides, **Saud (سعود)** and **Sara (سارة)**; `currentGuide` (`src/state/guide.ts`) picks one at random each
-session (`?guide=saud|sara` pins one). Every pose exists for both. The app name "Abu Shreek" is the brand only.
+session (`?guide=saud|sara` pins one). Every pose exists for both. The app name "Zubda" (زبدة) is the brand only.
 
 | Pose | Where |
 | --- | --- |

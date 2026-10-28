@@ -21,10 +21,10 @@ export const LEGAL: Record<LegalPageId, LegalPage> = {
     title: L('Terms of Use', 'شروط الاستخدام'),
     sections: [
       {
-        h: L('What Abu Shreek is', 'ما هو أبو شريك'),
+        h: L('What Zubda is', 'ما هو تطبيق زبدة'),
         p: L(
-          'Abu Shreek is a free app for learning about investing. It is for learning only. Nothing in it is financial advice, and nothing in it tells you to buy or sell anything.',
-          'أبو شريك تطبيق مجاني لتعلّم الاستثمار. هو للتعلّم فقط. لا شيء فيه نصيحة مالية، ولا شيء فيه يطلب منك أن تشتري أو تبيع أي شيء.',
+          'Zubda is a free app for learning about investing. It is for learning only. Nothing in it is financial advice, and nothing in it tells you to buy or sell anything.',
+          'زبدة تطبيق مجاني لتعلّم الاستثمار. هو للتعلّم فقط. لا شيء فيه نصيحة مالية، ولا شيء فيه يطلب منك أن تشتري أو تبيع أي شيء.',
         ),
       },
       {
@@ -117,8 +117,8 @@ export const LEGAL: Record<LegalPageId, LegalPage> = {
       {
         h: L('Is any of this real money?', 'هل أي من هذا مال حقيقي؟'),
         p: L(
-          'No. Everything you earn and trade is play money, and Abu Shreek never asks for payment details.',
-          'لا. كل ما تكسبه وتتداوله أموال تجريبية، ولا يطلب أبو شريك أي بيانات دفع.',
+          'No. Everything you earn and trade is play money, and Zubda never asks for payment details.',
+          'لا. كل ما تكسبه وتتداوله أموال تجريبية، ولا يطلب تطبيق زبدة أي بيانات دفع.',
         ),
       },
       {

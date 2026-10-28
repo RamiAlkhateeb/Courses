@@ -15,7 +15,7 @@ for (const lang of ['en', 'ar'] as const) {
     const count = Number(await first.getAttribute('data-slide-count'))
     expect(count).toBeGreaterThan(4)
     await expect(page.locator('html')).toHaveAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr')
-    await expect(page.getByText(lang === 'ar' ? 'أبو شريك' : 'Abu Shreek', { exact: true })).toBeVisible()
+    await expect(page.getByText(lang === 'ar' ? 'زبدة' : 'Zubda', { exact: true })).toBeVisible()
     await expect(page.getByRole('navigation')).toHaveCount(0) // no tab bar: the slide is the whole page
     for (let n = 1; n <= count; n++) {
       const root = n === 1 ? first : await open(n)

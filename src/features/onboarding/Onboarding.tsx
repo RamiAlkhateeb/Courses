@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { ParseKeys } from 'i18next'
@@ -20,12 +20,20 @@ const MINUTES = [5, 10, 15, 20]
 const otherLanguage = (lng: string) => LANGUAGES.find((l) => l.code !== lng)!.code
 const dirOf = (lng: string) => (lng === 'ar' ? 'rtl' : 'ltr')
 
-/** The Abu Shreek mark: a rounded indigo tile with a sky-blue "M". */
 /** Welcome: the brand (both names, stacked), a language switch, the headline in both languages, the mascot, and Get started. */
 export function Welcome() {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const other = otherLanguage(i18n.language)
+  // Welcome also shows the other language, whose strings load on demand (Arabic is its own chunk): fetch them, then redraw.
+  const [, setLoaded] = useState(0)
+  useEffect(() => {
+    let live = true
+    void i18n.loadLanguages(other).then(() => live && setLoaded((n) => n + 1))
+    return () => {
+      live = false
+    }
+  }, [i18n, other])
   return (
     <div className={styles.welcome}>
       <Tree size={70} style={{ position: 'absolute', insetInlineEnd: 32, insetBlockStart: 176 }} />
