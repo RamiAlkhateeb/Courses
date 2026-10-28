@@ -11,6 +11,8 @@ import { alertSupport, setNewsAlerts, useNewsAlerts } from '../../state/newsAler
 import { installApp, useCanInstall } from '../../state/install'
 import { setReminderHour, setReminderOn, useReminder } from '../../state/reminder'
 import { REMINDER_HOURS } from '../../domain/reminder'
+import { THEME_CHOICES } from '../../domain/theme'
+import { setThemeChoice, useThemeChoice } from '../../state/theme'
 
 /** Design 31, opened by the gear on Me: Account (when accounts are on), preferences, about, and Log out (signed in only).
  *  Guests see the same screen; their Account row opens Log in. */
@@ -20,6 +22,7 @@ export function SettingsPage() {
   const auth = useAuth()
   const { settings, updateSettings } = useSettings()
   const reminder = useReminder()
+  const theme = useThemeChoice()
   const hourText = (h: number) => new Intl.DateTimeFormat(i18n.language === 'ar' ? 'ar-u-nu-latn' : 'en', { hour: 'numeric', minute: '2-digit' }).format(new Date(2026, 0, 1, h))
   const newsAlerts = useNewsAlerts()
   const [support, setSupport] = useState(alertSupport)
@@ -53,6 +56,13 @@ export function SettingsPage() {
       <ListGroup title={t('acc_s_prefs')}>
         <LanguagePicker />
         <GoalPicker />
+        {/* Light, dark, or follow the phone (saved on this device only) */}
+        <ListPicker
+          icon="moon"
+          label={t('set_appearance')}
+          value={t(`theme_${theme}`)}
+          options={THEME_CHOICES.map((c) => ({ key: c, label: t(`theme_${c}`), selected: theme === c, onSelect: () => setThemeChoice(c) }))}
+        />
         <ListSwitch
           icon="volume"
           label={t('soundEffects')}

@@ -36,15 +36,15 @@
   color: var(--white);
 }
 .indigo {
-  background: var(--indigo);
-  border-color: var(--indigo);
-  color: var(--white);
+  background: var(--surface-ink);
+  border-color: var(--surface-ink);
+  color: var(--on-indigo);
 }
 /* White button on an indigo card (Up next, Save your progress) */
 .white {
   background: var(--white);
   border-color: var(--white);
-  color: var(--indigo);
+  color: var(--ink-on-white);
 }
 .secondary {
   background: var(--card);
@@ -59,12 +59,12 @@
 .correct {
   background: var(--correct);
   border-color: var(--correct);
-  color: var(--white);
+  color: var(--card);
 }
 .oops {
   background: var(--oops);
   border-color: var(--oops);
-  color: var(--white);
+  color: var(--card);
 }
 /* Over the indigo Welcome sheet */
 .onIndigo {
@@ -85,6 +85,7 @@
 .sm.primary {
   background: var(--blue-text);
   border-color: var(--blue-text);
+  color: var(--card);
 }
 
 /* ---------- Card ---------- */
@@ -99,8 +100,8 @@
   border: 1px solid var(--line);
 }
 .indigoCard {
-  background: var(--indigo);
-  border-color: var(--indigo);
+  background: var(--surface-ink);
+  border-color: var(--surface-ink);
   color: var(--on-indigo);
 }
 .dashed {
@@ -175,7 +176,7 @@
 .radioOn {
   background: var(--indigo);
   border-color: var(--indigo);
-  color: var(--white);
+  color: var(--card);
 }
 /* Quiz answers: a ring that fills with a dot when chosen, and turns into a check / cross once checked */
 .ring {
@@ -186,7 +187,7 @@
   block-size: 26px;
   border-radius: 50%;
   border: 2px solid var(--locked);
-  color: var(--white);
+  color: var(--card); /* the check / cross on a filled ring */
   box-sizing: border-box;
 }
 .opt_selected .ring {
@@ -215,7 +216,7 @@
 .opt_selected .badge {
   background: var(--indigo);
   border-color: var(--indigo);
-  color: var(--white);
+  color: var(--card);
 }
 .opt_correct {
   background: var(--correct-bg);
@@ -225,7 +226,7 @@
 .opt_correct .badge {
   background: var(--correct);
   border-color: var(--correct);
-  color: var(--white);
+  color: var(--card);
 }
 .opt_wrong {
   background: var(--oops-bg);
@@ -235,7 +236,7 @@
 .opt_wrong .badge {
   background: var(--oops);
   border-color: var(--oops);
-  color: var(--white);
+  color: var(--card);
 }
 .opt_dim {
   opacity: 0.5;
@@ -287,7 +288,7 @@
   padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
   min-block-size: 76px;
   box-sizing: border-box;
-  background: var(--white);
+  background: var(--card);
   border-block-start: 1px solid var(--line);
 }
 .tab {

@@ -11,8 +11,10 @@ import { registerServiceWorker } from './app/serviceWorker'
 import { router } from './app/router'
 import { initAuth } from './state/auth'
 import { listenForInstall } from './state/install'
+import { startTheme } from './state/theme'
 import { startSync } from './state/sync'
 
+startTheme() // light or dark before anything is drawn
 reloadOnStaleChunks()
 registerServiceWorker()
 listenForInstall()

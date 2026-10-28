@@ -592,4 +592,8 @@ export const en = {
   "share_caption_quiz": "Quick check on slide {{n}}: comment your answer, then swipe to see if you were right.",
   "share_caption_app": "Free bite-size investing lessons in the Zubda app. Link in bio.",
   "share_hashtags": "#investing #personalfinance #moneytips #financialliteracy #Zubda",
+  "set_appearance": "Appearance",
+  "theme_system": "Same as phone",
+  "theme_light": "Light",
+  "theme_dark": "Dark",
 }

@@ -416,6 +416,11 @@ always match the app:
   only. Title sizes come from the type tokens (`--title-page`, `--title-section`, `--title-small`,
   `--title-switcher`, `--display`); lesson card text uses `--lesson-text`, `--lesson-small` and `--lesson-label`. Fonts are self-hosted (`src/styles/fonts.css`): Instrument Sans for English, IBM Plex Sans
   Arabic for Arabic.
+- **Light and dark.** `tokens.css` holds the light values and, under `html[data-theme='dark']`, the dark ones.
+  `src/state/theme.ts` sets that attribute from the Appearance setting (`theme:v1`: Same as phone / Light / Dark,
+  rules in `src/domain/theme.ts`) and follows the phone while on "Same as phone". Token names say what a colour is
+  for: `--indigo` is ink, `--surface-ink` a dark surface, and text on a coloured fill uses `--card`. Share slides and
+  the certificate carry `data-theme="light"`, so exports always come out light.
 - **Flat look.** No gradients, glows, blur or shadows except the focus ring on text inputs. Shared controls
   (`Button`, `Card`, `AnswerOption`, `TabBar`, …) are in `src/components/ui/`.
 

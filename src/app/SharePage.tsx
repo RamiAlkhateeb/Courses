@@ -123,6 +123,7 @@ function SlideView({ slides, index, courseTitle, notice, lessonNumber, override 
     <div
       ref={root}
       className={styles.canvas}
+      data-theme="light" // slides are always light, whatever the app's appearance
       data-slide={index + 1}
       data-slide-count={slides.length}
       data-ready={ready || undefined}

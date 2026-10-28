@@ -107,7 +107,7 @@
   block-size: 24px;
   border-radius: 50%;
   border: 1.5px solid var(--locked);
-  color: var(--white);
+  color: var(--card);
 }
 .pillOk {
   color: var(--correct);

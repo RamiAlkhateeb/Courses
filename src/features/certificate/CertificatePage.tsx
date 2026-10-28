@@ -54,9 +54,10 @@ function Certificate({ courseId, moduleId }: { courseId: string; moduleId: strin
   const x = rtl ? W - 48 : 48
   const anchor = 'start' // with direction="rtl" on the drawing, start is the right edge
 
-  /** The certificate as a PNG: token colours resolved (a stand-alone image can't read CSS variables), then drawn. */
+  /** The certificate as a PNG: token colours resolved (a stand-alone image can't read CSS variables), then drawn.
+   *  Read from the drawing itself, which is always light (data-theme="light"), even in dark mode. */
   async function toPng(): Promise<Blob> {
-    const css = getComputedStyle(document.documentElement)
+    const css = getComputedStyle(svg.current!)
     const source = new XMLSerializer().serializeToString(svg.current!).replace(/var\((--[\w-]+)\)/g, (_, v: string) => css.getPropertyValue(v).trim() || 'currentColor')
     const img = new Image()
     img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(source)}`
@@ -90,7 +91,7 @@ function Certificate({ courseId, moduleId }: { courseId: string; moduleId: strin
 
   return (
     <ListScreen title={t('cert_title')} back="/">
-      <svg ref={svg} viewBox={`0 0 ${W} ${H}`} className={styles.cert} role="img" aria-label={t('cert_alt', { name, unit: tc(chapter.title), course: tc(course.title), date })} direction={rtl ? 'rtl' : 'ltr'} xmlns="http://www.w3.org/2000/svg">
+      <svg ref={svg} data-theme="light" viewBox={`0 0 ${W} ${H}`} className={styles.cert} role="img" aria-label={t('cert_alt', { name, unit: tc(chapter.title), course: tc(course.title), date })} direction={rtl ? 'rtl' : 'ltr'} xmlns="http://www.w3.org/2000/svg">
         <rect x="1" y="1" width={W - 2} height={H - 2} rx="24" fill="var(--white)" stroke="var(--line)" strokeWidth="2" />
         <rect x="16" y="16" width={W - 32} height={H - 32} rx="16" fill="none" stroke="var(--sky)" strokeWidth="2" />
         <g transform={`translate(${rtl ? 48 : W - 48 - 56} 40) scale(0.875)`}>
