@@ -184,8 +184,8 @@
   margin: 8px 0;
   padding: 20px;
   border-radius: var(--radius-lg);
-  background: var(--indigo);
-  color: var(--white);
+  background: var(--surface-ink);
+  color: var(--on-indigo);
 }
 .keyIdeaLabel {
   display: flex;
@@ -311,8 +311,8 @@
   background: var(--code-fill-hover);
 }
 .codeCopyBtn.copied {
-  background: var(--brand);
-  border-color: var(--brand);
+  background: var(--surface-ink);
+  border-color: var(--surface-ink);
   color: var(--on-brand);
 }
 
@@ -340,12 +340,19 @@
   margin-bottom: 12px;
   color: var(--indigo);
 }
-/* The picture holds numbers only, which read left to right in both languages */
+/* The picture holds numbers only, which read left to right in both languages. Its colours are fixed, so it sits on a
+   light panel (the card itself in light mode; a white panel in dark mode). */
 .diagram img {
   width: 100%;
   height: auto;
   display: block;
   direction: ltr;
+  box-sizing: border-box;
+  background: var(--paper-light);
+  border-radius: 12px;
+}
+:global(html[data-theme='dark']) .diagram img {
+  padding: 8px;
 }
 .diagram figcaption {
   font-size: var(--lesson-small);

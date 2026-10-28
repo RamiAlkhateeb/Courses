@@ -19,7 +19,7 @@
   color: var(--indigo);
 }
 .dark {
-  background: var(--indigo);
+  background: var(--surface-ink);
   color: var(--on-indigo);
 }
 .top {

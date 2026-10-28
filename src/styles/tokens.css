@@ -1,7 +1,15 @@
 /* Design tokens: the "Zubda · زبدة" garden identity. Cool mist, deep indigo ink, electric blue only where the
    next step is, leaf green for what you have grown. Every colour, radius, shadow and font lives here; components use
-   these names only (a test enforces it). Change a value and every screen follows. */
-:root {
+   these names only (a test enforces it). Change a value and every screen follows.
+
+   Two themes: these light values, and the dark ones at the end of the file (html[data-theme='dark'], set by
+   src/state/theme.ts from the Appearance setting or the phone). An element marked data-theme="light" (share slides,
+   the certificate) gets the light values back inside a dark app. Names say what a colour is for, so both themes work:
+   --indigo is ink (text), --surface-ink a dark surface (Up next, key idea) with --on-indigo text, and text sitting
+   on a coloured fill (correct / oops / ink) uses --card, white in light and the dark card colour in dark. */
+:root,
+[data-theme='light'] {
+  color-scheme: light;
   /* ---- Core palette (Tokens board) ---- */
   --indigo: #293681;
   --blue: #4274d9;
@@ -16,6 +24,12 @@
   --oops: #a8432b;
   --correct-bg: #dcefe4;
   --oops-bg: #f7ded5;
+  /* A dark surface (Up next, key idea, unit banner, news, dark slides); its text is --on-indigo */
+  --surface-ink: #293681;
+  /* Ink on the white button that sits on a dark surface: deep indigo in both themes */
+  --ink-on-white: #293681;
+  /* Behind pictures drawn with fixed colours (lesson diagrams): light in both themes */
+  --paper-light: #fff;
 
   /* ---- The Zubda mark only (Logo): cream square, teal word, mustard burst ---- */
   --logo-cream: #fcf5e4;
@@ -122,4 +136,31 @@
   --on-navy-dim: var(--on-indigo-dim);
   --on-navy-faint: var(--on-indigo-dim);
   --code-fg: var(--code-text);
+}
+
+/* ---- Dark theme: the same names, night values. Ink turns light, pages and cards deep navy; the brand blue, the
+   garden greens, the streak and the logo keep their colours. Text pairs keep WCAG AA (4.5:1, 3:1 for icons). ---- */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --indigo: #e3e8ff;
+  --sky: #95ccdd;
+  --mint: #1d2a55;
+  --mist: #0d1230;
+  --card: #171e42;
+  --line: #2a3463;
+  --muted: #a3add3;
+  --blue-text: #93b4ff;
+  --correct: #5fd39d;
+  --oops: #ff8f73;
+  --correct-bg: #123a2b;
+  --oops-bg: #45201a;
+  --surface-ink: #2b3887;
+  --indigo-2: #4153b4;
+  --blue-halo: rgba(66, 116, 217, 0.35);
+  --locked: #3b4a78;
+  --locked-bg: #1c2550;
+  --locked-icon: #8391bd;
+  --chip-bg: #222c5e;
+  --code-bg: #0a0e26;
+  --scrim: rgba(3, 6, 20, 0.7);
 }

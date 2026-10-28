@@ -51,7 +51,7 @@
   inline-size: 36px;
   block-size: 36px;
   border-radius: 50%;
-  background: var(--white);
+  background: var(--card);
   color: var(--blue-text);
 }
 .taskDone {
@@ -471,7 +471,7 @@ button.holding {
   cursor: pointer;
 }
 .seg button[aria-pressed='true'] {
-  background: var(--brand);
+  background: var(--surface-ink);
   color: var(--sky);
 }
 .seg button:disabled {
@@ -600,7 +600,7 @@ button.holding {
   max-inline-size: var(--app-max);
   margin-inline: auto;
   padding: 22px 22px calc(20px + env(safe-area-inset-bottom));
-  background: var(--brand);
+  background: var(--surface-ink);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -656,7 +656,7 @@ button.holding {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  color: var(--white);
+  color: var(--card);
 }
 :global(html[dir='rtl']) .arrow_flat svg {
   transform: scaleX(-1);
@@ -929,7 +929,7 @@ button.holding {
   padding: 12px 14px 0;
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  background: var(--white);
+  background: var(--card);
   overflow: hidden;
 }
 .tourGuide {
