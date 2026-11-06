@@ -10,7 +10,8 @@ import type { Localized } from '../content/types'
 import { useLocalized } from '../content/useLocalized'
 import { useModule } from '../content/useModule'
 import { lessonsFor } from '../domain/lessons'
-import { shareSlides, type Slide } from '../domain/share'
+import { carouselPost, shareSlides, type Slide } from '../domain/share'
+import { currentGuide } from '../state/guide'
 import { Blocks } from '../components/content/Blocks'
 import contentStyles from '../components/content/content.module.css'
 import { safeHtml } from '../components/content/safeHtml'
@@ -72,13 +73,15 @@ export function SharePage() {
       notice={getCourse(courseId)!.notice}
       lessonNumber={`${mod.order}.${at + 1}`}
       override={post?.[lang] ?? {}}
+      lessonTitle={lessons[at].title}
+      slug={`zubda-${courseId}-${moduleId}-${lessonId}`}
     />
   )
 }
 
-function SlideView({ slides, index, courseTitle, notice, lessonNumber, override }: { slides: Slide[]; index: number; courseTitle: Localized; notice?: Localized; lessonNumber: string; override: PostOverride }) {
+function SlideView({ slides, index, courseTitle, notice, lessonNumber, override, lessonTitle, slug }: { slides: Slide[]; index: number; courseTitle: Localized; notice?: Localized; lessonNumber: string; override: PostOverride; lessonTitle: Localized; slug: string }) {
   const t = useLocalized()
-  const { t: tUi } = useTranslation()
+  const { t: tUi, i18n } = useTranslation()
   const slide = slides[index]
   const dark = slide.kind === 'hook' || slide.kind === 'cta'
   const content = useRef<HTMLDivElement>(null)
@@ -118,6 +121,26 @@ function SlideView({ slides, index, courseTitle, notice, lessonNumber, override 
     notice && `⚠️ ${t(notice)}`,
     override.hashtags ?? tUi('share_hashtags'),
   ].filter(Boolean)
+
+  // The same slides as carousel-engine markdown (scripts/social/to-carousel.mjs reads it)
+  const lang = i18n.language === 'ar' ? 'ar' : 'en'
+  const engine = carouselPost(slides, {
+    lang,
+    slug,
+    title: t(lessonTitle),
+    author: tUi('share_brand'),
+    guide: currentGuide,
+    kicker: override.kicker ?? `${t(courseTitle)} · ${tUi('share_lesson_n', { n: lessonNumber })}`,
+    hook: override.hook,
+    stat: override.stat,
+    text: {
+      keyIdea: tUi('key_idea'),
+      quickCheck: tUi('quickCheck'),
+      answer: tUi('share_answer'),
+      ctaTitle: tUi('share_cta_title'),
+      ctaBody: `${tUi('share_link_bio')} · ${tUi('share_disclaimer_short')}`,
+    },
+  })
 
   return (
     <div
@@ -216,6 +239,9 @@ function SlideView({ slides, index, courseTitle, notice, lessonNumber, override 
       </div>
       <pre id="share-caption" hidden>
         {caption.join('\n\n')}
+      </pre>
+      <pre id="share-carousel" hidden data-assets={JSON.stringify(engine.assets)}>
+        {engine.markdown}
       </pre>
     </div>
   )

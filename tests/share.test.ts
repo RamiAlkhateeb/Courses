@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { appCourses, loadModule } from '../src/content/courses'
 import { lessonsFor } from '../src/domain/lessons'
-import { SLIDE_WORDS, shareSlides } from '../src/domain/share'
+import { ENGINE, SLIDE_WORDS, carouselPost, plainText, shareSlides, type CarouselMeta } from '../src/domain/share'
 import { blockWords } from '../src/domain/chunks'
 
 describe('share slides', () => {
@@ -49,5 +49,67 @@ describe('share slides', () => {
         }
       }
     }
+  })
+})
+
+describe('carousel-engine markdown', () => {
+  const meta = (lang: 'en' | 'ar'): CarouselMeta => ({
+    lang,
+    slug: 'zubda-investing-basics-why',
+    title: lang === 'ar' ? 'الادخار مقابل الاستثمار' : 'Saving vs investing',
+    author: 'Zubda',
+    guide: 'sara',
+    kicker: 'Learn investing · Lesson 1',
+    text: { keyIdea: 'Key idea', quickCheck: 'Quick check', answer: 'Answer', ctaTitle: 'Learn investing', ctaBody: 'Link in bio' },
+  })
+  const slidesOf = (md: string) => md.split('<!-- slide:').slice(1)
+  const layouts = (md: string) => slidesOf(md).map((s) => s.slice(0, s.indexOf(' -->')))
+
+  it('writes the front matter and the engine layouts, cover first and call to action last', async () => {
+    const mod = await loadModule('investing', 'basics')
+    const lesson = lessonsFor(mod).find((l) => l.id === 'why')!
+    const { markdown, assets } = carouselPost(shareSlides(lesson), meta('en'))
+    expect(markdown).toMatch(/^---\ntitle: "Saving vs investing"\nlanguage: en\nslug: zubda-investing-basics-why\nauthor: "Zubda"\ntheme: zubda\n---\n/)
+    const ls = layouts(markdown)
+    expect(ls[0]).toBe('cover')
+    expect(ls.at(-1)).toBe('cta')
+    expect(ls.every((l) => ['cover', 'framework', 'story', 'cta'].includes(l))).toBe(true)
+    // every slide has a picture, and each picture is listed for copying
+    for (const s of slidesOf(markdown)) expect(s).toMatch(/\nimage: assets\/\S+/)
+    expect(assets).toContainEqual({ from: 'diagrams/inflation.svg', to: 'inflation.svg' })
+    expect(assets).toContainEqual({ from: 'guides/sara-point.png', to: 'sara-point.png' })
+    // plain text only, and prices are not cut at their decimal point
+    expect(markdown).not.toMatch(/<(?!!-- slide)/)
+    expect(markdown).toContain('2.00 today')
+  })
+
+  it('keeps every slide inside the engine limits, with and without the quiz, in both languages', async () => {
+    for (const course of appCourses) {
+      for (const id of Object.keys(course.loaders)) {
+        const mod = await loadModule(course.id, id)
+        for (const lesson of lessonsFor(mod)) {
+          for (const lang of ['en', 'ar'] as const) {
+            for (const quiz of [false, true]) {
+              const { markdown } = carouselPost(shareSlides(lesson, { quiz }), meta(lang))
+              for (const s of slidesOf(markdown)) {
+                const layout = s.slice(0, s.indexOf(' -->'))
+                const title = s.match(/^#{1,2} (.+)$/m)?.[1] ?? ''
+                const body = s.split(/^#{1,2} .+$/m)[1]?.trim() ?? ''
+                const limit = layout === 'cover' ? ENGINE.coverTitle : layout === 'framework' ? ENGINE.frameworkTitle : layout === 'cta' ? 100 : ENGINE.storyTitle
+                expect(title.length, `${lesson.id} ${lang}: ${title}`).toBeLessThanOrEqual(limit)
+                // a single sentence longer than the limit stays whole (the engine warns); none in the offered lessons
+                expect(body.length, `${lesson.id} ${lang}: ${body.slice(0, 60)}`).toBeLessThanOrEqual(ENGINE.body)
+              }
+              expect(layouts(markdown).includes('framework') || layouts(markdown).filter((l) => l === 'story').length > 0).toBe(true)
+              if (!quiz) expect(markdown).not.toContain('Quick check')
+            }
+          }
+        }
+      }
+    }
+  })
+
+  it('reads plain text out of lesson HTML', () => {
+    expect(plainText('<p>Prices rise &amp; fall — that is <strong>inflation</strong>.</p><p>Next.</p>')).toBe('Prices rise & fall — that is inflation. Next.')
   })
 })

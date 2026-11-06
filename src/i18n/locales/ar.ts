@@ -669,4 +669,5 @@ export const ar = {
   "theme_system": "مثل الهاتف",
   "theme_light": "فاتح",
   "theme_dark": "داكن",
+  "share_disclaimer_short": "محتوى تعليمي فقط، وليس نصيحة مالية.",
 }
