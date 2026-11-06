@@ -47,3 +47,26 @@ These files are optional. They are per language, and any field you leave out fal
 ```
 
 The content is educational only: take figures from the lesson (labelled as illustrations), and never name or recommend real products.
+
+## Through carousel-engine (Instagram PNGs and a LinkedIn PDF)
+
+Your other repo, [carousel-engine](https://github.com/RamiAlkhateeb/carousel-engine), can render the same lessons in
+its `zubda` theme: the app's colours, fonts and logo, a flat look, and the guides and charts as pictures. It adds
+a LinkedIn PDF next to the PNGs. Clone it next to this repo, then:
+
+```
+(cd ../carousel-engine && npm install && npm run build)       # once
+node scripts/social/to-carousel.mjs investing basics why --engine ../carousel-engine --lang ar --build
+```
+
+- **What the script writes:** `../carousel-engine/content/zubda-investing-basics-why/ar.md`, its pictures in
+  `assets/`, and `caption-ar.txt` (a draft).
+- **What `--build` adds:** it runs the engine's
+  `carousel build … --format all --strict`, which writes `dist/zubda-investing-basics-why/ar/instagram/*.png`,
+  `linkedin.pdf` and `preview.html` in the engine folder.
+- **Other flags:** `--quiz`, `--guide` and `--no-app-build` work as above.
+- **The markdown:** it comes from `carouselPost` (`src/domain/share.ts`). The hook is a `cover` slide, text and
+  pictures are `story` slides (each body 300 characters at most, cut at sentence ends), questions are `framework`
+  chips when they fit, and the call to action is a `cta` slide.
+- **Editing:** you can edit the `.md` in the engine and rebuild there; running the script again overwrites it.
+

@@ -9,25 +9,12 @@
 // Posts carry the lesson only; --quiz adds each question and then its answer before the closing slide.
 //
 // Optional hand-written hooks, stats and captions: social/posts/<courseId>/<moduleId>/<lessonId>.json (see social/README.md).
-import { spawn, spawnSync } from 'node:child_process'
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { chromium } from '@playwright/test'
+import { flags, openSlide, sharePage, startPreview } from './share-page.mjs'
 
 const args = process.argv.slice(2)
-const flag = (name, fallback) => {
-  const i = args.indexOf(name)
-  if (i === -1) return fallback
-  const value = args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true
-  args.splice(i, value === true ? 1 : 2)
-  return value
-}
-// An on/off flag never takes the next argument (so `--quiz investing basics why` still works)
-const toggle = (name) => {
-  const i = args.indexOf(name)
-  if (i !== -1) args.splice(i, 1)
-  return i !== -1
-}
+const { flag, toggle } = flags(args)
 const lang = flag('--lang', 'en') === 'ar' ? 'ar' : 'en'
 const guide = flag('--guide', lang === 'ar' ? 'saud' : 'sara')
 const noBuild = toggle('--no-build')
@@ -44,64 +31,12 @@ mkdirSync(out, { recursive: true })
 
 const W = 1080
 const H = 1350
-// The same build environment as the e2e web server, so the base path is /Courses/
-const env = { ...process.env, GITHUB_PAGES: 'true', GITHUB_REPOSITORY: 'owner/Courses' }
-const base = `http://localhost:${port}/Courses/`
-
-if (!noBuild) {
-  console.log('building…')
-  const build = spawnSync('npm', ['run', 'build'], { env, stdio: ['ignore', 'ignore', 'inherit'] })
-  if (build.status !== 0) process.exit(build.status ?? 1)
-}
-
-const server = spawn('npx', ['vite', 'preview', '--port', String(port), '--strictPort'], { env, stdio: 'ignore', detached: true })
-const stop = () => {
-  try {
-    process.kill(-server.pid)
-  } catch {
-    /* already gone */
-  }
-}
-process.on('exit', stop)
-
-async function waitForServer() {
-  for (let i = 0; i < 100; i++) {
-    try {
-      if ((await fetch(base)).ok) return
-    } catch {
-      /* not up yet */
-    }
-    await new Promise((r) => setTimeout(r, 200))
-  }
-  throw new Error(`vite preview did not start on ${base}`)
-}
+const { base, browser, close } = await startPreview({ build: !noBuild, port })
 
 let failed = false
-const browser = await (async () => {
-  await waitForServer()
-  return chromium.launch()
-})()
 try {
-  const context = await browser.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: 1 })
-  // Skip onboarding and apply the language before the app starts (as e2e/smoke.spec.ts does)
-  await context.addInitScript((l) => {
-    localStorage.setItem('profile:v1', JSON.stringify({ onboarded: true }))
-    localStorage.setItem('lang', l)
-  }, lang)
-  const page = await context.newPage()
-  const url = (n) => `${base}share/${courseId}/${moduleId}/${lessonId}?slide=${n}&lang=${lang}&guide=${guide}${quiz ? '&quiz=1' : ''}`
-  const open = async (n) => {
-    await page.goto(url(n))
-    const root = page.locator('[data-slide-count]')
-    await Promise.race([
-      root.and(page.locator('[data-ready]')).waitFor({ timeout: 20_000 }),
-      page.locator('[data-share-error]').waitFor({ timeout: 20_000 }).then(() => {
-        throw new Error(`no such lesson: ${courseId}/${moduleId}/${lessonId}`)
-      }),
-    ])
-    await page.evaluate(() => document.fonts.ready)
-    return root
-  }
+  const page = await sharePage(browser, lang)
+  const open = (n) => openSlide(page, base, { courseId, moduleId, lessonId, n, lang, guide, quiz })
 
   const first = await open(1)
   const count = Number(await first.getAttribute('data-slide-count'))
@@ -133,7 +68,6 @@ try {
   await sheet.screenshot({ path: join(out, 'contact-sheet.png'), fullPage: true })
   console.log(`${count} slides → ${out}${failed ? ' (some slides overflow)' : ''}`)
 } finally {
-  await browser.close()
-  stop()
+  await close()
 }
 process.exit(failed ? 2 : 0)
