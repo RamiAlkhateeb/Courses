@@ -596,4 +596,5 @@ export const en = {
   "theme_system": "Same as phone",
   "theme_light": "Light",
   "theme_dark": "Dark",
+  "share_disclaimer_short": "Educational content only, not financial advice.",
 }
