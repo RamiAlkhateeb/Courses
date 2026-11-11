@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 210" font-family="Instrument Sans, Helvetica, Arial, sans-serif">
+  <!-- 10,000 falling by a third to 6,700 in one year. Numbers only: the title, caption and alt text are in the
+       lesson, in the reader's language. -->
+  <line x1="12" y1="176" x2="308" y2="176" stroke="#D0E7E6" stroke-width="2"/>
+  <rect x="56" y="36" width="80" height="140" rx="10" fill="#293681"/>
+  <rect x="184" y="82" width="80" height="94" rx="10" fill="#A8432B"/>
+  <rect x="184" y="36" width="80" height="44" rx="10" fill="none" stroke="#A8432B" stroke-width="3" stroke-dasharray="6 6"/>
+  <g font-size="18" font-weight="700" fill="#293681" text-anchor="middle">
+    <text x="96" y="26">10,000</text>
+    <text x="224" y="26">6,700</text>
+  </g>
+  <text x="224" y="64" font-size="16" font-weight="700" fill="#A8432B" text-anchor="middle">−33%</text>
+</svg>
