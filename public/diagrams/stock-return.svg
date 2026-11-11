@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 210" font-family="Instrument Sans, Helvetica, Arial, sans-serif">
+  <!-- One share bought at 50; a year later it is worth 54 (+4) and paid a dividend of 1: 5 on 50 is 10%.
+       Numbers only: the title, caption and alt text are in the lesson, in the reader's language. -->
+  <line x1="12" y1="180" x2="308" y2="180" stroke="#D0E7E6" stroke-width="2"/>
+  <rect x="48" y="55" width="80" height="125" rx="10" fill="#293681"/>
+  <rect x="192" y="55" width="80" height="125" rx="10" fill="#293681"/>
+  <rect x="192" y="35" width="80" height="18" rx="6" fill="#4274D9"/>
+  <rect x="192" y="26" width="80" height="7" rx="3" fill="#95CCDD"/>
+  <g font-size="18" font-weight="700" fill="#293681" text-anchor="middle">
+    <text x="88" y="45">50</text>
+  </g>
+  <g font-size="16" font-weight="700" text-anchor="start">
+    <text x="280" y="50" fill="#4274D9">+4</text>
+    <text x="280" y="32" fill="#5B678F">+1</text>
+  </g>
+  <g font-size="14" font-weight="600" fill="#5B678F" text-anchor="middle">
+    <text x="88" y="200">0</text>
+    <text x="232" y="200">1</text>
+  </g>
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 210" font-family="Instrument Sans, Helvetica, Arial, sans-serif">
+  <!-- 1,000 in one company that fails is worth 0; 1,000 spread over 100 companies, one of which fails, is
+       worth 990. Numbers only: the title, caption and alt text are in the lesson, in the reader's language. -->
+  <line x1="12" y1="176" x2="308" y2="176" stroke="#D0E7E6" stroke-width="2"/>
+  <rect x="56" y="172" width="80" height="4" rx="2" fill="#A8432B"/>
+  <rect x="184" y="37" width="80" height="139" rx="10" fill="#4274D9"/>
+  <rect x="184" y="37" width="80" height="2" fill="#A8432B"/>
+  <g font-size="20" font-weight="700" fill="#293681" text-anchor="middle">
+    <text x="96" y="160">0</text>
+    <text x="224" y="27">990</text>
+  </g>
+  <g font-size="14" font-weight="600" fill="#5B678F" text-anchor="middle">
+    <text x="96" y="198">1</text>
+    <text x="224" y="198">100</text>
+  </g>
+</svg>
