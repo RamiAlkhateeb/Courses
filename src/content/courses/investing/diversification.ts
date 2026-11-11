@@ -1,6 +1,7 @@
 // Original course content. Portfolio mixes and fee figures are illustrative examples, not recommendations.
+// The story goes on: Karim's (كريم) bakery shares hit trouble, he finds his fund's fee, and Noor (نور) starts investing monthly.
 import type { Module } from '../../types'
-import { L, box, cover, diagram, exercise, html, keyIdea, mcq, objectives, practice, section, table, takeaways } from '../../helpers'
+import { L, box, choice, cover, diagram, exercise, html, keyIdea, mcq, practice, predict, section, sort, table, takeaways } from '../../helpers'
 
 const W = 'diversification'
 const P = 'invd'
@@ -72,22 +73,30 @@ export const diversification: Module = {
       label: L('Part 1', 'الجزء ١'),
       nav: L('Diversification', 'التنويع'),
       title: L('Don’t put all your eggs in one basket', 'لا تضع كل البيض في سلة واحدة'),
-      standfirst: L('Spreading money across many investments lowers the damage any single one can do.', 'توزيع المال على استثمارات كثيرة يقلل الضرر الذي يمكن أن يسببه أي استثمار منفرد.'),
+      standfirst: L('The bakery chain has a bad week. Karim finds out why spreading out matters.', 'سلسلة المخابز تمر بأسبوع سيئ. يكتشف كريم لماذا يهم التوزيع.'),
       time: L('5 min', '5 دقائق'),
       blocks: [
-        objectives([
-          L('Explain what diversification can and cannot do', 'شرح ما يستطيع التنويع فعله وما لا يستطيع'),
-          L('Describe asset allocation and rebalancing', 'وصف توزيع الأصول وإعادة التوازن'),
-          L('Measure the long-term cost of fees', 'قياس التكلفة طويلة الأجل للرسوم'),
-          L('Recognise the behaviour mistakes that cost investors most', 'التعرف على الأخطاء السلوكية الأكثر كلفة للمستثمرين'),
-        ]),
         html(L(
-          '<p>There are two kinds of risk. <strong>Specific risk</strong> belongs to one company or sector (a failed product, a scandal). <strong>Market risk</strong> hits almost everything at once (a recession). Holding many different companies, sectors and countries greatly reduces specific risk — but no amount of diversification removes market risk.</p>',
-          '<p>هناك نوعان من المخاطر. <strong>المخاطر الخاصة</strong> ترتبط بشركة أو قطاع واحد (منتج فاشل، فضيحة). و<strong>مخاطر السوق</strong> تصيب كل شيء تقريبًا معًا (الركود). امتلاك شركات وقطاعات ودول مختلفة كثيرة يقلل المخاطر الخاصة كثيرًا — لكن لا يزيل أي قدر من التنويع مخاطر السوق.</p>',
+          '<p>Bad news: the bakery chain Karim owns shares in is caught selling stale bread, and its shares drop 40% in a week. Karim’s index fund barely moves. Some risks belong to <strong>one company</strong>; others hit <strong>the whole market</strong> at once. Can you tell them apart?</p>',
+          '<p>خبر سيئ: سلسلة المخابز التي يملك كريم أسهمًا فيها ضُبطت تبيع خبزًا قديمًا، فهبطت أسهمها 40% في أسبوع. أما صندوق المؤشر لدى كريم فبالكاد تحرك. بعض المخاطر تخص <strong>شركة واحدة</strong>، وبعضها يصيب <strong>السوق كله</strong> معًا. هل تستطيع التمييز بينها؟</p>',
         )),
+        sort(
+          L('One company, or the whole market?', 'شركة واحدة أم السوق كله؟'),
+          [L('One company', 'شركة واحدة'), L('Whole market', 'السوق كله')],
+          [
+            [L('A bakery’s scandal over stale bread', 'فضيحة مخابز بسبب الخبز القديم'), 0],
+            [L('A recession across the country', 'ركود في أنحاء البلاد'), 1],
+            [L('A phone maker’s new model flops', 'فشل الطراز الجديد لشركة هواتف'), 0],
+            [L('Interest rates jump for everyone', 'قفزة في أسعار الفائدة على الجميع'), 1],
+          ],
+          L(
+            'One company’s trouble is specific risk: spreading out shrinks it. A recession or a rate jump is market risk: it hits almost everything, however spread out you are.',
+            'متاعب شركة واحدة مخاطر خاصة: التوزيع يقلّصها. أما الركود أو قفزة الفائدة فمخاطر سوق: تصيب كل شيء تقريبًا مهما وزّعت.',
+          ),
+        ),
         html(L(
-          '<p>Put the same money into one company, or spread it over twenty. If one company fails, the first loses <strong>everything</strong>; the second loses about <strong>a twentieth</strong>.</p>',
-          '<p>ضع المال نفسه في شركة واحدة، أو وزّعه على عشرين. إذا فشلت شركة، يخسر الأول <strong>كل شيء</strong>؛ ويخسر الثاني نحو <strong>جزء من عشرين</strong>.</p>',
+          '<p>That is <strong>diversification</strong>. Put the same money into one company, or spread it over twenty. If one company fails, the first loses <strong>everything</strong>; the second loses about <strong>a twentieth</strong>. But no amount of spreading removes <strong>market risk</strong>.</p>',
+          '<p>هذا هو <strong>التنويع</strong>. ضع المال نفسه في شركة واحدة، أو وزّعه على عشرين. إذا فشلت شركة، يخسر الأول <strong>كل شيء</strong>؛ ويخسر الثاني نحو <strong>جزء من عشرين</strong>. لكن لا يزيل أي قدر من التوزيع <strong>مخاطر السوق</strong>.</p>',
         )),
         diagram({
           fig: L('Illustration', 'توضيح'),
@@ -113,23 +122,41 @@ export const diversification: Module = {
       label: L('Part 2', 'الجزء ٢'),
       nav: L('Asset allocation', 'توزيع الأصول'),
       title: L('Asset allocation: the biggest decision', 'توزيع الأصول: القرار الأكبر'),
+      standfirst: L('How much in stocks, how much in bonds? Noor has to choose.', 'كم في الأسهم وكم في السندات؟ على نور أن تختار.'),
       time: L('5 min', '5 دقائق'),
       blocks: [
         html(L(
-          '<p>How you split money between stocks, bonds and cash drives most of your portfolio’s ups and downs. The right mix depends on your time horizon, goals and how much decline you can live with.</p>',
-          '<p>طريقة تقسيم المال بين الأسهم والسندات والنقد تحدد معظم صعود محفظتك وهبوطها. يعتمد المزيج المناسب على أفقك الزمني وأهدافك ومقدار الهبوط الذي يمكنك تحمّله.</p>',
+          '<p>Noor is putting money aside for retirement, 30 years away. She knows herself: when Karim’s bakery shares fell 40%, she lost sleep just watching. She has to split her money between <strong>stocks</strong> and <strong>bonds</strong>, and the split will decide most of her ups and downs.</p>',
+          '<p>تدّخر نور لتقاعدها بعد 30 سنة. وهي تعرف نفسها: عندما هبطت أسهم مخابز كريم 40%، فقدت نومها لمجرد المشاهدة. عليها أن تقسم مالها بين <strong>الأسهم</strong> و<strong>السندات</strong>، وهذا التقسيم سيحدد معظم صعودها وهبوطها.</p>',
         )),
-        table(
-          [L('Illustrative mix', 'مزيج توضيحي'), L('Stocks / bonds', 'أسهم / سندات'), L('Character', 'الطابع')],
+        choice(L('Which mix would you pick for Noor’s retirement money?', 'أي مزيج كنت ستختاره لمال تقاعد نور؟'), [
           [
-            [L('Conservative', 'متحفظ'), L('30 / 70', '30 / 70'), L('Smaller swings, lower expected growth', 'تقلبات أصغر ونمو متوقع أقل')],
-            [L('Balanced', 'متوازن'), L('60 / 40', '60 / 40'), L('Middle ground', 'حل وسط')],
-            [L('Growth', 'نمو'), L('90 / 10', '90 / 10'), L('Large swings, higher expected growth, needs a long horizon', 'تقلبات كبيرة ونمو متوقع أعلى، ويحتاج أفقًا طويلًا')],
+            L('Cautious: 30% stocks, 70% bonds', 'حذِر: 30% أسهم و70% سندات'),
+            L('Smaller falls she can sleep through, but slower expected growth over 30 years. She may need to save more to reach the same goal.', 'هبوط أصغر يمكنها النوم معه، لكن نموًا متوقعًا أبطأ على مدى 30 سنة. قد تحتاج إلى ادخار أكثر لتبلغ الهدف نفسه.'),
           ],
-        ),
+          [
+            L('Balanced: 60% stocks, 40% bonds', 'متوازن: 60% أسهم و40% سندات'),
+            L('A middle path: real falls in bad years, steadier than all-stocks, and more expected growth than the cautious mix.', 'طريق وسط: هبوط حقيقي في السنوات السيئة، وثبات أكبر من الأسهم وحدها، ونمو متوقع أكثر من المزيج الحذِر.'),
+          ],
+          [
+            L('Growth: 90% stocks, 10% bonds', 'نمو: 90% أسهم و10% سندات'),
+            L('The most expected growth over 30 years, and the deepest falls. It only works if she would not sell in a panic when it drops by a third.', 'أعلى نمو متوقع على مدى 30 سنة، وأعمق هبوط. لا ينجح إلا إذا لم تبِع بذعر عندما ينخفض بمقدار الثلث.'),
+          ],
+        ]),
+        html(L(
+          '<p>Your split between stocks, bonds and cash is your <strong>asset allocation</strong>. It drives most of a portfolio’s swings, so it depends on three things: how long until you need the money, what it is for, and how big a fall you can live with without selling.</p>',
+          '<p>تقسيمك بين الأسهم والسندات والنقد هو <strong>توزيع أصولك</strong>. إنه يحدد معظم تقلبات المحفظة، لذا يعتمد على ثلاثة أمور: المدة حتى تحتاج المال، والغرض منه، وحجم الهبوط الذي تتحمله دون أن تبيع.</p>',
+        )),
+        diagram({
+          fig: L('Illustration', 'توضيح'),
+          title: L('A bad year for each mix', 'عام سيئ لكل مزيج'),
+          src: '/diagrams/mixes.svg',
+          alt: L('Worst-year falls: 30% stocks / 70% bonds −8%, 60/40 −18%, 90/10 −30%.', 'هبوط أسوأ عام: 30% أسهم / 70% سندات −8%، و60/40 −18%، و90/10 −30%.'),
+          caption: L('Stocks / bonds, in a bad year. Illustrative figures, not forecasts.', 'أسهم / سندات، في عام سيئ. أرقام توضيحية لا توقعات.'),
+        }),
         box('keypoint', L('Not a recommendation', 'ليست توصية'), L(
-          'These mixes only show the trade-off. The right one for you depends on your own situation.',
-          'هذه الأمزجة توضح المفاضلة فقط. المزيج المناسب لك يعتمد على وضعك الخاص.',
+          'These mixes only show the trade-off between growth and swings. The right one for anyone depends on their own goals, time and nerves.',
+          'هذه الأمزجة توضح المفاضلة بين النمو والتقلبات فقط. المزيج المناسب لأي شخص يعتمد على أهدافه ووقته وأعصابه.',
         )),
         keyIdea(L(
           '<p>Your mix of stocks, bonds and cash sets <strong>most of your risk</strong>, so choose it for your horizon, not for last year’s winner.</p>',
@@ -148,16 +175,22 @@ export const diversification: Module = {
       standfirst: L('You cannot control returns, but you can control costs.', 'لا يمكنك التحكم في العوائد، لكن يمكنك التحكم في التكاليف.'),
       time: L('5 min', '5 دقائق'),
       blocks: [
-        table(
-          [L('Yearly fee', 'الرسوم السنوية'), L('100,000 after 30 years at 6% before fees', '100,000 بعد 30 سنة بعائد 6% قبل الرسوم')],
-          [
-            [L('0.1%', '0.1%'), L('≈ 558,000', '≈ 558,000')],
-            [L('1.0%', '1.0%'), L('≈ 432,000', '≈ 432,000')],
-          ],
+        html(L(
+          '<p>Karim finally reads the small print. His fund charges <strong>1% a year</strong>; a similar index fund charges 0.1%. “It’s less than one percent,” he shrugs. Say he leaves 10,000 for 30 years at 6% a year before fees. Guess what that small gap costs him.</p>',
+          '<p>قرأ كريم أخيرًا التفاصيل الصغيرة. صندوقه يفرض <strong>1% سنويًا</strong>؛ وصندوق مؤشر مشابه يفرض 0.1%. يهز كتفيه: «أقل من واحد بالمئة». لنفترض أنه ترك 10,000 مدة 30 سنة بعائد 6% سنويًا قبل الرسوم. خمّن كم يكلّفه هذا الفرق الصغير.</p>',
+        )),
+        predict(
+          L('After 30 years, how much more is in the 0.1% fund?', 'بعد 30 سنة، كم يزيد ما في الصندوق ذي الـ0.1%؟'),
+          [L('About 300', 'نحو 300'), L('About 2,700', 'نحو 2,700'), L('About 12,600', 'نحو 12,600'), L('About 40,000', 'نحو 40,000')],
+          2,
+          L(
+            'About 12,600: some 55,800 against 43,200. The gap is not 0.9% of 10,000 thirty times; each fee also takes the growth that money would have earned. (Illustrative figures.)',
+            'نحو 12,600: قرابة 55,800 مقابل 43,200. الفرق ليس 0.9% من 10,000 ثلاثين مرة؛ فكل رسم يأخذ أيضًا النمو الذي كان سيحققه ذلك المال. (أرقام توضيحية.)',
+          ),
         ),
         html(L(
-          '<p>The 0.9% difference costs about <strong>126,000</strong> — because fees compound against you just as returns compound for you. Also watch trading commissions, account fees, and the tax you pay on gains.</p>',
-          '<p>فرق 0.9% يكلّف نحو <strong>126,000</strong> — لأن الرسوم تتراكم ضدك تمامًا كما تتراكم العوائد لصالحك. انتبه أيضًا لعمولات التداول ورسوم الحساب والضريبة على الأرباح.</p>',
+          '<p>Fees <strong>compound against you</strong>, just as returns compound for you. On 100,000 the same gap grows to about <strong>126,000</strong>. Watch trading commissions and account fees too: unlike returns, costs are something you control.</p>',
+          '<p>الرسوم <strong>تتراكم ضدك</strong>، تمامًا كما تتراكم العوائد لصالحك. على 100,000 يكبر الفرق نفسه إلى نحو <strong>126,000</strong>. انتبه أيضًا لعمولات التداول ورسوم الحساب: على عكس العوائد، التكاليف أمر تتحكم فيه.</p>',
         )),
         diagram({
           fig: L('Illustration', 'توضيح'),
@@ -187,15 +220,36 @@ export const diversification: Module = {
       label: L('Part 4', 'الجزء ٤'),
       nav: L('Regular investing & rebalancing', 'الاستثمار الدوري وإعادة التوازن'),
       title: L('Habits that help', 'عادات مفيدة'),
+      standfirst: L('Noor stops guessing the right moment, and lets a habit do it.', 'تتوقف نور عن تخمين اللحظة المناسبة، وتترك العادة تقوم بذلك.'),
       time: L('6 min', '6 دقائق'),
       blocks: [
         html(L(
-          '<h3>Invest regularly</h3><p><strong>Dollar-cost averaging</strong>: invest the same amount every month. You automatically buy more units when prices are low and fewer when they are high, and you never have to guess the “right moment”. Timing the market consistently is extremely hard, even for professionals.</p><h3>Rebalance</h3><p>Over time the winners grow into a bigger share of the portfolio. With a 60/40 target, a year where stocks gain 30% and bonds 2% leaves you near 66/34. Rebalancing — once a year, or when a weight drifts more than ~5 points — brings risk back to what you chose.</p>',
-          '<h3>استثمر بانتظام</h3><p><strong>متوسط التكلفة</strong>: استثمر المبلغ نفسه كل شهر. ستشتري تلقائيًا وحدات أكثر عندما تنخفض الأسعار وأقل عندما ترتفع، دون الحاجة لتخمين «اللحظة المناسبة». توقيت السوق باستمرار صعب جدًا، حتى على المحترفين.</p><h3>أعد التوازن</h3><p>مع الوقت يكبر وزن الأصول الرابحة في المحفظة. مع هدف 60/40، فإن عامًا ترتفع فيه الأسهم 30% والسندات 2% يتركك قرب 66/34. إعادة التوازن — مرة سنويًا، أو عندما ينحرف وزن بأكثر من ~5 نقاط — تعيد المخاطرة إلى ما اخترته.</p>',
+          '<p>Noor doesn’t want to guess when to buy, so she invests <strong>100 every month</strong>, on payday, whatever the market does. In month one the price is 10. In month two the market slumps and it is 5. In month three it is back at 10.</p>',
+          '<p>نور لا تريد أن تخمّن متى تشتري، فهي تستثمر <strong>100 كل شهر</strong> يوم الراتب، مهما فعل السوق. في الشهر الأول كان السعر 10. وفي الشهر الثاني تراجع السوق فصار 5. وفي الشهر الثالث عاد إلى 10.</p>',
         )),
-        box('example', L('Example', 'مثال'), L(
-          'Invest 100 every month. When the price is 10 you get 10 units; when it drops to 5 you get 20. The habit buys more when things are cheap. (Illustrative figures.)',
-          'استثمر 100 كل شهر. عندما يكون السعر 10 تحصل على 10 وحدات؛ وعندما ينخفض إلى 5 تحصل على 20. هذه العادة تشتري أكثر عندما تكون الأسعار رخيصة. (أرقام توضيحية.)',
+        predict(
+          L('How many units does Noor own after three months?', 'كم وحدة تملك نور بعد ثلاثة أشهر؟'),
+          [L('30', '30'), L('35', '35'), L('40', '40'), L('45', '45')],
+          2,
+          L(
+            '40: 10 units, then 20 in the slump, then 10. The same 100 bought twice as much when prices were low. (Illustrative figures.)',
+            '40: عشر وحدات، ثم 20 أثناء التراجع، ثم 10. المبلغ نفسه، 100، اشترى الضعف عندما انخفضت الأسعار. (أرقام توضيحية.)',
+          ),
+        ),
+        html(L(
+          '<p>That is <strong>dollar-cost averaging</strong>: the same amount on a schedule. It buys more when prices are low and less when they are high, with no need to guess the “right moment”, which even professionals rarely manage.</p>',
+          '<p>هذا هو <strong>متوسط التكلفة</strong>: المبلغ نفسه وفق جدول ثابت. يشتري أكثر عندما تنخفض الأسعار وأقل عندما ترتفع، دون الحاجة إلى تخمين «اللحظة المناسبة»، وهو أمر نادرًا ما ينجح فيه حتى المحترفون.</p>',
+        )),
+        diagram({
+          fig: L('Illustration', 'توضيح'),
+          title: L('100 a month, three prices', '100 شهريًا وثلاثة أسعار'),
+          src: '/diagrams/dca.svg',
+          alt: L('Units bought each month with 100: 10 at a price of 10, 20 at a price of 5, 10 at a price of 10.', 'الوحدات المشتراة كل شهر بـ100: عشر بسعر 10، و20 بسعر 5، و10 بسعر 10.'),
+          caption: L('Units bought each month; the price is under each bar. Illustrative figures.', 'الوحدات المشتراة كل شهر؛ السعر تحت كل عمود. أرقام توضيحية.'),
+        }),
+        html(L(
+          '<p>The second habit is <strong>rebalancing</strong>. Winners grow into a bigger share: with a 60/40 target, a year where stocks gain 30% and bonds 2% leaves you near 66/34. Once a year, or when a weight drifts more than about 5 points, trim the winner and top up the rest.</p>',
+          '<p>العادة الثانية هي <strong>إعادة التوازن</strong>. الرابحون يكبر وزنهم: مع هدف 60/40، عام ترتفع فيه الأسهم 30% والسندات 2% يتركك قرب 66/34. مرة في السنة، أو عندما ينحرف وزن بأكثر من 5 نقاط تقريبًا، قلّص الرابح وأكمل الباقي.</p>',
         )),
         keyIdea(L(
           '<p>Invest a <strong>fixed amount regularly</strong> and rebalance now and then: no need to guess the right moment.</p>',
@@ -211,13 +265,43 @@ export const diversification: Module = {
       label: L('Part 5', 'الجزء ٥'),
       nav: L('Behaviour mistakes', 'الأخطاء السلوكية'),
       title: L('Your biggest risk is often you', 'أكبر خطر عليك غالبًا هو أنت'),
+      standfirst: L('The market falls 30%. What Karim does next matters more than any fund he picked.', 'يهبط السوق 30%. ما يفعله كريم بعدها أهم من أي صندوق اختاره.'),
       time: L('6 min', '6 دقائق'),
       blocks: [
+        html(L(
+          '<p>The whole market falls 30%. Karim’s group chat is in panic: one friend sold everything, another is buying a coin everyone is talking about. Karim checks his app twenty times a day. Most investing mistakes are not about knowledge; they are about <strong>behaviour</strong>.</p>',
+          '<p>يهبط السوق كله 30%. مجموعة أصدقاء كريم في حالة ذعر: أحدهم باع كل شيء، وآخر يشتري عملة يتحدث عنها الجميع. وكريم يتفقد تطبيقه عشرين مرة في اليوم. معظم أخطاء الاستثمار ليست في المعرفة؛ بل في <strong>السلوك</strong>.</p>',
+        )),
+        sort(
+          L('Does it help or hurt in a fall?', 'هل يفيد أم يضر في وقت الهبوط؟'),
+          [L('Helps', 'يفيد'), L('Hurts', 'يضر')],
+          [
+            [L('A plan written before the fall', 'خطة مكتوبة قبل الهبوط'), 0],
+            [L('Buying what everyone is talking about', 'شراء ما يتحدث عنه الجميع'), 1],
+            [L('Checking the app twenty times a day', 'تفقد التطبيق عشرين مرة يوميًا'), 1],
+            [L('Investing the same amount every month', 'استثمار المبلغ نفسه كل شهر'), 0],
+          ],
+          L(
+            'A written plan and a fixed habit decide for you before fear does. Chasing the crowd and staring at prices push you to act on emotion.',
+            'الخطة المكتوبة والعادة الثابتة تقرران عنك قبل أن يقرر الخوف. أما ملاحقة الجموع والتحديق في الأسعار فيدفعانك للتصرف بعاطفة.',
+          ),
+        ),
+        html(L(
+          '<p>Selling in a crash turns a fall on the screen into a real loss. In the chart, 1,000 drops to 700. Held, it is back above 1,000 a few years later; sold at the bottom, it stays 700 for good.</p>',
+          '<p>البيع أثناء الانهيار يحوّل الهبوط على الشاشة إلى خسارة حقيقية. في الرسم، تهبط 1,000 إلى 700. إن احتُفظ بها، تعود فوق 1,000 بعد بضع سنوات؛ وإن بيعت في القاع، تبقى 700 إلى الأبد.</p>',
+        )),
+        diagram({
+          fig: L('Illustration', 'توضيح'),
+          title: L('Held or sold at the bottom', 'محتفَظ به أم مبيع في القاع'),
+          src: '/diagrams/panic-sell.svg',
+          alt: L('Bars: 1,000 before a fall, 700 at the bottom, 1,100 a few years later if held, and 700 if sold at the bottom.', 'أعمدة: 1,000 قبل الهبوط، و700 في القاع، و1,100 بعد بضع سنوات إن احتُفظ بها، و700 إن بيعت في القاع.'),
+          caption: L('Left to right: before, the bottom, later if held, later if sold. Illustrative: recoveries are not guaranteed.', 'من اليسار إلى اليمين: قبل، القاع، لاحقًا إن احتُفظ بها، لاحقًا إن بيعت. توضيحي: التعافي غير مضمون.'),
+        }),
         table(
           [L('Mistake', 'الخطأ'), L('What it looks like', 'كيف يبدو'), L('Antidote', 'العلاج')],
           [
             [L('Panic selling', 'البيع بذعر'), L('Selling after a crash, locking in the loss', 'البيع بعد الانهيار وتثبيت الخسارة'), L('Write your plan down before the fall', 'دوّن خطتك قبل الهبوط')],
-            [L('Chasing performance', 'مطاردة الأداء'), L('Buying last year’s winner at a high price', 'شراء الرابح في العام الماضي بسعر مرتفع'), L('Stick to your allocation', 'التزم بتوزيع أصولك')],
+            [L('Chasing performance', 'مطاردة الأداء'), L('Buying last year’s winner at a high price', 'شراء رابح العام الماضي بسعر مرتفع'), L('Stick to your allocation', 'التزم بتوزيع أصولك')],
             [L('Overconfidence', 'الثقة المفرطة'), L('Frequent trading, concentrated bets', 'تداول متكرر ورهانات مركزة'), L('Diversify; trade rarely', 'نوّع وتداول نادرًا')],
             [L('Herd behaviour / FOMO', 'سلوك القطيع / الخوف من الفوات'), L('Buying because everyone is talking about it', 'الشراء لأن الجميع يتحدث عنه'), L('Ask: does this fit my goals?', 'اسأل: هل يناسب أهدافي؟')],
           ],
@@ -247,8 +331,8 @@ export const diversification: Module = {
       nav: L('Rebalance', 'إعادة التوازن'),
       title: L('Practice: rebalance to a mix', 'تدريب: أعد التوازن إلى مزيج'),
       standfirst: L(
-        'Bring your holdings back to a chosen mix in one step.',
-        'أعِد ممتلكاتك إلى مزيج تختاره بخطوة واحدة.',
+        'Noor’s stocks have grown past her target. Bring a mix back in one step.',
+        'نمت أسهم نور فوق هدفها. أعِد مزيجًا إلى توازنه بخطوة واحدة.',
       ),
       time: L('3 min', '3 دقائق'),
       blocks: [
