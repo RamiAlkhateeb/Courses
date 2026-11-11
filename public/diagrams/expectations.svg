@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 210" font-family="Instrument Sans, Helvetica, Arial, sans-serif">
+  <!-- Buyers hoped for 25% profit growth; the company grew 15%. The share price falls from 60 to 45 although
+       profits rose. Numbers only: the title, caption and alt text are in the lesson, in the reader's language. -->
+  <line x1="12" y1="176" x2="308" y2="176" stroke="#D0E7E6" stroke-width="2"/>
+  <rect x="24" y="126" width="56" height="50" rx="8" fill="none" stroke="#4274D9" stroke-width="3" stroke-dasharray="6 6"/>
+  <rect x="96" y="146" width="56" height="30" rx="8" fill="#4274D9"/>
+  <rect x="168" y="56" width="56" height="120" rx="10" fill="#293681"/>
+  <rect x="240" y="86" width="56" height="90" rx="10" fill="#A8432B"/>
+  <g font-size="16" font-weight="700" fill="#293681" text-anchor="middle">
+    <text x="52" y="116">+25%</text>
+    <text x="124" y="136">+15%</text>
+    <text x="196" y="46">60</text>
+    <text x="268" y="76">45</text>
+  </g>
+</svg>

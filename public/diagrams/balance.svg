@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 210" font-family="Instrument Sans, Helvetica, Arial, sans-serif">
+  <!-- Two companies with assets of 900 (millions): one owes 300, leaving equity of 600; the other owes 750,
+       leaving 150. Numbers only: the title, caption and alt text are in the lesson, in the reader's language. -->
+  <line x1="12" y1="186" x2="308" y2="186" stroke="#D0E7E6" stroke-width="2"/>
+  <rect x="56" y="24" width="80" height="54" rx="8" fill="#A8432B"/>
+  <rect x="56" y="78" width="80" height="108" rx="8" fill="#4274D9"/>
+  <rect x="184" y="24" width="80" height="135" rx="8" fill="#A8432B"/>
+  <rect x="184" y="159" width="80" height="27" rx="6" fill="#4274D9"/>
+  <g font-size="17" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    <text x="96" y="57">300</text>
+    <text x="96" y="138">600</text>
+    <text x="224" y="97">750</text>
+    <text x="224" y="179">150</text>
+  </g>
+  <g font-size="14" font-weight="600" fill="#5B678F" text-anchor="middle">
+    <text x="96" y="206">900</text>
+    <text x="224" y="206">900</text>
+  </g>
+</svg>
