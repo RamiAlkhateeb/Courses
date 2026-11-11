@@ -65,5 +65,12 @@ export function questsToday(p: Progress, today: string, ctx: QuestContext) {
 export function claimChest(p: Progress, today: string, ctx: QuestContext): Progress {
   const { chestReady, chest } = questsToday(p, today, ctx)
   if (!chestReady) return p
-  return { ...p, bank: p.bank + chest, activity: addActivity(p.activity, today, chest), daily: { ...dailyFor(p, today), claimed: true } }
+  return {
+    ...p,
+    bank: p.bank + chest,
+    activity: addActivity(p.activity, today, chest),
+    daily: { ...dailyFor(p, today), claimed: true },
+    // The first chest ever opened is a badge (src/domain/badges.ts), saved here so it can't be missed
+    badges: p.badges.chest ? p.badges : { ...p.badges, chest: today },
+  }
 }

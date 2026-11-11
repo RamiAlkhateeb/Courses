@@ -5,7 +5,7 @@ import { MoneyChip } from '../../components/MoneyChip'
 import { CourseSwitcher } from '../../components/CourseSwitcher'
 import { practiceHref } from '../../content/courses'
 import { useLocalized } from '../../content/useLocalized'
-import { currentStreak, dueQuestions, localDay, streakAtRisk } from '../../domain/progress'
+import { currentStreak, doubleToday, dueQuestions, localDay, streakAtRisk } from '../../domain/progress'
 import { TodayCard } from './TodayCard'
 import { learnHref, lessonMinutes, type Lesson } from '../../domain/lessons'
 import { useAuth } from '../../state/auth'
@@ -116,6 +116,11 @@ export function PathPage() {
             <p className={styles.upKicker}>{t('learn_up_next', { n: nextIndex + 1, total: nextChapter.lessons.length })}</p>
             <h2 className={styles.upTitle}>{tc(next.lesson.title)}</h2>
             <p className={styles.upMeta}>{t('learn_about_min', { count: lessonMinutes(next.lesson) })}</p>
+            {doubleToday(progress, today) && (
+              <p className={styles.upDouble}>
+                <Icon name="flame" size={16} /> {t('double_title')}
+              </p>
+            )}
             <Link className={buttonClass({ variant: 'white', size: 'sm' }, styles.upCta)} to={learnHref(course.id, next.mod.id, next.lesson.id)}>
               {t('continue')}
             </Link>
@@ -124,7 +129,14 @@ export function PathPage() {
           <Guide pose="point" height={104} flip={i18n.dir() !== 'rtl'} className={styles.upMascot} />
         </section>
       )}
-      {loaded && !next && chapters.length > 0 && <p className={styles.allDone}>{t('learn_all_done')}</p>}
+      {loaded && !next && chapters.length > 0 && (
+        <div className={styles.allDone}>
+          <p>{t('learn_all_done')}</p>
+          <Link to={`/certificate/${course.id}`} className={buttonClass({ size: 'sm' })}>
+            {t('see_certificate')}
+          </Link>
+        </div>
+      )}
 
       {/* Today: the daily goal, three quests and the chest (once there is something to learn) */}
       {loaded && chapters.length > 0 && <TodayCard portfolio={showPortfolio} />}

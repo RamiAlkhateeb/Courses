@@ -1,0 +1,59 @@
+.confetti {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 5;
+}
+.piece {
+  position: absolute;
+  inset-block-start: -16px;
+  inline-size: 8px;
+  block-size: 14px;
+  border-radius: 2px;
+  opacity: 0;
+  animation-name: fall;
+  animation-timing-function: cubic-bezier(0.3, 0.5, 0.6, 1);
+  animation-fill-mode: forwards;
+}
+.round {
+  inline-size: 10px;
+  block-size: 10px;
+  border-radius: 50%;
+}
+.blue {
+  background: var(--blue);
+}
+.sky {
+  background: var(--sky);
+}
+.leaf {
+  background: var(--leaf);
+}
+.streak {
+  background: var(--streak);
+}
+.gold {
+  background: var(--gold);
+}
+.mint {
+  background: var(--mint);
+}
+@keyframes fall {
+  0% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(90vh) rotate(var(--turn));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .confetti {
+    display: none;
+  }
+}

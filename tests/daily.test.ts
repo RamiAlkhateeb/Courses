@@ -118,6 +118,7 @@ describe('daily quests', () => {
     const paid = claimChest(p, D, ctx)
     expect(paid.bank).toBe(p.bank + chestAmount(D))
     expect(paid.activity[D]).toBe(p.activity[D] + chestAmount(D))
+    expect(paid.badges.chest).toBe(D) // the first chest is a badge
     expect(claimChest(paid, D, ctx)).toBe(paid) // once
     expect(questsToday(paid, D, ctx)).toMatchObject({ chestReady: false, claimed: true })
   })

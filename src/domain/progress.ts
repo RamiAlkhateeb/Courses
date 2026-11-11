@@ -41,6 +41,10 @@ export interface Progress {
   due: Record<string, string>
   /** Today's counters, for the daily quests (src/domain/quests.ts). A new day starts them again. */
   daily: Daily
+  /** lessonKey -> the local day it was first finished: certificates show the real date */
+  completed: Record<string, string>
+  /** Badge id -> the local day it was earned (src/domain/badges.ts). Once earned, a badge stays. */
+  badges: Record<string, string>
 }
 
 /** What the learner did on `day`: the daily quests read these. */
@@ -78,6 +82,8 @@ export const emptyProgress: Progress = {
   bestStreak: 0,
   due: {},
   daily: emptyDaily,
+  completed: {},
+  badges: {},
 }
 
 export const MAX_BOX = 5
@@ -92,6 +98,12 @@ function parseDaily(v: unknown): Daily {
 }
 
 const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
+
+/** A record of day strings ('YYYY-MM-DD'), dropping anything else. */
+function dayRecord(v: unknown): Record<string, string> {
+  if (!isRecord(v)) return {}
+  return Object.fromEntries(Object.entries(v).filter(([, d]) => typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d))) as Record<string, string>
+}
 
 /** Reads saved progress. Also the v1 → v2 migration: v1 counted XP; v2 counts dollars, so a player who has none
  *  yet gets the starting bank plus $10 for every question they have answered right, and the XP is dropped. Their
@@ -125,6 +137,8 @@ export function parseProgress(raw: string | null): Progress {
       bestStreak: Math.max(num(data.bestStreak), typeof streak.count === 'number' ? streak.count : 0),
       due: isRecord(data.due) ? (data.due as Progress['due']) : {},
       daily: parseDaily(data.daily),
+      completed: dayRecord(data.completed),
+      badges: dayRecord(data.badges),
     }
   } catch {
     return emptyProgress
@@ -201,10 +215,20 @@ export function recordReview(p: Progress, questionId: string, correct: boolean, 
 export const dueQuestions = (questionIds: string[], p: Pick<Progress, 'answers' | 'due'>, today: string) =>
   questionIds.filter((id) => (p.due[id] ? p.due[id] <= today : p.answers[id]?.correct === false))
 
+/** Streak length from which the day's first lesson pays double */
+export const DOUBLE_FROM_STREAK = 3
+
+/** "2× today": a streak of DOUBLE_FROM_STREAK days or more is alive and no lesson is finished yet today, so the next
+ *  first finish pays double. */
+export const doubleToday = (p: Progress, today: string) =>
+  p.streak.lastDay !== today && currentStreak(p.streak, today, p.freezes) >= DOUBLE_FROM_STREAK
+
 /** What finishing a lesson pays: $10 per correct answer, and only the first time that roadmap lesson is finished
- *  (replays and practice runs pay nothing, so they can't be farmed). */
-export function payoutFor(p: Progress, correct: number, lessonKey?: string): number {
-  return lessonKey && !p.lessonsDone.includes(lessonKey) ? lessonPayout(correct) : 0
+ *  (replays and practice runs pay nothing, so they can't be farmed). With `today`, the day's first lesson pays
+ *  double while a streak of 3+ days is alive (`doubleToday`). */
+export function payoutFor(p: Progress, correct: number, lessonKey?: string, today?: string): number {
+  if (!lessonKey || p.lessonsDone.includes(lessonKey)) return 0
+  return lessonPayout(correct) * (today && doubleToday(p, today) ? 2 : 1)
 }
 
 /** Freezes a lesson finished on `today` spends: one per missed day, when there are enough to cover them all. */
@@ -220,7 +244,8 @@ export const MAX_RUN_SECONDS = 20 * 60
  *  `seconds` is how long the run took: it counts towards the day's goal. */
 export function completeLesson(p: Progress, correct: number, today: string, lessonKey?: string, total = 0, seconds = 0): Progress {
   const lessonsDone = lessonKey && !p.lessonsDone.includes(lessonKey) ? [...p.lessonsDone, lessonKey] : p.lessonsDone
-  const payout = payoutFor(p, correct, lessonKey)
+  const payout = payoutFor(p, correct, lessonKey, today)
+  const first = !!lessonKey && lessonsDone !== p.lessonsDone
   // Missed days covered by freezes keep the streak going (one freeze per missed day); otherwise it restarts.
   const spent = freezesSpent(p, today)
   const streak = spent > 0 ? { count: p.streak.count + 1, lastDay: today } : bumpStreak(p.streak, today)
@@ -238,7 +263,21 @@ export function completeLesson(p: Progress, correct: number, today: string, less
     time: addActivity(p.time, today, Math.min(MAX_RUN_SECONDS, Math.max(0, Math.round(seconds)))),
     bestStreak: Math.max(p.bestStreak, streak.count),
     daily: lessonKey ? { ...daily, lessons: daily.lessons + 1, perfect: daily.perfect + (total > 0 && correct === total ? 1 : 0) } : daily,
+    completed: first && lessonKey ? { ...p.completed, [lessonKey]: p.completed[lessonKey] ?? today } : p.completed,
   }
+}
+
+/** The day a set of lessons was all finished: the latest of their first-finish days ('' if one is unfinished or
+ *  was finished before dates were kept). For certificates. */
+export function finishedOn(p: Pick<Progress, 'completed' | 'lessonsDone'>, lessonKeys: string[]): string {
+  let last = ''
+  for (const key of lessonKeys) {
+    if (!p.lessonsDone.includes(key)) return ''
+    const day = p.completed[key]
+    if (!day) return ''
+    if (day > last) last = day
+  }
+  return last
 }
 
 /** The learner opened the portfolio on `today` (a daily quest). */

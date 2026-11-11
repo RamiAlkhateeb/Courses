@@ -17,7 +17,7 @@ import {
   emptyDaily,
 } from '../src/domain/progress'
 
-const EMPTY = { answers: {}, sectionsRead: {}, bank: 1000, streak: { count: 0, lastDay: '' }, boxes: {}, lessonsDone: [], activity: {}, perfect: 0, freezes: 0, time: {}, bestStreak: 0, due: {}, daily: emptyDaily }
+const EMPTY = { answers: {}, sectionsRead: {}, bank: 1000, streak: { count: 0, lastDay: '' }, boxes: {}, lessonsDone: [], activity: {}, perfect: 0, freezes: 0, time: {}, bestStreak: 0, due: {}, daily: emptyDaily, completed: {}, badges: {} }
 
 describe('progress store helpers', () => {
   it('parses missing or corrupt storage as empty progress', () => {

@@ -11,9 +11,14 @@ import { useModule } from '../../content/useModule'
 import { useProgress } from '../../state/useProgress'
 import { useWallet } from '../../state/usePlayground'
 import { ModuleQuestionsContext } from '../../components/content/moduleQuestions'
-import { completeLesson as afterLesson, earnedFreeze, localDay, payoutFor, STREAK_MILESTONES } from '../../domain/progress'
+import { completeLesson as afterLesson, doubleToday, earnedFreeze, localDay, payoutFor, STREAK_MILESTONES } from '../../domain/progress'
+import { PAY_PER_CORRECT } from '../../domain/money'
+import { levelUp as reachedLevel } from '../../domain/levels'
+import { newBadges, playgroundFacts, progressFacts, unitFacts } from '../../domain/badges'
+import { buzz, useCountUp } from '../../components/motion/motion'
 import { learnHref, lessonKey, lessonsFor, type Lesson } from '../../domain/lessons'
 import { clearLessonRun, lessonRunStore, saveLessonRun } from '../../state/lessonRun'
+import { saveBadges } from '../../state/useBadges'
 import { SpaceGuide } from './SpaceGuide'
 import { PracticeBlock } from '../../components/playground/PracticeBlock'
 import { ActivityDoneContext } from '../../components/content/activityDone'
@@ -103,7 +108,14 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
   // 0 = first try at this question; 1 = a second try (the first was wrong): that one reveals the answer and carries on.
   const [attempt, setAttempt] = useState(resumedAnswer && !(resumedAnswer.settled && resumedAnswer.first) ? 1 : 0)
   // After the last step: the lesson to go to next (the first one not finished yet)
-  const { next } = useTrail(mod.courseId)
+  const { next, chapters, course } = useTrail(mod.courseId)
+  // "2× today": decided on arrival, like `pays` (the day's first lesson, with a streak of 3+ days)
+  const [double] = useState(() => pays && doubleToday(progress, localDay()))
+  const rate = PAY_PER_CORRECT * (double ? 2 : 1)
+  // What finishing earned beyond money: a new level, badges, a finished unit or course
+  const [levelReached, setLevelReached] = useState<number | null>(null)
+  const [badgesEarned, setBadgesEarned] = useState<string[]>([])
+  const [ending, setEnding] = useState<{ kind: 'unit' | 'course'; title: string; href: string } | undefined>()
 
   // Keep the place while the lesson is unfinished
   useEffect(() => {
@@ -141,6 +153,7 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
     // Only the first try counts for the score and the review boxes.
     if (firstTry) recordLessonAnswer(question.id, selected, right)
     playAnswerSound(right)
+    if (right && firstTry) buzz()
   }
 
   function tryAgain() {
@@ -172,21 +185,43 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
 
   function advance() {
     if (isLast) {
-      setPaid(payoutFor(progress, correctCount, key))
       const today = localDay()
+      setPaid(payoutFor(progress, correctCount, key, today))
       const seconds = Math.round((Date.now() - startedAt.current) / 1000)
       const after = afterLesson(progress, correctCount, today, key, total, seconds)
+      // A new level, new badges, and whether this lesson finished its unit or the whole course
+      const units = chapters.map((c) => ({ c, keys: c.lessons.map((l) => lessonKey(course.id, c.id, l.id)) }))
+      const unitsBefore = unitFacts(units.map((u) => u.keys), progress.lessonsDone)
+      const unitsAfter = unitFacts(units.map((u) => u.keys), after.lessonsDone)
+      setLevelReached(reachedLevel(progress, after))
+      const facts = { ...progressFacts(after, today), ...unitsAfter, ...playgroundFacts(pg) }
+      setBadgesEarned(newBadges(progress, facts))
+      const unit = units.find((u) => u.keys.includes(key))
+      if (unitsAfter.courseDone && !unitsBefore.courseDone) setEnding({ kind: 'course', title: t(course.title), href: `/certificate/${course.id}` })
+      else if (unit && unit.keys.every((k) => after.lessonsDone.includes(k)) && !unit.keys.every((k) => progress.lessonsDone.includes(k)))
+        setEnding({ kind: 'unit', title: t(unit.c.title), href: `/certificate/${course.id}/${unit.c.id}` })
       setFreezeEarned(earnedFreeze(progress, after, today))
       // A streak milestone reached by this very lesson gets its own line on the summary
       setStreakHit(after.streak.count > progress.streak.count && STREAK_MILESTONES.includes(after.streak.count) ? after.streak.count : 0)
       setSeconds(seconds)
       completeLesson(correctCount, key, total, seconds)
+      saveBadges(facts)
       clearLessonRun(key)
       setDone(true)
       return
     }
     enter(index + 1)
   }
+
+  // Right first tries in a row, up to this step (lesson text between questions does not break the run)
+  let combo = 0
+  for (let i = index; i >= 0; i--) {
+    if (steps[i].kind !== 'question') continue
+    if (!answers[i]?.first) break
+    combo++
+  }
+  // The wallet counts up to its new total on Lesson complete
+  const shownWallet = useCountUp(done ? wallet - paid : wallet, wallet)
 
   const onEnter = question && !checked ? check : retry ? tryAgain : blocked ? () => {} : advance
   // On a practice step, Enter belongs to the simulator's own buttons
@@ -195,7 +230,11 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
   if (done) {
     return (
       <LessonSummary
-        subtitle={tUi('lessonSummaryBank', { title: t(lesson.title), money: moneyText(wallet) })}
+        subtitle={tUi('lessonSummaryBank', { title: t(lesson.title), money: moneyText(shownWallet) })}
+        double={double && paid > 0}
+        levelUp={levelReached}
+        badges={badgesEarned}
+        ending={ending}
         seconds={seconds}
         payout={pays ? paid : undefined}
         correct={correctCount}
@@ -257,7 +296,11 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
           <LessonFooter
             tone={question ? (isCorrect ? 'right' : 'wrong') : undefined}
             paid={!!question && isCorrect && pays && !!answers[index]?.first}
-            feedback={question && <AnswerFeedback question={question} correct={isCorrect} pays={pays && !!answers[index]?.first} firstTry={retry} />}
+            feedback={
+              question && (
+                <AnswerFeedback question={question} correct={isCorrect} pays={pays && !!answers[index]?.first} firstTry={retry} rate={rate} combo={isCorrect && answers[index]?.first ? combo : 0} />
+              )
+            }
             action={question ? (retry ? tUi('tryAgain') : continueLabel) : tUi('nextBtn')}
             disabled={blocked}
             onAction={retry ? tryAgain : advance}

@@ -44,6 +44,8 @@ export const router = createBrowserRouter(
         { path: 'courses', ...page(() => import('../features/courses/CoursesPage'), 'CoursesPage') },
         // A finished unit's certificate (linked from its header on Learn)
         { path: 'certificate/:courseId/:moduleId', ...page(() => import('../features/certificate/CertificatePage'), 'CertificatePage') },
+        // The whole course's certificate (linked from Lesson complete when the last lesson is finished)
+        { path: 'certificate/:courseId', ...page(() => import('../features/certificate/CertificatePage'), 'CertificatePage') },
         { path: 'legal/:page', ...page(() => import('../features/account/LegalPage'), 'LegalPage') },
         {
           // Optional accounts (sign up, log in, reset, account, delete): only when Supabase is configured.
