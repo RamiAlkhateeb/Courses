@@ -45,6 +45,9 @@ export function mergeProgress(local: Progress, remote: Progress, bankFrom: 'loca
         : local.daily.claimed !== remote.daily.claimed
           ? local.daily.claimed ? local.daily : remote.daily
           : local.daily.lessons + local.daily.correct >= remote.daily.lessons + remote.daily.correct ? local.daily : remote.daily,
+    // First-finish days and badges: the earlier day (when it first happened on either side)
+    completed: mergeRecords(local.completed, remote.completed, (x, y) => (x < y ? x : y)),
+    badges: mergeRecords(local.badges, remote.badges, (x, y) => (x < y ? x : y)),
   }
 }
 

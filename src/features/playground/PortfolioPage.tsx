@@ -7,6 +7,7 @@ import { firstPracticeHref, portfolioOpen } from '../../domain/playground/practi
 import { playgroundStore } from '../../state/playground'
 import { useProgress } from '../../state/useProgress'
 import { useStore } from '../../state/useStore'
+import { useAwardBadges } from '../../state/useBadges'
 
 /** Route `/portfolio`: the simulator on its own screen, the shortcut from Learn once the first practice lesson is done.
  *  Before that, it opens that lesson (which introduces the simulator). */
@@ -20,6 +21,8 @@ export function PortfolioPage() {
     if (open) visitPortfolio()
     // once per visit
   }, [open])
+  // Simulator firsts (first buy, first payout, a season run to the end) are saved as badges here
+  useAwardBadges()
   if (!open) return <Navigate to={firstPracticeHref} replace />
   return (
     <ListScreen title={t('portfolio_title')} back="/">

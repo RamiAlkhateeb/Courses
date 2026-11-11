@@ -346,3 +346,85 @@
 .goalMet {
   color: var(--correct);
 }
+
+/* ---------- Rewards: a coin pop, the combo line, 2× today, a level, badges, a unit or course ending ---------- */
+.combo {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--card);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--indigo);
+}
+.combo svg {
+  color: var(--streak);
+}
+.statCol .doubleChip {
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--streak);
+  background: var(--card);
+  color: var(--indigo);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.ending {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  margin-block-end: 12px;
+  text-align: center;
+}
+.ending h2 {
+  margin: 0;
+  font-size: var(--title-section);
+  color: var(--on-indigo);
+}
+.ending p {
+  margin: 0 0 6px;
+  font-size: 0.875rem;
+  color: var(--on-indigo-dim);
+}
+.rewards {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.rewards li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--card);
+  font-size: 0.875rem;
+  color: var(--indigo);
+}
+.rewards li svg {
+  flex-shrink: 0;
+  color: var(--gold);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .pop {
+    animation: pop 450ms cubic-bezier(0.2, 0.9, 0.3, 1.4) both;
+  }
+}
+@keyframes pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

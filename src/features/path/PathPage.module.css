@@ -30,9 +30,14 @@
 }
 .loading,
 .allDone {
-  margin: 0;
-  padding: 24px 8px;
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+  padding: 16px 8px 24px;
   color: var(--muted);
+}
+.allDone p {
+  margin: 0;
 }
 
 /* ---------- Up next ---------- */
@@ -365,4 +370,19 @@
   font-size: 0.75rem;
   line-height: 1.4;
   color: var(--muted);
+}
+.upDouble {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 2px 0 8px;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--indigo-2);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--on-indigo);
+}
+.upDouble svg {
+  color: var(--streak);
 }

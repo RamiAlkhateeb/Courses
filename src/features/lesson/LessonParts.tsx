@@ -4,7 +4,10 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { Question } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
-import { Button, Card, Coin, Icon, AnswerOption, ProgressBar, Guide, type AnswerState } from '../../components/ui'
+import type { ParseKeys } from 'i18next'
+import { Button, buttonClass, Card, Coin, Icon, AnswerOption, ProgressBar, Guide, type AnswerState } from '../../components/ui'
+import { Confetti } from '../../components/motion/Confetti'
+import { BADGES } from '../../domain/badges'
 import { Sprout } from '../../components/GardenArt'
 import { currentStreak, localDay, nextStreakMilestone, studiedToday } from '../../domain/progress'
 import { useProfile } from '../../state/profile'
@@ -142,7 +145,23 @@ export function LessonFooter({
 }
 
 /** "Correct +$10" (when this lesson pays) and why; a first wrong try is nudged to have another go; a second reveals the answer and why. */
-export function AnswerFeedback({ question, correct, pays, firstTry = false }: { question: Question; correct: boolean; pays: boolean; firstTry?: boolean }) {
+export function AnswerFeedback({
+  question,
+  correct,
+  pays,
+  firstTry = false,
+  rate = PAY_PER_CORRECT,
+  combo = 0,
+}: {
+  question: Question
+  correct: boolean
+  pays: boolean
+  firstTry?: boolean
+  /** What this right answer pays (doubled on a "2× today" lesson) */
+  rate?: number
+  /** Right first tries in a row, this one included: from 3 it gets a line of its own */
+  combo?: number
+}) {
   const t = useLocalized()
   const { t: tUi } = useTranslation()
   // The explanation gives the answer away, so a first wrong try only gets the nudge to try again.
@@ -152,8 +171,13 @@ export function AnswerFeedback({ question, correct, pays, firstTry = false }: { 
       <>
         <strong className={styles.feedbackTitle}>{tUi('fb_correct')}</strong>
         {pays && (
-          <span className={styles.moneyPill}>
-            <Money amount={PAY_PER_CORRECT} sign />
+          <span className={`${styles.moneyPill} ${styles.pop}`}>
+            <Money amount={rate} sign />
+          </span>
+        )}
+        {combo >= 3 && (
+          <span className={`${styles.combo} ${styles.pop}`}>
+            <Icon name="flame" size={16} /> {tUi('combo', { n: combo })}
           </span>
         )}
         {why}
@@ -220,6 +244,10 @@ export function LessonSummary({
   streakHit = 0,
   secondary,
   onSecondary,
+  double = false,
+  levelUp = null,
+  badges = [],
+  ending,
 }: {
   correct: number
   total: number
@@ -236,8 +264,17 @@ export function LessonSummary({
   /** A second, quieter action under the main one */
   secondary?: string
   onSecondary?: () => void
+  /** This lesson paid double ("2× today") */
+  double?: boolean
+  /** The level this finish reached, when it is a new one */
+  levelUp?: number | null
+  /** Badge ids this finish earned */
+  badges?: string[]
+  /** This finish completed a unit or the whole course: a card with its certificate */
+  ending?: { kind: 'unit' | 'course'; title: string; href: string }
 }) {
   const { t: tUi } = useTranslation()
+  const celebrate = !!(payout || levelUp || badges.length || ending)
   const { progress } = useProgress()
   const streak = currentStreak(progress.streak, localDay(), progress.freezes)
   // The bar runs to the next milestone (3, 7, 14, 30 …), so there is always something a few days away
@@ -251,6 +288,7 @@ export function LessonSummary({
 
   return (
     <div className={`${styles.lesson} ${styles.summary}`}>
+      {celebrate && <Confetti />}
       <div className={styles.hero}>
         <span className={styles.heroDisc} aria-hidden />
         <Guide pose={payout ? 'coins' : 'cheer'} height={210} />
@@ -265,6 +303,7 @@ export function LessonSummary({
             <strong>
               <Coin size={20} /> <Money amount={payout} sign />
             </strong>
+            {double && <span className={styles.doubleChip}>{tUi('double_chip')}</span>}
           </div>
         )}
         {total > 0 && (
@@ -280,6 +319,36 @@ export function LessonSummary({
           </div>
         )}
       </Card>
+      {ending && (
+        <Card tone="indigo" className={styles.ending}>
+          <Icon name={ending.kind === 'course' ? 'gem' : 'flag'} size={28} />
+          <h2>{tUi(ending.kind === 'course' ? 'course_done_title' : 'unit_done_title')}</h2>
+          <p>{tUi(ending.kind === 'course' ? 'course_done_sub' : 'unit_done_sub', { title: ending.title })}</p>
+          <Link to={ending.href} className={buttonClass({ variant: 'white', size: 'sm' })}>
+            {tUi('see_certificate')}
+          </Link>
+        </Card>
+      )}
+      {(levelUp || badges.length > 0) && (
+        <ul className={styles.rewards} aria-label={tUi('rewards_label')}>
+          {levelUp && (
+            <li className={styles.pop}>
+              <Icon name="star" size={22} />
+              <span>
+                <strong>{tUi('level_up')}</strong> {tUi('level_is', { n: levelUp, title: tUi(`level_${levelUp}` as ParseKeys) })}
+              </span>
+            </li>
+          )}
+          {badges.map((id) => (
+            <li key={id} className={styles.pop}>
+              <Icon name={BADGES.find((b) => b.id === id)?.icon ?? 'star'} size={22} />
+              <span>
+                <strong>{tUi('badge_new')}</strong> {tUi(`badge_${id}` as ParseKeys)}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
       <Card className={styles.weekCard}>
         <div className={styles.weekHead}>
           <p className={styles.weekTitle}>

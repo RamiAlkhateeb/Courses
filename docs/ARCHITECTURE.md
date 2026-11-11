@@ -214,7 +214,7 @@ Don't write new `localStorage` code; add a store instead.
 
 | Store | File | localStorage key | Holds |
 | --- | --- | --- | --- |
-| `progressStore` | `src/state/progress.ts` | `progress:v2` (imports `progress:v1`) | Answers, bank, streak, freezes, review boxes and due days, `lessonsDone`, `activity`, `perfect`, `time`, `bestStreak`, `daily` |
+| `progressStore` | `src/state/progress.ts` | `progress:v2` (imports `progress:v1`) | Answers, bank, streak, freezes, review boxes and due days, `lessonsDone`, `activity`, `perfect`, `time`, `bestStreak`, `daily`, `completed` (first-finish days), `badges` (earned days) |
 | `lessonRunStore` | `src/state/lessonRun.ts` | `lessonRun:v1` | The step and answers of the one unfinished lesson |
 | `profileStore` | `src/state/profile.ts` | `profile:v1` | Onboarding choices, daily goal, active course |
 | `playgroundStore` | `src/state/playground.ts` | `playground:v1` | The simulator season (section 5) |

@@ -5,7 +5,11 @@ import { Logo } from '../../components/Logo'
 import { CourseSwitcher } from '../../components/CourseSwitcher'
 import { Money } from '../../components/Money'
 import { Bush, Mound, Sprout, Tree } from '../../components/GardenArt'
-import { Card, Coin, Icon, buttonClass, type IconName } from '../../components/ui'
+import type { ParseKeys } from 'i18next'
+import { Card, Coin, Icon, ProgressBar, buttonClass, type IconName } from '../../components/ui'
+import { badgeShelf } from '../../domain/badges'
+import { useAwardBadges } from '../../state/useBadges'
+import { levelFor, levelPoints } from '../../domain/levels'
 import { useLocalized } from '../../content/useLocalized'
 import { currentStreak, localDay, weekSummary } from '../../domain/progress'
 import { Change } from '../../components/Change'
@@ -31,7 +35,7 @@ const STAGES = [
 
 /** Me: streak, play money and lessons done, this week's bars, the garden, and milestones. */
 export function MePage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const tc = useLocalized()
   const { progress } = useProgress()
   const wallet = useWallet()
@@ -54,11 +58,13 @@ export function MePage() {
     { value: <Money amount={wallet} />, label: t('playMoneyShort') },
     { icon: 'check', value: String(progress.lessonsDone.length), label: t('lessonsDoneShort') },
   ]
-  const milestones: { icon: IconName; label: string; got: boolean }[] = [
-    { icon: 'sprout', label: t('msFirstStep'), got: progress.lessonsDone.length >= 1 },
-    { icon: 'flame', label: t('msWeek'), got: streak >= 7 },
-    { icon: 'star', label: t('msAce'), got: progress.perfect >= 1 },
-  ]
+  // The level (from lessons and right answers) and the badges, which stay once earned (any still waiting are saved here)
+  useAwardBadges()
+  const level = levelFor(levelPoints(progress))
+  const levelTitle = (n: number) => t(`level_${n}` as ParseKeys)
+  const shelf = badgeShelf(progress)
+  const dateFmt = new Intl.DateTimeFormat(i18n.language === 'ar' ? 'ar-u-nu-latn' : 'en', { dateStyle: 'medium' })
+  const dayText = (day: string) => dateFmt.format(new Date(`${day}T12:00:00`))
 
   return (
     <div className={styles.page}>
@@ -146,13 +152,41 @@ export function MePage() {
         <p className={styles.gardenNote}>{t('gardenOf', { pct })}</p>
       </Card>
 
-      <h2 className={styles.kicker}>{t('milestones')}</h2>
-      <ul className={styles.miles}>
-        {milestones.map((m) => (
-          <li key={m.label} className={m.got ? styles.mile : `${styles.mile} ${styles.mileLocked}`}>
-            <Icon name={m.got ? m.icon : 'lock'} size={22} />
-            <span>{m.label}</span>
-            {!m.got && <span className="visually-hidden">{t('nodeLocked')}</span>}
+      <h2 className={styles.kicker}>{t('level_is', { n: level.level, title: levelTitle(level.level) })}</h2>
+      <Card className={styles.level}>
+        <ProgressBar value={level.points - level.from} max={level.to === null ? 1 : level.to - level.from} label={t('level_is', { n: level.level, title: levelTitle(level.level) })} />
+        <p className={styles.levelNote}>
+          <Icon name="star" size={18} /> {level.to === null ? t('level_top') : t('level_next', { points: level.to - level.points, title: levelTitle(level.level + 1) })}
+        </p>
+        <p className={styles.levelHow}>{t('level_how')}</p>
+      </Card>
+
+      <h2 className={styles.kicker}>
+        {t('badges_title')} <span className={styles.kickerCount}>{t('badges_count', { n: shelf.earned.length, total: shelf.total })}</span>
+      </h2>
+      <ul className={styles.badges}>
+        {shelf.earned.map((b) => (
+          <li key={b.id} className={styles.badge}>
+            <span className={styles.badgeIcon}>
+              <Icon name={b.icon} size={22} />
+            </span>
+            <span className={styles.badgeText}>
+              <strong>{t(`badge_${b.id}` as ParseKeys)}</strong>
+              <small>{t('badge_earned_on', { date: dayText(b.day) })}</small>
+            </span>
+          </li>
+        ))}
+        {shelf.locked.map((b) => (
+          <li key={b.id} className={`${styles.badge} ${styles.badgeLocked}`}>
+            <span className={styles.badgeIcon}>
+              <Icon name="lock" size={20} />
+            </span>
+            <span className={styles.badgeText}>
+              <strong>{t(`badge_${b.id}` as ParseKeys)}</strong>
+              <small>
+                {t('badge_next')} · {t(`badge_${b.id}_how` as ParseKeys)}
+              </small>
+            </span>
           </li>
         ))}
       </ul>
