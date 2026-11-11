@@ -1,3 +1,4 @@
+import { answerActivity } from './activity'
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test, type Page } from '@playwright/test'
 import { openSimulator, PRACTICE, withPractice } from './practice'
@@ -86,6 +87,7 @@ test('finishing a lesson with the keyboard saves progress and pays the bank', as
   // Enter/1 drive the lesson up to Lesson complete
   const next = page.getByRole('button', { name: 'Next lesson' })
   for (let i = 0; i < 30 && !(await next.isVisible()); i++) {
+    await answerActivity(page)
     if (await page.getByRole('radio').count()) {
       await page.keyboard.press('1') // pick the first option shown
       await page.keyboard.press('Enter') // check

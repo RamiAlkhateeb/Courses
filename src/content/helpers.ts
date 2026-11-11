@@ -55,6 +55,28 @@ export const compoundCalculator: Block = { type: 'calculator', kind: 'compound' 
 /** A hands-on simulator task (a practice lesson): the live Playground with the task on top. */
 export const practice = (task: PracticeTask): Block => ({ type: 'practice', task })
 
+/** Guess first (an activity step): `options` in order, `answer` the index of the right one, `reveal` the explanation. */
+export const predict = (prompt: Localized, options: Localized[], answer: number, reveal: Localized): Block => ({ type: 'predict', prompt, options, answer, reveal })
+
+/** What would you do? (an activity step): each option with the consequence it leads to; nothing is right or wrong. */
+export const choice = (prompt: Localized, options: [Localized, Localized][]): Block => ({
+  type: 'choice',
+  prompt,
+  options: options.map(([label, result]) => ({ label, result })),
+})
+
+/** Sort (an activity step): two buckets, and each item with the index of the bucket it belongs in. */
+export const sort = (prompt: Localized, buckets: [Localized, Localized], items: [Localized, 0 | 1][], explain: Localized): Block => ({
+  type: 'sort',
+  prompt,
+  buckets,
+  items: items.map(([text, bucket]) => ({ text, bucket })),
+  explain,
+})
+
+/** Myth or fact (an activity step). */
+export const myth = (statement: Localized, fact: boolean, explain: Localized): Block => ({ type: 'myth', statement, fact, explain })
+
 /** Forces a new lesson card here (cards are otherwise cut automatically). */
 export const cardBreak: Block = { type: 'cardBreak' }
 

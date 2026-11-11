@@ -16,6 +16,8 @@ import { learnHref, lessonKey, lessonsFor, type Lesson } from '../../domain/less
 import { clearLessonRun, lessonRunStore, saveLessonRun } from '../../state/lessonRun'
 import { SpaceGuide } from './SpaceGuide'
 import { PracticeBlock } from '../../components/playground/PracticeBlock'
+import { ActivityDoneContext } from '../../components/content/activityDone'
+import { activityIn } from '../../domain/activities'
 import { practiceDone } from '../../domain/playground/practice'
 import { playgroundStore } from '../../state/playground'
 import { useStore } from '../../state/useStore'
@@ -114,7 +116,10 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
   const pg = useStore(playgroundStore)
   const practiceTask = step.kind === 'content' ? step.blocks.find((b) => b.type === 'practice')?.task : undefined
   const replay = progress.lessonsDone.includes(lessonKey(mod.courseId, mod.id, lesson.id))
-  const blocked = !!practiceTask && !replay && !practiceDone(practiceTask, pg)
+  // An activity step (guess, choice, sort, myth): Next waits until it is answered, the first time through
+  const [activitiesDone, setActivitiesDone] = useState<Record<number, true>>({})
+  const activity = step.kind === 'content' ? activityIn(step.blocks) : undefined
+  const blocked = (!!practiceTask && !replay && !practiceDone(practiceTask, pg)) || (!!activity && !replay && !activitiesDone[index])
   const question = step.kind === 'question' ? step.question : undefined
   const isCorrect = checked && question !== undefined && selected === question.answer
   const retry = checked && !isCorrect && attempt === 0 // a wrong first try can be tried again
@@ -183,7 +188,7 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
     enter(index + 1)
   }
 
-  const onEnter = question && !checked ? check : retry ? tryAgain : advance
+  const onEnter = question && !checked ? check : retry ? tryAgain : blocked ? () => {} : advance
   // On a practice step, Enter belongs to the simulator's own buttons
   useLessonKeys({ enabled: !done && !practiceTask, onEnter, question, checked, onPick: setSelected })
 
@@ -225,9 +230,11 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
             {step.heading?.html && (
               <div dangerouslySetInnerHTML={safeHtml(t(step.heading.html))} />
             )}
-            <Blocks blocks={step.blocks} />
+            <ActivityDoneContext.Provider value={() => setActivitiesDone((d) => ({ ...d, [index]: true }))}>
+              <Blocks blocks={step.blocks} />
+            </ActivityDoneContext.Provider>
             {/* Whatever room is left under the step, the guide fills it (nothing when the step fills the screen). */}
-            {!practiceTask && <SpaceGuide blocks={step.blocks} step={index} />}
+            {!practiceTask && !activity && <SpaceGuide blocks={step.blocks} step={index} />}
           </div>
         ) : (
           <div key={index} className={styles.card}>

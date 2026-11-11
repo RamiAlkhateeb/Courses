@@ -13,11 +13,29 @@ export type Slide =
   | { kind: 'cta' }
 
 /** Blocks a still image can't carry: lists of goals, the live simulator, sliders, and the lesson's own plumbing. */
-const DROPPED = new Set<Block['type']>(['objectives', 'takeaways', 'practice', 'calculator', 'exercise', 'cardBreak'])
+const DROPPED = new Set<Block['type']>(['objectives', 'takeaways', 'practice', 'calculator', 'exercise', 'cardBreak', 'predict', 'choice'])
 /** Pictures and tables get a slide of their own. */
 const ALONE = new Set<Block['type']>(['diagram', 'table', 'code', 'tabs', 'formula'])
 /** Most words of text on one slide (the image is read at a glance; a step of the app is up to 90). */
 export const SLIDE_WORDS = 55
+
+/** Activities a still image can show as their answer: a myth or fact as a box with the reason, a sort as a table of
+ *  its two buckets. A guess or a "what would you do?" needs a tap, so posts leave them out. */
+export function stillBlock(block: Block): Block {
+  if (block.type === 'myth') {
+    const label = block.fact ? { en: 'Fact', ar: 'حقيقة' } : { en: 'Myth', ar: 'خرافة' }
+    const html = { en: `<p>“${block.statement.en}” ${block.explain.en}</p>`, ar: `<p>«${block.statement.ar ?? block.statement.en}» ${block.explain.ar ?? block.explain.en}</p>` }
+    return { type: 'box', variant: block.fact ? 'keypoint' : 'mistake', label, html }
+  }
+  if (block.type === 'sort') {
+    const column = (b: 0 | 1) => block.items.filter((item) => item.bucket === b).map((item) => item.text)
+    const [left, right] = [column(0), column(1)]
+    const empty = { en: '', ar: '' }
+    const rows = Array.from({ length: Math.max(left.length, right.length) }, (_, i) => [left[i] ?? empty, right[i] ?? empty])
+    return { type: 'table', headers: [...block.buckets], rows }
+  }
+  return block
+}
 
 /** The standfirst inside a section's heading markup (`heading()` in src/content/helpers.ts). */
 const standfirstOf = (html?: Localized): Localized | undefined => {
@@ -40,7 +58,8 @@ export function shareSlides(lesson: Lesson, { quiz = false }: { quiz?: boolean }
   }
   for (const step of lesson.steps) {
     if (step.kind !== 'content') continue
-    for (const block of step.blocks) {
+    for (const raw of step.blocks) {
+      const block = stillBlock(raw)
       if (DROPPED.has(block.type)) continue
       if (block.type === 'keyIdea') {
         ideas.push({ kind: 'idea', html: block.html })

@@ -21,7 +21,7 @@ describe('share slides', () => {
     const lesson = lessonsFor(mod).find((l) => l.id === 'why')!
     const slides = shareSlides(lesson, { quiz: true })
     expect(slides[0]).toMatchObject({ kind: 'hook', title: { en: 'Saving vs investing' } })
-    expect(slides[0].kind === 'hook' && slides[0].standfirst?.en).toMatch(/^Saving keeps money safe/)
+    expect(slides[0].kind === 'hook' && slides[0].standfirst?.en).toMatch(/^Cash feels safe/)
     expect(slides.at(-1)).toEqual({ kind: 'cta' })
     const kinds = slides.map((s) => s.kind)
     expect(kinds.indexOf('idea')).toBeLessThan(kinds.indexOf('question'))
@@ -31,6 +31,17 @@ describe('share slides', () => {
     slides.forEach((s, i) => s.kind === 'question' && expect(slides[i + 1]).toEqual({ kind: 'answer', question: s.question }))
     // the diagram stands alone
     expect(slides.some((s) => s.kind === 'content' && s.blocks.length === 1 && s.blocks[0].type === 'diagram')).toBe(true)
+    // activities: the sort shows as a table of its two buckets; the guess needs a tap, so it is left out
+    const blocks = slides.flatMap((s) => (s.kind === 'content' ? s.blocks : []))
+    expect(blocks.some((b) => b.type === 'predict' || b.type === 'sort')).toBe(false)
+    expect(blocks.find((b) => b.type === 'table')).toMatchObject({ headers: [{ en: 'Saving' }, { en: 'Investing' }] })
+  })
+
+  it('a myth shows as a box with its reason', async () => {
+    const mod = await loadModule('investing', 'basics')
+    const lesson = lessonsFor(mod).find((l) => l.id === 'compounding')!
+    const blocks = shareSlides(lesson).flatMap((s) => (s.kind === 'content' ? s.blocks : []))
+    expect(blocks.find((b) => b.type === 'box' && b.label.en === 'Myth')).toBeTruthy()
   })
 
   it('every lesson of the offered courses makes at least 3 slides, none empty, none too long, nothing a picture cannot hold', async () => {

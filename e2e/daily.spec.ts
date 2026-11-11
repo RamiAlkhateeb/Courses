@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
+import { answerActivity } from './activity'
 
 // The daily loop on Learn: today's goal and quests, the chest, the streak-at-risk card, and resuming a lesson.
 const onboarded = (page: Page, extra: Record<string, string> = {}) =>
@@ -63,7 +64,9 @@ test('leaving a lesson and coming back carries on from the same step', async ({ 
   await page.goto('course/investing/basics/learn/why')
   const bar = page.getByRole('progressbar', { name: /lesson/i })
   await expect(bar).toHaveAttribute('aria-valuenow', '0')
+  await answerActivity(page)
   await page.keyboard.press('Enter')
+  await answerActivity(page)
   await page.keyboard.press('Enter')
   await expect(bar).not.toHaveAttribute('aria-valuenow', '0')
   const step = await bar.getAttribute('aria-valuenow')

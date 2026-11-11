@@ -6,6 +6,7 @@ import { Exercise } from './Exercise'
 import { CodeBlock } from './CodeBlock'
 import { Tabs } from './Tabs'
 import { CompoundCalculator } from './CompoundCalculator'
+import { Activity } from './Activity'
 import { Guide, Icon } from '../ui'
 import { useTranslation } from 'react-i18next'
 import { TIP_POSES } from '../../domain/guide'
@@ -89,6 +90,12 @@ export function Blocks({ blocks }: { blocks: Block[] }) {
 
           case 'calculator':
             return <CompoundCalculator key={i} />
+
+          case 'predict':
+          case 'choice':
+          case 'sort':
+          case 'myth':
+            return <Activity key={i} block={block} />
 
           case 'takeaways':
             return (

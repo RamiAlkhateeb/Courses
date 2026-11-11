@@ -40,6 +40,15 @@ export type Block =
   /** A hands-on task in the live market simulator (the Playground): its own card; the lesson moves on once it is done
    *  (src/domain/playground/practice.ts) */
   | { type: 'practice'; task: PracticeTask }
+  /** Guess first: pick a number before the lesson explains it, then see how close it was. Not scored, pays nothing.
+   *  `options` are in order (smallest first) and never shuffled. */
+  | { type: 'predict'; prompt: Localized; options: Localized[]; answer: number; reveal: Localized }
+  /** What would you do? Each option shows its consequence once tapped. No right answer and no score. */
+  | { type: 'choice'; prompt: Localized; options: { label: Localized; result: Localized }[] }
+  /** Sort each item into one of two buckets, with feedback item by item. Not scored. */
+  | { type: 'sort'; prompt: Localized; buckets: [Localized, Localized]; items: { text: Localized; bucket: 0 | 1 }[]; explain: Localized }
+  /** Myth or fact: a statement, a tap, and the reason. Not scored. */
+  | { type: 'myth'; statement: Localized; fact: boolean; explain: Localized }
 
 /** The simulator tasks a practice lesson can set (checked by `practiceDone` in src/domain/playground/practice.ts). */
 export type PracticeTask = 'first-buy' | 'spread' | 'rebalance' | 'income' | 'auto' | 'goal'

@@ -34,6 +34,10 @@ function* localizedIn(mod: Module): Generator<Localized> {
       if (b.type === 'html' || b.type === 'box' || b.type === 'keyIdea') yield b.html
       if (b.type === 'diagram') yield* [b.fig, b.title, b.alt, b.caption]
       if (b.type === 'objectives' || b.type === 'takeaways') yield* b.items
+      if (b.type === 'predict') yield* [b.prompt, ...b.options, b.reveal]
+      if (b.type === 'choice') yield* [b.prompt, ...b.options.flatMap((o) => [o.label, o.result])]
+      if (b.type === 'sort') yield* [b.prompt, ...b.buckets, ...b.items.map((i) => i.text), b.explain]
+      if (b.type === 'myth') yield* [b.statement, b.explain]
     }
   }
 }
