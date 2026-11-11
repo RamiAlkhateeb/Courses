@@ -1,6 +1,7 @@
 // Original course content. Every mix and figure is an illustrative example, not a recommendation.
+// The story ends here: Noor (نور) puts everything she has learned into a one-page plan, with Karim (كريم) along.
 import type { Module } from '../../types'
-import { L, box, cover, diagram, exercise, html, keyIdea, mcq, objectives, practice, section, table, takeaways } from '../../helpers'
+import { L, box, choice, cover, diagram, exercise, html, keyIdea, mcq, myth, practice, predict, section, sort, table, takeaways } from '../../helpers'
 
 const W = 'plan'
 const P = 'invp'
@@ -80,28 +81,38 @@ export const plan: Module = {
       label: L('Part 1', 'الجزء ١'),
       nav: L('Goals and time horizons', 'الأهداف والآفاق الزمنية'),
       title: L('Start with goals and dates', 'ابدأ بالأهداف والمواعيد'),
-      standfirst: L('A plan begins with what the money is for and when you will need it.', 'تبدأ الخطة بالغرض من المال وموعد حاجتك إليه.'),
+      standfirst: L('Noor writes her plan. It starts with what the money is for, and when.', 'تكتب نور خطتها. وتبدأ بالغرض من المال، ومتى تحتاجه.'),
       time: L('5 min', '5 دقائق'),
       blocks: [
-        objectives([
-          L('Sort your goals into short, medium and long-term buckets', 'تصنيف أهدافك في سلال قصيرة ومتوسطة وطويلة الأجل'),
-          L('Tell risk tolerance from risk capacity', 'التمييز بين التحمّل النفسي للمخاطر والقدرة على تحمّلها'),
-          L('Picture a mix of stocks, bonds and cash for each horizon', 'تصوّر مزيج من الأسهم والسندات والنقد لكل أفق زمني'),
-          L('Automate regular investing and rebalance on a schedule', 'أتمتة الاستثمار المنتظم وإعادة التوازن وفق جدول'),
-          L('Write a one-page plan with rules for a crash', 'كتابة خطة من صفحة واحدة مع قواعد للانهيار'),
-        ]),
         html(L(
-          '<p>Write each goal down with a rough amount and a <strong>date</strong>: a laptop next year, a home deposit in five years, retirement in thirty. The date matters most, because it tells you how long the money can wait out a fall before you need it. Keep your emergency fund apart from all of these: it is a safety net, not a goal.</p>',
-          '<p>دوّن كل هدف بمبلغ تقريبي و<strong>موعد</strong>: حاسوب العام القادم، ودفعة أولى لمنزل بعد خمس سنوات، والتقاعد بعد ثلاثين. الموعد هو الأهم، لأنه يخبرك كم يستطيع المال انتظار انتهاء الهبوط قبل أن تحتاجه. وأبقِ صندوق الطوارئ منفصلًا عن كل ذلك: فهو شبكة أمان لا هدف.</p>',
+          '<p>Five years after the money in the drawer, Noor sits down to write a real plan. She lists her goals: a trip next summer, a car in two years, a home deposit in twelve, retirement in thirty. Karim asks which of them she should invest for. Help her sort them.</p>',
+          '<p>بعد خمس سنوات من المال في الدرج، تجلس نور لتكتب خطة حقيقية. تدوّن أهدافها: رحلة الصيف القادم، وسيارة بعد سنتين، ودفعة أولى لمنزل بعد اثني عشر عامًا، والتقاعد بعد ثلاثين. يسألها كريم أيها تستثمر من أجله. ساعدها على تصنيفها.</p>',
         )),
+        sort(
+          L('Keep it in savings, or invest it?', 'تبقيه في التوفير أم تستثمره؟'),
+          [L('Savings', 'توفير'), L('Invest', 'استثمار')],
+          [
+            [L('A trip next summer', 'رحلة الصيف القادم'), 0],
+            [L('Retirement in 30 years', 'التقاعد بعد 30 سنة'), 1],
+            [L('A car in 2 years', 'سيارة بعد سنتين'), 0],
+            [L('A home deposit in 12 years', 'دفعة أولى لمنزل بعد 12 سنة'), 1],
+          ],
+          L(
+            'Under about 3 years, money has no time to recover from a fall, so it stays in savings. Ten years or more leaves room to invest for growth.',
+            'خلال أقل من 3 سنوات تقريبًا لا يملك المال وقتًا للتعافي من الهبوط، فيبقى في التوفير. أما عشر سنوات فأكثر فتترك مجالًا للاستثمار من أجل النمو.',
+          ),
+        ),
         html(L(
-          '<p>Then sort goals into three buckets. <strong>Short-term</strong> (under about 3 years) stays in savings. <strong>Medium-term</strong> (about 3–10 years) takes a cautious mix. <strong>Long-term</strong> (10+ years) can carry more stocks.</p>',
-          '<p>ثم صنّف الأهداف في ثلاث سلال. <strong>قصيرة الأجل</strong> (أقل من 3 سنوات تقريبًا) تبقى في التوفير. و<strong>متوسطة الأجل</strong> (نحو 3–10 سنوات) تأخذ مزيجًا حذرًا. و<strong>طويلة الأجل</strong> (10 سنوات فأكثر) يمكنها حمل أسهم أكثر.</p>',
+          '<p>Write each goal with a rough amount and a <strong>date</strong>. Then sort them into buckets: <strong>short-term</strong> (under about 3 years) stays in savings, <strong>medium-term</strong> (about 3–10 years) takes a cautious mix, <strong>long-term</strong> (10+ years) can carry more stocks. The emergency fund stays apart: a safety net, not a goal.</p>',
+          '<p>دوّن كل هدف بمبلغ تقريبي و<strong>موعد</strong>. ثم صنّفها في سلال: <strong>قصيرة الأجل</strong> (أقل من 3 سنوات تقريبًا) تبقى في التوفير، و<strong>متوسطة الأجل</strong> (نحو 3–10 سنوات) تأخذ مزيجًا حذرًا، و<strong>طويلة الأجل</strong> (10 سنوات فأكثر) يمكنها حمل أسهم أكثر. ويبقى صندوق الطوارئ منفصلًا: شبكة أمان لا هدف.</p>',
         )),
-        box('example', L('Example', 'مثال'), L(
-          'Layla, 28, has a car to buy in two years (short), a flat deposit in seven (medium) and retirement in about 35 (long). One person, three different answers to “how much risk?”. (Illustrative.)',
-          'ليلى، 28 عامًا، ستشتري سيارة بعد سنتين (قصيرة)، ولديها دفعة أولى لشقة بعد سبع (متوسطة)، وتقاعد بعد نحو 35 (طويلة). شخص واحد وثلاث إجابات مختلفة عن «كم من المخاطرة؟». (توضيحي.)',
-        )),
+        diagram({
+          fig: L('Illustration', 'توضيح'),
+          title: L('Noor’s goals by date', 'أهداف نور حسب الموعد'),
+          src: '/diagrams/goal-dates.svg',
+          alt: L('Years until each of Noor’s goals: the trip in 1, the car in 2, the home deposit in 12, retirement in 30.', 'السنوات حتى كل هدف من أهداف نور: الرحلة بعد 1، والسيارة بعد 2، والدفعة الأولى بعد 12، والتقاعد بعد 30.'),
+          caption: L('Years until the money is needed, top to bottom: trip, car, home deposit, retirement. Illustrative.', 'السنوات حتى الحاجة إلى المال، من الأعلى إلى الأسفل: الرحلة، السيارة، الدفعة الأولى، التقاعد. توضيحي.'),
+        }),
         keyIdea(L(
           '<p>Every goal needs a <strong>date</strong>: the date, not the market, decides how much risk that money can carry.</p>',
           '<p>كل هدف يحتاج <strong>موعدًا</strong>: الموعد، لا السوق، هو ما يحدد مقدار المخاطرة التي يتحملها ذلك المال.</p>',
@@ -116,19 +127,35 @@ export const plan: Module = {
       label: L('Part 2', 'الجزء ٢'),
       nav: L('Risk tolerance and capacity', 'تحمّل المخاطر والقدرة عليها'),
       title: L('How much risk can you take?', 'كم من المخاطرة يمكنك أن تتحمّل؟'),
+      standfirst: L('Karim feels brave. His finances may not agree.', 'كريم يشعر بالشجاعة. وأمواله قد لا توافقه.'),
       time: L('5 min', '5 دقائق'),
       blocks: [
         html(L(
-          '<p><strong>Risk tolerance</strong> is how big a fall you can watch without selling. <strong>Risk capacity</strong> is how big a fall your life can absorb: steady income, an emergency fund, little debt and a long horizon all raise it. The two can differ: a calm person with an uncertain job may have high tolerance but low capacity.</p>',
-          '<p><strong>التحمّل النفسي للمخاطر</strong> هو حجم الهبوط الذي تستطيع مشاهدته دون أن تبيع. و<strong>القدرة على تحمّل المخاطر</strong> هي حجم الهبوط الذي تستطيع حياتك امتصاصه: الدخل الثابت وصندوق الطوارئ وقلة الديون والأفق الطويل كلها ترفعها. وقد يختلفان: فشخص هادئ بوظيفة غير مستقرة قد يملك تحمّلًا مرتفعًا وقدرة منخفضة.</p>',
+          '<p>Karim tells Noor he can take any risk: “Falls don’t scare me anymore.” But he has just changed jobs, his emergency fund is half empty, and he still owes on his car. Noor wonders whether feeling calm is the same as being able to afford a big fall.</p>',
+          '<p>يقول كريم لنور إنه يستطيع تحمّل أي مخاطرة: «الهبوط لم يعد يخيفني». لكنه غيّر وظيفته للتوّ، وصندوق طوارئه نصف فارغ، وما زال عليه قسط السيارة. تتساءل نور: هل الشعور بالهدوء هو نفسه القدرة على تحمّل هبوط كبير؟</p>',
         )),
+        myth(
+          L('If you feel calm about losses, you can afford more risk.', 'إذا كنت هادئًا تجاه الخسائر، فبإمكانك تحمّل مخاطرة أكبر.'),
+          false,
+          L(
+            'Feeling calm is tolerance. Affording a fall is capacity: income, savings, debts and time. Karim’s tolerance is high but his capacity is low, and the lower one sets the limit.',
+            'الهدوء تحمّل نفسي. أما القدرة على تحمّل الهبوط فتعتمد على الدخل والمدخرات والديون والوقت. تحمّل كريم مرتفع لكن قدرته منخفضة، والأدنى منهما يحدد الحد.',
+          ),
+        ),
         html(L(
-          '<p>A simple test: picture your long-term money falling by a third in one year, 10,000 showing as 6,700. Would you sell, wait, or keep adding? Answer honestly, before it happens. When tolerance and capacity disagree, let the <strong>lower one</strong> set your risk.</p>',
-          '<p>اختبار بسيط: تخيّل مالك طويل الأجل يهبط بمقدار الثلث في عام واحد، فتظهر 10,000 على أنها 6,700. هل ستبيع، أم تنتظر، أم تستمر في الإضافة؟ أجب بصدق قبل أن يحدث ذلك. وعندما يختلف التحمّل والقدرة، دع <strong>الأدنى منهما</strong> يحدد مخاطرتك.</p>',
+          '<p><strong>Risk tolerance</strong> is how big a fall you can watch without selling. <strong>Risk capacity</strong> is how big a fall your life can absorb: steady income, an emergency fund, little debt and a long horizon all raise it. When the two disagree, let the <strong>lower one</strong> set your risk.</p>',
+          '<p><strong>التحمّل النفسي للمخاطر</strong> هو حجم الهبوط الذي تستطيع مشاهدته دون أن تبيع. و<strong>القدرة على تحمّل المخاطر</strong> هي حجم الهبوط الذي تستطيع حياتك امتصاصه: الدخل الثابت وصندوق الطوارئ وقلة الديون والأفق الطويل كلها ترفعها. وعندما يختلفان، دع <strong>الأدنى منهما</strong> يحدد مخاطرتك.</p>',
         )),
+        diagram({
+          fig: L('Illustration', 'توضيح'),
+          title: L('A fall of a third', 'هبوط بمقدار الثلث'),
+          src: '/diagrams/one-third.svg',
+          alt: L('10,000 of long-term money showing 6,700 after falling by a third in one year.', '10,000 من المال طويل الأجل تظهر 6,700 بعد هبوط بمقدار الثلث في عام واحد.'),
+          caption: L('A simple test: picture this, then ask whether you would sell, wait, or keep adding. Illustrative.', 'اختبار بسيط: تخيّل هذا، ثم اسأل نفسك هل ستبيع أم تنتظر أم تواصل الإضافة. توضيحي.'),
+        }),
         box('mistake', L('Common mistake', 'خطأ شائع'), L(
-          'Judging your tolerance in a rising market. Everyone feels brave while prices climb; the real test is what you do after a fall.',
-          'الحكم على تحمّلك في سوق صاعدة. الجميع يشعر بالشجاعة والأسعار ترتفع؛ أما الاختبار الحقيقي فهو ما تفعله بعد الهبوط.',
+          'Judging your tolerance in a rising market. Everyone feels brave while prices climb; the real test is what you do after a fall, so answer the 6,700 question honestly, before it happens.',
+          'الحكم على تحمّلك في سوق صاعدة. الجميع يشعر بالشجاعة والأسعار ترتفع؛ أما الاختبار الحقيقي فهو ما تفعله بعد الهبوط، فأجب عن سؤال الـ6,700 بصدق قبل أن يحدث.',
         )),
         keyIdea(L(
           '<p>Take the risk your feelings <strong>and</strong> your finances can both survive: the lower of the two sets the limit.</p>',
@@ -144,12 +171,22 @@ export const plan: Module = {
       label: L('Part 3', 'الجزء ٣'),
       nav: L('Choosing a mix', 'اختيار المزيج'),
       title: L('A mix for each bucket', 'مزيج لكل سلة'),
+      standfirst: L('Same person, three goals, three very different mixes.', 'شخص واحد، وثلاثة أهداف، وثلاثة أمزجة مختلفة جدًا.'),
       time: L('5 min', '5 دقائق'),
       blocks: [
         html(L(
-          '<p>With your buckets and your risk in mind, picture a split for each bucket between <strong>stocks</strong> (growth, big swings), <strong>bonds</strong> (steadier) and <strong>cash</strong> (ready to spend). The longer the horizon, the more room there usually is for stocks.</p>',
-          '<p>مع وضع سلالك ومخاطرتك في الاعتبار، تصوّر لكل سلة تقسيمًا بين <strong>الأسهم</strong> (نمو وتقلبات كبيرة) و<strong>السندات</strong> (أكثر ثباتًا) و<strong>النقد</strong> (جاهز للإنفاق). كلما طال الأفق، اتسع المجال عادةً للأسهم.</p>',
+          '<p>Noor now picks a split for each bucket between <strong>stocks</strong> (growth, big swings), <strong>bonds</strong> (steadier) and <strong>cash</strong> (ready to spend). In the example she follows, money for 25 years from now holds about 80% stocks. She has to fill in her one-year goal.</p>',
+          '<p>تختار نور الآن لكل سلة تقسيمًا بين <strong>الأسهم</strong> (نمو وتقلبات كبيرة) و<strong>السندات</strong> (أكثر ثباتًا) و<strong>النقد</strong> (جاهز للإنفاق). في المثال الذي تتبعه، يحمل المال المخصص لما بعد 25 سنة نحو 80% أسهمًا. وعليها أن تملأ هدف السنة الواحدة.</p>',
         )),
+        predict(
+          L('In the example, how much of the one-year money is in stocks?', 'في المثال، ما نسبة الأسهم في مال السنة الواحدة؟'),
+          [L('0%', '0%'), L('20%', '20%'), L('40%', '40%'), L('80%', '80%')],
+          0,
+          L(
+            'None: it is all cash. Money needed within a year has no time to recover from a fall, so in the example it does not hold stocks at all. (Illustrative splits, not recommendations.)',
+            'لا شيء: كله نقد. المال المطلوب خلال عام لا يملك وقتًا للتعافي من الهبوط، لذا لا يحمل في المثال أي أسهم. (تقسيمات توضيحية لا توصيات.)',
+          ),
+        ),
         diagram({
           fig: L('Illustration', 'توضيح'),
           title: L('Three goals, three mixes', 'ثلاثة أهداف وثلاثة أمزجة'),
@@ -182,16 +219,33 @@ export const plan: Module = {
       label: L('Part 4', 'الجزء ٤'),
       nav: L('Automate it', 'أتمتة الخطة'),
       title: L('Make the plan run by itself', 'اجعل الخطة تعمل وحدها'),
+      standfirst: L('Noor sets it up once, and the habit does the rest.', 'تضبطها نور مرة واحدة، والعادة تتولى الباقي.'),
       time: L('5 min', '5 دقائق'),
       blocks: [
         html(L(
-          '<p>A good plan runs without you. <strong>Automate</strong> it: set a fixed amount to move into your investments on the same day each month, just after payday. You stop relying on willpower, and you never have to decide whether “now” is a good moment to invest.</p>',
-          '<p>الخطة الجيدة تعمل من دونك. <strong>أتمتها</strong>: حدّد مبلغًا ثابتًا ينتقل إلى استثماراتك في اليوم نفسه من كل شهر، بعد استلام الراتب مباشرة. فتتوقف عن الاعتماد على قوة الإرادة، ولا تحتاج أبدًا لتقرير ما إذا كان «الآن» وقتًا مناسبًا للاستثمار.</p>',
+          '<p>Noor sets <strong>100 a month</strong> to move into her fund the day after payday. Over three months the price is 10, then 5, then 8. Her 300 buys 42.5 units in total. The average price she saw was about 7.67. What did each of her units actually cost?</p>',
+          '<p>تضبط نور تحويل <strong>100 شهريًا</strong> إلى صندوقها في اليوم التالي للراتب. خلال ثلاثة أشهر كان السعر 10، ثم 5، ثم 8. اشترت الـ300 ما مجموعه 42.5 وحدة. ومتوسط السعر الذي رأته نحو 7.67. فكم كلّفتها كل وحدة فعلًا؟</p>',
         )),
+        predict(
+          L('What was Noor’s average cost per unit?', 'كم كان متوسط تكلفة الوحدة لدى نور؟'),
+          [L('About 6', 'نحو 6'), L('About 7.06', 'نحو 7.06'), L('About 7.67', 'نحو 7.67'), L('About 10', 'نحو 10')],
+          1,
+          L(
+            'About 7.06: 300 ÷ 42.5. Lower than the 7.67 average price, because the cheap month bought the most units. (Illustrative figures.)',
+            'نحو 7.06: أي 300 ÷ 42.5. أقل من متوسط السعر 7.67، لأن الشهر الرخيص اشترى أكبر عدد من الوحدات. (أرقام توضيحية.)',
+          ),
+        ),
         html(L(
-          '<p>Investing a fixed amount on a schedule is called <strong>dollar-cost averaging</strong> (or pound-cost averaging). When prices fall, the same amount buys more units; when they rise, it buys fewer. So your average cost per unit ends up below the average price you saw.</p>',
-          '<p>استثمار مبلغ ثابت وفق جدول يُسمى <strong>متوسط التكلفة</strong> (الاستثمار الدوري). عندما تنخفض الأسعار يشتري المبلغ نفسه وحدات أكثر، وعندما ترتفع يشتري أقل. لذلك ينتهي متوسط تكلفتك للوحدة أدنى من متوسط الأسعار التي رأيتها.</p>',
+          '<p>A good plan runs without you. <strong>Automate</strong> a fixed amount on a fixed day and you stop relying on willpower or guessing the moment. Investing on a schedule like this is <strong>dollar-cost averaging</strong>: it quietly buys more when prices are low.</p>',
+          '<p>الخطة الجيدة تعمل من دونك. <strong>أتمت</strong> مبلغًا ثابتًا في يوم ثابت، فتتوقف عن الاعتماد على قوة الإرادة أو تخمين اللحظة. والاستثمار وفق جدول كهذا هو <strong>متوسط التكلفة</strong>: يشتري بهدوء أكثر عندما تنخفض الأسعار.</p>',
         )),
+        diagram({
+          fig: L('Illustration', 'توضيح'),
+          title: L('Average price and average cost', 'متوسط السعر ومتوسط التكلفة'),
+          src: '/diagrams/dca-cost.svg',
+          alt: L('Over three months at prices of 10, 5 and 8, the average price was about 7.67 and the average cost per unit about 7.06.', 'على مدى ثلاثة أشهر بأسعار 10 و5 و8، كان متوسط السعر نحو 7.67 ومتوسط تكلفة الوحدة نحو 7.06.'),
+          caption: L('Left: the average price. Right: what each unit cost Noor. Illustrative figures.', 'يسارًا: متوسط السعر. يمينًا: ما كلّفته كل وحدة لنور. أرقام توضيحية.'),
+        }),
         table(
           [L('Month', 'الشهر'), L('Invested', 'المبلغ المستثمر'), L('Price', 'السعر'), L('Units bought', 'الوحدات المشتراة')],
           [
@@ -200,10 +254,6 @@ export const plan: Module = {
             [L('3', '3'), L('100', '100'), L('8', '8'), L('12.5', '12.5')],
           ],
         ),
-        html(L(
-          '<p>Together, 300 bought 42.5 units: an average cost of about <strong>7.06</strong> per unit, while the average price was about 7.67. (Illustrative figures.) In the Playground, with play money, auto-invest works the same way: a fixed buy every 4 weeks, whatever the price.</p>',
-          '<p>معًا، اشترت 300 نحو 42.5 وحدة: بمتوسط تكلفة نحو <strong>7.06</strong> للوحدة، بينما كان متوسط السعر نحو 7.67. (أرقام توضيحية.) وفي التجربة، بأموال افتراضية، يعمل الاستثمار التلقائي بالطريقة نفسها: شراء ثابت كل 4 أسابيع أيًا كان السعر.</p>',
-        )),
         keyIdea(L(
           '<p>Automate a <strong>fixed amount</strong> on a fixed day: the habit keeps going in good months and bad ones.</p>',
           '<p>أتمت <strong>مبلغًا ثابتًا</strong> في يوم ثابت: العادة تستمر في الأشهر الجيدة والسيئة.</p>',
@@ -218,11 +268,30 @@ export const plan: Module = {
       label: L('Part 5', 'الجزء ٥'),
       nav: L('Rebalancing', 'إعادة التوازن'),
       title: L('Keep the mix you chose', 'حافظ على المزيج الذي اخترته'),
+      standfirst: L('Markets move your mix without asking.', 'الأسواق تحرّك مزيجك دون أن تستأذنك.'),
       time: L('5 min', '5 دقائق'),
       blocks: [
         html(L(
-          '<p>Markets move your mix without asking. After a strong run for stocks, a 60/40 target can drift to 66/34, and you now carry more risk than you chose. <strong>Rebalancing</strong> puts it back: trim what grew, or point new money at what fell behind.</p>',
-          '<p>الأسواق تحرّك مزيجك دون أن تستأذنك. بعد صعود قوي للأسهم، قد ينحرف هدف 60/40 إلى 66/34، فتصبح مخاطرتك أكبر مما اخترت. و<strong>إعادة التوازن</strong> تعيده: قلّص ما نما، أو وجّه المال الجديد إلى ما تأخر.</p>',
+          '<p>After two strong years, stocks are now <strong>68%</strong> of Karim’s long-term money. His target was 60%, and his rule is to act when a weight drifts more than 5 points. He has some new money arriving next month. What would you do in his place?</p>',
+          '<p>بعد عامين قويين، صارت الأسهم <strong>68%</strong> من مال كريم طويل الأجل. وكان هدفه 60%، وقاعدته أن يتحرك عندما ينحرف وزن بأكثر من 5 نقاط. ولديه مال جديد يصل الشهر القادم. ماذا كنت ستفعل مكانه؟</p>',
+        )),
+        choice(L('Stocks are 68% against a 60% target. What would you do?', 'الأسهم 68% مقابل هدف 60%. ماذا كنت ستفعل؟'), [
+          [
+            L('Sell some stocks, buy bonds', 'أبيع بعض الأسهم وأشتري سندات'),
+            L('The mix is back at 60/40 right away, but selling costs fees and possibly tax on the gains.', 'يعود المزيج إلى 60/40 فورًا، لكن البيع يكلّف رسومًا وربما ضريبة على الأرباح.'),
+          ],
+          [
+            L('Put the new money into bonds', 'أضع المال الجديد في السندات'),
+            L('The mix moves back toward target with no sale, so no selling fee or tax. It is slower, and may take a few months.', 'يعود المزيج نحو الهدف دون بيع، فلا رسوم بيع ولا ضريبة. لكنه أبطأ، وقد يستغرق بضعة أشهر.'),
+          ],
+          [
+            L('Leave it: stocks are doing well', 'أتركه: الأسهم تحقق أداءً جيدًا'),
+            L('Karim now carries more risk than he chose. If stocks fall, a 68% mix falls further than the plan he wrote.', 'يتحمّل كريم الآن مخاطرة أكبر مما اختار. وإذا هبطت الأسهم، يهبط مزيج الـ68% أكثر من الخطة التي كتبها.'),
+          ],
+        ]),
+        html(L(
+          '<p>After a strong run for stocks, a 60/40 target drifts, and you carry more risk than you chose. <strong>Rebalancing</strong> puts it back: trim what grew, or point new money at what fell behind. Do it <strong>by the calendar</strong>, once or twice a year, or <strong>by a band</strong>, when a weight drifts more than about 5 points.</p>',
+          '<p>بعد صعود قوي للأسهم ينحرف هدف 60/40، فتتحمّل مخاطرة أكبر مما اخترت. و<strong>إعادة التوازن</strong> تعيده: قلّص ما نما، أو وجّه المال الجديد إلى ما تأخر. افعل ذلك <strong>حسب التقويم</strong>، مرة أو مرتين في السنة، أو <strong>حسب النطاق</strong>، عندما ينحرف وزن بأكثر من 5 نقاط تقريبًا.</p>',
         )),
         diagram({
           fig: L('Illustration', 'توضيح'),
@@ -234,14 +303,6 @@ export const plan: Module = {
           ),
           caption: L('Left: the target. Middle: after a strong year for stocks. Right: rebalanced. Dark: stocks. Light: bonds. Illustrative.', 'يسارًا: الهدف. في الوسط: بعد عام قوي للأسهم. يمينًا: بعد إعادة التوازن. الداكن: الأسهم. الفاتح: السندات. توضيحي.'),
         }),
-        html(L(
-          '<p>Two common rules. <strong>By the calendar</strong>: check once or twice a year, on a fixed date. <strong>By a band</strong>: act only when a weight drifts more than about 5 points from target. Topping up the lagging part with new money avoids selling, and with it fees and tax.</p>',
-          '<p>قاعدتان شائعتان. <strong>حسب التقويم</strong>: راجع مرة أو مرتين في السنة في موعد ثابت. <strong>حسب النطاق</strong>: تحرّك فقط عندما ينحرف وزن بأكثر من نحو 5 نقاط عن الهدف. وزيادة الجزء المتأخر بالمال الجديد تتجنب البيع، ومعه الرسوم والضرائب.</p>',
-        )),
-        box('example', L('Try it', 'جرّبها'), L(
-          'In the Playground (play money), check the allocation ring after a few simulated years, then practise bringing your split back.',
-          'في التجربة (بأموال افتراضية)، راجع حلقة التوزيع بعد بضع سنوات افتراضية، ثم تدرّب على إعادة تقسيمك إلى هدفه.',
-        )),
         keyIdea(L(
           '<p>Rebalance on a <strong>schedule or a band</strong>, not on a hunch, so your risk stays the risk you chose.</p>',
           '<p>أعد التوازن وفق <strong>جدول أو نطاق</strong>، لا وفق حدس، لتبقى مخاطرتك هي المخاطرة التي اخترتها.</p>',
@@ -256,16 +317,38 @@ export const plan: Module = {
       label: L('Part 6', 'الجزء ٦'),
       nav: L('Your one-page plan', 'خطتك في صفحة واحدة'),
       title: L('Write it down, before the storm', 'دوّنها قبل العاصفة'),
+      standfirst: L('One page, written while calm, for the day the market is not.', 'صفحة واحدة، تُكتب في الهدوء، ليوم لا يكون فيه السوق هادئًا.'),
       time: L('6 min', '6 دقائق'),
       blocks: [
         html(L(
-          '<p>Put it all on <strong>one page</strong>: your goals with dates and amounts, the mix for each bucket, how much you invest each month and on which day, and when you rebalance. Short is good: a plan you can read in two minutes is a plan you will actually check.</p>',
-          '<p>اجمع كل شيء في <strong>صفحة واحدة</strong>: أهدافك بمواعيدها ومبالغها، والمزيج لكل سلة، وكم تستثمر كل شهر وفي أي يوم، ومتى تعيد التوازن. الإيجاز مفيد: الخطة التي تقرؤها في دقيقتين هي خطة ستراجعها فعلًا.</p>',
+          '<p>Noor puts it all on <strong>one page</strong>. Karim offers to “improve” it with what he picked up online this week. A plan you can read in two minutes is a plan you will actually check, so only some things belong on it. Which ones?</p>',
+          '<p>تجمع نور كل شيء في <strong>صفحة واحدة</strong>. ويعرض كريم أن «يحسّنها» بما التقطه على الإنترنت هذا الأسبوع. الخطة التي تقرؤها في دقيقتين هي خطة ستراجعها فعلًا، لذا لا ينتمي إليها إلا بعض الأشياء. فأيها؟</p>',
         )),
+        sort(
+          L('On Noor’s one-page plan, or not?', 'في خطة نور ذات الصفحة الواحدة أم لا؟'),
+          [L('On the plan', 'في الخطة'), L('Not on it', 'ليس فيها')],
+          [
+            [L('Goals with dates and amounts', 'الأهداف بمواعيدها ومبالغها'), 0],
+            [L('A hot tip from social media', 'نصيحة رائجة من وسائل التواصل'), 1],
+            [L('100 a month, the day after payday', '100 شهريًا في اليوم التالي للراتب'), 0],
+            [L('A forecast of next year’s returns', 'توقع لعوائد العام القادم'), 1],
+          ],
+          L(
+            'A plan records what you control: goals, mixes, the monthly amount and when you rebalance. Tips and forecasts are guesses, and guesses change every week.',
+            'الخطة تسجل ما تتحكم فيه: الأهداف والأمزجة والمبلغ الشهري وموعد إعادة التوازن. أما النصائح والتوقعات فتخمينات، والتخمينات تتغير كل أسبوع.',
+          ),
+        ),
         html(L(
-          '<p>Then add your rules for a <strong>crash</strong>, written while you are calm: “If the market falls 30%, I keep my monthly amount going. I do not sell long-term money. I rebalance on my usual date. I change the plan only when my life changes, not because prices did.”</p>',
-          '<p>ثم أضف قواعدك عند <strong>الانهيار</strong>، واكتبها وأنت هادئ: «إذا هبط السوق 30%، أستمر في مبلغي الشهري. لا أبيع المال طويل الأجل. أعيد التوازن في موعدي المعتاد. أغيّر الخطة فقط عندما تتغير حياتي، لا عندما تتغير الأسعار.»</p>',
+          '<p>Then add rules for a <strong>crash</strong>, written while calm: “If the market falls 30%, I keep my monthly amount going. I do not sell long-term money. I rebalance on my usual date. I change the plan only when my life changes, not because prices did.”</p>',
+          '<p>ثم أضف قواعد لـ<strong>الانهيار</strong>، واكتبها وأنت هادئ: «إذا هبط السوق 30%، أستمر في مبلغي الشهري. لا أبيع المال طويل الأجل. أعيد التوازن في موعدي المعتاد. أغيّر الخطة فقط عندما تتغير حياتي، لا عندما تتغير الأسعار.»</p>',
         )),
+        diagram({
+          fig: L('Illustration', 'توضيح'),
+          title: L('What the crash rules protect', 'ما تحميه قواعد الانهيار'),
+          src: '/diagrams/panic-sell.svg',
+          alt: L('Bars: 1,000 before a fall, 700 at the bottom, 1,100 a few years later if held, and 700 if sold at the bottom.', 'أعمدة: 1,000 قبل الهبوط، و700 في القاع، و1,100 بعد بضع سنوات إن احتُفظ بها، و700 إن بيعت في القاع.'),
+          caption: L('Left to right: before, the bottom, later if held, later if sold. Illustrative: recoveries are not guaranteed.', 'من اليسار إلى اليمين: قبل، القاع، لاحقًا إن احتُفظ بها، لاحقًا إن بيعت. توضيحي: التعافي غير مضمون.'),
+        }),
         box('mistake', L('Common mistake', 'خطأ شائع'), L(
           'Rewriting the plan in the middle of a fall. Change it when your goals, income or horizon change, not because of headlines.',
           'إعادة كتابة الخطة في منتصف الهبوط. غيّرها عندما تتغير أهدافك أو دخلك أو أفقك الزمني، لا بسبب العناوين الإخبارية.',
@@ -292,8 +375,8 @@ export const plan: Module = {
       nav: L('Season goal', 'هدف الموسم'),
       title: L('Practice: set a season goal', 'تدريب: حدّد هدف الموسم'),
       standfirst: L(
-        'Choose what success means before the season plays out.',
-        'اختر معنى النجاح قبل أن يمضي الموسم.',
+        'Noor’s plan starts with a goal. So does yours: choose what success means before the season plays out.',
+        'خطة نور تبدأ بهدف. وكذلك خطتك: اختر معنى النجاح قبل أن يمضي الموسم.',
       ),
       time: L('3 min', '3 دقائق'),
       blocks: [
