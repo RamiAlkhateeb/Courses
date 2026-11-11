@@ -35,6 +35,16 @@ export function mergeProgress(local: Progress, remote: Progress, bankFrom: 'loca
     activity: mergeRecords(local.activity, remote.activity, (x, y) => Math.max(x, y)),
     perfect: Math.max(local.perfect, remote.perfect),
     freezes: newer.freezes, // spent and earned together with the streak, so they come from the same side
+    time: mergeRecords(local.time, remote.time, (x, y) => Math.max(x, y)),
+    bestStreak: Math.max(local.bestStreak, remote.bestStreak),
+    due: mergeRecords(local.due, remote.due, (x, y) => (x > y ? x : y)), // the later day: the side that reviewed it last
+    // Today's quest counters: the later day; on the same day, the side with the opened chest, then the busier one
+    daily:
+      local.daily.day !== remote.daily.day
+        ? local.daily.day > remote.daily.day ? local.daily : remote.daily
+        : local.daily.claimed !== remote.daily.claimed
+          ? local.daily.claimed ? local.daily : remote.daily
+          : local.daily.lessons + local.daily.correct >= remote.daily.lessons + remote.daily.correct ? local.daily : remote.daily,
   }
 }
 

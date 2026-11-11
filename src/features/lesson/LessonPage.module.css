@@ -332,3 +332,17 @@
 :global(html[dir='rtl']) .prev svg {
   transform: scaleX(-1);
 }
+
+/* Today's goal on the Lesson complete streak card */
+.goalNote {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+.goalMet {
+  color: var(--correct);
+}

@@ -14,9 +14,10 @@ import {
   pickLessonQuestions,
   recordAnswer,
   recordReview,
+  emptyDaily,
 } from '../src/domain/progress'
 
-const EMPTY = { answers: {}, sectionsRead: {}, bank: 1000, streak: { count: 0, lastDay: '' }, boxes: {}, lessonsDone: [], activity: {}, perfect: 0, freezes: 0 }
+const EMPTY = { answers: {}, sectionsRead: {}, bank: 1000, streak: { count: 0, lastDay: '' }, boxes: {}, lessonsDone: [], activity: {}, perfect: 0, freezes: 0, time: {}, bestStreak: 0, due: {}, daily: emptyDaily }
 
 describe('progress store helpers', () => {
   it('parses missing or corrupt storage as empty progress', () => {
@@ -102,9 +103,9 @@ describe('lesson helpers', () => {
 
   it('moves Leitner boxes up on a right answer (capped) and back to 1 on a wrong one', () => {
     let p = parseProgress(null)
-    for (let i = 0; i < MAX_BOX + 2; i++) p = recordReview(p, 'q', true)
+    for (let i = 0; i < MAX_BOX + 2; i++) p = recordReview(p, 'q', true, '2026-10-06')
     expect(p.boxes.q).toBe(MAX_BOX)
-    expect(recordReview(p, 'q', false).boxes.q).toBe(1)
+    expect(recordReview(p, 'q', false, '2026-10-06').boxes.q).toBe(1)
   })
 
   it('picks unseen and low-box questions first, up to the lesson size', () => {

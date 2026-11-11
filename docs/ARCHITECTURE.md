@@ -154,13 +154,28 @@ Routes live in `src/app/router.tsx`. Every route except the shells and Learn is 
   - adds $10 per right answer to the bank, but only on the first finish of that lesson (replays pay nothing);
   - updates the streak (spending streak freezes for missed days) and earns a freeze for a perfect first finish;
   - adds the key `course/module/lessonId` to `lessonsDone` and sets `lastLesson`;
-  - adds the day's earnings to `activity`.
+  - adds the day's earnings to `activity`, the run's seconds (capped at 20 minutes) to `time`, and the day's
+    lessons and perfect lessons to `daily` (the quests' counters); keeps `bestStreak`.
+- **Leaving and coming back** carries on from the same step: a first run saves its step and answers in
+  `lessonRun:v1` (`src/state/lessonRun.ts`), cleared when the lesson is finished.
+- **Lesson complete** offers "Next lesson" (the first unfinished one, `useTrail(...).next`) and "Back to learning";
+  its streak card runs to the next milestone (`STREAK_MILESTONES`: 3, 7, 14, 30, 60, 100) and shows today's goal.
 
 ### Back on Learn
 
 `useTrail(courseId)` (`src/state/useTrail.ts`) loads the course's modules, runs `lessonsFor` on each, and asks
 `unitStates` (`src/domain/pathStates.ts`) for each row's state: `done`, `current` (the first unfinished) or
 `locked`. Modules don't lock each other. `nextInCourse` (`src/domain/lessons.ts`) picks the Up next lesson.
+
+The daily loop sits above the path:
+
+- an **at-risk card** (`streakAtRisk`: from 18:00, a streak, and no lesson today) links to the next lesson;
+- the **Today card** (`TodayCard`) shows the daily goal (minutes studied today from `time`, of the minutes picked in
+  onboarding) and three **quests** from `src/domain/quests.ts`. The first is always "Finish a lesson"; two more rotate by date
+  from a fixed pool, the same for everyone that day. With all three done, a **chest** pays $5–$25 of play money
+  (`chestAmount(day)`), once a day (`daily.claimed`);
+- the **Daily review** card counts `dueQuestions`: each answered question gets a due day from its review box (1, 2,
+  4, 8, 16 days after a right answer; today after a wrong one).
 
 ### The guest limit
 
@@ -199,7 +214,8 @@ Don't write new `localStorage` code; add a store instead.
 
 | Store | File | localStorage key | Holds |
 | --- | --- | --- | --- |
-| `progressStore` | `src/state/progress.ts` | `progress:v2` (imports `progress:v1`) | Answers, bank, streak, freezes, review boxes, `lessonsDone`, `activity`, `perfect` |
+| `progressStore` | `src/state/progress.ts` | `progress:v2` (imports `progress:v1`) | Answers, bank, streak, freezes, review boxes and due days, `lessonsDone`, `activity`, `perfect`, `time`, `bestStreak`, `daily` |
+| `lessonRunStore` | `src/state/lessonRun.ts` | `lessonRun:v1` | The step and answers of the one unfinished lesson |
 | `profileStore` | `src/state/profile.ts` | `profile:v1` | Onboarding choices, daily goal, active course |
 | `playgroundStore` | `src/state/playground.ts` | `playground:v1` | The simulator season (section 5) |
 | `settingsStore` | `src/state/settings.ts` | `sound` | Sound on or off |
