@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test'
 import { openSimulator, withPractice } from './practice'
+import { answerActivity } from './activity'
 
 const onboarded = (page: Page, extra: Record<string, string> = {}) =>
   page.addInitScript((items) => {
@@ -37,7 +38,10 @@ test('glossary: a term in a lesson opens a one-line definition', async ({ page }
   await onboarded(page)
   await page.goto('course/investing/basics/learn/why')
   const term = page.locator('dfn[data-term]').first()
-  for (let i = 0; i < 6 && !(await term.isVisible()); i++) await page.keyboard.press('Enter')
+  for (let i = 0; i < 6 && !(await term.isVisible()); i++) {
+    await answerActivity(page)
+    await page.keyboard.press('Enter')
+  }
   await expect(term).toBeVisible()
   await term.focus()
   await page.keyboard.press('Enter')
@@ -151,11 +155,15 @@ test('a lesson can go back a step; an answered question stays answered (read-onl
   await onboarded(page, { 'progress:v2': JSON.stringify({ bank: 1000 }) })
   await page.goto('course/investing/basics/learn/why')
   await expect(page.getByRole('button', { name: 'Previous step' })).toHaveCount(0) // nothing before the first step
+  await answerActivity(page) // the first step opens on a guess
   await page.getByRole('button', { name: 'Next', exact: true }).click()
   await page.getByRole('button', { name: 'Previous step' }).click()
   await expect(page.getByRole('button', { name: 'Previous step' })).toHaveCount(0)
   // Walk to the first question and answer it right (the right option is marked by its id in the content: answer 0)
-  for (let i = 0; i < 8 && (await page.getByRole('radio').count()) === 0; i++) await page.getByRole('button', { name: 'Next', exact: true }).click()
+  for (let i = 0; i < 8 && (await page.getByRole('radio').count()) === 0; i++) {
+    await answerActivity(page)
+    await page.getByRole('button', { name: 'Next', exact: true }).click()
+  }
   const radios = page.getByRole('radio')
   const n = await radios.count()
   let right = 0

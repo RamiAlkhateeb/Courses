@@ -73,6 +73,12 @@ export function blockWords(block: Block): number {
       return wordCount(stripTags(block.caption.en)) + 20
     case 'calculator':
       return 40 // a moment to play with the sliders
+    case 'predict':
+    case 'choice':
+    case 'sort':
+      return wordCount(stripTags(block.prompt.en)) + 20 // and a moment to decide
+    case 'myth':
+      return wordCount(stripTags(block.statement.en)) + 20
     default:
       return 0
   }
@@ -90,7 +96,8 @@ const KEY_IDEA_WORDS = 110
 /** A card over this many words is too long for one screen: `splitLong` cuts it in two. */
 export const LONG_CARD = CARD_WORDS
 /** Blocks that fill a card on their own: such a card never takes on another, and is never "short". */
-const MEDIA = new Set<Block['type']>(['table', 'diagram', 'calculator', 'code', 'tabs', 'practice'])
+const MEDIA = new Set<Block['type']>(['table', 'diagram', 'calculator', 'code', 'tabs', 'practice', 'predict', 'choice', 'sort', 'myth'])
+const ACTIVITY = new Set<Block['type']>(['predict', 'choice', 'sort', 'myth'])
 export const hasMedia = (blocks: Block[]) => blocks.some((b) => MEDIA.has(b.type))
 const isHeading = (b: Block) => b.type === 'html' && /^<h[34]\b/i.test(b.html.en)
 /** "Keep these sections, in this order:" — introduces the block after it, so they share a card. */
@@ -104,7 +111,7 @@ export interface Cards {
 }
 
 /** One idea per card: each paragraph, list, box, table, code sample… is a card; a heading or a lead-in
- *  ending in ":" sticks to what follows, as does a code example after a formula, a picture after its paragraph, and an example box after a
+ *  ending in ":" sticks to what follows, as does a code example after a formula, a picture after its paragraph, an activity or an example box after a
  *  lone paragraph (a definition and its example share a card). `cardBreak` forces a cut. */
 export function toCards(blocks: Block[]): Cards {
   const pieces: Block[] = blocks.flatMap((b): Block[] =>
@@ -138,7 +145,9 @@ export function toCards(blocks: Block[]): Cards {
       glue ||
       (piece.type === 'code' && prev?.type === 'formula') ||
       (piece.type === 'diagram' && prev?.type === 'html') ||
-      (piece.type === 'box' && piece.variant === 'example' && current.length === 1 && prev?.type === 'html')
+      (piece.type === 'box' && piece.variant === 'example' && current.length === 1 && prev?.type === 'html') ||
+      // An activity sits under the lone paragraph that sets it up (the hook and its guess share a card)
+      (ACTIVITY.has(piece.type) && current.length === 1 && prev?.type === 'html')
     if (!joins) close()
     current.push(piece)
     glue = isHeading(piece) || isLeadIn(piece)

@@ -542,3 +542,107 @@
   line-height: var(--lesson-line);
   color: var(--indigo);
 }
+
+/* ---------- Activities: guess first, what would you do, sort, myth or fact (Activity.tsx) ---------- */
+.activity {
+  margin: 16px 0 8px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  display: grid;
+  gap: 12px;
+}
+.activityLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--lesson-label);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blue-text);
+}
+.activityPrompt {
+  margin: 0;
+  font-weight: 700;
+  color: var(--indigo);
+}
+.activityStatement {
+  margin: 0;
+  font-weight: 700;
+  font-size: var(--lesson-text);
+  color: var(--indigo);
+}
+.activityOptions {
+  display: grid;
+  gap: 8px;
+}
+.activityPair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.activityResult {
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: var(--mint);
+  color: var(--indigo);
+}
+.activityResult strong {
+  display: block;
+  margin-block-end: 4px;
+}
+.activityResult p {
+  margin: 0;
+  font-size: var(--lesson-small);
+}
+.resultRight {
+  background: var(--correct-bg);
+}
+.resultWrong {
+  background: var(--oops-bg);
+}
+.activityHint {
+  margin: 0;
+  font-size: var(--lesson-small);
+  color: var(--muted);
+}
+.sortList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.sortList li {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+.sortRight {
+  background: var(--correct-bg);
+  border-color: transparent;
+}
+.sortWrong {
+  background: var(--oops-bg);
+  border-color: transparent;
+}
+.sortText {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--indigo);
+}
+.sortButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.sortAnswer {
+  font-size: var(--lesson-small);
+  color: var(--indigo);
+}

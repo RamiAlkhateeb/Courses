@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 210" font-family="Instrument Sans, Helvetica, Arial, sans-serif">
+  <!-- A sure 20% (interest saved by paying off a card) next to about 7% a year (a long-run stock average, not
+       guaranteed). Numbers only: the title, caption and alt text are in the lesson, in the reader's language. -->
+  <line x1="12" y1="176" x2="308" y2="176" stroke="#D0E7E6" stroke-width="2"/>
+  <rect x="58" y="36" width="76" height="140" rx="12" fill="#293681"/>
+  <rect x="186" y="127" width="76" height="49" rx="12" fill="#95CCDD"/>
+  <rect x="186" y="127" width="76" height="49" rx="12" fill="none" stroke="#4274D9" stroke-width="2" stroke-dasharray="5 5"/>
+  <g font-size="20" font-weight="700" fill="#293681" text-anchor="middle">
+    <text x="96" y="26">20%</text>
+    <text x="224" y="117">≈7%</text>
+  </g>
+</svg>

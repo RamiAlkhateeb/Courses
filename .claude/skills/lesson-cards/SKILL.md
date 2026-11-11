@@ -13,7 +13,7 @@ Learners read one step per screen on a phone, so every step must be worth a scre
 1. **One idea per step, 35–90 words.** A step under 35 words (`SHORT_CARD`) is "short".
    - A short step joins the step before it automatically while the two stay within 90 words (`CARD_WORDS`).
    - A key idea joins the step before it while the two stay within 110 words.
-   - Nothing merges past a question, a `cardBreak`, or a step holding a table, picture, calculator or code.
+   - Nothing merges past a question, a `cardBreak`, or a step holding a table, picture, calculator, code or activity.
    - A step over 90 words is cut in two (`splitLong`): between blocks where the halves come out most even (never just
      before a key idea or after a heading / lead-in), or a lone long paragraph at the sentence end nearest its middle,
      in each language on its own sentences (an inline tag straddling the cut keeps it whole). Media steps are never cut.
@@ -28,6 +28,27 @@ Learners read one step per screen on a phone, so every step must be worth a scre
    between the step and the docked button and shows the guide (160–280px tall) only when it fits; the pose comes from
    `fillerPose()` (`src/domain/guide.ts`). This is decoration, not a fix for thin text: `tests/lesson-cards.test.ts`
    still fails on any short text step that stands alone, naming the lesson and step.
+
+## The lesson recipe (unit 1 pilot: `src/content/courses/investing/basics.ts`)
+
+1. **A hook, not a definition.** The first step is a short situation with a question in it, about one of the unit's
+   two fictional characters (unit 1: Noor / نور, a careful saver, and Karim / كريم, a curious first-time investor; the
+   same names in both languages, never the guides Saud or Sara). Their story runs through the unit.
+2. **Guess first, then learn**, and **one thing to do per lesson** beyond the quick checks: an activity step.
+   - `predict(prompt, options, answer, reveal)`: guess a number, then see how close it was (options in order).
+   - `choice(prompt, [[label, result], …])`: what would you do? Each option shows where it leads; nothing is right.
+     Keep the consequences educational, never advice.
+   - `sort(prompt, [bucketA, bucketB], [[item, 0 | 1], …], explain)`: tap each item into a bucket.
+   - `myth(statement, fact, explain)`: myth or fact, then the reason.
+   None is scored or pays (rules in `src/domain/activities.ts`, UI `Activity.tsx`). On a first run the lesson's Next
+   waits until the activity is answered. An activity fills its own card, and shares it with a lone paragraph just
+   before it (put the hook paragraph right before the guess). One activity per card.
+3. **Punchy writing**: short sentences, one surprising number per lesson, everyday examples (rent, salary, coffee,
+   a wedding, family savings). Figures are marked illustrative.
+4. **A picture in every lesson** (`diagram()`).
+5. Lesson ids and question ids never change; new questions get new ids at the end.
+6. Share slides: a myth becomes a box with its reason and a sort a table of its buckets; a guess and a choice are left
+   out (`stillBlock` in `src/domain/share.ts`).
 
 ## Typography (one size and face on every step)
 
