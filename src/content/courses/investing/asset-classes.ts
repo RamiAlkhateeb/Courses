@@ -1,6 +1,7 @@
 // Original course content. Describes how asset classes work in general; no products are recommended.
+// The story of unit 1 goes on: Noor (نور) has cleared her card and is ready to start; Karim (كريم) shows her what he owns.
 import type { Module } from '../../types'
-import { L, box, cover, exercise, html, keyIdea, mcq, objectives, practice, section, table, takeaways } from '../../helpers'
+import { L, box, choice, cover, diagram, exercise, html, keyIdea, mcq, myth, practice, predict, section, sort, table, takeaways } from '../../helpers'
 
 const W = 'asset-classes'
 const P = 'inva'
@@ -76,19 +77,38 @@ export const assetClasses: Module = {
       label: L('Intro', 'مقدمة'),
       nav: L('Overview', 'نظرة عامة'),
       title: L('What can you invest in?', 'في ماذا يمكنك أن تستثمر؟'),
-      standfirst: L('An asset class is a group of investments that behave in similar ways. Most portfolios are built from a few of them.', 'فئة الأصول مجموعة من الاستثمارات التي تتصرف بطرق متشابهة. تُبنى معظم المحافظ من عدد قليل منها.'),
-      time: L('2 min', '2 دقيقة'),
+      standfirst: L('Owning, lending, keeping: three ways money can work.', 'التملّك والإقراض والحفظ: ثلاث طرق ليعمل المال.'),
+      time: L('3 min', '3 دقائق'),
       blocks: [
-        objectives([
-          L('Explain how stocks and bonds make or lose money', 'شرح كيف تربح الأسهم والسندات أو تخسر'),
-          L('Know the role of cash', 'معرفة دور النقد'),
-          L('Tell mutual funds, ETFs and index funds apart', 'التمييز بين صناديق الاستثمار المشتركة وصناديق المؤشرات المتداولة وصناديق المؤشرات'),
-          L('Judge alternatives such as real estate, gold and crypto', 'تقييم البدائل مثل العقار والذهب والعملات المشفرة'),
-        ]),
         html(L(
-          '<p>The main ones are <strong>stocks</strong> (owning part of a business), <strong>bonds</strong> (lending money), <strong>cash</strong> (keeping it safe) and alternatives such as property or gold.</p>',
-          '<p>أهمها <strong>الأسهم</strong> (امتلاك جزء من شركة)، و<strong>السندات</strong> (إقراض المال)، و<strong>النقد</strong> (حفظه بأمان)، والبدائل مثل العقار أو الذهب.</p>',
+          '<p>Noor’s card is paid off and she is ready. “So what do you actually own?” she asks Karim. He opens his app: part of a bakery chain, a loan to the government, some cash. Almost everything you can invest in is one of two things: <strong>owning</strong> something, or <strong>lending</strong> money to someone.</p>',
+          '<p>سدّدت نور بطاقتها وصارت جاهزة. تسأل كريم: «ماذا تملك فعلًا؟». يفتح تطبيقه: جزء من سلسلة مخابز، وقرض للحكومة، وبعض النقد. كل ما يمكنك الاستثمار فيه تقريبًا واحد من أمرين: <strong>تملّك</strong> شيء، أو <strong>إقراض</strong> المال لأحد.</p>',
         )),
+        sort(
+          L('Owning or lending? Sort what Karim holds.', 'تملّك أم إقراض؟ صنّف ما يملكه كريم.'),
+          [L('Owning', 'تملّك'), L('Lending', 'إقراض')],
+          [
+            [L('Shares of a bakery chain', 'أسهم في سلسلة مخابز'), 0],
+            [L('A government bond', 'سند حكومي'), 1],
+            [L('A fund holding hundreds of companies', 'صندوق يضم مئات الشركات'), 0],
+            [L('Money in a savings account', 'مال في حساب توفير'), 1],
+          ],
+          L(
+            'Shares and stock funds are ownership. Bonds and even a savings account are loans: the government, or the bank, pays you interest to use your money.',
+            'الأسهم وصناديق الأسهم ملكية. والسندات، وحتى حساب التوفير، قروض: الحكومة أو البنك يدفع لك فائدة مقابل استخدام مالك.',
+          ),
+        ),
+        html(L(
+          '<p>Investments that behave alike form an <strong>asset class</strong>: <strong>stocks</strong> (owning part of a business), <strong>bonds</strong> (lending), <strong>cash</strong> (keeping money safe and close) and alternatives such as property or gold. In the same year they can do very different things.</p>',
+          '<p>الاستثمارات التي تتصرف بشكل متشابه تشكّل <strong>فئة أصول</strong>: <strong>الأسهم</strong> (امتلاك جزء من شركة)، و<strong>السندات</strong> (الإقراض)، و<strong>النقد</strong> (حفظ المال آمنًا وقريبًا)، والبدائل مثل العقار أو الذهب. وفي العام نفسه قد تفعل أشياء مختلفة جدًا.</p>',
+        )),
+        diagram({
+          fig: L('Illustration', 'توضيح'),
+          title: L('One year, three asset classes', 'عام واحد وثلاث فئات أصول'),
+          src: '/diagrams/asset-year.svg',
+          alt: L('Bar chart for one year: cash +2%, bonds −3%, stocks +18%.', 'رسم بالأعمدة لعام واحد: النقد +2%، السندات −3%، الأسهم +18%.'),
+          caption: L('Left to right: cash, bonds, stocks, in one example year. Illustrative figures.', 'من اليسار إلى اليمين: النقد، السندات، الأسهم، في عام مثالي واحد. أرقام توضيحية.'),
+        }),
         keyIdea(L(
           '<p>Each asset class does a different job: <strong>growth</strong>, <strong>income</strong> or <strong>safety</strong>.</p>',
           '<p>كل فئة أصول تؤدي مهمة مختلفة: <strong>النمو</strong> أو <strong>الدخل</strong> أو <strong>الأمان</strong>.</p>',
@@ -103,19 +123,36 @@ export const assetClasses: Module = {
       label: L('Part 1', 'الجزء ١'),
       nav: L('Stocks', 'الأسهم'),
       title: L('Stocks: owning part of a business', 'الأسهم: امتلاك جزء من شركة'),
+      standfirst: L('Karim owns a tiny slice of a bakery chain. Here is how that pays.', 'كريم يملك شريحة صغيرة من سلسلة مخابز. إليك كيف يربح منها.'),
       time: L('5 min', '5 دقائق'),
       blocks: [
         html(L(
-          '<p>A <strong>share</strong> (stock) is a small slice of a company. If the company grows its profits, its shares tend to become worth more. Some companies also pay part of their profits to shareholders as <strong>dividends</strong>.</p><p>Total return = price change + dividends.</p>',
-          '<p><strong>السهم</strong> شريحة صغيرة من شركة. إذا نمت أرباح الشركة، تميل قيمة أسهمها إلى الارتفاع. وتدفع بعض الشركات جزءًا من أرباحها للمساهمين على شكل <strong>توزيعات أرباح</strong>.</p><p>العائد الكلي = تغيّر السعر + توزيعات الأرباح.</p>',
+          '<p>Karim bought one <strong>share</strong> of a bakery chain for 50. A year later the share is worth 54. The bakery also had a good year and paid each shareholder 1 from its profits. Before you read on, work out what Karim earned.</p>',
+          '<p>اشترى كريم <strong>سهمًا</strong> واحدًا في سلسلة مخابز بـ50. بعد عام صار السهم يساوي 54. وحققت المخابز عامًا جيدًا فدفعت لكل مساهم 1 من أرباحها. قبل أن تكمل، احسب كم ربح كريم.</p>',
         )),
-        box('example', L('Example', 'مثال'), L(
-          'You buy one share of a bakery chain at 50. A year later it is worth 54, and it paid you a dividend of 1. Your total return is 5 on 50, or 10%. (Illustrative figures.)',
-          'تشتري سهمًا واحدًا في سلسلة مخابز بسعر 50. بعد عام صار يساوي 54، ودفع لك توزيعات أرباح قدرها 1. عائدك الكلي 5 من 50، أي 10%. (أرقام توضيحية.)',
+        predict(
+          L('What was Karim’s total return for the year?', 'كم كان عائد كريم الكلي في العام؟'),
+          [L('2%', '2%'), L('8%', '8%'), L('10%', '10%'), L('54%', '54%')],
+          2,
+          L(
+            '10%. The price rose by 4 and the payout added 1: 5 on 50. Most people forget the payout, or count the whole 54. (Illustrative figures.)',
+            '10%. ارتفع السعر 4 وأضافت التوزيعات 1: أي 5 من 50. معظم الناس ينسون التوزيعات، أو يحسبون الـ54 كلها. (أرقام توضيحية.)',
+          ),
+        ),
+        html(L(
+          '<p>A share is a small slice of a company. When profits grow, the slice tends to be worth more. Some companies also hand part of their profits to shareholders as <strong>dividends</strong>. Add the two and you get the <strong>total return</strong>: price change plus dividends.</p>',
+          '<p>السهم شريحة صغيرة من شركة. عندما تنمو الأرباح، تميل قيمة الشريحة إلى الارتفاع. وتعطي بعض الشركات جزءًا من أرباحها للمساهمين على شكل <strong>توزيعات أرباح</strong>. اجمع الاثنين تحصل على <strong>العائد الكلي</strong>: تغيّر السعر مع التوزيعات.</p>',
         )),
+        diagram({
+          fig: L('Illustration', 'توضيح'),
+          title: L('One share, one year', 'سهم واحد، عام واحد'),
+          src: '/diagrams/stock-return.svg',
+          alt: L('Two bars: the share at 50 when bought, then 54 a year later plus a dividend of 1, a 10% total return.', 'عمودان: السهم بـ50 عند الشراء، ثم 54 بعد عام مع توزيعات قدرها 1، أي عائد كلي 10%.'),
+          caption: L('Years from purchase. Dark: the 50 paid. Blue: the price rise. Light: the dividend. Illustrative figures.', 'السنوات منذ الشراء. الداكن: الـ50 المدفوعة. الأزرق: ارتفاع السعر. الفاتح: التوزيعات. أرقام توضيحية.'),
+        }),
         box('mistake', L('Common mistake', 'خطأ شائع'), L(
-          'Putting everything into one company you like. A single company can fail completely; a broad mix of companies very rarely goes to zero.',
-          'وضع كل شيء في شركة واحدة تحبها. قد تفشل شركة واحدة تمامًا؛ أما مزيج واسع من الشركات فنادرًا جدًا ما يصل إلى الصفر.',
+          'Putting everything into one company you love. Bakeries close, and a single company can go to zero. A broad mix of hundreds of companies very rarely does.',
+          'وضع كل شيء في شركة واحدة تحبها. المخابز تُغلق، وقد تصل شركة واحدة إلى الصفر. أما مزيج واسع من مئات الشركات فنادرًا جدًا ما يحدث له ذلك.',
         )),
         keyIdea(L(
           '<p>A share is a <strong>slice of a business</strong>: it tends to rise when profits grow, and it can fall to zero if the business fails.</p>',
@@ -131,24 +168,41 @@ export const assetClasses: Module = {
       label: L('Part 2', 'الجزء ٢'),
       nav: L('Bonds', 'السندات'),
       title: L('Bonds: lending your money', 'السندات: إقراض مالك'),
+      standfirst: L('Noor prefers lending. Lending has a twist.', 'نور تفضّل الإقراض. وللإقراض مفاجأة.'),
       time: L('6 min', '6 دقائق'),
       blocks: [
         html(L(
-          '<p>A <strong>bond</strong> is a loan to a government or a company. The borrower pays regular interest (the <strong>coupon</strong>) and returns the original amount at <strong>maturity</strong>.</p>',
-          '<p><strong>السند</strong> قرض لحكومة أو شركة. يدفع المقترض فائدة منتظمة (<strong>الكوبون</strong>) ويعيد المبلغ الأصلي عند <strong>الاستحقاق</strong>.</p>',
+          '<p>Noor likes steady things, so she buys a <strong>bond</strong>: a 10-year loan to the government for 100, paying 3% a year. A year later, new government bonds pay <strong>5%</strong>. Noor wonders what someone would pay her for her old 3% bond.</p>',
+          '<p>نور تحب الأشياء المستقرة، فاشترت <strong>سندًا</strong>: قرضًا للحكومة مدته 10 سنوات بـ100، يدفع 3% سنويًا. بعد عام صارت السندات الحكومية الجديدة تدفع <strong>5%</strong>. تتساءل نور كم سيدفع لها أحد مقابل سندها القديم ذي الـ3%.</p>',
         )),
+        predict(
+          L('Roughly what would a buyer pay for Noor’s 3% bond now?', 'كم سيدفع المشتري تقريبًا الآن مقابل سند نور ذي الـ3%؟'),
+          [L('About 115', 'نحو 115'), L('Still 100', '100 كما هو'), L('About 85', 'نحو 85'), L('About 50', 'نحو 50')],
+          2,
+          L(
+            'About 85. Why pay 100 for 3% a year when a new bond pays 5%? The old bond’s price falls until it is as good a deal as a new one. (Illustrative figures.)',
+            'نحو 85. لماذا يدفع أحد 100 مقابل 3% سنويًا والسند الجديد يدفع 5%؟ ينخفض سعر السند القديم حتى يصبح صفقة جيدة كالجديد. (أرقام توضيحية.)',
+          ),
+        ),
+        html(L(
+          '<p>A bond is a loan to a government or a company. The borrower pays regular interest, the <strong>coupon</strong>, and returns the original amount at <strong>maturity</strong>. Held to the end, Noor still gets her 100 back. Sold early, she gets today’s price.</p>',
+          '<p>السند قرض لحكومة أو شركة. يدفع المقترض فائدة منتظمة هي <strong>الكوبون</strong>، ويعيد المبلغ الأصلي عند <strong>الاستحقاق</strong>. إن احتفظت نور به حتى النهاية تسترد الـ100. وإن باعته مبكرًا تحصل على سعر اليوم.</p>',
+        )),
+        diagram({
+          fig: L('Illustration', 'توضيح'),
+          title: L('When rates rise, old bonds fall', 'عندما ترتفع الفائدة، تنخفض السندات القديمة'),
+          src: '/diagrams/bond-price.svg',
+          alt: L('Two bars: a 3% bond priced 100, then about 85 once new bonds pay 5%.', 'عمودان: سند بـ3% سعره 100، ثم نحو 85 بعدما صارت السندات الجديدة تدفع 5%.'),
+          caption: L('A 3% bond with 10 years left, before and after new bonds pay 5%. Illustrative figures.', 'سند بـ3% بقي على استحقاقه 10 سنوات، قبل أن تدفع السندات الجديدة 5% وبعده. أرقام توضيحية.'),
+        }),
         table(
           [L('Risk', 'المخاطرة'), L('What it means', 'معناها')],
           [
-            [L('Interest-rate risk', 'مخاطر سعر الفائدة'), L('When rates rise, new bonds pay more, so older bonds with lower coupons fall in price. Longer bonds are hit harder.', 'عندما ترتفع الفائدة تدفع السندات الجديدة أكثر، فتنخفض أسعار السندات القديمة ذات الكوبونات الأقل. السندات الأطول أجلًا تتأثر أكثر.')],
-            [L('Credit risk', 'مخاطر الائتمان'), L('The borrower may fail to pay. Higher-risk borrowers must offer higher interest.', 'قد يعجز المقترض عن السداد. على المقترضين الأعلى مخاطرة تقديم فائدة أعلى.')],
+            [L('Interest-rate risk', 'مخاطر سعر الفائدة'), L('When rates rise, older bonds fall in price, as Noor’s did. Longer bonds are hit harder.', 'عندما ترتفع الفائدة تنخفض أسعار السندات القديمة، كما حدث لسند نور. السندات الأطول أجلًا تتأثر أكثر.')],
+            [L('Credit risk', 'مخاطر الائتمان'), L('The borrower may fail to pay. Riskier borrowers must offer higher interest.', 'قد يعجز المقترض عن السداد. على المقترضين الأعلى مخاطرة تقديم فائدة أعلى.')],
             [L('Inflation risk', 'مخاطر التضخم'), L('Fixed payments buy less if prices rise faster than expected.', 'الدفعات الثابتة تشتري أقل إذا ارتفعت الأسعار أسرع من المتوقع.')],
           ],
         ),
-        box('analogy', L('Analogy', 'تشبيه'), L(
-          'You hold a bond paying 3%. New bonds now pay 5%. Nobody will pay full price for your 3% bond when 5% is on offer — so its price drops until its yield is competitive.',
-          'تملك سندًا يدفع 3%، والسندات الجديدة تدفع الآن 5%. لن يدفع أحد السعر الكامل لسندك ذي الـ3% بينما يتوفر 5% — لذا ينخفض سعره حتى يصبح عائده منافسًا.',
-        )),
         keyIdea(L(
           '<p>A bond is a <strong>loan</strong>: steady interest, but its price falls when interest rates rise or the borrower struggles.</p>',
           '<p>السند <strong>قرض</strong>: فائدة منتظمة، لكن سعره ينخفض عندما ترتفع الفائدة أو يتعثر المقترض.</p>',
@@ -163,15 +217,35 @@ export const assetClasses: Module = {
       label: L('Part 3', 'الجزء ٣'),
       nav: L('Cash', 'النقد'),
       title: L('Cash and cash equivalents', 'النقد وما يعادله'),
+      standfirst: L('The safest place for money, and the one that slowly shrinks.', 'أكثر الأماكن أمانًا للمال، والمكان الذي ينكمش فيه ببطء.'),
       time: L('3 min', '3 دقائق'),
       blocks: [
         html(L(
-          '<p>Savings accounts, term deposits, money-market funds and short-term government bills. Their value barely moves, which makes them right for emergency funds and money you need soon. Over long periods, though, they often barely keep up with inflation.</p>',
-          '<p>حسابات التوفير والودائع لأجل وصناديق سوق النقد وأذون الخزانة قصيرة الأجل. قيمتها بالكاد تتحرك، ما يجعلها مناسبة لصناديق الطوارئ والمال الذي تحتاجه قريبًا. لكنها على المدى الطويل كثيرًا ما بالكاد تواكب التضخم.</p>',
+          '<p>Noor still keeps her emergency fund in a savings account paying 1% a year. Karim teases her that it is “doing nothing”. She points out that it has never lost a single cent. Which of them is right? Decide before you read on.</p>',
+          '<p>ما زالت نور تحتفظ بصندوق طوارئها في حساب توفير يدفع 1% سنويًا. يمازحها كريم بأنه «لا يفعل شيئًا». فترد بأنه لم يخسر قرشًا واحدًا قط. أيهما على حق؟ قرّر قبل أن تكمل.</p>',
         )),
+        myth(
+          L('Money in a savings account can’t lose value.', 'المال في حساب التوفير لا يمكن أن يفقد قيمته.'),
+          false,
+          L(
+            'The number never drops, but its buying power can. At 1% interest and 3% inflation, the same balance buys a little less every year.',
+            'الرقم لا ينخفض أبدًا، لكن قوته الشرائية قد تنخفض. بفائدة 1% وتضخم 3%، يشتري الرصيد نفسه أقل قليلًا كل عام.',
+          ),
+        ),
+        html(L(
+          '<p><strong>Cash</strong> means savings accounts, term deposits, money-market funds and short-term government bills. Its value barely moves, so it is ready the day you need it. Over many years, though, its low interest often trails rising prices.</p>',
+          '<p><strong>النقد</strong> يعني حسابات التوفير والودائع لأجل وصناديق سوق النقد وأذون الخزانة قصيرة الأجل. قيمته بالكاد تتحرك، فهو جاهز يوم تحتاجه. لكن على مدى سنوات طويلة كثيرًا ما تتأخر فائدته المنخفضة عن ارتفاع الأسعار.</p>',
+        )),
+        diagram({
+          fig: L('Illustration', 'توضيح'),
+          title: L('1,000 in savings against rising prices', '1,000 في التوفير مقابل ارتفاع الأسعار'),
+          src: '/diagrams/cash-vs-prices.svg',
+          alt: L('Three bars: 1,000 today; 1,105 after 10 years at 1% interest; 1,344, what the same things cost after 10 years at 3% inflation.', 'ثلاثة أعمدة: 1,000 اليوم؛ و1,105 بعد 10 سنوات بفائدة 1%؛ و1,344، ثمن الأشياء نفسها بعد 10 سنوات بتضخم 3%.'),
+          caption: L('Years from now. Blue: the savings. Outline: what the same shopping costs. Illustrative figures.', 'السنوات من الآن. الأزرق: المدخرات. المحدَّد: ثمن المشتريات نفسها. أرقام توضيحية.'),
+        }),
         box('example', L('Example', 'مثال'), L(
-          'Next month’s rent, a car-repair fund, a deposit for a trip: money you may need soon belongs in cash, where its value will not drop the week you need it.',
-          'إيجار الشهر القادم، أو صندوق لإصلاح السيارة، أو عربون رحلة: المال الذي قد تحتاجه قريبًا مكانه النقد، حيث لن تنخفض قيمته في الأسبوع الذي تحتاجه فيه.',
+          'Both are right. Next month’s rent, a car-repair fund and Noor’s emergency fund belong in cash, where their value won’t drop the week she needs them. Money for 20 years from now needs to grow.',
+          'كلاهما على حق. إيجار الشهر القادم وصندوق إصلاح السيارة وصندوق طوارئ نور مكانها النقد، حيث لن تنخفض قيمتها في الأسبوع الذي تحتاجها فيه. أما المال المخصص لما بعد 20 سنة فيحتاج إلى النمو.',
         )),
         keyIdea(L(
           '<p>Cash is for <strong>safety and soon</strong>, not for long-term growth.</p>',
@@ -187,21 +261,47 @@ export const assetClasses: Module = {
       label: L('Part 4', 'الجزء ٤'),
       nav: L('Funds and ETFs', 'الصناديق وصناديق المؤشرات المتداولة'),
       title: L('Funds: buying many investments at once', 'الصناديق: شراء استثمارات كثيرة دفعة واحدة'),
+      standfirst: L('One purchase, hundreds of companies.', 'شراء واحد، ومئات الشركات.'),
       time: L('6 min', '6 دقائق'),
       blocks: [
+        html(L(
+          '<p>Karim has 500 more to put into stocks. He has three ideas: more of the bakery chain he knows, a fund whose manager picks companies to try to beat the market, or an <strong>index fund</strong> that simply holds every large company in the market.</p>',
+          '<p>لدى كريم 500 إضافية يريد وضعها في الأسهم. لديه ثلاث أفكار: المزيد من سلسلة المخابز التي يعرفها، أو صندوق يختار مديره الشركات محاولًا التفوق على السوق، أو <strong>صندوق مؤشر</strong> يمتلك ببساطة كل الشركات الكبيرة في السوق.</p>',
+        )),
+        choice(L('Where would you put Karim’s 500?', 'أين كنت ستضع الـ500 التي لدى كريم؟'), [
+          [
+            L('More of the bakery chain', 'المزيد من سلسلة المخابز'),
+            L('All his stock money then rides on one business. If the bakery struggles, there is nothing else to soften the fall.', 'عندها يعتمد كل مال أسهمه على شركة واحدة. إذا تعثرت المخابز، فلا شيء آخر يخفف الهبوط.'),
+          ],
+          [
+            L('A fund with a manager picking stocks', 'صندوق يختار مديره الأسهم'),
+            L('He gets many companies and a professional’s choices, but pays a higher yearly fee, and most such funds do not beat the market over the long run.', 'يحصل على شركات كثيرة واختيارات محترف، لكنه يدفع رسومًا سنوية أعلى، ومعظم هذه الصناديق لا تتفوق على السوق على المدى الطويل.'),
+          ],
+          [
+            L('An index fund of the whole market', 'صندوق مؤشر للسوق كله'),
+            L('He owns a slice of hundreds of companies, usually for a low fee. He gets the market’s return, never more, and falls with it in a bad year.', 'يملك شريحة من مئات الشركات، عادةً برسوم منخفضة. يحصل على عائد السوق، لا أكثر، ويهبط معه في العام السيئ.'),
+          ],
+        ]),
+        html(L(
+          '<p>A <strong>fund</strong> pools many people’s money to buy many investments at once, like a fruit basket instead of single pieces of fruit. If one company in a fund of a hundred fails, you lose one slice, not everything.</p>',
+          '<p><strong>الصندوق</strong> يجمع أموال كثير من الناس ليشتري استثمارات كثيرة دفعة واحدة، كسلة فواكه بدل حبات منفردة. إذا فشلت شركة واحدة في صندوق من مئة شركة، تخسر شريحة واحدة، لا كل شيء.</p>',
+        )),
+        diagram({
+          fig: L('Illustration', 'توضيح'),
+          title: L('When one company fails', 'عندما تفشل شركة واحدة'),
+          src: '/diagrams/one-vs-many.svg',
+          alt: L('Two bars: 1,000 in one company that fails is worth 0; 1,000 spread over 100 companies, one of which fails, is worth 990.', 'عمودان: 1,000 في شركة واحدة تفشل تصبح 0؛ و1,000 موزعة على 100 شركة تفشل إحداها تصبح 990.'),
+          caption: L('Number of companies held: 1 or 100. Illustrative figures.', 'عدد الشركات المملوكة: 1 أو 100. أرقام توضيحية.'),
+        }),
         table(
           [L('Type', 'النوع'), L('How it works', 'كيف يعمل')],
           [
             [L('Mutual fund', 'صندوق استثمار مشترك'), L('Pools investors’ money; priced once a day.', 'يجمع أموال المستثمرين؛ يُسعَّر مرة يوميًا.')],
             [L('ETF (exchange-traded fund)', 'صندوق مؤشرات متداول (ETF)'), L('A fund that trades on a stock exchange like a share, throughout the day.', 'صندوق يُتداول في البورصة كالسهم طوال اليوم.')],
-            [L('Index fund', 'صندوق مؤشر'), L('Tracks an index (e.g. a country’s largest companies) instead of picking stocks. Can be a mutual fund or an ETF.', 'يتبع مؤشرًا (مثل أكبر شركات بلد ما) بدل انتقاء الأسهم. قد يكون صندوقًا مشتركًا أو صندوقًا متداولًا.')],
-            [L('Active fund', 'صندوق مُدار بنشاط'), L('A manager picks investments trying to beat the market; usually charges higher fees.', 'يختار مدير الاستثمارات محاولًا التفوق على السوق؛ وعادةً يفرض رسومًا أعلى.')],
+            [L('Index fund', 'صندوق مؤشر'), L('Follows an index instead of picking stocks. Can be a mutual fund or an ETF.', 'يتبع مؤشرًا بدل انتقاء الأسهم. قد يكون صندوقًا مشتركًا أو صندوقًا متداولًا.')],
+            [L('Active fund', 'صندوق مُدار بنشاط'), L('A manager picks investments to try to beat the market; usually higher fees.', 'يختار مدير الاستثمارات محاولًا التفوق على السوق؛ وعادةً برسوم أعلى.')],
           ],
         ),
-        box('analogy', L('Analogy', 'تشبيه'), L(
-          'A fund is like a fruit basket: one purchase gets you many kinds of fruit, instead of buying each one separately.',
-          'الصندوق كسلة فواكه: شراء واحد يمنحك أنواعًا كثيرة من الفاكهة، بدل شراء كل نوع على حدة.',
-        )),
         box('keypoint', L('Check the cost', 'تحقّق من التكلفة'), L(
           'Every fund charges a yearly fee, the <strong>expense ratio</strong>, taken from your money automatically. The next module shows how much a small difference adds up to.',
           'كل صندوق يفرض رسومًا سنوية تسمى <strong>نسبة المصاريف</strong>، تُقتطع من مالك تلقائيًا. توضح الوحدة التالية كم يتراكم فرق صغير منها.',
@@ -220,14 +320,38 @@ export const assetClasses: Module = {
       label: L('Part 5', 'الجزء ٥'),
       nav: L('Real estate, gold, crypto', 'العقار والذهب والعملات المشفرة'),
       title: L('Alternatives', 'البدائل'),
+      standfirst: L('Gold, property and crypto: each comes with a catch.', 'الذهب والعقار والعملات المشفرة: لكلٍّ منها عيب.'),
       time: L('4 min', '4 دقائق'),
       blocks: [
+        html(L(
+          '<p>At a family dinner, Noor’s aunt says the only safe investment is <strong>gold</strong>: “It never loses value.” Her cousin swears by property, and a friend of Karim’s has put his savings into a crypto coin. Everyone at the table is sure. Is the aunt right?</p>',
+          '<p>على عشاء عائلي، تقول خالة نور إن الاستثمار الآمن الوحيد هو <strong>الذهب</strong>: «لا يفقد قيمته أبدًا». ويقسم ابن خالتها بالعقار، أما صديق لكريم فوضع مدخراته في عملة مشفرة. الجميع على المائدة واثقون. هل الخالة على حق؟</p>',
+        )),
+        myth(
+          L('Gold never loses value.', 'الذهب لا يفقد قيمته أبدًا.'),
+          false,
+          L(
+            'Gold has fallen by a quarter or more in some years, and it pays no income while you wait. Some people hold a little as a hedge, not as a sure thing.',
+            'هبط الذهب بالربع أو أكثر في بعض السنوات، ولا يدر أي دخل أثناء الانتظار. يحتفظ بعض الناس بقليل منه للتحوط، لا كأمر مضمون.',
+          ),
+        ),
+        html(L(
+          '<p>Every alternative has a catch. Property pays rent but takes big sums and months to sell. Gold pays nothing and swings with fear. Crypto can halve in months and pays nothing either. The chart shows how far each has fallen in a bad year.</p>',
+          '<p>لكل بديل عيب. العقار يدر إيجارًا لكنه يحتاج مبالغ كبيرة وأشهرًا لبيعه. الذهب لا يدر شيئًا ويتقلب مع الخوف. والعملات المشفرة قد تنخفض للنصف خلال أشهر ولا تدر شيئًا أيضًا. يوضح الرسم مدى هبوط كل منها في عام سيئ.</p>',
+        )),
+        diagram({
+          fig: L('Illustration', 'توضيح'),
+          title: L('A bad year for each alternative', 'عام سيئ لكل بديل'),
+          src: '/diagrams/alt-falls.svg',
+          alt: L('Falls in a bad year: property −20%, gold −28%, crypto −75%.', 'الهبوط في عام سيئ: العقار −20%، الذهب −28%، العملات المشفرة −75%.'),
+          caption: L('Left to right: property, gold, crypto. Illustrative figures, not forecasts.', 'من اليسار إلى اليمين: العقار، الذهب، العملات المشفرة. أرقام توضيحية لا توقعات.'),
+        }),
         table(
           [L('Asset', 'الأصل'), L('Points to weigh', 'نقاط للموازنة')],
           [
-            [L('Property', 'العقار'), L('Rental income and long-term growth, but large sums, high costs, debt and hard to sell quickly. REITs give exposure through the stock market.', 'دخل إيجاري ونمو طويل الأجل، لكنه يتطلب مبالغ كبيرة وتكاليف مرتفعة وديونًا، ويصعب بيعه بسرعة. صناديق الاستثمار العقاري (REITs) تتيح التعرض له عبر البورصة.')],
-            [L('Gold', 'الذهب'), L('No income; price moves with fear and currency changes. Some hold a small amount as a hedge.', 'لا يدر دخلًا؛ يتحرك سعره مع الخوف وتغيّر العملات. يحتفظ البعض بكمية صغيرة منه للتحوط.')],
-            [L('Cryptocurrency', 'العملات المشفرة'), L('Extremely volatile, no income, exposed to hacks and fraud. Treat as speculation.', 'شديدة التقلب، لا تدر دخلًا، ومعرضة للاختراق والاحتيال. تعامل معها كمضاربة.')],
+            [L('Property', 'العقار'), L('Rent and long-term growth, but large sums, high costs, debt and slow to sell. Property funds (REITs) trade like shares.', 'إيجار ونمو طويل الأجل، لكنه يتطلب مبالغ كبيرة وتكاليف مرتفعة وديونًا، وبيعه بطيء. صناديق العقار (REITs) تُتداول كالأسهم.')],
+            [L('Gold', 'الذهب'), L('No income; moves with fear and currencies. Some hold a little as a hedge.', 'لا دخل؛ يتحرك مع الخوف والعملات. يحتفظ البعض بقليل منه للتحوط.')],
+            [L('Cryptocurrency', 'العملات المشفرة'), L('Extremely volatile, no income, exposed to hacks and fraud. Speculation.', 'شديدة التقلب، لا دخل، ومعرضة للاختراق والاحتيال. مضاربة.')],
           ],
         ),
         keyIdea(L(
@@ -251,14 +375,14 @@ export const assetClasses: Module = {
       nav: L('Hold three kinds', 'امتلك ثلاثة أنواع'),
       title: L('Practice: hold three kinds at once', 'تدريب: امتلك ثلاثة أنواع معًا'),
       standfirst: L(
-        'Hold three different kinds of investment and watch each move in its own way.',
-        'امتلك ثلاثة أنواع مختلفة من الاستثمار وشاهد كلًّا منها يتحرك بطريقته.',
+        'Noor holds cash, a bond and a stock fund. Build a mix like hers and watch each part move.',
+        'نور تملك نقدًا وسندًا وصندوق أسهم. ابنِ مزيجًا مثله وشاهد كل جزء يتحرك.',
       ),
       time: L('3 min', '3 دقائق'),
       blocks: [
         html(L(
-          '<p>Now put the asset classes side by side. With <strong>play money</strong> and simulated prices (practice, not advice), hold <strong>three different investments</strong> at the same time, for example Safe Savings, Government Bonds and a stock fund. Tap each one, choose an amount and buy. Then watch how cash, lending and ownership move in their own ways.</p>',
-          '<p>ضع الآن فئات الأصول جنبًا إلى جنب. بـ<strong>مال افتراضي</strong> وأسعار محاكاة (للتدريب، لا نصيحة)، امتلك <strong>ثلاثة استثمارات مختلفة</strong> في الوقت نفسه، مثل الادخار الآمن والسندات الحكومية وصندوق أسهم. اضغط على كل منها، وحدّد مبلغًا، واشترِ. ثم شاهد كيف يتحرك النقد والإقراض والملكية كلٌّ بطريقته.</p>',
+          '<p>Put the asset classes side by side. With <strong>play money</strong> and made-up prices (practice, not advice), hold <strong>three different investments</strong> at once, for example Safe Savings, Government Bonds and a stock fund. Tap each one, choose an amount and buy. Then watch cash, lending and ownership each move in their own way.</p>',
+          '<p>ضع فئات الأصول جنبًا إلى جنب. بـ<strong>مال افتراضي</strong> وأسعار مُختلَقة (للتدريب، لا نصيحة)، امتلك <strong>ثلاثة استثمارات مختلفة</strong> معًا، مثل الادخار الآمن والسندات الحكومية وصندوق أسهم. اضغط على كل منها، وحدّد مبلغًا، واشترِ. ثم شاهد النقد والإقراض والملكية يتحرك كلٌّ منها بطريقته.</p>',
         )),
         practice('spread'),
         keyIdea(L(

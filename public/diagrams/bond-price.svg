@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 210" font-family="Instrument Sans, Helvetica, Arial, sans-serif">
+  <!-- A 3% bond with 10 years left, priced 100. When new bonds pay 5%, a buyer pays about 85 for it.
+       Numbers only: the title, caption and alt text are in the lesson, in the reader's language. -->
+  <line x1="12" y1="180" x2="308" y2="180" stroke="#D0E7E6" stroke-width="2"/>
+  <rect x="56" y="40" width="80" height="140" rx="10" fill="#293681"/>
+  <rect x="184" y="61" width="80" height="119" rx="10" fill="#95CCDD"/>
+  <g font-size="18" font-weight="700" fill="#293681" text-anchor="middle">
+    <text x="96" y="30">100</text>
+    <text x="224" y="51">≈85</text>
+  </g>
+  <g font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    <text x="96" y="120">3%</text>
+  </g>
+  <g font-size="16" font-weight="700" fill="#293681" text-anchor="middle">
+    <text x="224" y="130">5%</text>
+  </g>
+  <path d="M142 46 C 160 46, 170 52, 178 60" fill="none" stroke="#A8432B" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 7"/>
+  <path d="M170 60 L 180 63 L 178 52" fill="none" stroke="#A8432B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
