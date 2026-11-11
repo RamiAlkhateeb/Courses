@@ -13,7 +13,7 @@ test('Daily review: a missed question shows a card on Learn that opens the revie
   await onboarded(page, { 'progress:v2': JSON.stringify({ bank: 1000, answers: { 'invb-q001': { selected: 1, correct: false } } }) })
   await page.goto('./')
   const card = page.getByRole('link', { name: /Daily review/ })
-  await expect(card).toContainText('1 question to put right')
+  await expect(card).toContainText('1 question due today')
   await card.click()
   await expect(page).toHaveURL(/\/course\/investing\/review$/)
   await expect(page.getByRole('radio').first()).toBeVisible()

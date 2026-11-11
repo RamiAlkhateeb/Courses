@@ -5,7 +5,8 @@ import { MoneyChip } from '../../components/MoneyChip'
 import { CourseSwitcher } from '../../components/CourseSwitcher'
 import { practiceHref } from '../../content/courses'
 import { useLocalized } from '../../content/useLocalized'
-import { currentStreak, localDay, mistakes } from '../../domain/progress'
+import { currentStreak, dueQuestions, localDay, streakAtRisk } from '../../domain/progress'
+import { TodayCard } from './TodayCard'
 import { learnHref, lessonMinutes, type Lesson } from '../../domain/lessons'
 import { useAuth } from '../../state/auth'
 import { canOpenLesson, canOpenPractice, FREE_LESSONS, lessonOrder } from '../../domain/access'
@@ -43,7 +44,10 @@ export function PathPage() {
   const pg = useStore(playgroundStore)
   const showPortfolio = portfolioOpen(pg, progress.lessonsDone)
   const pgGain = gain(pg)
-  const toReview = loaded ? mistakes(chapters.flatMap((c) => c.mod?.questions.map((q) => q.id) ?? []), progress.answers).length : 0
+  const today = localDay()
+  const toReview = loaded ? dueQuestions(chapters.flatMap((c) => c.mod?.questions.map((q) => q.id) ?? []), progress, today).length : 0
+  // In the evening, with a streak and no lesson yet today: one nudge to keep it
+  const atRisk = streakAtRisk(progress, today, new Date().getHours())
 
   return (
     <div className={styles.page}>
@@ -71,6 +75,21 @@ export function PathPage() {
 
       {!loaded && <p className={styles.loading}>{t('loading')}</p>}
       {loaded && chapters.length === 0 && <p className={styles.loading}>{t('contentComing')}</p>}
+
+      {loaded && next && !nextGated && atRisk && (
+        <Link to={learnHref(course.id, next.mod.id, next.lesson.id)} className={`${styles.review} ${styles.risk}`}>
+          <span className={styles.reviewIcon}>
+            <Icon name="flame" size={22} className={styles.flame} />
+          </span>
+          <span className={styles.rowText}>
+            <strong>{t('risk_title', { count: streak })}</strong>
+            <small>{t('risk_sub')}</small>
+          </span>
+          <span className={styles.chip} aria-hidden>
+            {t('learn_start')}
+          </span>
+        </Link>
+      )}
 
       {loaded && next && nextGated && (
         <section className={styles.upNext} aria-labelledby="gate-title">
@@ -107,6 +126,9 @@ export function PathPage() {
       )}
       {loaded && !next && chapters.length > 0 && <p className={styles.allDone}>{t('learn_all_done')}</p>}
 
+      {/* Today: the daily goal, three quests and the chest (once there is something to learn) */}
+      {loaded && chapters.length > 0 && <TodayCard portfolio={showPortfolio} />}
+
       {/* The portfolio shortcut: once the simulator has been introduced, it is one tap away */}
       {showPortfolio && (
         <Link to="/portfolio" className={styles.review}>
@@ -124,7 +146,7 @@ export function PathPage() {
         </Link>
       )}
 
-      {/* Daily review: the questions whose latest answer was wrong, a couple of minutes to put right */}
+      {/* Daily review: the questions due today (a wrong answer at once, a right one after 1, 2, 4, 8, 16 days) */}
       {toReview > 0 && (
         <Link to={`/course/${course.id}/review`} className={styles.review}>
           <span className={styles.reviewIcon}>

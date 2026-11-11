@@ -17,7 +17,7 @@ export async function setReminderOn(on: boolean): Promise<boolean> {
 }
 export const setReminderHour = (hour: number) => reminderStore.update((r) => ({ ...r, hour }))
 
-/** Checks once a minute (and when the tab comes back) whether today's reminder is due, and sends it. `text` gives the
+/** Checks once a minute (and when the tab goes to the background) whether today's reminder is due, and sends it. `text` gives the
  *  title and body for the current streak (it needs the translations, which live in a higher layer). */
 export function useStudyReminder(text: (streak: number) => { title: string; body: string }) {
   const latest = useRef(text)
@@ -27,6 +27,8 @@ export function useStudyReminder(text: (streak: number) => { title: string; body
       const now = new Date()
       const today = localDay(now)
       const p = progressStore.get()
+      // A reminder is for someone who is elsewhere: never while the app is the tab in front of them
+      if (document.visibilityState === 'visible') return
       if (!reminderDue(reminderStore.get(), now, today, p.streak.lastDay)) return
       reminderStore.update((r) => ({ ...r, lastSent: today }))
       const { title, body } = latest.current(currentStreak(p.streak, today, p.freezes))
@@ -34,7 +36,7 @@ export function useStudyReminder(text: (streak: number) => { title: string; body
     }
     check()
     const id = window.setInterval(check, 60_000)
-    const onVisibility = () => !document.hidden && check()
+    const onVisibility = () => check() // the tab just went to the background (or came back: then check does nothing)
     document.addEventListener('visibilitychange', onVisibility)
     return () => {
       window.clearInterval(id)

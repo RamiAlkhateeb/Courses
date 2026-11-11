@@ -5,13 +5,13 @@ import { useTranslation } from 'react-i18next'
 import { flatNav, getCourse, hasModule, type Course } from '../../content/courses'
 import type { Question, Module } from '../../content/types'
 import { useModules } from '../../content/useModule'
-import { mistakes } from '../../domain/progress'
+import { dueQuestions, localDay } from '../../domain/progress'
 import { useProgress } from '../../state/useProgress'
 import { QuizLesson } from './LessonPage'
 import styles from './LessonPage.module.css'
 
-/** Route `/course/:courseId/review`: replays the course's questions whose latest answer was wrong. A right
- *  answer is saved as usual, so it leaves the list. */
+/** Route `/course/:courseId/review`: today's review, the course's questions whose due day has come (a wrong answer is
+ *  due at once; a right one comes back after 1, 2, 4, 8, then 16 days). Answering one right moves it on. */
 export function ReviewPage() {
   const { courseId } = useParams<{ courseId: string }>()
   const { t } = useTranslation()
@@ -35,8 +35,8 @@ function ReviewRunner({ questions }: { questions: Question[] }) {
   const { t } = useTranslation()
   const { progress } = useProgress()
   const pickWrong = () => {
-    const wrong = new Set(mistakes(questions.map((q) => q.id), progress.answers))
-    return questions.filter((q) => wrong.has(q.id))
+    const due = new Set(dueQuestions(questions.map((q) => q.id), progress, localDay()))
+    return questions.filter((q) => due.has(q.id))
   }
   // Picked once per round, so answering one right doesn't reshuffle the run mid-way.
   const [round, setRound] = useState(0)

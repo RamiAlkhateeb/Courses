@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ListScreen } from '../../components/SettingsList'
@@ -11,9 +12,15 @@ import { useStore } from '../../state/useStore'
  *  Before that, it opens that lesson (which introduces the simulator). */
 export function PortfolioPage() {
   const { t } = useTranslation()
-  const { progress } = useProgress()
+  const { progress, visitPortfolio } = useProgress()
   const state = useStore(playgroundStore)
-  if (!portfolioOpen(state, progress.lessonsDone)) return <Navigate to={firstPracticeHref} replace />
+  const open = portfolioOpen(state, progress.lessonsDone)
+  // Looking at the portfolio is one of the daily quests
+  useEffect(() => {
+    if (open) visitPortfolio()
+    // once per visit
+  }, [open])
+  if (!open) return <Navigate to={firstPracticeHref} replace />
   return (
     <ListScreen title={t('portfolio_title')} back="/">
       <PlaygroundPanel />

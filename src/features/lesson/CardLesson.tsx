@@ -11,8 +11,9 @@ import { useModule } from '../../content/useModule'
 import { useProgress } from '../../state/useProgress'
 import { useWallet } from '../../state/usePlayground'
 import { ModuleQuestionsContext } from '../../components/content/moduleQuestions'
-import { completeLesson as afterLesson, earnedFreeze, localDay, payoutFor } from '../../domain/progress'
-import { lessonKey, lessonsFor, type Lesson } from '../../domain/lessons'
+import { completeLesson as afterLesson, earnedFreeze, localDay, payoutFor, STREAK_MILESTONES } from '../../domain/progress'
+import { learnHref, lessonKey, lessonsFor, type Lesson } from '../../domain/lessons'
+import { clearLessonRun, lessonRunStore, saveLessonRun } from '../../state/lessonRun'
 import { SpaceGuide } from './SpaceGuide'
 import { PracticeBlock } from '../../components/playground/PracticeBlock'
 import { practiceDone } from '../../domain/playground/practice'
@@ -78,18 +79,34 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
   // Does finishing this lesson pay? Decided once, on arrival: finishing it marks it done.
   const [pays] = useState(() => payoutFor(progress, 1, lessonKey(mod.courseId, mod.id, lesson.id)) > 0)
 
-  const [index, setIndex] = useState(0)
-  const [selected, setSelected] = useState<number | null>(null)
-  const [checked, setChecked] = useState(false)
+  const key = lessonKey(mod.courseId, mod.id, lesson.id)
+  // Where they left off, if they quit this lesson half way (not on a replay: that starts from the top)
+  const [resume] = useState(() => {
+    const run = lessonRunStore.get()
+    return pays && run?.key === key && run.index < steps.length ? run : null
+  })
+  const [index, setIndex] = useState(resume?.index ?? 0)
+  const resumedAnswer = resume?.answers[resume.index]
+  const [selected, setSelected] = useState<number | null>(resumedAnswer?.settled ? resumedAnswer.selected : null)
+  const [checked, setChecked] = useState(!!resumedAnswer?.settled)
   // Each question's answer, by step: the first try is the score (and the review boxes); `settled` once it was right or
   // tried twice. Going back to it shows it as answered; nothing is scored twice, however the learner moves around.
-  const [answers, setAnswers] = useState<Record<number, { first: boolean; selected: number; settled: boolean }>>({})
+  const [answers, setAnswers] = useState<Record<number, { first: boolean; selected: number; settled: boolean }>>(resume?.answers ?? {})
   const correctCount = Object.values(answers).filter((a) => a.first).length
   const [done, setDone] = useState(false)
   const [paid, setPaid] = useState(0)
   const [freezeEarned, setFreezeEarned] = useState(false)
+  const [streakHit, setStreakHit] = useState(0)
+  const [seconds, setSeconds] = useState(0)
   // 0 = first try at this question; 1 = a second try (the first was wrong): that one reveals the answer and carries on.
-  const [attempt, setAttempt] = useState(0)
+  const [attempt, setAttempt] = useState(resumedAnswer && !(resumedAnswer.settled && resumedAnswer.first) ? 1 : 0)
+  // After the last step: the lesson to go to next (the first one not finished yet)
+  const { next } = useTrail(mod.courseId)
+
+  // Keep the place while the lesson is unfinished
+  useEffect(() => {
+    if (pays && !done) saveLessonRun({ key, index, answers })
+  }, [pays, done, key, index, answers])
 
   const step = steps[index]
   const isLast = index === steps.length - 1
@@ -150,11 +167,16 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
 
   function advance() {
     if (isLast) {
-      const key = lessonKey(mod.courseId, mod.id, lesson.id)
       setPaid(payoutFor(progress, correctCount, key))
       const today = localDay()
-      setFreezeEarned(earnedFreeze(progress, afterLesson(progress, correctCount, today, key, total), today))
-      completeLesson(correctCount, key, total)
+      const seconds = Math.round((Date.now() - startedAt.current) / 1000)
+      const after = afterLesson(progress, correctCount, today, key, total, seconds)
+      setFreezeEarned(earnedFreeze(progress, after, today))
+      // A streak milestone reached by this very lesson gets its own line on the summary
+      setStreakHit(after.streak.count > progress.streak.count && STREAK_MILESTONES.includes(after.streak.count) ? after.streak.count : 0)
+      setSeconds(seconds)
+      completeLesson(correctCount, key, total, seconds)
+      clearLessonRun(key)
       setDone(true)
       return
     }
@@ -169,15 +191,17 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
     return (
       <LessonSummary
         subtitle={tUi('lessonSummaryBank', { title: t(lesson.title), money: moneyText(wallet) })}
-        seconds={Math.round((Date.now() - startedAt.current) / 1000)}
+        seconds={seconds}
         payout={pays ? paid : undefined}
         correct={correctCount}
         total={total}
         freezeEarned={freezeEarned}
-        action={tUi('lessonContinue')}
-        onAction={() => navigate('/')}
-        secondary={correctCount < total ? tUi('reviewMyMistake') : undefined}
-        onSecondary={() => navigate(`/course/${mod.courseId}/review`)}
+        streakHit={streakHit}
+        // Straight into the next lesson; Learn is one tap away
+        action={next ? tUi('lessonNext') : tUi('lessonContinue')}
+        onAction={() => navigate(next ? learnHref(mod.courseId, next.mod.id, next.lesson.id) : '/')}
+        secondary={next ? tUi('backToLearning') : undefined}
+        onSecondary={() => navigate('/')}
       />
     )
   }

@@ -83,8 +83,9 @@ test('finishing a lesson with the keyboard saves progress and pays the bank', as
   await onboarded(page)
   await page.goto('course/investing/basics/learn/compounding')
   await expect(page.locator('main, [class*=card]').first()).toBeVisible()
-  // Enter/1 drive the lesson; the last Enter on the results screen returns to the path.
-  for (let i = 0; i < 30 && page.url().includes('/learn/'); i++) {
+  // Enter/1 drive the lesson up to Lesson complete
+  const next = page.getByRole('button', { name: 'Next lesson' })
+  for (let i = 0; i < 30 && !(await next.isVisible()); i++) {
     if (await page.getByRole('radio').count()) {
       await page.keyboard.press('1') // pick the first option shown
       await page.keyboard.press('Enter') // check
@@ -92,10 +93,13 @@ test('finishing a lesson with the keyboard saves progress and pays the bank', as
     await page.keyboard.press('Enter') // continue
     await page.waitForTimeout(150)
   }
-  await expect(page).not.toHaveURL(/\/learn\//)
   const saved = JSON.parse((await page.evaluate(() => localStorage.getItem('progress:v2')))!)
   expect(saved.lessonsDone).toContain('investing/basics/compounding')
   expect(saved.bank).toBeGreaterThanOrEqual(1000)
+  expect(Object.values(saved.time).length).toBe(1) // study time counted for today
+  // The last Enter goes straight on to the first lesson not finished yet
+  await page.keyboard.press('Enter')
+  await expect(page).toHaveURL(/\/learn\/why$/)
   expect(errors).toEqual([])
 })
 

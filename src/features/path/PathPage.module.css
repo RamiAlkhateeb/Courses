@@ -283,3 +283,86 @@
   font-weight: 700;
   white-space: nowrap;
 }
+
+/* ---------- Streak at risk (evening, no lesson yet today) ---------- */
+.risk {
+  border: 2px solid var(--streak);
+  padding-inline: 15px;
+}
+
+/* ---------- Today: daily goal, quests, chest ---------- */
+.today {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+}
+.todayHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.todayTitle {
+  margin: 0;
+  font-size: var(--title-small);
+  color: var(--indigo);
+}
+.todayGoal {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+.quests {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+.quests li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--indigo);
+}
+.questMark {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  inline-size: 22px;
+  block-size: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--locked);
+  box-sizing: border-box;
+  color: var(--card);
+}
+.questDone .questMark {
+  background: var(--correct);
+  border-color: var(--correct);
+}
+.questText {
+  flex: 1;
+  min-inline-size: 0;
+}
+.questCount {
+  flex: 0 0 auto;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.questDone .questCount {
+  color: var(--correct);
+}
+.chestNote {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--muted);
+}

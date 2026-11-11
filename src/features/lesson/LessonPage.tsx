@@ -119,7 +119,7 @@ export function QuizLesson({
 
   function next() {
     if (isLast) {
-      completeLesson(correctCount)
+      completeLesson(correctCount, undefined, undefined, Math.round((Date.now() - startedAt.current) / 1000))
       setDone(true)
       return
     }

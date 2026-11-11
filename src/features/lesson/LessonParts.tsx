@@ -6,7 +6,8 @@ import type { Question } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
 import { Button, Card, Coin, Icon, AnswerOption, ProgressBar, Guide, type AnswerState } from '../../components/ui'
 import { Sprout } from '../../components/GardenArt'
-import { currentStreak, localDay } from '../../domain/progress'
+import { currentStreak, localDay, nextStreakMilestone, studiedToday } from '../../domain/progress'
+import { useProfile } from '../../state/profile'
 import { PAY_PER_CORRECT } from '../../domain/money'
 import { Money } from '../../components/Money'
 import { useProgress } from '../../state/useProgress'
@@ -216,6 +217,7 @@ export function LessonSummary({
   action,
   onAction,
   freezeEarned,
+  streakHit = 0,
   secondary,
   onSecondary,
 }: {
@@ -229,13 +231,20 @@ export function LessonSummary({
   onAction: () => void
   /** This finish earned a streak freeze (a perfect first finish) */
   freezeEarned?: boolean
-  /** "Review my mistake": only offered when something was missed */
+  /** The streak milestone (3, 7, 14 …) this finish reached, if any: it gets the card's headline */
+  streakHit?: number
+  /** A second, quieter action under the main one */
   secondary?: string
   onSecondary?: () => void
 }) {
   const { t: tUi } = useTranslation()
   const { progress } = useProgress()
   const streak = currentStreak(progress.streak, localDay(), progress.freezes)
+  // The bar runs to the next milestone (3, 7, 14, 30 …), so there is always something a few days away
+  const milestone = nextStreakMilestone(streak)
+  const { minutes } = useProfile()
+  const studied = Math.floor(studiedToday(progress, localDay()) / 60)
+  const goalMet = studied >= minutes
 
   useEffect(() => playSound('complete'), [])
   const clock = seconds === undefined ? '' : `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`
@@ -274,12 +283,16 @@ export function LessonSummary({
       <Card className={styles.weekCard}>
         <div className={styles.weekHead}>
           <p className={styles.weekTitle}>
-            <Icon name="flame" size={22} className={styles.flame} /> {tUi('streakDays', { count: streak })}
+            <Icon name="flame" size={22} className={styles.flame} /> {streakHit ? tUi('sum_streak_hit', { count: streakHit }) : tUi('streakDays', { count: streak })}
           </p>
           <Guide pose="streak" height={64} className={styles.weekMascot} />
         </div>
-        <ProgressBar value={Math.min(streak, 7)} max={7} label={tUi('sum_streak_bar', { n: Math.min(streak, 7) })} />
-        <p className={styles.weekNote}>{streak >= 7 ? tUi('sum_streak_full') : tUi('sum_streak_bar', { n: streak })}</p>
+        <ProgressBar value={streak} max={milestone} label={tUi('sum_streak_next', { count: milestone - streak, goal: milestone })} />
+        <p className={styles.weekNote}>{tUi('sum_streak_next', { count: milestone - streak, goal: milestone })}</p>
+        {/* Today's goal (the minutes a day chosen in onboarding / Settings) */}
+        <p className={goalMet ? `${styles.goalNote} ${styles.goalMet}` : styles.goalNote}>
+          <Icon name={goalMet ? 'check' : 'clock'} size={18} /> {goalMet ? tUi('goal_met', { n: minutes }) : tUi('goal_progress', { done: studied, n: minutes })}
+        </p>
         {(freezeEarned || progress.freezes > 0) && (
           <p className={styles.freezeNote}>
             <Icon name="shield" size={18} /> {freezeEarned ? tUi('freeze_earned') : tUi('freeze_have', { count: progress.freezes })}

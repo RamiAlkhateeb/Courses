@@ -33,7 +33,35 @@ export interface Progress {
   /** Streak freezes in hand (0 … MAX_FREEZES): each covers one missed day, so the streak survives it. A perfect
    *  lesson earns one. */
   freezes: number
+  /** Seconds spent in lessons per local day, last ACTIVITY_DAYS days: the daily goal (the profile's minutes a day) */
+  time: Record<string, number>
+  /** The longest streak ever reached */
+  bestStreak: number
+  /** questionId -> the local day it is next due for review (spaced by its Leitner box; a wrong answer is due at once) */
+  due: Record<string, string>
+  /** Today's counters, for the daily quests (src/domain/quests.ts). A new day starts them again. */
+  daily: Daily
 }
+
+/** What the learner did on `day`: the daily quests read these. */
+export interface Daily {
+  day: string
+  /** Roadmap lessons finished (replays count: it is study) */
+  lessons: number
+  /** Right answers on the first try */
+  correct: number
+  /** Lessons finished with every answer right */
+  perfect: number
+  /** Opened the portfolio */
+  portfolio: boolean
+  /** The chest for finishing every quest was opened */
+  claimed: boolean
+}
+
+export const emptyDaily: Daily = { day: '', lessons: 0, correct: 0, perfect: 0, portfolio: false, claimed: false }
+
+/** Today's counters: the saved ones if they are from `today`, otherwise a fresh day. */
+export const dailyFor = (p: Progress, today: string): Daily => (p.daily.day === today ? p.daily : { ...emptyDaily, day: today })
 
 /** Nothing learned yet. Also what unreadable saved text parses to. */
 export const emptyProgress: Progress = {
@@ -46,11 +74,22 @@ export const emptyProgress: Progress = {
   activity: {},
   perfect: 0,
   freezes: 0,
+  time: {},
+  bestStreak: 0,
+  due: {},
+  daily: emptyDaily,
 }
 
 export const MAX_BOX = 5
 /** Streak freezes you can hold at once */
 export const MAX_FREEZES = 2
+
+const num = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) && v > 0 ? Math.floor(v) : 0)
+
+function parseDaily(v: unknown): Daily {
+  if (!isRecord(v) || typeof v.day !== 'string') return emptyDaily
+  return { day: v.day, lessons: num(v.lessons), correct: num(v.correct), perfect: num(v.perfect), portfolio: v.portfolio === true, claimed: v.claimed === true }
+}
 
 const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
 
@@ -81,6 +120,11 @@ export function parseProgress(raw: string | null): Progress {
       activity: isRecord(data.activity) ? (data.activity as Progress['activity']) : {},
       perfect: typeof data.perfect === 'number' && data.perfect > 0 ? Math.floor(data.perfect) : 0,
       freezes: typeof data.freezes === 'number' && data.freezes > 0 ? Math.min(MAX_FREEZES, Math.floor(data.freezes)) : 0,
+      time: isRecord(data.time) ? (data.time as Progress['time']) : {},
+      // Saved before the best streak was kept: the streak they have is the best we know of
+      bestStreak: Math.max(num(data.bestStreak), typeof streak.count === 'number' ? streak.count : 0),
+      due: isRecord(data.due) ? (data.due as Progress['due']) : {},
+      daily: parseDaily(data.daily),
     }
   } catch {
     return emptyProgress
@@ -130,11 +174,32 @@ export function bumpStreak(streak: Streak, today: string): Streak {
   return { count: gap === 1 ? streak.count + 1 : 1, lastDay: today }
 }
 
-/** Leitner step: a right answer moves the question up a box, a wrong one sends it back to box 1. */
-export function recordReview(p: Progress, questionId: string, correct: boolean): Progress {
-  const box = p.boxes[questionId] ?? 0
-  return { ...p, boxes: { ...p.boxes, [questionId]: correct ? Math.min(box + 1, MAX_BOX) : 1 } }
+/** Days until a question in box 1 … MAX_BOX comes back for review */
+export const REVIEW_DAYS = [1, 2, 4, 8, 16]
+
+/** `day` plus `n` days, as 'YYYY-MM-DD'. */
+export function addDays(day: string, n: number): string {
+  const [y, m, d] = day.split('-').map(Number)
+  return new Date(Date.UTC(y, m - 1, d + n)).toISOString().slice(0, 10)
 }
+
+/** Leitner step for a first try answered on `today`: a right answer moves the question up a box and schedules it
+ *  further out (REVIEW_DAYS); a wrong one sends it back to box 1, due at once. It also counts towards today's quests. */
+export function recordReview(p: Progress, questionId: string, correct: boolean, today: string): Progress {
+  const box = correct ? Math.min((p.boxes[questionId] ?? 0) + 1, MAX_BOX) : 1
+  const daily = dailyFor(p, today)
+  return {
+    ...p,
+    boxes: { ...p.boxes, [questionId]: box },
+    due: { ...p.due, [questionId]: correct ? addDays(today, REVIEW_DAYS[box - 1]) : today },
+    daily: correct ? { ...daily, correct: daily.correct + 1 } : daily,
+  }
+}
+
+/** The questions to review on `today`, in the given order: those whose due day has come. Answers saved before due
+ *  days existed count when their latest answer was wrong. */
+export const dueQuestions = (questionIds: string[], p: Pick<Progress, 'answers' | 'due'>, today: string) =>
+  questionIds.filter((id) => (p.due[id] ? p.due[id] <= today : p.answers[id]?.correct === false))
 
 /** What finishing a lesson pays: $10 per correct answer, and only the first time that roadmap lesson is finished
  *  (replays and practice runs pay nothing, so they can't be farmed). */
@@ -148,14 +213,19 @@ export function freezesSpent(p: Progress, today: string): number {
   return missed > 0 && missed <= p.freezes ? missed : 0
 }
 
-/** Pay a finished lesson into the bank, count `today` towards the streak and mark the roadmap lesson (if given) done. */
-export function completeLesson(p: Progress, correct: number, today: string, lessonKey?: string, total = 0): Progress {
+/** Longest time one run may add to the day's study time: a lesson left open is not an hour of study */
+export const MAX_RUN_SECONDS = 20 * 60
+
+/** Pay a finished lesson into the bank, count `today` towards the streak and mark the roadmap lesson (if given) done.
+ *  `seconds` is how long the run took: it counts towards the day's goal. */
+export function completeLesson(p: Progress, correct: number, today: string, lessonKey?: string, total = 0, seconds = 0): Progress {
   const lessonsDone = lessonKey && !p.lessonsDone.includes(lessonKey) ? [...p.lessonsDone, lessonKey] : p.lessonsDone
   const payout = payoutFor(p, correct, lessonKey)
   // Missed days covered by freezes keep the streak going (one freeze per missed day); otherwise it restarts.
   const spent = freezesSpent(p, today)
   const streak = spent > 0 ? { count: p.streak.count + 1, lastDay: today } : bumpStreak(p.streak, today)
   const perfectNow = lessonKey && lessonsDone !== p.lessonsDone && total > 0 && correct === total ? 1 : 0
+  const daily = dailyFor(p, today)
   return {
     ...p,
     bank: p.bank + payout,
@@ -165,8 +235,30 @@ export function completeLesson(p: Progress, correct: number, today: string, less
     activity: addActivity(p.activity, today, payout),
     perfect: p.perfect + perfectNow,
     freezes: Math.min(MAX_FREEZES, p.freezes - spent + perfectNow),
+    time: addActivity(p.time, today, Math.min(MAX_RUN_SECONDS, Math.max(0, Math.round(seconds)))),
+    bestStreak: Math.max(p.bestStreak, streak.count),
+    daily: lessonKey ? { ...daily, lessons: daily.lessons + 1, perfect: daily.perfect + (total > 0 && correct === total ? 1 : 0) } : daily,
   }
 }
+
+/** The learner opened the portfolio on `today` (a daily quest). */
+export function visitPortfolio(p: Progress, today: string): Progress {
+  const daily = dailyFor(p, today)
+  return daily.portfolio && p.daily.day === today ? p : { ...p, daily: { ...daily, portfolio: true } }
+}
+
+/** Seconds studied on `today`. */
+export const studiedToday = (p: Progress, today: string) => p.time[today] ?? 0
+
+/** Streak lengths worth a celebration */
+export const STREAK_MILESTONES = [3, 7, 14, 30, 60, 100]
+
+/** The next streak milestone after `count` (the last one repeats in hundreds). */
+export const nextStreakMilestone = (count: number) => STREAK_MILESTONES.find((m) => m > count) ?? (Math.floor(count / 100) + 1) * 100
+
+/** Is the streak in danger? There is one, today has no lesson yet, and it is `hour` 18 or later. */
+export const streakAtRisk = (p: Progress, today: string, hour: number) =>
+  hour >= 18 && p.streak.lastDay !== today && currentStreak(p.streak, today, p.freezes) > 0
 
 /** Did finishing this lesson on `today` earn a streak freeze? Freezes it spent on missed days make room first.
  *  (For the Lesson complete screen.) */
