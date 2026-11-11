@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 210" font-family="Instrument Sans, Helvetica, Arial, sans-serif">
+  <!-- 10,000 taken out at 35, or left to grow at 7% a year to about 76,000 at 65.
+       Numbers only: the title, caption and alt text are in the lesson, in the reader's language. -->
+  <line x1="12" y1="176" x2="308" y2="176" stroke="#D0E7E6" stroke-width="2"/>
+  <rect x="56" y="157" width="80" height="19" rx="6" fill="#293681"/>
+  <rect x="184" y="32" width="80" height="144" rx="10" fill="#4274D9"/>
+  <g font-size="18" font-weight="700" fill="#293681" text-anchor="middle">
+    <text x="96" y="147">10,000</text>
+    <text x="224" y="22">≈76,000</text>
+  </g>
+  <g font-size="14" font-weight="600" fill="#5B678F" text-anchor="middle">
+    <text x="96" y="198">35</text>
+    <text x="224" y="198">65</text>
+  </g>
+</svg>

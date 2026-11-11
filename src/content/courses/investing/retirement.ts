@@ -1,7 +1,8 @@
 // Original course content. Explains retirement saving in general, country-neutral terms; no products or providers are
 // recommended, and every figure is an illustration, not a forecast. Rules differ by country.
+// The story goes on: Noor (نور) and Karim (كريم) plan for the longest goal of all.
 import type { Module } from '../../types'
-import { L, box, compoundCalculator, cover, diagram, exercise, html, keyIdea, mcq, objectives, practice, section, table, takeaways } from '../../helpers'
+import { L, box, choice, compoundCalculator, cover, diagram, exercise, html, keyIdea, mcq, myth, practice, predict, section, sort, table, takeaways } from '../../helpers'
 
 const W = 'retirement'
 const P = 'invr'
@@ -93,22 +94,25 @@ export const retirement: Module = {
       label: L('Intro', 'مقدمة'),
       nav: L('Why start early', 'لماذا تبدأ مبكرًا'),
       title: L('The longest goal you will save for', 'أطول هدف ستدّخر له'),
-      standfirst: L('Retirement is decades away, which makes time your biggest ally.', 'التقاعد بعيد بعقود، وهذا يجعل الوقت أكبر حليف لك.'),
+      standfirst: L('Ten years’ head start is worth more than you think.', 'السبق بعشر سنوات يساوي أكثر مما تظن.'),
       time: L('6 min', '6 دقائق'),
       blocks: [
-        objectives([
-          L('Show how starting early changes the size of a retirement pot', 'توضيح كيف يغيّر البدء المبكر حجم رصيد التقاعد'),
-          L('Explain employer plans and matching contributions', 'شرح خطط أصحاب العمل والمساهمات المطابقة'),
-          L('Compare taxable, tax-deferred and tax-free accounts', 'المقارنة بين الحسابات الخاضعة للضريبة والمؤجَّلة الضريبة والمعفاة منها'),
-          L('Describe target-date funds and the 4% rule as rough guides', 'وصف صناديق التاريخ المستهدف وقاعدة 4% كأدلة تقريبية'),
-        ]),
         html(L(
-          '<p>Retirement is the longest goal most people save for: money put aside at 25 may not be spent until 65 or later, and then has to last 20 or 30 years. That long horizon is exactly what lets <strong>compounding</strong> do the heavy lifting, as long as the money is left alone.</p>',
-          '<p>التقاعد هو أطول هدف يدّخر له معظم الناس: المال الذي يُدّخر في سن 25 قد لا يُنفق قبل سن 65 أو بعدها، ثم عليه أن يكفي 20 أو 30 سنة. هذا الأفق الطويل هو بالضبط ما يتيح لـ<strong>الفائدة المركبة</strong> أن تقوم بالعمل الأكبر، طالما بقي المال دون أن يُمس.</p>',
+          '<p>Karim is 25 and starts putting <strong>200 a month</strong> towards retirement. His cousin Tariq laughs: “Retirement? I’ll start at 35, when I earn more.” Both will invest the same 200 a month until 65, at 7% a year. Tariq thinks ten years won’t matter much.</p>',
+          '<p>كريم عمره 25 ويبدأ بوضع <strong>200 شهريًا</strong> للتقاعد. يضحك ابن عمه طارق: «التقاعد؟ سأبدأ في الخامسة والثلاثين عندما يزيد دخلي». كلاهما سيستثمر 200 شهريًا حتى سن 65 بعائد 7% سنويًا. ويظن طارق أن عشر سنوات لن تفرق كثيرًا.</p>',
         )),
+        predict(
+          L('At 65, how much more does Karim have than Tariq?', 'في سن 65، كم يزيد ما لدى كريم عمّا لدى طارق؟'),
+          [L('About 24,000', 'نحو 24,000'), L('About 100,000', 'نحو 100,000'), L('About 280,000', 'نحو 280,000'), L('About 500,000', 'نحو 500,000')],
+          2,
+          L(
+            'About 280,000: some 525,000 against 244,000. Karim put in only 24,000 more; the rest is the extra ten years of growth on his earliest money. (Illustrative figures.)',
+            'نحو 280,000: قرابة 525,000 مقابل 244,000. وضع كريم 24,000 فقط زيادة؛ والباقي سنوات النمو العشر الإضافية على أول أمواله. (أرقام توضيحية.)',
+          ),
+        ),
         html(L(
-          '<p>Invest 200 a month at 7% a year until 65. Start at 25 and you put in 96,000 and end with about <strong>525,000</strong>. Start at 35 and you put in 72,000 and end with about <strong>244,000</strong>.</p>',
-          '<p>استثمر 200 شهريًا بعائد 7% سنويًا حتى سن 65. إن بدأت في سن 25 تضع 96,000 وتنتهي بنحو <strong>525,000</strong>. وإن بدأت في سن 35 تضع 72,000 وتنتهي بنحو <strong>244,000</strong>.</p>',
+          '<p>Retirement is the longest goal most people save for: money put aside at 25 may not be spent until 65, and then has to last 20 or 30 years. That long horizon is exactly what lets <strong>compounding</strong> do the heavy lifting, as long as the money is left alone.</p>',
+          '<p>التقاعد هو أطول هدف يدّخر له معظم الناس: المال الذي يُدّخر في سن 25 قد لا يُنفق قبل سن 65، ثم عليه أن يكفي 20 أو 30 سنة. هذا الأفق الطويل هو بالضبط ما يتيح لـ<strong>الفائدة المركبة</strong> أن تقوم بالعمل الأكبر، طالما بقي المال دون أن يُمس.</p>',
         )),
         diagram({
           fig: L('Illustration', 'توضيح'),
@@ -121,8 +125,8 @@ export const retirement: Module = {
           caption: L('Starting age. Dark: money put in. Light: growth. Illustrative figures, not a forecast.', 'سن البدء. الداكن: المال المدفوع. الفاتح: النمو. أرقام توضيحية لا توقعات.'),
         }),
         box('mistake', L('Common mistake', 'خطأ شائع'), L(
-          'Waiting to start until you earn more. A small amount invested early often ends up larger than a bigger amount started ten years later, because the early money gets the extra years of growth that cannot be bought back.',
-          'تأجيل البدء حتى يرتفع دخلك. المبلغ الصغير الذي يُستثمر مبكرًا كثيرًا ما ينتهي أكبر من مبلغ أكبر يبدأ بعد عشر سنوات، لأن المال المبكر يحصل على سنوات النمو الإضافية التي لا يمكن شراؤها لاحقًا.',
+          'Waiting to start until you earn more, like Tariq. A small amount invested early often ends up larger than a bigger amount started ten years later: the early years of growth cannot be bought back.',
+          'تأجيل البدء حتى يرتفع دخلك، كما فعل طارق. المبلغ الصغير الذي يُستثمر مبكرًا كثيرًا ما ينتهي أكبر من مبلغ أكبر يبدأ بعد عشر سنوات: سنوات النمو الأولى لا يمكن شراؤها لاحقًا.',
         )),
         compoundCalculator,
         keyIdea(L(
@@ -139,13 +143,33 @@ export const retirement: Module = {
       label: L('Part 1', 'الجزء ١'),
       nav: L('Workplace plans', 'خطط العمل'),
       title: L('Workplace pensions and matching', 'معاشات العمل والمساهمات المطابقة'),
-      standfirst: L('Many employers help you save for retirement, sometimes with money of their own.', 'يساعدك كثير من أصحاب العمل على الادخار للتقاعد، وأحيانًا بمال من عندهم.'),
+      standfirst: L('Noor’s new job offers free money. She almost misses it.', 'وظيفة نور الجديدة تعرض مالًا مجانيًا. وكادت تفوّته.'),
       time: L('6 min', '6 دقائق'),
       blocks: [
         html(L(
-          '<p>Many employers, and some governments, run a <strong>workplace pension</strong>: a share of each salary goes into a retirement plan automatically, before it reaches your account. Because it happens without a decision every month, it is one of the easiest ways to save steadily for decades.</p>',
-          '<p>يدير كثير من أصحاب العمل، وبعض الحكومات، <strong>معاش عمل</strong>: تذهب نسبة من كل راتب إلى خطة تقاعد تلقائيًا، قبل أن تصل إلى حسابك. ولأن ذلك يحدث دون قرار كل شهر، فهو من أسهل طرق الادخار بانتظام لعقود.</p>',
+          '<p>Noor starts a new job with a salary of <strong>30,000</strong> a year. Buried in the welcome pack: “If you put up to 6% of your salary into the workplace plan, we add half of it.” Noor almost skips the form. If she puts in the full 6%, what does the employer add?</p>',
+          '<p>تبدأ نور وظيفة جديدة براتب <strong>30,000</strong> سنويًا. ومدفونًا في حزمة الترحيب: «إذا وضعت حتى 6% من راتبك في خطة العمل، نضيف نصفها». كادت نور تتجاهل الاستمارة. إذا وضعت الـ6% كاملة، كم يضيف صاحب العمل؟</p>',
         )),
+        predict(
+          L('How much does Noor’s employer add each year?', 'كم يضيف صاحب عمل نور كل عام؟'),
+          [L('Nothing', 'لا شيء'), L('450', '450'), L('900', '900'), L('1,800', '1,800')],
+          2,
+          L(
+            '900. 6% of 30,000 is 1,800, and half of that is 900: an instant 50% on her own money, before any market growth. (Illustrative figures.)',
+            '900. 6% من 30,000 تساوي 1,800، ونصفها 900: زيادة فورية بنسبة 50% على مالها، قبل أي نمو في السوق. (أرقام توضيحية.)',
+          ),
+        ),
+        html(L(
+          '<p>That is a <strong>matching contribution</strong>. Many employers, and some governments, run a <strong>workplace pension</strong>: a share of each salary goes into a retirement plan automatically, before it reaches your account. Because nothing has to be decided each month, it is one of the easiest ways to save for decades.</p>',
+          '<p>هذه <strong>مساهمة مطابقة</strong>. يدير كثير من أصحاب العمل، وبعض الحكومات، <strong>معاش عمل</strong>: تذهب نسبة من كل راتب إلى خطة تقاعد تلقائيًا، قبل أن تصل إلى حسابك. ولأنه لا حاجة لأي قرار كل شهر، فهو من أسهل طرق الادخار لعقود.</p>',
+        )),
+        diagram({
+          fig: L('Illustration', 'توضيح'),
+          title: L('Her money, and the match', 'مالها والمساهمة المطابقة'),
+          src: '/diagrams/match.svg',
+          alt: L('Noor puts in 1,800 a year; with the employer’s 900 on top, 2,700 goes into her plan.', 'تضع نور 1,800 سنويًا؛ ومع 900 من صاحب العمل فوقها، يدخل خطتها 2,700.'),
+          caption: L('A year of saving. Dark: Noor’s 6%. Blue: the employer’s match. Illustrative figures.', 'عام من الادخار. الداكن: الـ6% من نور. الأزرق: مساهمة صاحب العمل. أرقام توضيحية.'),
+        }),
         table(
           [L('Plan type', 'نوع الخطة'), L('What you get', 'ما تحصل عليه'), L('Who carries the risk', 'من يتحمّل المخاطرة')],
           [
@@ -153,13 +177,9 @@ export const retirement: Module = {
             [L('Defined contribution', 'مساهمات محددة'), L('Your own pot: what goes in plus investment returns', 'رصيدك الخاص: ما يُدفع فيه مضافًا إليه عوائد الاستثمار'), L('Mainly you', 'أنت أساسًا')],
           ],
         ),
-        html(L(
-          '<p>Some plans add a <strong>matching contribution</strong>. Say the employer adds half of what you put in, up to 6% of salary. On a salary of 40,000, putting in 6% (2,400) brings 1,200 more from the employer: an instant 50% on that money, before any market growth. (Illustrative figures.)</p>',
-          '<p>تضيف بعض الخطط <strong>مساهمة مطابقة</strong>. لنفترض أن صاحب العمل يضيف نصف ما تضعه، حتى 6% من الراتب. براتب 40,000، وضع 6% (2,400) يجلب 1,200 إضافية من صاحب العمل: زيادة فورية بنسبة 50% على ذلك المال، قبل أي نمو في السوق. (أرقام توضيحية.)</p>',
-        )),
         box('keypoint', L('Read the plan rules', 'اقرأ قواعد الخطة'), L(
-          'Employer money sometimes becomes fully yours only after you have worked somewhere for a set time, often called vesting. Leaving earlier can mean leaving part of it behind, so the plan rules are worth reading before you change jobs.',
-          'أحيانًا لا يصبح مال صاحب العمل ملكك بالكامل إلا بعد العمل مدة محددة، وهو ما يُسمى غالبًا الاستحقاق. المغادرة قبل ذلك قد تعني ترك جزء منه، لذا تستحق قواعد الخطة القراءة قبل تغيير الوظيفة.',
+          'Employer money sometimes becomes fully yours only after you have worked somewhere for a set time, often called vesting. Leaving earlier can mean leaving part of it behind, so read the rules before you change jobs.',
+          'أحيانًا لا يصبح مال صاحب العمل ملكك بالكامل إلا بعد العمل مدة محددة، وهو ما يُسمى غالبًا الاستحقاق. المغادرة قبل ذلك قد تعني ترك جزء منه، فاقرأ القواعد قبل تغيير الوظيفة.',
         )),
         keyIdea(L(
           '<p>A matching contribution is <strong>extra money on top of yours</strong>; not taking it leaves part of your pay unclaimed.</p>',
@@ -175,13 +195,27 @@ export const retirement: Module = {
       label: L('Part 2', 'الجزء ٢'),
       nav: L('Tax-advantaged accounts', 'الحسابات ذات المزايا الضريبية'),
       title: L('Tax now, tax later, or tax-free', 'ضريبة الآن أم لاحقًا أم إعفاء'),
-      standfirst: L('Many countries give retirement savings a tax break, in exchange for rules.', 'تمنح دول كثيرة مدخرات التقاعد ميزة ضريبية، مقابل قواعد.'),
+      standfirst: L('Same investments, different wrappers, very different results.', 'الاستثمارات نفسها، وأغلفة مختلفة، ونتائج مختلفة جدًا.'),
       time: L('7 min', '7 دقائق'),
       blocks: [
         html(L(
-          '<p>In an ordinary <strong>taxable account</strong>, interest, dividends and gains can be taxed as they arrive. To encourage saving, many countries offer <strong>tax-advantaged</strong> retirement accounts instead. In exchange they set rules: how much can go in each year, and from what age the money can come out.</p>',
-          '<p>في <strong>الحساب الخاضع للضريبة</strong> العادي، قد تُفرض الضريبة على الفوائد وتوزيعات الأرباح والمكاسب عند تحققها. ولتشجيع الادخار، تقدّم دول كثيرة بدلًا من ذلك حسابات تقاعد <strong>ذات مزايا ضريبية</strong>. وفي المقابل تضع قواعد: كم يمكن إيداعه كل عام، ومن أي سن يمكن سحب المال.</p>',
+          '<p>Karim holds his index fund in an ordinary account, where interest, dividends and gains can be taxed as they arrive. Noor’s workplace plan is a <strong>tax-advantaged</strong> account: to encourage saving, many countries let retirement money grow without tax along the way, in exchange for rules. Which accounts let growth build untaxed?</p>',
+          '<p>يحتفظ كريم بصندوق المؤشر في حساب عادي، حيث قد تُفرض الضريبة على الفوائد والتوزيعات والمكاسب عند تحققها. أما خطة عمل نور فحساب <strong>ذو مزايا ضريبية</strong>: لتشجيع الادخار، تسمح دول كثيرة لمال التقاعد بالنمو دون ضريبة على الطريق، مقابل قواعد. أي الحسابات تترك النمو يتراكم دون ضريبة؟</p>',
         )),
+        sort(
+          L('Taxed along the way, or growing untaxed?', 'تُفرض عليه الضريبة على الطريق، أم ينمو دون ضريبة؟'),
+          [L('Taxed along the way', 'ضريبة على الطريق'), L('Grows untaxed', 'ينمو دون ضريبة')],
+          [
+            [L('Karim’s ordinary investment account', 'حساب الاستثمار العادي لدى كريم'), 0],
+            [L('A tax-deferred retirement account', 'حساب تقاعد مؤجَّل الضريبة'), 1],
+            [L('Interest in a normal savings account', 'الفائدة في حساب توفير عادي'), 0],
+            [L('A tax-free retirement account', 'حساب تقاعد معفى من الضريبة'), 1],
+          ],
+          L(
+            'Ordinary accounts can be taxed every year. Tax-deferred accounts tax the money when it comes out; tax-free accounts tax it before it goes in. Either way, the growth compounds untaxed.',
+            'الحسابات العادية قد تُفرض عليها الضريبة كل عام. الحسابات المؤجَّلة الضريبة تفرضها عند خروج المال؛ والمعفاة تفرضها قبل دخوله. وفي الحالتين يتراكم النمو دون ضريبة.',
+          ),
+        ),
         table(
           [L('Account type', 'نوع الحساب'), L('When tax is paid', 'متى تُدفع الضريبة'), L('While invested', 'أثناء الاستثمار')],
           [
@@ -205,8 +239,8 @@ export const retirement: Module = {
           caption: L('Years from now. Dark: no yearly tax. Light: 20% tax on each year’s growth. Illustrative figures.', 'السنوات من الآن. الداكن: دون ضريبة سنوية. الفاتح: ضريبة 20% على نمو كل عام. أرقام توضيحية.'),
         }),
         html(L(
-          '<p>These accounts have local names, such as the 401(k) in the US or the ISA in the UK. They are mentioned only as examples, not recommendations. Limits, ages and tax rates differ by country and change over time, so the details are worth checking in your country’s official rules or with a licensed adviser.</p>',
-          '<p>لهذه الحسابات أسماء محلية، مثل 401(k) في الولايات المتحدة أو ISA في المملكة المتحدة. وتُذكر هنا أمثلةً فقط لا توصيات. الحدود والأعمار ونسب الضريبة تختلف من بلد لآخر وتتغير مع الوقت، لذا تستحق التفاصيل التحقق منها في القواعد الرسمية لبلدك أو مع مستشار مرخّص.</p>',
+          '<p>These accounts have local names, such as the 401(k) in the US or the ISA in the UK, mentioned only as examples, not recommendations. Limits, ages and tax rates differ by country and change over time, so check your country’s official rules or a licensed adviser.</p>',
+          '<p>لهذه الحسابات أسماء محلية، مثل 401(k) في الولايات المتحدة أو ISA في المملكة المتحدة، تُذكر أمثلةً فقط لا توصيات. الحدود والأعمار ونسب الضريبة تختلف من بلد لآخر وتتغير مع الوقت، فراجع القواعد الرسمية لبلدك أو مستشارًا مرخّصًا.</p>',
         )),
         keyIdea(L(
           '<p>Tax-advantaged accounts change <strong>when you pay tax</strong>; untaxed growth compounds on a bigger base.</p>',
@@ -223,25 +257,42 @@ export const retirement: Module = {
       label: L('Part 3', 'الجزء ٣'),
       nav: L('How much to save', 'كم تدّخر'),
       title: L('Pay yourself first', 'ادفع لنفسك أولًا'),
-      standfirst: L('A set percentage, saved automatically, beats saving whatever is left over.', 'نسبة محددة تُدّخر تلقائيًا أفضل من ادخار ما يتبقى.'),
+      standfirst: L('Karim gets a raise. Where does it go?', 'كريم يحصل على زيادة. إلى أين تذهب؟'),
       time: L('6 min', '6 دقائق'),
       blocks: [
         html(L(
-          '<p><strong>Pay yourself first</strong>: on payday, a set percentage of income moves to savings automatically, and only what remains is for spending. Saving “whatever is left at the end of the month” often means saving nothing, because spending tends to grow to fill the money available.</p>',
-          '<p><strong>ادفع لنفسك أولًا</strong>: في يوم الراتب، تنتقل نسبة محددة من الدخل إلى الادخار تلقائيًا، ولا يُنفق إلا ما يتبقى. أما ادخار «ما يتبقى في نهاية الشهر» فكثيرًا ما يعني عدم ادخار شيء، لأن الإنفاق يميل إلى التمدد حتى يملأ المال المتاح.</p>',
+          '<p>Karim gets a raise: <strong>200 more</strong> a month. He already saves 10% of his pay, moved automatically on payday. A new phone is calling his name, and his retirement plan could take more. Nobody else will decide this for him.</p>',
+          '<p>حصل كريم على زيادة: <strong>200 إضافية</strong> شهريًا. وهو يدّخر أصلًا 10% من راتبه، تُحوَّل تلقائيًا يوم الراتب. هاتف جديد يناديه، وخطة تقاعده يمكنها أن تأخذ أكثر. ولن يقرر أحد غيره.</p>',
         )),
+        choice(L('What would you do with Karim’s raise?', 'ماذا كنت ستفعل بزيادة كريم؟'), [
+          [
+            L('Spend all of it', 'أنفقها كلها'),
+            L('Life gets a little nicer now, and his saving stays at 10%. Spending tends to grow to fill whatever money is available.', 'تصبح الحياة أجمل قليلًا الآن، ويبقى ادخاره عند 10%. والإنفاق يميل إلى التمدد ليملأ المال المتاح.'),
+          ],
+          [
+            L('Save half, spend half', 'أدّخر نصفها وأنفق نصفها'),
+            L('He enjoys some of it and lifts his saving rate. Raising the rate a little with each raise means his take-home pay never actually drops.', 'يستمتع ببعضها ويرفع نسبة ادخاره. رفع النسبة قليلًا مع كل زيادة يعني ألا ينخفض ما يصله فعلًا أبدًا.'),
+          ],
+          [
+            L('Save all of it', 'أدّخرها كلها'),
+            L('His saving jumps the most, and he never gets used to spending it. It only lasts if the budget still feels livable.', 'يقفز ادخاره أكثر، ولا يعتاد إنفاقها أبدًا. لكنه لا يدوم إلا إذا بقيت الميزانية محتملة.'),
+          ],
+        ]),
         html(L(
-          '<p>How much? A commonly quoted guideline for retirement is around 10–15% of income, counting any employer contribution. It is only a rough starting point: age, income and other pensions all change the picture. Starting smaller and adding a point each year also works.</p>',
-          '<p>كم؟ إرشاد شائع للتقاعد هو نحو 10–15% من الدخل، مع احتساب أي مساهمة من صاحب العمل. وهو مجرد نقطة بداية تقريبية: العمر والدخل والمعاشات الأخرى كلها تغيّر الصورة. والبدء بنسبة أصغر مع إضافة نقطة كل عام ينجح أيضًا.</p>',
-        )),
-        box('example', L('Example', 'مثال'), L(
-          'On a pay of 3,000 a month, 10% means 300 moving to savings on payday. After a raise to 3,200, saving 11% takes 352 and still leaves more to spend than before. (Illustrative figures.)',
-          'براتب 3,000 شهريًا، تعني 10% أن 300 تنتقل إلى الادخار يوم الراتب. وبعد زيادة إلى 3,200، يأخذ ادخار 11% مبلغ 352 ويترك مع ذلك للإنفاق أكثر من قبل. (أرقام توضيحية.)',
+          '<p><strong>Pay yourself first</strong>: on payday a set percentage moves to savings automatically, and only the rest is for spending. A commonly quoted guide for retirement is around 10–15% of income, counting any employer match. It is a rough starting point; starting smaller and adding a point a year also works.</p>',
+          '<p><strong>ادفع لنفسك أولًا</strong>: يوم الراتب تنتقل نسبة محددة إلى الادخار تلقائيًا، ولا يُنفق إلا الباقي. إرشاد شائع للتقاعد هو نحو 10–15% من الدخل، مع احتساب أي مساهمة من صاحب العمل. وهو نقطة بداية تقريبية؛ والبدء بنسبة أصغر مع إضافة نقطة كل عام ينجح أيضًا.</p>',
         )),
         html(L(
           '<p>Taking money out of a retirement account early often costs three times: a <strong>penalty</strong> in many countries, <strong>income tax</strong>, and the <strong>growth</strong> it would have earned. 10,000 taken out at 35 would have grown to about 76,000 by 65 at 7% a year. (Illustrative figures.)</p>',
           '<p>سحب المال من حساب التقاعد مبكرًا يكلّف غالبًا ثلاث مرات: <strong>غرامة</strong> في دول كثيرة، و<strong>ضريبة الدخل</strong>، و<strong>النمو</strong> الذي كان سيحققه. 10,000 تُسحب في سن 35 كانت ستنمو إلى نحو 76,000 عند سن 65 بعائد 7% سنويًا. (أرقام توضيحية.)</p>',
         )),
+        diagram({
+          fig: L('Illustration', 'توضيح'),
+          title: L('What an early withdrawal gives up', 'ما يتخلى عنه السحب المبكر'),
+          src: '/diagrams/early-withdraw.svg',
+          alt: L('10,000 taken out at 35, against about 76,000 at 65 if left to grow at 7% a year.', '10,000 تُسحب في سن 35، مقابل نحو 76,000 في سن 65 لو تُركت تنمو بعائد 7% سنويًا.'),
+          caption: L('Age. Left: the amount taken out. Right: what it would have become. Illustrative figures.', 'العمر. يسارًا: المبلغ المسحوب. يمينًا: ما كان سيصبح عليه. أرقام توضيحية.'),
+        }),
         box('mistake', L('Common mistake', 'خطأ شائع'), L(
           'Using retirement savings as an emergency fund. A separate cushion of easy-to-reach savings means a car repair or a lost job does not force an early withdrawal, with its penalty, its tax and the lost years of growth.',
           'استخدام مدخرات التقاعد كصندوق طوارئ. وجود احتياطي منفصل من مدخرات سهلة الوصول يعني أن إصلاح سيارة أو فقدان وظيفة لا يفرض سحبًا مبكرًا بما فيه من غرامة وضريبة وسنوات نمو ضائعة.',
@@ -260,28 +311,35 @@ export const retirement: Module = {
       label: L('Part 4', 'الجزء ٤'),
       nav: L('Target-date funds', 'صناديق التاريخ المستهدف'),
       title: L('A mix that changes with age', 'مزيج يتغير مع العمر'),
+      standfirst: L('One fund that gets calmer as retirement gets closer.', 'صندوق واحد يهدأ كلما اقترب التقاعد.'),
       time: L('5 min', '5 دقائق'),
       blocks: [
         html(L(
-          '<p>A <strong>target-date fund</strong>, also called a lifecycle fund, is a single fund named after a year close to when its savers plan to retire. It starts with mostly stocks for growth, then shifts step by step towards bonds and cash as that year approaches. The planned path is called the <strong>glide path</strong>.</p>',
-          '<p><strong>صندوق التاريخ المستهدف</strong>، ويُسمى أيضًا صندوق دورة الحياة، صندوق واحد يحمل اسم سنة قريبة من موعد تقاعد مدّخريه. يبدأ بالأسهم غالبًا من أجل النمو، ثم ينتقل خطوة بخطوة نحو السندات والنقد كلما اقتربت تلك السنة. ويُسمى هذا المسار المخطط <strong>مسار الانحدار</strong>.</p>',
+          '<p>Noor’s workplace plan offers a fund named after the year she will turn 65. The leaflet says it “takes care of everything until your retirement date”. Her aunt reads it over her shoulder and is impressed: “So your money is safe on that date.” Is it?</p>',
+          '<p>تعرض خطة عمل نور صندوقًا يحمل اسم السنة التي ستبلغ فيها 65. تقول النشرة إنه «يتولى كل شيء حتى موعد تقاعدك». تقرأ خالتها من فوق كتفها وتنبهر: «إذن مالك آمن في ذلك التاريخ». فهل هو كذلك؟</p>',
         )),
-        table(
-          [L('Years to the target', 'السنوات حتى الهدف'), L('Illustrative stocks / bonds', 'أسهم / سندات توضيحيًا')],
-          [
-            [L('40', '40'), L('90 / 10', '90 / 10')],
-            [L('20', '20'), L('75 / 25', '75 / 25')],
-            [L('10', '10'), L('60 / 40', '60 / 40')],
-            [L('0', '0'), L('40 / 60', '40 / 60')],
-          ],
+        myth(
+          L('A target-date fund guarantees your money on the target date.', 'صندوق التاريخ المستهدف يضمن مالك في التاريخ المستهدف.'),
+          false,
+          L(
+            'It follows a plan, not a promise. It gets calmer as the date nears, but it still holds stocks and bonds, and it can still fall, even in the final year.',
+            'إنه يتبع خطة لا وعدًا. يهدأ كلما اقترب التاريخ، لكنه ما زال يملك أسهمًا وسندات، وقد يهبط، حتى في السنة الأخيرة.',
+          ),
         ),
         html(L(
-          '<p>Why shift? Close to retirement there is little time to recover from a big fall, and money soon starts coming out. The trade-offs: one path is set for everyone born around the same year, fees differ from fund to fund, and the mix inside is worth reading before choosing one.</p>',
-          '<p>لماذا الانتقال؟ قرب التقاعد يقل الوقت المتاح للتعافي من هبوط كبير، ويبدأ المال في الخروج قريبًا. أما المفاضلات: فمسار واحد يُحدد لكل من وُلدوا في السنوات نفسها تقريبًا، والرسوم تختلف من صندوق لآخر، والمزيج الذي بداخله يستحق القراءة قبل اختيار أي منها.</p>',
+          '<p>A <strong>target-date fund</strong>, or lifecycle fund, starts with mostly stocks for growth, then shifts step by step towards bonds and cash as its year approaches. That planned path is the <strong>glide path</strong>: close to retirement there is little time to recover from a big fall.</p>',
+          '<p><strong>صندوق التاريخ المستهدف</strong>، أو صندوق دورة الحياة، يبدأ بالأسهم غالبًا من أجل النمو، ثم ينتقل خطوة بخطوة نحو السندات والنقد كلما اقتربت سنته. هذا المسار المخطط هو <strong>مسار الانحدار</strong>: قرب التقاعد يقل الوقت المتاح للتعافي من هبوط كبير.</p>',
         )),
+        diagram({
+          fig: L('Illustration', 'توضيح'),
+          title: L('The stock share along the glide path', 'حصة الأسهم على مسار الانحدار'),
+          src: '/diagrams/glide.svg',
+          alt: L('Share in stocks: 90% with 40 years to go, 75% at 20, 60% at 10 and 40% at the target year.', 'حصة الأسهم: 90% قبل 40 سنة، و75% قبل 20، و60% قبل 10، و40% في السنة المستهدفة.'),
+          caption: L('Years to the target; the rest is bonds and cash. Illustrative figures.', 'السنوات حتى الهدف؛ والباقي سندات ونقد. أرقام توضيحية.'),
+        }),
         html(L(
-          '<p>Some savers want options that follow <strong>Islamic finance</strong> principles, which avoid interest-based income and screen out certain businesses. Sharia-compliant pension plans and funds exist in many markets, usually reviewed by a Sharia board. They still carry market risk, and the same habits apply: regular saving, diversification and low costs.</p>',
-          '<p>يريد بعض المدّخرين خيارات تتبع مبادئ <strong>التمويل الإسلامي</strong>، التي تتجنب الدخل القائم على الفائدة وتستبعد أنشطة تجارية معينة. وتوجد خطط تقاعد وصناديق متوافقة مع الشريعة في أسواق كثيرة، تراجعها عادةً هيئة شرعية. وهي تحمل مخاطر السوق أيضًا، وتنطبق عليها العادات نفسها: الادخار المنتظم والتنويع والتكاليف المنخفضة.</p>',
+          '<p>The trade-offs: one path is set for everyone born around the same year, fees differ from fund to fund, and the mix inside is worth reading. Some savers want options that follow <strong>Islamic finance</strong> principles; Sharia-compliant plans exist in many markets, still carry market risk, and the same habits apply.</p>',
+          '<p>المفاضلات: مسار واحد يُحدد لكل من وُلدوا في السنوات نفسها تقريبًا، والرسوم تختلف من صندوق لآخر، والمزيج الذي بداخله يستحق القراءة. ويريد بعض المدّخرين خيارات تتبع مبادئ <strong>التمويل الإسلامي</strong>؛ والخطط المتوافقة مع الشريعة موجودة في أسواق كثيرة، وتحمل مخاطر السوق أيضًا، وتنطبق عليها العادات نفسها.</p>',
         )),
         keyIdea(L(
           '<p>A lifecycle mix takes <strong>more risk early and less near the end</strong>, matching risk to the time left.</p>',
@@ -302,16 +360,36 @@ export const retirement: Module = {
       time: L('6 min', '6 دقائق'),
       blocks: [
         html(L(
-          '<p>Retirement can last 25 or 30 years, and <strong>inflation</strong> keeps working the whole time. At 3% a year, prices double in about 24 years, so an income that feels comfortable at 65 buys about half as much at 89. Retirement money usually needs to keep some growth, not just sit in cash.</p>',
-          '<p>قد يمتد التقاعد 25 أو 30 سنة، ويواصل <strong>التضخم</strong> عمله طوال الوقت. بتضخم 3% سنويًا تتضاعف الأسعار في نحو 24 سنة، فالدخل الذي يبدو مريحًا في سن 65 يشتري نحو نصف ذلك في سن 89. لذا يحتاج مال التقاعد عادةً إلى بعض النمو، لا أن يبقى نقدًا فقط.</p>',
+          '<p>Jump ahead: Noor is 65 and retiring. She works out that her life costs <strong>20,000</strong> a year. Retirement could last 25 years or more, and prices keep rising about 3% a year the whole time. She wants to know what the same life will cost when she is 89.</p>',
+          '<p>لننتقل إلى المستقبل: نور في الخامسة والستين وتتقاعد. حسبت أن حياتها تكلّف <strong>20,000</strong> سنويًا. وقد يمتد التقاعد 25 سنة أو أكثر، والأسعار ترتفع نحو 3% سنويًا طوال الوقت. وتريد أن تعرف كم ستكلّف الحياة نفسها عندما تبلغ 89.</p>',
         )),
+        predict(
+          L('At 3% inflation, what does Noor’s year cost at 89?', 'بتضخم 3%، كم تكلّف سنة نور في سن 89؟'),
+          [L('About 20,600', 'نحو 20,600'), L('About 30,000', 'نحو 30,000'), L('About 40,000', 'نحو 40,000'), L('About 60,000', 'نحو 60,000')],
+          2,
+          L(
+            'About 40,700. By the rule of 72, prices double in about 24 years. Retirement money usually needs to keep some growth, not just sit in cash. (Illustrative figures.)',
+            'نحو 40,700. بقاعدة 72، تتضاعف الأسعار في نحو 24 سنة. لذا يحتاج مال التقاعد عادةً إلى بعض النمو، لا أن يبقى نقدًا فقط. (أرقام توضيحية.)',
+          ),
+        ),
         html(L(
-          '<p>The <strong>4% rule</strong> is a rough illustration from studies of past US markets: take 4% of savings in the first year, then the same amount raised with inflation each year, and in most past periods the money lasted 30 years. With 500,000, that is 20,000 in year one. Flipped around, it suggests a pot of about 25 times yearly spending.</p>',
-          '<p><strong>قاعدة 4%</strong> توضيح تقريبي مستخلص من دراسات لأسواق الولايات المتحدة في الماضي: اسحب 4% من المدخرات في السنة الأولى، ثم المبلغ نفسه مرفوعًا مع التضخم كل عام، وفي معظم الفترات السابقة دام المال 30 سنة. مع 500,000، يعني ذلك 20,000 في السنة الأولى. وبعكسها، تشير إلى رصيد يقارب 25 ضعف الإنفاق السنوي.</p>',
+          '<p><strong>Inflation</strong> keeps working through retirement: an income that feels comfortable at 65 buys about half as much at 89. That is why most retirement plans keep part of the money invested for growth, even after the paychecks stop.</p>',
+          '<p><strong>التضخم</strong> يواصل عمله طوال التقاعد: الدخل الذي يبدو مريحًا في سن 65 يشتري نحو نصف ذلك في سن 89. لهذا تُبقي معظم خطط التقاعد جزءًا من المال مستثمرًا من أجل النمو، حتى بعد توقف الرواتب.</p>',
+        )),
+        diagram({
+          fig: L('Illustration', 'توضيح'),
+          title: L('The same year of life, getting dearer', 'السنة نفسها من الحياة وهي تغلو'),
+          src: '/diagrams/drawdown.svg',
+          alt: L('The same year of spending costs 20,000 at 65, about 26,900 at 75 and about 40,700 at 89, at 3% inflation.', 'السنة نفسها من الإنفاق تكلّف 20,000 في سن 65، ونحو 26,900 في سن 75، ونحو 40,700 في سن 89، بتضخم 3%.'),
+          caption: L('Age. Illustrative figures at 3% inflation a year.', 'العمر. أرقام توضيحية بتضخم 3% سنويًا.'),
+        }),
+        html(L(
+          '<p>The <strong>4% rule</strong> is a rough illustration from studies of past US markets: take 4% of savings in the first year, then the same amount raised with inflation each year, and in most past periods the money lasted 30 years. For Noor’s 20,000, that means a pot of about 500,000: 25 times her yearly spending.</p>',
+          '<p><strong>قاعدة 4%</strong> توضيح تقريبي مستخلص من دراسات لأسواق الولايات المتحدة في الماضي: اسحب 4% من المدخرات في السنة الأولى، ثم المبلغ نفسه مرفوعًا مع التضخم كل عام، وفي معظم الفترات السابقة دام المال 30 سنة. ولـ20,000 التي تحتاجها نور، يعني ذلك رصيدًا يقارب 500,000: أي 25 ضعف إنفاقها السنوي.</p>',
         )),
         box('mistake', L('Common mistake', 'خطأ شائع'), L(
-          'Treating the 4% rule as a promise. Future returns, fees, taxes and how long you live can all differ from the past, so it works as a first rough estimate for planning, not as a guarantee that the money will last.',
-          'اعتبار قاعدة 4% وعدًا. العوائد والرسوم والضرائب في المستقبل، وطول العمر، قد تختلف كلها عن الماضي، لذا تصلح القاعدة تقديرًا أوليًا تقريبيًا للتخطيط، لا ضمانًا بأن المال سيدوم.',
+          'Treating the 4% rule as a promise. Future returns, fees, taxes and how long you live can all differ from the past, so it is a first rough estimate, not a guarantee that the money will last.',
+          'اعتبار قاعدة 4% وعدًا. العوائد والرسوم والضرائب في المستقبل، وطول العمر، قد تختلف كلها عن الماضي، لذا هي تقدير أولي تقريبي، لا ضمان بأن المال سيدوم.',
         )),
         keyIdea(L(
           '<p>Plan for a <strong>long retirement with rising prices</strong>; the 4% rule is a rough guide, not a guarantee.</p>',
@@ -336,8 +414,8 @@ export const retirement: Module = {
       nav: L('Auto-invest', 'الاستثمار التلقائي'),
       title: L('Practice: pay yourself first, automatically', 'تدريب: ادفع لنفسك أولًا، تلقائيًا'),
       standfirst: L(
-        'Set a fixed amount to invest every month without lifting a finger.',
-        'حدّد مبلغًا ثابتًا يُستثمر كل شهر دون أن تحرّك إصبعًا.',
+        'Do what Karim did: set a fixed amount to invest every month, without lifting a finger.',
+        'افعل ما فعله كريم: حدّد مبلغًا ثابتًا يُستثمر كل شهر، دون أن تحرّك إصبعًا.',
       ),
       time: L('3 min', '3 دقائق'),
       blocks: [
