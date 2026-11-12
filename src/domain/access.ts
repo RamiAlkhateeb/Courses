@@ -1,7 +1,7 @@
 // What a guest (not signed in, with accounts available) may open. Pure: the screens and the tests share it.
 
 /** Guests get this many lessons, in path order, before they need a free account. */
-export const FREE_LESSONS = 3
+export const FREE_LESSONS = 5
 
 /** `module/lesson` keys of a course's lessons in path order, from its chapters. */
 export const lessonOrder = (chapters: { id: string; lessons: { id: string }[] }[]) => chapters.flatMap((c) => c.lessons.map((l) => `${c.id}/${l.id}`))

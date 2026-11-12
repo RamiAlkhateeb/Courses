@@ -1051,3 +1051,46 @@ button.holding {
   gap: 12px;
   padding: 0 12px 12px;
 }
+
+/* ---------- This week's challenge ---------- */
+.challenge {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  margin-block-end: 12px;
+}
+.challengeKicker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--blue-text);
+}
+.challengeTitle {
+  margin: 0;
+  font-size: var(--title-small);
+  color: var(--indigo);
+}
+.challengeNote {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+.challengeMet {
+  color: var(--correct);
+}
+.challengeOpen {
+  color: var(--indigo);
+}
+.challengeEnds {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+}

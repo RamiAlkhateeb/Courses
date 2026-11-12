@@ -40,12 +40,16 @@ test('Learn shows a Log in button while signed out, and it goes away once signed
   await expect(page.getByRole('link', { name: 'Log in' })).toHaveCount(0)
 })
 
-test('guests get the first three lessons; the rest and the unit reviews ask for an account', async ({ page }) => {
+test('guests get the first five lessons, up to the first buy; the rest and the unit reviews ask for an account', async ({ page }) => {
   await fakeSupabase(page)
   await onboarded(page)
   await page.goto('./')
   await expect(page.getByRole('link', { name: /Sign up to unlock/ }).first()).toBeVisible()
   await page.goto('course/investing/basics/learn/why')
+  await expect(page.getByRole('heading', { name: 'Create a free account to keep learning' })).toHaveCount(0)
+  // The fifth lesson, the first buy in the simulator, is still free
+  await page.goto('course/investing/basics/learn/practice-first-buy')
+  await expect(page.getByRole('progressbar', { name: 'Lesson progress' })).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Create a free account to keep learning' })).toHaveCount(0)
   await page.goto('course/investing/asset-classes/learn/stocks')
   await expect(page.getByRole('heading', { name: 'Create a free account to keep learning' })).toBeVisible()

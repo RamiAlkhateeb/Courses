@@ -5,7 +5,7 @@ import { completeLesson, doubleToday, finishedOn, parseProgress, payoutFor } fro
 import { emptyPlayground } from '../src/domain/playground/engine'
 import { mergeProgress } from '../src/domain/sync'
 
-const none: BadgeFacts = { lessons: 0, bestStreak: 0, perfect: 0, unitsDone: 0, courseDone: false, chestOpened: false, firstBuy: false, firstPayout: false, seasonDone: false, goalMet: false }
+const none: BadgeFacts = { lessons: 0, bestStreak: 0, perfect: 0, unitsDone: 0, courseDone: false, chestOpened: false, firstBuy: false, firstPayout: false, seasonDone: false, goalMet: false, challengeMet: false }
 
 describe('badges', () => {
   it('have unique ids, and nothing is earned at the start', () => {
@@ -40,7 +40,7 @@ describe('badges', () => {
   })
 
   it('read simulator firsts from the season', () => {
-    expect(playgroundFacts(emptyPlayground)).toEqual({ firstBuy: false, firstPayout: false, seasonDone: false, goalMet: false })
+    expect(playgroundFacts(emptyPlayground)).toEqual({ firstBuy: false, firstPayout: false, seasonDone: false, goalMet: false, challengeMet: false })
     expect(playgroundFacts({ ...emptyPlayground, season: 2 })).toMatchObject({ firstBuy: true, seasonDone: true })
     expect(playgroundFacts({ ...emptyPlayground, income: 3 }).firstPayout).toBe(true)
   })

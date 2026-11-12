@@ -4,6 +4,7 @@
 import type { Progress } from './progress'
 import type { PlaygroundState } from './playground/engine'
 import { goalStatus } from './playground/insights'
+import { challengeMet } from './playground/challenges'
 
 /** What the badges look at. */
 export interface BadgeFacts {
@@ -24,6 +25,8 @@ export interface BadgeFacts {
   seasonDone: boolean
   /** A finished season met the goal set for it */
   goalMet: boolean
+  /** A finished simulated year met its weekly challenge (src/domain/playground/challenges.ts) */
+  challengeMet: boolean
 }
 
 export type BadgeIcon = 'sprout' | 'book' | 'flame' | 'star' | 'flag' | 'gem' | 'chest' | 'trend' | 'coins' | 'chart' | 'shield'
@@ -52,6 +55,7 @@ export const BADGES: Badge[] = [
   { id: 'goal-met', icon: 'shield', earned: (f) => f.goalMet },
   { id: 'streak-30', icon: 'flame', earned: (f) => f.bestStreak >= 30 },
   { id: 'course', icon: 'gem', earned: (f) => f.courseDone },
+  { id: 'challenge', icon: 'flag', earned: (f) => f.challengeMet },
 ]
 
 /** The learning facts progress alone can tell (the rest default to "not yet"). */
@@ -88,12 +92,13 @@ export function unitFacts(units: string[][], lessonsDone: string[]): Pick<BadgeF
 }
 
 /** Simulator firsts. A later season means an earlier one ran to the end. */
-export function playgroundFacts(s: PlaygroundState): Pick<BadgeFacts, 'firstBuy' | 'firstPayout' | 'seasonDone' | 'goalMet'> {
+export function playgroundFacts(s: PlaygroundState): Pick<BadgeFacts, 'firstBuy' | 'firstPayout' | 'seasonDone' | 'goalMet' | 'challengeMet'> {
   const ended = s.status === 'ended'
   return {
     firstBuy: s.trades.length > 0 || s.season > 1,
     firstPayout: s.income > 0,
     seasonDone: ended || s.season > 1,
     goalMet: ended && goalStatus(s)?.met === true,
+    challengeMet: challengeMet(s),
   }
 }

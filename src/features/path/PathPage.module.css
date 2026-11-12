@@ -386,3 +386,73 @@
 .upDouble svg {
   color: var(--streak);
 }
+
+/* ---------- While you were away ---------- */
+.away {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  padding-inline-end: 44px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  color: var(--indigo);
+}
+.awayGuide {
+  flex-shrink: 0;
+}
+.awayText {
+  display: grid;
+  gap: 6px;
+  justify-items: start;
+  min-inline-size: 0;
+}
+.awayText h2 {
+  margin: 0;
+  font-size: var(--title-small);
+}
+.awayText p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+.awayText ul {
+  margin: 0 0 6px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 4px;
+  font-size: 0.875rem;
+}
+.awayText li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.awayClose {
+  position: absolute;
+  inset-block-start: 8px;
+  inset-inline-end: 8px;
+  display: grid;
+  place-items: center;
+  inline-size: 36px;
+  block-size: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.awayClose:focus-visible {
+  outline: 3px solid var(--blue);
+}
+.newDot {
+  inline-size: 10px;
+  block-size: 10px;
+  border-radius: 50%;
+  background: var(--streak);
+  flex-shrink: 0;
+}
