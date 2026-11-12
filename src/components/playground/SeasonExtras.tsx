@@ -13,8 +13,10 @@ import { assetName } from './shared'
 import styles from './Playground.module.css'
 
 /** The goal's sentence, with its numbers (shared by the card and the season summary). */
-export function goalText(t: ReturnType<typeof useTranslation>['t'], goal: GoalId) {
-  return t(`pg_goal_${goal}` as 'pg_goal_steady', { pct: Math.round(GOALS.steadyMaxFall * 100), amount: moneyText(GOALS.incomeTarget) })
+export function goalText(t: ReturnType<typeof useTranslation>['t'], goal: GoalId): string {
+  // A plain signature: the full key union makes TypeScript give up on the generic t() here
+  const tr = t as unknown as (key: string, options: Record<string, unknown>) => string
+  return tr(`pg_goal_${goal}`, { pct: Math.round(GOALS.steadyMaxFall * 100), amount: moneyText(GOALS.incomeTarget) })
 }
 
 /** Season goal: pick one of three habits to practise; the card then says whether it is on track. */

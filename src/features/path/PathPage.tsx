@@ -7,6 +7,12 @@ import { practiceHref } from '../../content/courses'
 import { useLocalized } from '../../content/useLocalized'
 import { currentStreak, doubleToday, dueQuestions, localDay, streakAtRisk } from '../../domain/progress'
 import { TodayCard } from './TodayCard'
+import { lazy, Suspense, useEffect } from 'react'
+import { snapshotOf, somethingNew } from '../../domain/playground/away'
+import { pendingRecap } from '../../domain/playground/recap'
+// Shown at most once a day, so it loads on its own, after the first screen
+const AwayCard = lazy(() => import('./AwayCard').then((m) => ({ default: m.AwayCard })))
+import { awayStore } from '../../state/away'
 import { learnHref, lessonMinutes, type Lesson } from '../../domain/lessons'
 import { useAuth } from '../../state/auth'
 import { canOpenLesson, canOpenPractice, FREE_LESSONS, lessonOrder } from '../../domain/access'
@@ -43,6 +49,13 @@ export function PathPage() {
   const nextGated = !!next && gated(next.mod.id, next.lesson.id)
   const pg = useStore(playgroundStore)
   const showPortfolio = portfolioOpen(pg, progress.lessonsDone)
+  // Unread news or a yearly recap waiting on the portfolio: the row gets a dot
+  const newThere = somethingNew(pg, pendingRecap(pg) !== null)
+  // The first look at a running season starts the "while you were away" clock
+  useEffect(() => {
+    const snap = awayStore.get()
+    if (pg.status === 'running' && (!snap || snap.season !== pg.season)) awayStore.update(() => snapshotOf(pg, ''))
+  }, [pg.status, pg.season])
   const pgGain = gain(pg)
   const today = localDay()
   const toReview = loaded ? dueQuestions(chapters.flatMap((c) => c.mod?.questions.map((q) => q.id) ?? []), progress, today).length : 0
@@ -138,6 +151,13 @@ export function PathPage() {
         </div>
       )}
 
+      {/* While you were away: what the simulator did since the player last looked (at most once a day) */}
+      {showPortfolio && (
+        <Suspense fallback={null}>
+          <AwayCard />
+        </Suspense>
+      )}
+
       {/* Today: the daily goal, three quests and the chest (once there is something to learn) */}
       {loaded && chapters.length > 0 && <TodayCard portfolio={showPortfolio} />}
 
@@ -149,10 +169,12 @@ export function PathPage() {
           </span>
           <span className={styles.rowText}>
             <strong>{t('portfolio_title')}</strong>
-            <small>{pg.status === 'idle' ? t('portfolio_idle') : t('portfolio_live')}</small>
+            <small>{pg.status === 'idle' ? t('portfolio_idle') : newThere ? t('portfolio_new') : t('portfolio_live')}</small>
           </span>
+          {newThere && <span className={styles.newDot} aria-hidden />}
           <span className={styles.portfolioValue}>
-            <Money amount={netWorth(pg)} />
+            {/* Between seasons the play money waits in the bank: show it, not an empty $0 portfolio */}
+            <Money amount={pg.status === 'idle' ? progress.bank : netWorth(pg)} />
             {pg.status !== 'idle' && pg.funded > 0 && <Change percent={(pgGain / pg.funded) * 100} />}
           </span>
         </Link>
