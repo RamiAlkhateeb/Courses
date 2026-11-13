@@ -1,12 +1,16 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import type { ReactNode } from 'react'
 import { Logo } from '../../components/Logo'
 import { CourseSwitcher } from '../../components/CourseSwitcher'
 import { Money } from '../../components/Money'
 import { Bush, Mound, Sprout, Tree } from '../../components/GardenArt'
 import type { ParseKeys } from 'i18next'
-import { Card, Coin, Icon, ProgressBar, buttonClass, type IconName } from '../../components/ui'
+import { Button, Card, Coin, Icon, ProgressBar, TextField, buttonClass, type IconName } from '../../components/ui'
+import { Sheet } from '../../components/SettingsList'
+import { learnHref } from '../../domain/lessons'
+import { cleanName } from '../../domain/auth'
+import { updateProfile } from '../../state/profile'
+import { useState, type FormEvent, type ReactNode } from 'react'
 import { badgeShelf } from '../../domain/badges'
 import { useAwardBadges } from '../../state/useBadges'
 import { levelFor, levelPoints } from '../../domain/levels'
@@ -39,9 +43,12 @@ export function MePage() {
   const tc = useLocalized()
   const { progress } = useProgress()
   const wallet = useWallet()
-  const { minutes } = useProfile()
+  const { minutes, name: localName } = useProfile()
+  const [editingName, setEditingName] = useState(false)
   const streak = currentStreak(progress.streak, localDay(), progress.freezes)
-  const { course, totalLessons, doneLessons } = useTrail(useTrailId())
+  const { course, totalLessons, doneLessons, next } = useTrail(useTrailId())
+  // A first visit: nothing learned yet, so the numbers would all be zero. A welcome card takes their place.
+  const firstTime = progress.lessonsDone.length === 0 && Object.keys(progress.activity).length === 0
   const auth = useAuth()
   const guest = accountsEnabled && auth.status === 'signedOut'
   const signedIn = accountsEnabled && auth.status === 'signedIn' ? auth.user : null
@@ -56,7 +63,8 @@ export function MePage() {
   const stats: { icon?: IconName; value: ReactNode; label: string }[] = [
     { icon: 'flame', value: String(streak), label: t('dayStreak') },
     { value: <Money amount={wallet} />, label: t('playMoneyShort') },
-    { icon: 'check', value: String(progress.lessonsDone.length), label: t('lessonsDoneShort') },
+    // Lessons done in the active course (the garden counts the same ones)
+    { icon: 'check', value: String(doneLessons), label: t('lessonsDoneShort') },
   ]
   // The level (from lessons and right answers) and the badges, which stay once earned (any still waiting are saved here)
   useAwardBadges()
@@ -66,14 +74,32 @@ export function MePage() {
   const dateFmt = new Intl.DateTimeFormat(i18n.language === 'ar' ? 'ar-u-nu-latn' : 'en', { dateStyle: 'medium' })
   const dayText = (day: string) => dateFmt.format(new Date(`${day}T12:00:00`))
 
+  // An account's name, else the name typed here; with neither, an "Add your name" button (the guest banner below
+  // offers the account)
+  const shownName = signedIn ? signedIn.name || signedIn.email : localName
+
   return (
     <div className={styles.page}>
+      {editingName && <NameSheet initial={localName ?? ''} onClose={() => setEditingName(false)} />}
       <header className={styles.head}>
         <span className={styles.avatar} aria-hidden>
           <Logo size={64} />
         </span>
         <div className={styles.who}>
-          <h1>{signedIn ? signedIn.name || signedIn.email : guest ? t('me_guest') : t('meName')}</h1>
+          {shownName ? (
+            <h1>
+              {shownName}
+              {!signedIn && localName && (
+                <button type="button" className={styles.editName} aria-label={t('me_edit_name')} onClick={() => setEditingName(true)}>
+                  {t('me_edit')}
+                </button>
+              )}
+            </h1>
+          ) : (
+            <Button size="sm" variant="secondary" onClick={() => setEditingName(true)}>
+              {t('me_add_name')}
+            </Button>
+          )}
           <p>{guest ? t('me_guest_sub') : t('walkingTrail', { trail: tc(course.title) })}</p>
         </div>
         <Link to="/settings" className={styles.gear} aria-label={t('settings')}>
@@ -82,6 +108,19 @@ export function MePage() {
       </header>
       <CourseSwitcher className={styles.switcher} />
 
+      {firstTime && (
+        <Card tone="indigo" className={styles.first}>
+          <h2>{t('me_first_title')}</h2>
+          <p>{t('me_first_sub')}</p>
+          {next && (
+            <Link to={learnHref(course.id, next.mod.id, next.lesson.id)} className={buttonClass({ variant: 'white', size: 'sm' })}>
+              {t('me_first_cta')}
+            </Link>
+          )}
+        </Card>
+      )}
+
+      {!firstTime && (
       <div className={styles.stats}>
         {stats.map((s) => (
           <Card key={s.label} className={styles.stat}>
@@ -91,6 +130,7 @@ export function MePage() {
           </Card>
         ))}
       </div>
+      )}
 
       {progress.freezes > 0 && (
         <p className={styles.freeze}>
@@ -113,6 +153,7 @@ export function MePage() {
         </Card>
       )}
 
+      {!firstTime && (
       <Card className={styles.week}>
         <p className={styles.weekHead}>
           <strong>{t('thisWeekTitle')}</strong>
@@ -136,6 +177,7 @@ export function MePage() {
           )}
         </ul>
       </Card>
+      )}
 
       <h2 className={styles.kicker}>{t('yourGarden')}</h2>
       <Card tone="mint" className={styles.garden}>
@@ -191,5 +233,25 @@ export function MePage() {
         ))}
       </ul>
     </div>
+  )
+}
+
+/** Add or change the name shown on Me and on certificates (this device, and the account's profile when signed in). */
+function NameSheet({ initial, onClose }: { initial: string; onClose: () => void }) {
+  const { t } = useTranslation()
+  const [name, setName] = useState(initial)
+  function save(e: FormEvent) {
+    e.preventDefault()
+    const clean = cleanName(name)
+    updateProfile({ name: clean || undefined })
+    onClose()
+  }
+  return (
+    <Sheet title={initial ? t('me_edit_name') : t('me_add_name')} onClose={onClose}>
+      <form className={styles.nameForm} onSubmit={save} noValidate>
+        <TextField label={t('me_name_label')} icon="user" autoComplete="name" autoFocus maxLength={60} value={name} onChange={(e) => setName(e.target.value)} message={t('me_name_hint')} />
+        <Button type="submit">{t('acc_save')}</Button>
+      </form>
+    </Sheet>
   )
 }

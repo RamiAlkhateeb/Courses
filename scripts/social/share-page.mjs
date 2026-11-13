@@ -25,7 +25,8 @@ export function flags(args) {
 /** Builds the app (unless `build` is false), serves it, and opens Chromium. `close()` stops both. */
 export async function startPreview({ build = true, port = 4174 } = {}) {
   // The same build environment as the e2e web server, so the base path is /Courses/
-  const env = { ...process.env, GITHUB_PAGES: 'true', GITHUB_REPOSITORY: 'owner/Courses' }
+  // Built without accounts (blank Supabase variables win over a local .env), so no lesson is behind the guest gate
+  const env = { ...process.env, GITHUB_PAGES: 'true', GITHUB_REPOSITORY: 'owner/Courses', VITE_SUPABASE_URL: '', VITE_SUPABASE_ANON_KEY: '' }
   const base = `http://localhost:${port}/Courses/`
   if (build) {
     console.log('building…')

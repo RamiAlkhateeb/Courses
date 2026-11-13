@@ -1,4 +1,4 @@
-import { completeLesson, localDay, markRead, recordAnswer, recordReview, visitPortfolio } from '../domain/progress'
+import { completeLesson, localDay, recordAnswer, recordReview, visitPortfolio } from '../domain/progress'
 import { claimChest } from '../domain/quests'
 import { progressStore } from './progress'
 import { useStore } from './useStore'
@@ -19,7 +19,6 @@ export function useProgress() {
     visitPortfolio: () => update((p) => visitPortfolio(p, localDay())),
     /** Open today's chest (every quest done): pays its play money once. `ctx` is what the quests depend on. */
     claimChest: (ctx: { portfolio: boolean; goalSeconds: number }) => update((p) => claimChest(p, localDay(), ctx)),
-    markRead: (moduleKey: string, sectionId: string) => update((p) => markRead(p, moduleKey, sectionId)),
     reset,
   }
 }

@@ -153,7 +153,7 @@ Routes live in `src/app/router.tsx`. Every route except the shells and Learn is 
 - **On the last step**, `completeLesson` (`src/domain/progress.ts`, called through `useProgress`) runs:
   - adds $10 per right answer to the bank, but only on the first finish of that lesson (replays pay nothing);
   - updates the streak (spending streak freezes for missed days) and earns a freeze for a perfect first finish;
-  - adds the key `course/module/lessonId` to `lessonsDone` and sets `lastLesson`;
+  - adds the key `course/module/lessonId` to `lessonsDone` and keeps the day it was first finished in `completed`;
   - adds the day's earnings to `activity`, the run's seconds (capped at 20 minutes) to `time`, and the day's
     lessons and perfect lessons to `daily` (the quests' counters); keeps `bestStreak`.
 - **Leaving and coming back** carries on from the same step: a first run saves its step and answers in

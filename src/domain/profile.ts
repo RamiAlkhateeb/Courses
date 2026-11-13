@@ -10,7 +10,12 @@ export interface Profile {
   trail?: string
   /** Daily time goal in minutes */
   minutes: number
+  /** The learner's name, as they typed it on Me (shown on Me and on certificates; an account's own name wins) */
+  name?: string
 }
+
+/** Longest name kept */
+export const NAME_MAX = 60
 
 /** A first-time visitor. Also what unreadable saved text parses to. */
 export const emptyProfile: Profile = { onboarded: false, minutes: 10 }
@@ -24,6 +29,7 @@ export function parseProfile(raw: string | null): Profile {
       minutes: typeof d.minutes === 'number' && d.minutes > 0 ? d.minutes : 10,
       ...(typeof d.goal === 'string' ? { goal: d.goal } : {}),
       ...(typeof d.trail === 'string' ? { trail: d.trail } : {}),
+      ...(typeof d.name === 'string' && d.name.trim() ? { name: d.name.trim().slice(0, NAME_MAX) } : {}),
     }
   } catch {
     return emptyProfile
