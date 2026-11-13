@@ -9,6 +9,7 @@ import { useLocalized } from '../../content/useLocalized'
 import { useAuth } from '../../state/auth'
 import { useTrail } from '../../state/useTrail'
 import { useProgress } from '../../state/useProgress'
+import { useProfile } from '../../state/profile'
 import { finishedOn } from '../../domain/progress'
 import { lessonKey } from '../../domain/lessons'
 import styles from './CertificatePage.module.css'
@@ -32,6 +33,7 @@ function Certificate({ courseId, moduleId }: { courseId: string; moduleId: strin
   const auth = useAuth()
   const { course, chapters, loaded } = useTrail(courseId)
   const { progress } = useProgress()
+  const { name: localName } = useProfile()
   const svg = useRef<SVGSVGElement>(null)
   const [note, setNote] = useState('')
   const whole = !moduleId
@@ -60,7 +62,7 @@ function Certificate({ courseId, moduleId }: { courseId: string; moduleId: strin
     )
   }
 
-  const name = auth.status === 'signedIn' && auth.user ? auth.user.name || auth.user.email : t('cert_learner')
+  const name = (auth.status === 'signedIn' && auth.user ? auth.user.name || auth.user.email : localName) || t('cert_learner')
   // The day the last of these lessons was first finished (today for lessons finished before dates were kept)
   const day = finishedOn(progress, keys)
   const date = new Intl.DateTimeFormat(i18n.language === 'ar' ? 'ar-u-nu-latn' : 'en', { dateStyle: 'long' }).format(day ? new Date(`${day}T12:00:00`) : new Date())

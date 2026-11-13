@@ -6,6 +6,11 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperti
 import { useParams, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { getCourse } from '../content/courses'
+import { canOpenLesson, lessonOrder } from '../domain/access'
+import { DEFAULT_TRAIL } from '../domain/profile'
+import { useGuestLimited } from '../state/useAccess'
+import { useTrail } from '../state/useTrail'
+import { LessonGate } from '../features/lesson/LessonGate'
 import type { Localized } from '../content/types'
 import { useLocalized } from '../content/useLocalized'
 import { useModule } from '../content/useModule'
@@ -55,6 +60,18 @@ export function SharePage() {
     else void load().then(setPost, () => setPost(null))
   }, [courseId, moduleId, lessonId])
 
+  // Slides of a lesson a guest can't open yet stay behind the same sign-up gate as the lesson (quiz answers included)
+  const guest = useGuestLimited()
+  const { chapters, loaded } = useTrail(getCourse(courseId) ? courseId! : DEFAULT_TRAIL)
+  // Slides are for sharing as pictures, not for search results
+  useEffect(() => {
+    const meta = document.createElement('meta')
+    meta.name = 'robots'
+    meta.content = 'noindex'
+    document.head.appendChild(meta)
+    return () => meta.remove()
+  }, [])
+
   const lessons = useMemo(() => (mod ? lessonsFor(mod) : []), [mod])
   const at = lessons.findIndex((l) => l.id === lessonId)
   const quiz = search.get('quiz') === '1' // the questions and answers too (left out of posts by default)
@@ -62,6 +79,10 @@ export function SharePage() {
 
   if (notFound || !getCourse(courseId) || (mod && at === -1)) return <p data-share-error="not-found">Not found</p>
   if (loading || !mod || !langReady || post === undefined) return null
+  if (guest) {
+    if (!loaded) return null
+    if (!canOpenLesson(lessonOrder(chapters), moduleId!, lessonId!, true)) return <LessonGate />
+  }
   const n = Math.min(Math.max(1, Number(search.get('slide')) || 1), slides.length)
   const lang = i18n.language === 'ar' ? 'ar' : 'en'
   return (

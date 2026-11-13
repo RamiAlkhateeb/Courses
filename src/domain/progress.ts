@@ -14,8 +14,6 @@ export interface Streak {
 export interface Progress {
   /** questionId -> the option the reader picked on their latest check */
   answers: Record<string, { selected: number; correct: boolean }>
-  /** `${courseId}/${moduleId}` -> section ids scrolled into view */
-  sectionsRead: Record<string, string[]>
   /** The play-money bank: starts at START_BANK and grows by lesson payouts (src/domain/money.ts) */
   bank: number
   streak: Streak
@@ -23,8 +21,6 @@ export interface Progress {
   boxes: Record<string, number>
   /** `${courseId}/${moduleId}/${lessonId}` of every finished roadmap lesson (see src/domain/lessons.ts) */
   lessonsDone: string[]
-  /** Key of the roadmap lesson finished most recently: Home's "Continue" starts from the lesson after it */
-  lastLesson?: string
   /** Dollars earned per local day ('YYYY-MM-DD'), last ACTIVITY_DAYS days: the week strips. A day with a finished
    *  lesson is present even when it paid nothing (a replay). */
   activity: Record<string, number>
@@ -70,7 +66,6 @@ export const dailyFor = (p: Progress, today: string): Daily => (p.daily.day === 
 /** Nothing learned yet. Also what unreadable saved text parses to. */
 export const emptyProgress: Progress = {
   answers: {},
-  sectionsRead: {},
   bank: START_BANK,
   streak: { count: 0, lastDay: '' },
   boxes: {},
@@ -120,7 +115,6 @@ export function parseProgress(raw: string | null): Progress {
     const streak: Record<string, unknown> = isRecord(data.streak) ? data.streak : {}
     return {
       answers,
-      sectionsRead: isRecord(data.sectionsRead) ? (data.sectionsRead as Progress['sectionsRead']) : {},
       bank,
       streak: {
         count: typeof streak.count === 'number' ? streak.count : 0,
@@ -128,7 +122,6 @@ export function parseProgress(raw: string | null): Progress {
       },
       boxes: isRecord(data.boxes) ? (data.boxes as Progress['boxes']) : {},
       lessonsDone: Array.isArray(data.lessonsDone) ? data.lessonsDone.filter((k) => typeof k === 'string') : [],
-      ...(typeof data.lastLesson === 'string' ? { lastLesson: data.lastLesson } : {}),
       activity: isRecord(data.activity) ? (data.activity as Progress['activity']) : {},
       perfect: typeof data.perfect === 'number' && data.perfect > 0 ? Math.floor(data.perfect) : 0,
       freezes: typeof data.freezes === 'number' && data.freezes > 0 ? Math.min(MAX_FREEZES, Math.floor(data.freezes)) : 0,
@@ -149,12 +142,6 @@ export const recordAnswer = (p: Progress, questionId: string, selected: number, 
   ...p,
   answers: { ...p.answers, [questionId]: { selected, correct } },
 })
-
-export function markRead(p: Progress, moduleKey: string, sectionId: string): Progress {
-  const read = p.sectionsRead[moduleKey] ?? []
-  if (read.includes(sectionId)) return p
-  return { ...p, sectionsRead: { ...p.sectionsRead, [moduleKey]: [...read, sectionId] } }
-}
 
 /** Local calendar day as 'YYYY-MM-DD' (the streak follows the reader's own midnight, not UTC). */
 export function localDay(date: Date = new Date()): string {
@@ -256,7 +243,6 @@ export function completeLesson(p: Progress, correct: number, today: string, less
     bank: p.bank + payout,
     streak,
     lessonsDone,
-    lastLesson: lessonKey ?? p.lastLesson,
     activity: addActivity(p.activity, today, payout),
     perfect: p.perfect + perfectNow,
     freezes: Math.min(MAX_FREEZES, p.freezes - spent + perfectNow),

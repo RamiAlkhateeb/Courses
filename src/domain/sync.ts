@@ -3,7 +3,7 @@
 // src/state/sync.ts.
 //
 // The rules, in one place:
-//  - Learning is additive: finished lessons, sections read and answers from both sides are kept; review boxes take
+//  - Learning is additive: finished lessons and answers from both sides are kept; review boxes take
 //    the higher box; the streak with the later day wins; per-day earnings take the larger value.
 //  - Money is not additive. The bank and the Playground are two halves of one wallet (moving $500 in lowers the
 //    bank and raises the Playground), so they are taken together from ONE side, the one saved more recently.
@@ -26,12 +26,10 @@ export function mergeProgress(local: Progress, remote: Progress, bankFrom: 'loca
   const newer = remote.streak.lastDay > local.streak.lastDay || (remote.streak.lastDay === local.streak.lastDay && remote.streak.count > local.streak.count) ? remote : local
   return {
     answers: mergeRecords(local.answers, remote.answers, (x, y) => (x.correct === y.correct ? y : x.correct ? x : y)), // a right answer outranks an older wrong one
-    sectionsRead: mergeRecords(local.sectionsRead, remote.sectionsRead, (x, y) => union(x, y)),
     bank: bankFrom === 'remote' ? remote.bank : local.bank,
     streak: newer.streak,
     boxes: mergeRecords(local.boxes, remote.boxes, (x, y) => Math.max(x, y)),
     lessonsDone: union(remote.lessonsDone, local.lessonsDone),
-    ...(newer.lastLesson ?? local.lastLesson ?? remote.lastLesson ? { lastLesson: newer.lastLesson ?? local.lastLesson ?? remote.lastLesson } : {}),
     activity: mergeRecords(local.activity, remote.activity, (x, y) => Math.max(x, y)),
     perfect: Math.max(local.perfect, remote.perfect),
     freezes: newer.freezes, // spent and earned together with the streak, so they come from the same side
@@ -70,7 +68,7 @@ export function signInPlan(owner: string | null, userId: string): 'merge' | 'rep
 }
 
 /** Has the learner done anything worth keeping? A pristine guest has nothing to lose or to upload. */
-export const progressIsEmpty = (p: Progress) => p.lessonsDone.length === 0 && Object.keys(p.answers).length === 0 && Object.keys(p.sectionsRead).length === 0
+export const progressIsEmpty = (p: Progress) => p.lessonsDone.length === 0 && Object.keys(p.answers).length === 0
 
 /** Preferences that follow the account: sound and language (news alerts stay per device: each browser asks its own
  *  permission). The newer side wins, like the profile. */

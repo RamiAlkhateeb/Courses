@@ -255,3 +255,42 @@
 .recap strong {
   color: var(--indigo);
 }
+
+/* The name: an Edit link beside it, a sheet to type it */
+.editName {
+  margin-inline-start: 8px;
+  padding: 2px 6px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--blue-text);
+  cursor: pointer;
+  vertical-align: middle;
+}
+.editName:focus-visible {
+  outline: 3px solid var(--blue);
+}
+.nameForm {
+  display: grid;
+  gap: 16px;
+}
+/* A first visit: one card instead of a row of zeros */
+.first {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  margin-block-end: 14px;
+}
+.first h2 {
+  margin: 0;
+  font-size: var(--title-small);
+  color: var(--on-indigo);
+}
+.first p {
+  margin: 0 0 4px;
+  font-size: 0.875rem;
+  color: var(--on-indigo-dim);
+}

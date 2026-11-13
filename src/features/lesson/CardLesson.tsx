@@ -78,7 +78,7 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
   const t = useLocalized()
   const { t: tUi } = useTranslation()
   const navigate = useNavigate()
-  const { progress, markRead, recordLessonAnswer, completeLesson } = useProgress()
+  const { progress, recordLessonAnswer, completeLesson } = useProgress()
   const wallet = useWallet()
   const { steps } = lesson
   const total = steps.filter((s) => s.kind === 'question').length
@@ -137,11 +137,9 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
   const retry = checked && !isCorrect && attempt === 0 // a wrong first try can be tried again
   const settled = checked && !retry // right, or the second try
 
-  // A content card counts its section as read, which keeps the one-page view's progress in step.
+  // Each step starts at the top of the screen
   useEffect(() => {
-    markRead(`${mod.courseId}/${mod.id}`, step.sectionId)
     window.scrollTo({ top: 0 })
-    // markRead is a fresh closure each render; only the card changing matters.
   }, [index])
 
   function check() {

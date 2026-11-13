@@ -6,7 +6,6 @@ import {
   daysBetween,
   payoutFor,
   localDay,
-  markRead,
   MAX_BOX,
   addActivity,
   mistakes,
@@ -17,7 +16,7 @@ import {
   emptyDaily,
 } from '../src/domain/progress'
 
-const EMPTY = { answers: {}, sectionsRead: {}, bank: 1000, streak: { count: 0, lastDay: '' }, boxes: {}, lessonsDone: [], activity: {}, perfect: 0, freezes: 0, time: {}, bestStreak: 0, due: {}, daily: emptyDaily, completed: {}, badges: {} }
+const EMPTY = { answers: {}, bank: 1000, streak: { count: 0, lastDay: '' }, boxes: {}, lessonsDone: [], activity: {}, perfect: 0, freezes: 0, time: {}, bestStreak: 0, due: {}, daily: emptyDaily, completed: {}, badges: {} }
 
 describe('progress store helpers', () => {
   it('parses missing or corrupt storage as empty progress', () => {
@@ -43,10 +42,10 @@ describe('progress store helpers', () => {
     expect(second.answers['net-q001']).toEqual({ selected: 0, correct: true })
   })
 
-  it('marks a section read once and returns the same object when nothing changes', () => {
-    const p = markRead(parseProgress(null), 'tech-interview/resume', 'template')
-    expect(markRead(p, 'tech-interview/resume', 'template')).toBe(p)
-    expect(markRead(p, 'tech-interview/resume', 'content').sectionsRead['tech-interview/resume']).toEqual(['template', 'content'])
+  it('drops fields that are no longer kept (sections read, the last lesson)', () => {
+    const p = parseProgress(JSON.stringify({ sectionsRead: { 'a/b': ['x'] }, lastLesson: 'a/b/c' }))
+    expect('sectionsRead' in p).toBe(false)
+    expect('lastLesson' in p).toBe(false)
   })
 })
 
@@ -118,10 +117,9 @@ describe('lesson helpers', () => {
 describe('dashboard data', () => {
   it('records the finished lesson and the day’s earnings', () => {
     const p = completeLesson(parseProgress(null), 2, '2026-10-08', 'tech-interview/resume/template')
-    expect(p.lastLesson).toBe('tech-interview/resume/template')
+    expect(p.lessonsDone).toEqual(['tech-interview/resume/template'])
     expect(p.activity).toEqual({ '2026-10-08': 20 })
     const practice = completeLesson(p, 1, '2026-10-08') // Practice: no lesson key, pays nothing
-    expect(practice.lastLesson).toBe('tech-interview/resume/template')
     expect(practice.activity['2026-10-08']).toBe(20)
     expect(completeLesson(parseProgress(null), 3, '2026-10-09').activity).toEqual({ '2026-10-09': 0 }) // the day still counts
   })
@@ -132,8 +130,7 @@ describe('dashboard data', () => {
   })
 
   it('parses saved progress without the dashboard fields', () => {
-    const p = parseProgress(JSON.stringify({ lastLesson: 3, activity: [] }))
-    expect(p.lastLesson).toBeUndefined()
+    const p = parseProgress(JSON.stringify({ activity: [] }))
     expect(p.activity).toEqual({})
   })
 

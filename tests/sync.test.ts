@@ -6,13 +6,11 @@ import { emptyProgress, type Progress } from '../src/domain/progress'
 const p = (over: Partial<Progress>): Progress => ({ ...emptyProgress, ...over })
 
 describe('merging progress from this device and the account', () => {
-  it('keeps every finished lesson and section from both sides', () => {
-    const local = p({ lessonsDone: ['a/b/1', 'a/b/2'], sectionsRead: { 'a/b': ['s1'] } })
-    const remote = p({ lessonsDone: ['a/b/2', 'a/b/3'], sectionsRead: { 'a/b': ['s2'], 'a/c': ['s1'] } })
+  it('keeps every finished lesson from both sides', () => {
+    const local = p({ lessonsDone: ['a/b/1', 'a/b/2'] })
+    const remote = p({ lessonsDone: ['a/b/2', 'a/b/3'] })
     const m = mergeProgress(local, remote, 'local')
     expect([...m.lessonsDone].sort()).toEqual(['a/b/1', 'a/b/2', 'a/b/3'])
-    expect(m.sectionsRead['a/b'].sort()).toEqual(['s1', 's2'])
-    expect(m.sectionsRead['a/c']).toEqual(['s1'])
   })
 
   it('takes the higher review box and the larger earnings for each day', () => {
@@ -44,12 +42,6 @@ describe('merging progress from this device and the account', () => {
     expect(mergeProgress(local, remote, 'remote').bank).toBe(1240)
   })
 
-  it('keeps a last lesson, preferring the side with the later streak day', () => {
-    const m = mergeProgress(p({ lastLesson: 'a/b/1', streak: { count: 1, lastDay: '2026-10-01' } }), p({ lastLesson: 'a/b/9', streak: { count: 1, lastDay: '2026-10-09' } }), 'local')
-    expect(m.lastLesson).toBe('a/b/9')
-    expect(mergeProgress(p({ lastLesson: 'a/b/1' }), p({}), 'local').lastLesson).toBe('a/b/1')
-    expect('lastLesson' in mergeProgress(p({}), p({}), 'local')).toBe(false)
-  })
 
   it('merging with nothing changes nothing, and merging twice is the same as once', () => {
     const x = p({ lessonsDone: ['a'], boxes: { q: 3 }, bank: 1100, activity: { d: 10 } })
