@@ -51,17 +51,28 @@ export const formatMoney = (amount: number, { sign = false, decimals = 0 }: { si
  *  such as "Buy $150" inside Arabic text). */
 export const moneyText = (amount: number, opts?: { sign?: boolean; decimals?: number }) => `\u2066${formatMoney(amount, opts)}\u2069`
 
+/** Set by pinLanguage: this page shows its own language, which is not the learner's choice and is never saved. */
+let pinned = false
+
+/** Show this page in `lng` without saving it as the learner's language, and stop following other tabs' choice. For pages
+ *  that pick their language from the URL (share slides, `?lang=`): opening an Arabic slide must not switch the app, or
+ *  the studio's other slides, to Arabic. */
+export function pinLanguage(lng: 'en' | 'ar') {
+  pinned = true
+  return i18n.changeLanguage(lng)
+}
+
 const applyDir = (lng: string) => {
   document.documentElement.lang = lng
   document.documentElement.dir = RTL_LANGS.includes(lng) ? 'rtl' : 'ltr'
   document.title = i18n.t('docTitle')
-  languageStore.update(() => (lng === 'ar' ? 'ar' : 'en'))
+  if (!pinned) languageStore.update(() => (lng === 'ar' ? 'ar' : 'en'))
 }
 applyDir(i18n.language)
 i18n.on('languageChanged', applyDir)
 // Another tab switched language: follow it. (A no-op when this tab made the change: the value is already equal.)
 languageStore.subscribe(() => {
-  if (i18n.language !== languageStore.get()) void i18n.changeLanguage(languageStore.get())
+  if (!pinned && i18n.language !== languageStore.get()) void i18n.changeLanguage(languageStore.get())
 })
 
 export default i18n

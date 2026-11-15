@@ -6,6 +6,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperti
 import { useParams, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { getCourse } from '../content/courses'
+import { pinLanguage } from '../i18n'
 import { canOpenLesson, lessonOrder } from '../domain/access'
 import { DEFAULT_TRAIL } from '../domain/profile'
 import { useGuestLimited } from '../state/useAccess'
@@ -47,9 +48,10 @@ export function SharePage() {
   const [search] = useSearchParams()
   const { i18n } = useTranslation()
   const want = search.get('lang') === 'ar' ? 'ar' : search.get('lang') === 'en' ? 'en' : null
-  const [langReady, setLangReady] = useState(!want || i18n.language === want)
+  const [langReady, setLangReady] = useState(false)
   useEffect(() => {
-    if (want && i18n.language !== want) void i18n.changeLanguage(want).then(() => setLangReady(true))
+    // The slide's language comes from the URL and is never saved as the learner's own (pinLanguage)
+    void pinLanguage(want ?? (i18n.language === 'ar' ? 'ar' : 'en')).then(() => setLangReady(true))
   }, [want, i18n])
 
   const { mod, loading, notFound } = useModule(courseId, moduleId)
