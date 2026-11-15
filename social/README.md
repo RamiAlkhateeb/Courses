@@ -16,6 +16,24 @@ This builds the app, serves it with `vite preview` under `/Courses/`, and opens 
 
 The script warns (and exits with 2) when a slide's content does not fit even at the smallest size: shorten the text or split the card.
 
+## From the browser: `/studio`
+
+The same export without a computer: open `/studio` on the live app (hidden: linked from nowhere, and not indexed by
+search engines). It is `src/app/StudioPage.tsx`.
+
+- **Pick** a unit and a lesson, the slide language, the guide, and whether to include the quiz. The choice stays in the
+  URL, so a set-up can be bookmarked.
+- **Preview:** every slide is the share route above, in a small frame, so it is drawn by the same code as the
+  command-line export. A slide that does not fit gets the same warning.
+- **Download:** each slide as a 1080×1350 PNG (one file per slide), made in the browser by `html-to-image`. It matches
+  the command-line PNGs (`e2e/studio.spec.ts` compares them), except that an Arabic line may break one word earlier.
+  When it matters, use the command, which the page also shows.
+- **Copy caption** (the same draft as `caption.txt`), and download the carousel-engine markdown (Download markdown) plus its pictures for
+  the engine's `assets/` folder.
+
+Lessons past the free ones follow the guest gate, so sign in to export those. Previewing slides in Arabic never
+changes the app's own language (`pinLanguage` in `src/i18n/index.ts`).
+
 ## Slides
 
 Each lesson becomes these slides, in order:

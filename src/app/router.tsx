@@ -92,6 +92,12 @@ export const router = createBrowserRouter(
       ...page(() => import('./SharePage'), 'SharePage'),
     },
     {
+      // Studio (hidden: linked from nowhere, noindex): preview a lesson's carousel slides and download them as PNGs
+      path: '/studio',
+      errorElement: <RouteError />,
+      ...page(() => import('./StudioPage'), 'StudioPage'),
+    },
+    {
       // Desktop views: a course's chapter list.
       element: <AppShell />,
       errorElement: <RouteError />,

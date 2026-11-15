@@ -1,0 +1,107 @@
+.page {
+  box-sizing: border-box;
+  min-block-size: 100dvh;
+  max-inline-size: 1180px;
+  margin-inline: auto;
+  padding: 24px 16px 48px;
+  background: var(--mist);
+  color: var(--indigo);
+}
+.head h1 {
+  margin: 0;
+  font-size: var(--title-page);
+}
+.head p {
+  margin: 4px 0 16px;
+  color: var(--muted);
+}
+.layout {
+  display: grid;
+  gap: 24px;
+}
+@media (min-width: 860px) {
+  .layout {
+    grid-template-columns: 360px 1fr;
+    align-items: start;
+  }
+}
+.controls {
+  display: grid;
+  gap: 12px;
+}
+.actions {
+  display: grid;
+  gap: 10px;
+}
+.note {
+  margin: 0;
+  min-block-size: 1.2em;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+.warn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--oops-bg);
+  font-size: 0.875rem;
+}
+.assets,
+.cli {
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--card);
+  font-size: 0.875rem;
+}
+.assets summary,
+.cli summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.assets ul {
+  margin: 8px 0 0;
+  padding-inline-start: 18px;
+}
+.assets a {
+  color: var(--blue-text);
+}
+.cli code {
+  display: block;
+  margin-block-start: 8px;
+  overflow-wrap: anywhere;
+  font-size: 0.8125rem;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 270px);
+  gap: 16px;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tile {
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+}
+/* A slide at a quarter of its 1080×1350 size */
+.frame {
+  inline-size: 270px;
+  block-size: 338px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+}
+.frame iframe {
+  inline-size: 1080px;
+  block-size: 1350px;
+  border: 0;
+  transform: scale(0.25);
+  transform-origin: 0 0;
+}

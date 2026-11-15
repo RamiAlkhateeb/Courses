@@ -22,11 +22,10 @@ offline. Optional accounts (Supabase) sync everything; without them the app is c
 - **The simulator**: nine generic investments, fees, payouts, auto-invest, rebalancing, season goals, a yearly recap,
   news, "while you were away" on Learn and a weekly challenge on the portfolio.
 - **Social carousels**: any lesson as Instagram slides (`/share/…`, `scripts/social/export-post.mjs`) or as markdown for
-  the separate carousel-engine repo (`scripts/social/to-carousel.mjs`).
+  the separate carousel-engine repo (`scripts/social/to-carousel.mjs`), and the same from the browser at `/studio`
+  (hidden): preview, download the PNGs, copy the caption.
 
 ## Next
-- **Export screen** (`/studio`, hidden): pick a lesson, a language, a guide and whether to include the quiz; preview the
-  slides; download the PNGs, copy the caption, download the carousel-engine markdown.
 - **More courses**: the other course files stay in the repo, hidden (`ENABLED_COURSE_IDS`). Personal finance is the most
   natural next one; write it with the `add-course` / `add-module` skills and the story recipe in the `lesson-cards`
   skill.

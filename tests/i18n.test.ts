@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { ar } from '../src/i18n/locales/ar'
 import { en } from '../src/i18n/locales/en'
+import { studioAr, studioEn } from '../src/i18n/locales/studio'
 
 type Tree = { [key: string]: string | Tree }
 
@@ -32,8 +33,14 @@ function groups(flat: Record<string, string>) {
 const vars = (text: string) => [...new Set([...text.matchAll(/\{\{\s*(\w+)\s*\}\}/g)].map((m) => m[1]!))].sort()
 
 describe('UI strings (en / ar)', () => {
-  const enG = groups(flatten(en))
-  const arG = groups(flatten(ar))
+  // The studio's strings live in their own file (loaded with /studio) and are checked with the rest
+  const enG = groups({ ...flatten(en), ...studioEn })
+  const arG = groups({ ...flatten(ar), ...studioAr })
+
+  it('keep the studio strings apart from the main ones (no key in both)', () => {
+    const main = new Set(Object.keys(flatten(en)))
+    expect(Object.keys(studioEn).filter((k) => main.has(k))).toEqual([])
+  })
 
   it('have the same keys in both languages', () => {
     expect([...arG.keys()].sort()).toEqual([...enG.keys()].sort())
