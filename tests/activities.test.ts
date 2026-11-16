@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { appCourses } from '../src/content/courses'
+import { checkedCourses } from '../src/content/courses'
 import type { Block } from '../src/content/types'
 import { activityIn, isActivity, mythRight, predictVerdict, sortTally } from '../src/domain/activities'
 import { toCards } from '../src/domain/chunks'
@@ -37,7 +37,7 @@ describe('activity rules', () => {
 
 describe('activities in the offered courses', () => {
   it('are well formed: answers in range, both sort buckets used, at least two options', async () => {
-    for (const course of appCourses)
+    for (const course of checkedCourses)
       for (const load of Object.values(course.loaders)) {
         const mod = await load()
         for (const s of mod.sections)
@@ -55,7 +55,7 @@ describe('activities in the offered courses', () => {
   })
 
   it('a card holds at most one activity', async () => {
-    for (const course of appCourses)
+    for (const course of checkedCourses)
       for (const load of Object.values(course.loaders)) {
         const mod = await load()
         for (const lesson of lessonsFor(mod))

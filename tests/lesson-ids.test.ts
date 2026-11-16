@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { appCourses, courses } from '../src/content/courses'
+import { checkedCourses, courses } from '../src/content/courses'
 import { toCards } from '../src/domain/chunks'
 import { lessonsFor } from '../src/domain/lessons'
 
@@ -18,7 +18,7 @@ describe('lesson ids', () => {
   })
 
   it('are fixed by the author in every offered course', async () => {
-    for (const course of appCourses) {
+    for (const course of checkedCourses) {
       for (const [id, load] of Object.entries(course.loaders)) {
         const mod = await load()
         const all: string[] = []

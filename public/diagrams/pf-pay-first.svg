@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 210" font-family="Instrument Sans, Helvetica, Arial, sans-serif">
+  <!-- Saved after six months: whatever was left at month-end (160 in all) next to 300 moved on each payday (six
+       blocks, 1,800). Numbers only: the title, caption and alt text are in the lesson, in the reader's language. -->
+  <line x1="12" y1="176" x2="308" y2="176" stroke="#D0E7E6" stroke-width="2"/>
+  <rect x="64" y="163.6" width="76" height="12.4" rx="6" fill="#95CCDD"/>
+  <rect x="180" y="152.7" width="76" height="23.3" rx="4" fill="#4274D9"/>
+  <rect x="180" y="129.3" width="76" height="21.3" rx="4" fill="#4274D9"/>
+  <rect x="180" y="106" width="76" height="21.3" rx="4" fill="#4274D9"/>
+  <rect x="180" y="82.7" width="76" height="21.3" rx="4" fill="#4274D9"/>
+  <rect x="180" y="59.3" width="76" height="21.3" rx="4" fill="#4274D9"/>
+  <rect x="180" y="36" width="76" height="21.3" rx="4" fill="#4274D9"/>
+  <g font-size="16" font-weight="700" fill="#293681" text-anchor="middle">
+    <text x="102" y="153.6">160</text>
+    <text x="218" y="26">1,800</text>
+  </g>
+  <g font-size="14" font-weight="600" fill="#5B678F" text-anchor="middle">
+    <text x="218" y="198">6 × 300</text>
+  </g>
+</svg>

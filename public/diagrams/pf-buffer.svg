@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 210" font-family="Instrument Sans, Helvetica, Arial, sans-serif">
+  <!-- An emergency fund for essentials of 1,800 a month: 1 month (a first target) 1,800, 3 months 5,400, 6 months
+       10,800. Numbers only: the title, caption and alt text are in the lesson, in the reader's language. -->
+  <line x1="12" y1="176" x2="308" y2="176" stroke="#D0E7E6" stroke-width="2"/>
+  <rect x="44" y="152.7" width="64" height="23.3" rx="10" fill="#95CCDD"/>
+  <rect x="128" y="106" width="64" height="70" rx="10" fill="#4274D9"/>
+  <rect x="212" y="36" width="64" height="140" rx="10" fill="#293681"/>
+  <g font-size="16" font-weight="700" fill="#293681" text-anchor="middle">
+    <text x="76" y="142.7">1,800</text>
+    <text x="160" y="96">5,400</text>
+    <text x="244" y="26">10,800</text>
+  </g>
+  <g font-size="14" font-weight="600" fill="#5B678F" text-anchor="middle">
+    <text x="76" y="198">1</text>
+    <text x="160" y="198">3</text>
+    <text x="244" y="198">6</text>
+  </g>
+</svg>

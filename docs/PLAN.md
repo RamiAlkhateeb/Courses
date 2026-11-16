@@ -26,9 +26,15 @@ offline. Optional accounts (Supabase) sync everything; without them the app is c
   (hidden): preview, download the PNGs, copy the caption.
 
 ## Next
-- **More courses**: the other course files stay in the repo, hidden (`ENABLED_COURSE_IDS`). Personal finance is the most
-  natural next one; write it with the `add-course` / `add-module` skills and the story recipe in the `lesson-cards`
-  skill.
+- **Personal Finance** (in progress, hidden until all five modules are written; `DRAFT_COURSE_IDS`): the same Noor and
+  Karim story, written with the `add-module` skill and the story recipe in the `lesson-cards` skill.
+  - [x] Budgeting and emergency fund (4 lessons)
+  - [ ] Debt
+  - [ ] Credit
+  - [ ] Insurance
+  - [ ] Goals
+  - [ ] Go live: move it to `ENABLED_COURSE_IDS`, make the share captions and hashtags course-neutral, decide whether
+    onboarding asks for a course.
 
 ## Ideas (not built)
 - Real push notifications for the study reminder and market news (needs a backend; today they only work while the app

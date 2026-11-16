@@ -72,9 +72,18 @@ export const ENABLED_COURSE_IDS = ['investing']
 /** Hidden courses the courses page teases as "Coming soon" (a few, not the whole catalogue). */
 export const COMING_SOON_IDS = ['personal-finance', 'economics', 'entrepreneurship']
 export const appCourses = courses.filter((c) => ENABLED_COURSE_IDS.includes(c.id))
+/** Hidden courses being written to the offered-course rules: the content tests check them like offered ones, and the
+ *  dev server (never a production build) opens them by URL, e.g. /course/personal-finance/budgeting/learn/plan. */
+export const DRAFT_COURSE_IDS = ['personal-finance']
+export const draftCourses = courses.filter((c) => DRAFT_COURSE_IDS.includes(c.id))
+/** The courses the content tests hold to the offered-course rules. */
+export const checkedCourses = [...appCourses, ...draftCourses]
+// `?.`: e2e specs import this file in plain Node, where import.meta.env does not exist
+const findable = import.meta.env?.DEV ? checkedCourses : appCourses
 
-/** An offered course by id. Hidden courses are not found, so their URLs show "not found" like any unknown id. */
-export const getCourse = (id: string | undefined) => appCourses.find((c) => c.id === id)
+/** An offered course by id (plus drafts on the dev server). Hidden courses are not found, so their URLs show
+ *  "not found" like any unknown id. */
+export const getCourse = (id: string | undefined) => findable.find((c) => c.id === id)
 
 export const moduleHref = (courseId: string, moduleId: string) => `/course/${courseId}/${moduleId}`
 export const practiceHref = (courseId: string, moduleId: string) => `${moduleHref(courseId, moduleId)}/lesson`

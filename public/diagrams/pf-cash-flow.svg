@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 210" font-family="Instrument Sans, Helvetica, Arial, sans-serif">
+  <!-- Karim's month: net income 3,000 next to spending 3,100, stacked from the bottom: rent 1,100, small buys 600
+       (highlighted), food 550, transport 300, bills 250, other 300. Numbers only: the title, caption and alt text are in the lesson, in the reader's language. -->
+  <line x1="12" y1="176" x2="308" y2="176" stroke="#D0E7E6" stroke-width="2"/>
+  <rect x="60" y="40.5" width="80" height="135.5" rx="10" fill="#4274D9"/>
+  <rect x="180" y="126.3" width="80" height="49.7" fill="#293681"/>
+  <rect x="180" y="99.2" width="80" height="25.1" fill="#A8432B"/>
+  <rect x="180" y="74.4" width="80" height="22.8" fill="#95CCDD"/>
+  <rect x="180" y="60.8" width="80" height="11.5" fill="#D0E7E6"/>
+  <rect x="180" y="49.5" width="80" height="9.3" fill="#95CCDD"/>
+  <rect x="180" y="36" width="80" height="11.5" fill="#D0E7E6"/>
+  <g font-size="14" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+    <text x="220" y="156.2">1,100</text>
+    <text x="220" y="117.8">600</text>
+  </g>
+  <g font-size="16" font-weight="700" fill="#293681" text-anchor="middle">
+    <text x="100" y="30.5">3,000</text>
+    <text x="220" y="26">3,100</text>
+  </g>
+  <text x="308" y="44" font-size="14" font-weight="700" fill="#A8432B" text-anchor="end">−100</text>
+</svg>

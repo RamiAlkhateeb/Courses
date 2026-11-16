@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { appCourses } from '../src/content/courses'
+import { checkedCourses } from '../src/content/courses'
 import type { Block, Module } from '../src/content/types'
 import { CARD_WORDS, cardWords, hasMedia, SHORT_CARD } from '../src/domain/chunks'
 import { lessonsFor } from '../src/domain/lessons'
@@ -9,7 +9,7 @@ import { lessonsFor } from '../src/domain/lessons'
 
 async function offeredModules() {
   const mods: Module[] = []
-  for (const course of appCourses) for (const load of Object.values(course.loaders)) mods.push(await load())
+  for (const course of checkedCourses) for (const load of Object.values(course.loaders)) mods.push(await load())
   return mods
 }
 
