@@ -18,6 +18,22 @@ describe('offered and draft courses', () => {
     expect(missing).toEqual([])
   })
 
+  it('no Arabic text writes a number range as digit–digit (it shows reversed, so write من 3 إلى 6)', async () => {
+    const found: string[] = []
+    const walk = (value: unknown, where: string) => {
+      if (Array.isArray(value)) value.forEach((v) => walk(v, where))
+      else if (value && typeof value === 'object') {
+        const o = value as Record<string, unknown>
+        if (typeof o.ar === 'string' && typeof o.en === 'string') {
+          const range = o.ar.replace(/<[^>]+>/g, '').match(/\d[\d,.%]*\s?[–-]\s?\d[\d,.%]*/)
+          if (range) found.push(`${where}: “${range[0]}”`)
+        } else for (const v of Object.values(o)) walk(v, where)
+      }
+    }
+    for (const mod of await modules()) walk(mod, `${mod.courseId}/${mod.id}`)
+    expect(found).toEqual([])
+  })
+
   it('every lesson has at least 2 quick checks', async () => {
     const short: string[] = []
     for (const mod of await modules())

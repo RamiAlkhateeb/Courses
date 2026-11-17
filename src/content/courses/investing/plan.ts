@@ -104,7 +104,7 @@ export const plan: Module = {
         ),
         html(L(
           '<p>Write each goal with a rough amount and a <strong>date</strong>. Then sort them into buckets: <strong>short-term</strong> (under about 3 years) stays in savings, <strong>medium-term</strong> (about 3–10 years) takes a cautious mix, <strong>long-term</strong> (10+ years) can carry more stocks. The emergency fund stays apart: a safety net, not a goal.</p>',
-          '<p>دوّن كل هدف بمبلغ تقريبي و<strong>موعد</strong>. ثم صنّفها في سلال: <strong>قصيرة الأجل</strong> (أقل من 3 سنوات تقريبًا) تبقى في التوفير، و<strong>متوسطة الأجل</strong> (نحو 3–10 سنوات) تأخذ مزيجًا حذرًا، و<strong>طويلة الأجل</strong> (10 سنوات فأكثر) يمكنها حمل أسهم أكثر. ويبقى صندوق الطوارئ منفصلًا: شبكة أمان لا هدف.</p>',
+          '<p>دوّن كل هدف بمبلغ تقريبي و<strong>موعد</strong>. ثم صنّفها في سلال: <strong>قصيرة الأجل</strong> (أقل من 3 سنوات تقريبًا) تبقى في التوفير، و<strong>متوسطة الأجل</strong> (من 3 إلى 10 سنوات تقريبًا) تأخذ مزيجًا حذرًا، و<strong>طويلة الأجل</strong> (10 سنوات فأكثر) يمكنها حمل أسهم أكثر. ويبقى صندوق الطوارئ منفصلًا: شبكة أمان لا هدف.</p>',
         )),
         diagram({
           fig: L('Illustration', 'توضيح'),
