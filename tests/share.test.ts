@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { appCourses, loadModule } from '../src/content/courses'
+import { checkedCourses, loadModule } from '../src/content/courses'
 import { lessonsFor } from '../src/domain/lessons'
 import { ENGINE, SLIDE_WORDS, carouselPost, plainText, shareSlides, type CarouselMeta } from '../src/domain/share'
 import { blockWords } from '../src/domain/chunks'
@@ -45,7 +45,7 @@ describe('share slides', () => {
   })
 
   it('every lesson of the offered courses makes at least 3 slides, none empty, none too long, nothing a picture cannot hold', async () => {
-    for (const course of appCourses) {
+    for (const course of checkedCourses) {
       for (const id of Object.keys(course.loaders)) {
         const mod = await loadModule(course.id, id)
         for (const lesson of lessonsFor(mod)) {
@@ -95,7 +95,7 @@ describe('carousel-engine markdown', () => {
   })
 
   it('keeps every slide inside the engine limits, with and without the quiz, in both languages', async () => {
-    for (const course of appCourses) {
+    for (const course of checkedCourses) {
       for (const id of Object.keys(course.loaders)) {
         const mod = await loadModule(course.id, id)
         for (const lesson of lessonsFor(mod)) {

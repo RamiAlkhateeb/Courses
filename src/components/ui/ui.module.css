@@ -322,10 +322,10 @@
 /* ---------- BottomSheet ---------- */
 .sheet {
   position: fixed;
-  inset-inline: 0;
+  inset-inline: var(--frame-start, 0px) 0;
   inset-block-end: 0;
   z-index: 30;
-  max-inline-size: var(--app-max);
+  max-inline-size: var(--page-max, var(--app-max));
   margin-inline: auto;
   padding: 24px 24px calc(28px + env(safe-area-inset-bottom));
   background: var(--card);

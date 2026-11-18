@@ -129,9 +129,9 @@ Routes live in `src/app/router.tsx`. Every route except the shells and Learn is 
 | `/welcome`, `/welcome/:step` | Onboarding |
 | `/settings`, `/courses`, `/certificate/:courseId/:moduleId`, `/legal/:page` | Other mobile screens |
 | `/signup`, `/login`, `/account`, … | Account screens, behind `AccountGate` |
-| `/course/:id` | The desktop course page, in `AppShell` |
+| `/course/:id` | Makes that course active and opens Learn |
 
-`AppFrame` (`src/components/AppFrame.tsx`) wraps the mobile screens. It sends first-time visitors to `/welcome`
+`AppFrame` (`src/components/AppFrame.tsx`) wraps the app's screens: a phone column, or on a laptop (≥1024px) the course `Sidebar` beside a wider page. It sends first-time visitors to `/welcome`
 (account and legal pages excepted), and it runs the Playground clock for the whole app (section 5).
 
 ### Inside a lesson

@@ -309,7 +309,7 @@ export const basics: Module = {
         }),
         html(L(
           '<ol><li><strong>Emergency fund</strong>: a common guideline is 3–6 months of essential expenses in easy-to-reach savings.</li><li><strong>High-interest debt</strong>: like Noor’s card, clear it first.</li><li><strong>Clear goals</strong>: what is the money for, and when will you need it?</li><li><strong>Risk tolerance</strong>: could you watch your investments fall by a third, as Karim did, without selling in panic?</li></ol>',
-          '<ol><li><strong>صندوق الطوارئ</strong>: إرشاد شائع هو ادخار مصاريف 3–6 أشهر من النفقات الأساسية في حساب سهل الوصول.</li><li><strong>الديون ذات الفائدة المرتفعة</strong>: مثل بطاقة نور، سدّدها أولًا.</li><li><strong>أهداف واضحة</strong>: لأي غرض هذا المال، ومتى ستحتاجه؟</li><li><strong>تحمّل المخاطر</strong>: هل يمكنك رؤية استثماراتك تهبط بمقدار الثلث، كما حدث لكريم، دون أن تبيع بذعر؟</li></ol>',
+          '<ol><li><strong>صندوق الطوارئ</strong>: إرشاد شائع هو ادخار مصاريف من 3 إلى 6 أشهر من النفقات الأساسية في حساب سهل الوصول.</li><li><strong>الديون ذات الفائدة المرتفعة</strong>: مثل بطاقة نور، سدّدها أولًا.</li><li><strong>أهداف واضحة</strong>: لأي غرض هذا المال، ومتى ستحتاجه؟</li><li><strong>تحمّل المخاطر</strong>: هل يمكنك رؤية استثماراتك تهبط بمقدار الثلث، كما حدث لكريم، دون أن تبيع بذعر؟</li></ol>',
         )),
         myth(
           L('Once you invest, your money is locked away for years.', 'بمجرد أن تستثمر، يُحبس مالك لسنوات.'),

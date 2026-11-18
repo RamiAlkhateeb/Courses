@@ -1,4 +1,4 @@
-// Investing terms explained in one line, shown when a learner taps a term in a lesson (`markTerms` in
+// Money terms (Investing, Personal Finance) explained in one line, shown when a learner taps a term in a lesson (`markTerms` in
 // src/domain/glossary.ts finds them). `match` lists the forms as they appear in lesson text; longer forms first is not
 // needed (the matcher sorts them). Educational definitions only.
 import type { Localized } from './types'
@@ -90,6 +90,18 @@ export const GLOSSARY: GlossaryTerm[] = [
     term: L('Emergency fund', 'صندوق الطوارئ'),
     match: { en: ['emergency funds', 'emergency fund'], ar: ['صندوق الطوارئ', 'صندوق طوارئ'] },
     def: L('Savings kept safe and easy to reach for surprises, often a few months of essential costs.', 'مدخرات محفوظة بأمان وسهلة الوصول للمفاجآت، غالبًا تكاليف أساسية لبضعة أشهر.'),
+  },
+  {
+    id: 'budget',
+    term: L('Budget', 'الميزانية'),
+    match: { en: ['budgets', 'budget'], ar: ['الميزانية', 'ميزانية'] },
+    def: L('A plan for each month’s income: how much goes to needs, wants and savings.', 'خطة لدخل كل شهر: كم يذهب للحاجات والرغبات والادخار.'),
+  },
+  {
+    id: 'net-income',
+    term: L('Net income', 'صافي الدخل'),
+    match: { en: ['net income'], ar: ['صافي الدخل', 'صافي دخلك', 'صافي دخلها'] },
+    def: L('What actually reaches your account after tax and other deductions.', 'ما يصل فعلًا إلى حسابك بعد الضريبة والاقتطاعات الأخرى.'),
   },
   {
     id: 'interest-rate',

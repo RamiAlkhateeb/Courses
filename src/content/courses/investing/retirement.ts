@@ -280,7 +280,7 @@ export const retirement: Module = {
         ]),
         html(L(
           '<p><strong>Pay yourself first</strong>: on payday a set percentage moves to savings automatically, and only the rest is for spending. A commonly quoted guide for retirement is around 10–15% of income, counting any employer match. It is a rough starting point; starting smaller and adding a point a year also works.</p>',
-          '<p><strong>ادفع لنفسك أولًا</strong>: يوم الراتب تنتقل نسبة محددة إلى الادخار تلقائيًا، ولا يُنفق إلا الباقي. إرشاد شائع للتقاعد هو نحو 10–15% من الدخل، مع احتساب أي مساهمة من صاحب العمل. وهو نقطة بداية تقريبية؛ والبدء بنسبة أصغر مع إضافة نقطة كل عام ينجح أيضًا.</p>',
+          '<p><strong>ادفع لنفسك أولًا</strong>: يوم الراتب تنتقل نسبة محددة إلى الادخار تلقائيًا، ولا يُنفق إلا الباقي. إرشاد شائع للتقاعد هو نحو 10% إلى 15% من الدخل، مع احتساب أي مساهمة من صاحب العمل. وهو نقطة بداية تقريبية؛ والبدء بنسبة أصغر مع إضافة نقطة كل عام ينجح أيضًا.</p>',
         )),
         html(L(
           '<p>Taking money out of a retirement account early often costs three times: a <strong>penalty</strong> in many countries, <strong>income tax</strong>, and the <strong>growth</strong> it would have earned. 10,000 taken out at 35 would have grown to about 76,000 by 65 at 7% a year. (Illustrative figures.)</p>',

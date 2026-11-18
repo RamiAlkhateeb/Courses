@@ -596,8 +596,9 @@ button.holding {
 .news {
   position: fixed;
   inset: 0;
+  inset-inline-start: var(--frame-start, 0px);
   z-index: 60;
-  max-inline-size: var(--app-max);
+  max-inline-size: var(--page-max, var(--app-max));
   margin-inline: auto;
   padding: 22px 22px calc(20px + env(safe-area-inset-bottom));
   background: var(--surface-ink);

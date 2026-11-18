@@ -6,7 +6,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { ENABLED_COURSE_IDS, getCourse } from '../content/courses'
+import { findableCourses, getCourse } from '../content/courses'
 import { useLocalized } from '../content/useLocalized'
 import { DEFAULT_TRAIL } from '../domain/profile'
 import { useTrail } from '../state/useTrail'
@@ -190,12 +190,13 @@ export function StudioPage() {
       <div className={styles.layout}>
         <div className={styles.controls}>
           <ListGroup>
-            {ENABLED_COURSE_IDS.length > 1 && (
+            {/* Only Investing on the live site; drafts join it on the dev server */}
+            {findableCourses.length > 1 && (
               <ListPicker
                 icon="book"
                 label={t('studio_course')}
                 value={tc(course.title)}
-                options={ENABLED_COURSE_IDS.map((id) => ({ key: id, label: tc(getCourse(id)!.title), selected: id === courseId, onSelect: () => set({ course: id, module: null, lesson: null }) }))}
+                options={findableCourses.map((c) => ({ key: c.id, label: tc(c.title), selected: c.id === courseId, onSelect: () => set({ course: c.id, module: null, lesson: null }) }))}
               />
             )}
             {loaded && chapter && (
