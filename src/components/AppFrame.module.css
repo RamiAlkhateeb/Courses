@@ -13,3 +13,21 @@
 .tabs {
   padding-block-end: 92px; /* room for the docked 76px tab bar */
 }
+
+/* Laptop (≥1024px): the sidebar, then the page centred in the space left. Fixed bars (a lesson's footer, sheets) read
+   --frame-start and --page-max, so they line up with the page instead of the whole window. */
+.wide {
+  --frame-start: var(--sidebar-w);
+  --page-max: 720px;
+  display: grid;
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+  min-block-size: 100dvh;
+}
+.page {
+  position: relative;
+  inline-size: 100%;
+  max-inline-size: var(--page-max);
+  min-inline-size: 0;
+  margin-inline: auto;
+  overflow-x: clip;
+}

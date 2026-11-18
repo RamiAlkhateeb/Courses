@@ -2,7 +2,7 @@
 
 Source: `Abu Shreek Mobile App Flow.html`, the Claude Design export (27 screens at 390×844, English and Arabic/RTL, plus a
 style board and a tokens board). It is a visual spec only: the app is built from its own components (`src/components/ui/`),
-colours live in `src/styles/tokens.css`. Open the HTML in a browser to see every screen.
+colours live in `src/styles/tokens.css`. Open the HTML in a browser to see every screen. It has no laptop screens: the laptop layout (a course sidebar beside a wider page, from 1024px) is the app's own, described in `CLAUDE.md` under "Laptop layout".
 
 `abu-shreek/` holds the first mascot drawings (kept for reference). The app now has two guides, **Saud (سعود)** and
 **Sara (سارة)**, one picked at random each session, with 8 poses each (`wave`, `point`, `think`, `cheer`, `oops`,

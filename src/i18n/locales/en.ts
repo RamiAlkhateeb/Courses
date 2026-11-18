@@ -721,4 +721,7 @@ export const en = {
   "me_first_title": "Your garden starts with one lesson",
   "me_first_sub": "Finish a lesson to start your streak, earn your first play money and plant your first sprout.",
   "me_first_cta": "Start your first lesson",
+  "side_outline": "Course outline",
+  "side_portfolio": "Portfolio",
+  "side_unit": "Unit {{n}}",
 }

@@ -826,4 +826,7 @@ export const ar = {
   "me_first_title": "حديقتك تبدأ بدرس واحد",
   "me_first_sub": "أنهِ درسًا لتبدأ سلسلتك، وتكسب أول مال افتراضي، وتزرع أول برعم.",
   "me_first_cta": "ابدأ درسك الأول",
+  "side_outline": "مخطط الدورة",
+  "side_portfolio": "المحفظة",
+  "side_unit": "الوحدة {{n}}",
 }

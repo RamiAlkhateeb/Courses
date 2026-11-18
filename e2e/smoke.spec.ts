@@ -121,9 +121,13 @@ test('Arabic is right-to-left and uses its own font', async ({ page }) => {
 test('a deep link under the base path loads (assets resolve, no error screen)', async ({ page }) => {
   const errors = watchErrors(page)
   await onboarded(page)
-  await page.goto('course/investing')
-  await expect(page.getByRole('heading', { name: 'Investing Fundamentals' })).toBeVisible()
+  await page.goto('course/investing/basics/learn/why')
+  await expect(page.getByRole('heading', { name: 'The money in the drawer' })).toBeVisible()
   await expect(page.getByRole('alert')).toHaveCount(0)
+  // The old course page opens Learn, with that course active
+  await page.goto('course/investing')
+  await expect(page).toHaveURL(/\/Courses\/$/)
+  await expect(page.getByRole('heading', { name: /Investing Fundamentals/ })).toBeVisible()
   expect(errors).toEqual([])
 })
 

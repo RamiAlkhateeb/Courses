@@ -1,7 +1,8 @@
-import type { ComponentType } from 'react'
-import { Link, Navigate, createBrowserRouter, type RouteObject } from 'react-router-dom'
+import { useEffect, type ComponentType } from 'react'
+import { Link, Navigate, createBrowserRouter, useParams, type RouteObject } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { AppShell } from '../components/AppShell'
+import { getCourse } from '../content/courses'
+import { updateProfile } from '../state/profile'
 import { RouteError } from './RouteError'
 import { AppFrame, TabsLayout } from '../components/AppFrame'
 import { PathPage } from '../features/path/PathPage'
@@ -14,7 +15,7 @@ const page = <K extends string>(load: () => Promise<Record<K, ComponentType>>, n
   },
 })
 
-// Everything except the two shells and the Path tab (the entry screen) is code-split: each route's chunk loads on first visit.
+// Everything except the frame and the Path tab (the entry screen) is code-split: each route's chunk loads on first visit.
 export const router = createBrowserRouter(
   [
     {
@@ -82,6 +83,10 @@ export const router = createBrowserRouter(
             return { element: <LessonPage /> }
           },
         },
+        // A course's old page (the catalog, then the desktop course page): makes it the active course and opens Learn,
+        // whose laptop layout has the course outline in its sidebar
+        { path: 'course/:courseId', element: <CourseRedirect /> },
+        { path: '*', element: <NotFound /> },
       ],
     },
     {
@@ -97,26 +102,19 @@ export const router = createBrowserRouter(
       errorElement: <RouteError />,
       ...page(() => import('./StudioPage'), 'StudioPage'),
     },
-    {
-      // Desktop views: a course's chapter list.
-      element: <AppShell />,
-      errorElement: <RouteError />,
-      children: [
-        // The catalog listed every course; with Investing the only one, its old URL opens that course.
-        {
-          path: 'course/:courseId',
-          lazy: async () => {
-            const { CoursePage } = await import('../features/course/CoursePage')
-            return { element: <CoursePage /> }
-          },
-        },
-        { path: '*', element: <NotFound /> },
-      ],
-    },
   ],
   // Matches vite.config.ts's `base`: '/' in dev, '/<repo>/' when built for GitHub Pages.
   { basename: import.meta.env.BASE_URL },
 )
+
+function CourseRedirect() {
+  const course = getCourse(useParams().courseId)
+  useEffect(() => {
+    if (course) updateProfile({ trail: course.id })
+  }, [course])
+  // A hidden or unknown course is not found, like any unknown URL
+  return course ? <Navigate to="/" replace /> : <NotFound />
+}
 
 function NotFound() {
   const { t } = useTranslation()

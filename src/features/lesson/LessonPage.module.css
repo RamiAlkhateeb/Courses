@@ -106,9 +106,9 @@
 }
 .footer {
   position: fixed;
-  inset-inline: 0;
+  inset-inline: var(--frame-start, 0px) 0; /* beside the laptop sidebar, if there is one */
   inset-block-end: 0;
-  max-inline-size: var(--app-max);
+  max-inline-size: var(--page-max, var(--app-max));
   margin-inline: auto;
   box-sizing: border-box;
   padding: 12px 24px calc(24px + env(safe-area-inset-bottom));
