@@ -9,6 +9,27 @@
   gap: 12px;
   overflow-x: clip;
 }
+/* The panel sizes itself to its own width, so it goes two-column wherever it is wide (the laptop portfolio) */
+.panel {
+  container-type: inline-size;
+}
+.cols,
+.col {
+  display: contents;
+}
+@container (min-width: 880px) {
+  .cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+  }
+  .col {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+}
 /* A practice lesson: the task on top, then the panel */
 .practice {
   display: grid;
@@ -598,7 +619,7 @@ button.holding {
   inset: 0;
   inset-inline-start: var(--frame-start, 0px);
   z-index: 60;
-  max-inline-size: var(--page-max, var(--app-max));
+  max-inline-size: var(--bar-max, var(--app-max));
   margin-inline: auto;
   padding: 22px 22px calc(20px + env(safe-area-inset-bottom));
   background: var(--surface-ink);
@@ -1094,4 +1115,11 @@ button.holding {
   margin: 0;
   font-size: 0.75rem;
   color: var(--muted);
+}
+
+/* A wide panel (see .cols): a taller chart. Here, after the base .chart svg rule, so it wins. */
+@container (min-width: 880px) {
+  .chart svg {
+    block-size: 260px;
+  }
 }

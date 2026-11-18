@@ -724,4 +724,5 @@ export const en = {
   "side_outline": "Course outline",
   "side_portfolio": "Portfolio",
   "side_unit": "Unit {{n}}",
+  "learn_rail": "Your day",
 }

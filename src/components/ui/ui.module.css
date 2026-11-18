@@ -325,7 +325,7 @@
   inset-inline: var(--frame-start, 0px) 0;
   inset-block-end: 0;
   z-index: 30;
-  max-inline-size: var(--page-max, var(--app-max));
+  max-inline-size: var(--bar-max, var(--app-max));
   margin-inline: auto;
   padding: 24px 24px calc(28px + env(safe-area-inset-bottom));
   background: var(--card);
@@ -380,4 +380,11 @@
 }
 .sheet:focus {
   outline: none;
+}
+
+/* On a laptop a sheet stays docked to the bottom but no wider than a form */
+@media (min-width: 1024px) {
+  .sheet {
+    max-inline-size: min(560px, var(--bar-max, var(--app-max)));
+  }
 }

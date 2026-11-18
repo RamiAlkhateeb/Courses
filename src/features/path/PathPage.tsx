@@ -17,6 +17,7 @@ import { learnHref, lessonMinutes, type Lesson } from '../../domain/lessons'
 import { useAuth } from '../../state/auth'
 import { canOpenLesson, canOpenPractice, FREE_LESSONS, lessonOrder } from '../../domain/access'
 import { useGuestLimited } from '../../state/useAccess'
+import { useWide } from '../../state/useWide'
 import { Change } from '../../components/Change'
 import { Money } from '../../components/Money'
 import { gain, netWorth } from '../../domain/playground/engine'
@@ -61,34 +62,11 @@ export function PathPage() {
   const toReview = loaded ? dueQuestions(chapters.flatMap((c) => c.mod?.questions.map((q) => q.id) ?? []), progress, today).length : 0
   // In the evening, with a streak and no lesson yet today: one nudge to keep it
   const atRisk = streakAtRisk(progress, today, new Date().getHours())
+  const wide = useWide()
 
-  return (
-    <div className={styles.page}>
-      <header className={styles.top}>
-        {/* The course is the page's title: its name opens the course dropdown */}
-        <h1 className={styles.title}>
-          <CourseSwitcher variant="title" />
-        </h1>
-        <div className={styles.pills}>
-          {/* Compact, beside the course name: the flame and the number (the words are for screen readers) */}
-          <StatPill compact title={t('streakDays', { count: streak })}>
-            <Icon name="flame" size={18} className={styles.flame} />
-            <span aria-hidden>{streak}</span>
-            <span className="visually-hidden">{t('learn_days', { count: streak })}</span>
-          </StatPill>
-          <MoneyChip amount={wallet} compact />
-        </div>
-      </header>
-      {/* Accounts are optional and only exist when Supabase is configured; the Log in screen links on to Create an account. */}
-      {accountsEnabled && auth.status === 'signedOut' && (
-        <Link to="/login" className={buttonClass({ variant: 'secondary', size: 'sm' }, styles.login)}>
-          {t('acc_header_cta')}
-        </Link>
-      )}
-
-      {!loaded && <p className={styles.loading}>{t('loading')}</p>}
-      {loaded && chapters.length === 0 && <p className={styles.loading}>{t('contentComing')}</p>}
-
+  // The page's pieces: one column on a phone, a dashboard on a laptop (useWide)
+  const riskCard = (
+    <>
       {loaded && next && !nextGated && atRisk && (
         <Link to={learnHref(course.id, next.mod.id, next.lesson.id)} className={`${styles.review} ${styles.risk}`}>
           <span className={styles.reviewIcon}>
@@ -103,7 +81,10 @@ export function PathPage() {
           </span>
         </Link>
       )}
-
+    </>
+  )
+  const upNext = (
+    <>
       {loaded && next && nextGated && (
         <section className={styles.upNext} aria-labelledby="gate-title">
           <div className={styles.upText}>
@@ -150,17 +131,26 @@ export function PathPage() {
           </Link>
         </div>
       )}
-
+    </>
+  )
+  const away = (
+    <>
       {/* While you were away: what the simulator did since the player last looked (at most once a day) */}
       {showPortfolio && (
         <Suspense fallback={null}>
           <AwayCard />
         </Suspense>
       )}
-
+    </>
+  )
+  const todayCard = (
+    <>
       {/* Today: the daily goal, three quests and the chest (once there is something to learn) */}
       {loaded && chapters.length > 0 && <TodayCard portfolio={showPortfolio} />}
-
+    </>
+  )
+  const portfolioRow = (
+    <>
       {/* The portfolio shortcut: once the simulator has been introduced, it is one tap away */}
       {showPortfolio && (
         <Link to="/portfolio" className={styles.review}>
@@ -179,7 +169,10 @@ export function PathPage() {
           </span>
         </Link>
       )}
-
+    </>
+  )
+  const reviewRow = (
+    <>
       {/* Daily review: the questions due today (a wrong answer at once, a right one after 1, 2, 4, 8, 16 days) */}
       {toReview > 0 && (
         <Link to={`/course/${course.id}/review`} className={styles.review}>
@@ -195,7 +188,10 @@ export function PathPage() {
           </span>
         </Link>
       )}
-
+    </>
+  )
+  const units = (
+    <>
       {loaded &&
         chapters.map((chapter, i) => (
           <UnitList
@@ -207,6 +203,63 @@ export function PathPage() {
             reviewGated={!canOpenPractice(guest)}
           />
         ))}
+    </>
+  )
+
+  return (
+    <div className={styles.page}>
+      <header className={styles.top}>
+        {/* The course is the page's title: its name opens the course dropdown */}
+        <h1 className={styles.title}>
+          <CourseSwitcher variant="title" />
+        </h1>
+        <div className={styles.pills}>
+          {/* Compact, beside the course name: the flame and the number (the words are for screen readers) */}
+          <StatPill compact title={t('streakDays', { count: streak })}>
+            <Icon name="flame" size={18} className={styles.flame} />
+            <span aria-hidden>{streak}</span>
+            <span className="visually-hidden">{t('learn_days', { count: streak })}</span>
+          </StatPill>
+          <MoneyChip amount={wallet} compact />
+        </div>
+      </header>
+      {/* Accounts are optional and only exist when Supabase is configured; the Log in screen links on to Create an account. */}
+      {accountsEnabled && auth.status === 'signedOut' && (
+        <Link to="/login" className={buttonClass({ variant: 'secondary', size: 'sm' }, styles.login)}>
+          {t('acc_header_cta')}
+        </Link>
+      )}
+
+      {!loaded && <p className={styles.loading}>{t('loading')}</p>}
+      {loaded && chapters.length === 0 && <p className={styles.loading}>{t('contentComing')}</p>}
+
+      {wide ? (
+        // Laptop: Up next and the units, beside a rail with the streak nudge, what happened while away, today's goal,
+        // the portfolio and the daily review
+        <div className={styles.dash}>
+          <div className={styles.main}>
+            {upNext}
+            {units}
+          </div>
+          <aside className={styles.rail} aria-label={t('learn_rail')}>
+            {riskCard}
+            {away}
+            {todayCard}
+            {portfolioRow}
+            {reviewRow}
+          </aside>
+        </div>
+      ) : (
+        <>
+          {riskCard}
+          {upNext}
+          {away}
+          {todayCard}
+          {portfolioRow}
+          {reviewRow}
+          {units}
+        </>
+      )}
       <span className="visually-hidden">{tc(course.title)}</span>
     </div>
   )

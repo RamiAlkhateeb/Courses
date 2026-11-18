@@ -82,6 +82,10 @@ export function PlaygroundPanel({ toolsOpenAtStart = false }: { toolsOpenAtStart
 
   return (
     <div className={styles.panel}>
+      {/* Two columns when the panel is wide (a laptop): how it is going on the start side, what you own and the tools
+          on the end side. On a phone the wrappers are invisible. */}
+      <div className={styles.cols}>
+      <div className={styles.col}>
       {/* 1. How much, and how it is going, in plain words */}
       <section className={styles.summary} aria-labelledby="pf-total">
         <p className={styles.kicker} id="pf-total">
@@ -172,6 +176,8 @@ export function PlaygroundPanel({ toolsOpenAtStart = false }: { toolsOpenAtStart
         </Button>
       )}
 
+      </div>
+      <div className={styles.col}>
       {/* 4. What you own: each holding's value, its share of the total and how it has done; cash last */}
       {running && (
         <section className={styles.ownCard} aria-labelledby="pf-own">
@@ -274,6 +280,9 @@ export function PlaygroundPanel({ toolsOpenAtStart = false }: { toolsOpenAtStart
           )}
         </section>
       )}
+
+      </div>
+      </div>
 
       <p className={styles.fine}>{t('pg_play_money_simulated')}</p>
       <p className={styles.fine}>{t('educationalOnly')}</p>

@@ -829,4 +829,5 @@ export const ar = {
   "side_outline": "مخطط الدورة",
   "side_portfolio": "المحفظة",
   "side_unit": "الوحدة {{n}}",
+  "learn_rail": "يومك",
 }

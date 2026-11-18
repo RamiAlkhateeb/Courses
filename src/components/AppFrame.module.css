@@ -15,10 +15,11 @@
 }
 
 /* Laptop (≥1024px): the sidebar, then the page centred in the space left. Fixed bars (a lesson's footer, sheets) read
-   --frame-start and --page-max, so they line up with the page instead of the whole window. */
+   --frame-start and --bar-max, so they line up with the page instead of the whole window and never grow past 720px. */
 .wide {
   --frame-start: var(--sidebar-w);
   --page-max: 720px;
+  --bar-max: 720px;
   display: grid;
   grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
   min-block-size: 100dvh;
@@ -30,4 +31,12 @@
   min-inline-size: 0;
   margin-inline: auto;
   overflow-x: clip;
+}
+/* Learn, Me and the portfolio: two columns */
+.roomy {
+  --page-max: 1080px;
+}
+.roomy .page {
+  padding-inline: 32px;
+  box-sizing: border-box;
 }
