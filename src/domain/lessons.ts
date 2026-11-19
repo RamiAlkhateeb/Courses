@@ -1,4 +1,5 @@
 import type { Block, Localized, Question, Module } from '../content/types'
+import { activityIn } from './activities'
 import { blockWords, stripTags, toCards, wordCount } from './chunks'
 
 /** Most content cards in one lesson; a longer section is split into balanced parts. */
@@ -147,4 +148,17 @@ export function formatDuration(minutes: number, tUi: (key: 'minutes' | 'hoursMin
   const h = Math.floor(minutes / 60)
   const m = minutes % 60
   return m ? tUi('hoursMinutes', { h, m }) : tUi('hours', { h })
+}
+
+/** A step the learner has to act on before reading on: an activity (guess, choice, sort, myth) or a practice task. */
+export const stepWaits = (step: CardStep) => step.kind === 'content' && (!!activityIn(step.blocks) || step.blocks.some((b) => b.type === 'practice'))
+
+/**
+ * Reading a lesson as one page (the laptop layout): from step `from`, the last step to show at once. Plain reading runs
+ * on; it stops at a step that waits (shown, then waited on), at a question, or on the step just before a question.
+ */
+export function readTo(steps: CardStep[], from: number): number {
+  let i = Math.max(0, Math.min(from, steps.length - 1))
+  while (i < steps.length - 1 && steps[i].kind === 'content' && !stepWaits(steps[i]) && steps[i + 1].kind === 'content') i++
+  return i
 }

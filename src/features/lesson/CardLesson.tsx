@@ -16,7 +16,7 @@ import { PAY_PER_CORRECT } from '../../domain/money'
 import { levelUp as reachedLevel } from '../../domain/levels'
 import { newBadges, playgroundFacts, progressFacts, unitFacts } from '../../domain/badges'
 import { buzz, useCountUp } from '../../components/motion/motion'
-import { learnHref, lessonKey, lessonsFor, type Lesson } from '../../domain/lessons'
+import { learnHref, lessonKey, lessonsFor, readTo, type CardStep, type Lesson } from '../../domain/lessons'
 import { clearLessonRun, lessonRunStore, saveLessonRun } from '../../state/lessonRun'
 import { saveBadges } from '../../state/useBadges'
 import { SpaceGuide } from './SpaceGuide'
@@ -30,6 +30,7 @@ import { LessonGate } from './LessonGate'
 import { canOpenLesson, lessonOrder } from '../../domain/access'
 import { useGuestLimited } from '../../state/useAccess'
 import { useTrail } from '../../state/useTrail'
+import { useWide } from '../../state/useWide'
 import { moneyText } from '../../i18n'
 import {
   AnswerFeedback,
@@ -92,7 +93,9 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
     const run = lessonRunStore.get()
     return pays && run?.key === key && run.index < steps.length ? run : null
   })
-  const [index, setIndex] = useState(resume?.index ?? 0)
+  // On a laptop the lesson reads as one page: every step so far stays on screen, and plain reading runs on (readTo)
+  const wide = useWide()
+  const [index, setIndex] = useState(() => (wide ? readTo(steps, resume?.index ?? 0) : (resume?.index ?? 0)))
   const resumedAnswer = resume?.answers[resume.index]
   const [selected, setSelected] = useState<number | null>(resumedAnswer?.settled ? resumedAnswer.selected : null)
   const [checked, setChecked] = useState(!!resumedAnswer?.settled)
@@ -137,10 +140,22 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
   const retry = checked && !isCorrect && attempt === 0 // a wrong first try can be tried again
   const settled = checked && !retry // right, or the second try
 
-  // Each step starts at the top of the screen
+  // Each step starts at the top of the screen. On a laptop the page grows instead: the first newly shown step scrolls
+  // into view and takes the focus (for the keyboard and screen readers).
+  const reveal = useRef<number | null>(null)
   useEffect(() => {
-    window.scrollTo({ top: 0 })
-  }, [index])
+    const from = reveal.current
+    reveal.current = null
+    // (Statements, not `return window.scrollTo(...)`: newer browsers return a promise from it, and an effect must not)
+    if (!wide || from === null) {
+      window.scrollTo({ top: 0 })
+      return
+    }
+    const el = document.getElementById(`step-${from}`)
+    if (!el) return
+    el.focus({ preventScroll: true })
+    el.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
+  }, [index, wide])
 
   function check() {
     if (!question || selected === null || checked) return
@@ -174,10 +189,16 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
     if (index > 0) enter(index - 1)
   }
 
-  /** "Re-read the lesson card": back to the last content card before this question. */
+  /** "Re-read the lesson card": back to the last content card before this question. On a laptop that card is still on
+   *  the page above, so it scrolls there and the question waits for its second try. */
   function reread() {
     const before = steps.slice(0, index).map((s, i) => [s, i] as const).filter(([s]) => s.kind === 'content').pop()
     if (!before) return tryAgain()
+    if (wide) {
+      tryAgain()
+      document.getElementById(`step-${before[1]}`)?.scrollIntoView({ block: 'start' })
+      return
+    }
     enter(before[1])
   }
 
@@ -207,6 +228,10 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
       clearLessonRun(key)
       setDone(true)
       return
+    }
+    if (wide) {
+      reveal.current = index + 1
+      return enter(readTo(steps, index + 1))
     }
     enter(index + 1)
   }
@@ -248,45 +273,69 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
     )
   }
 
+  /** One step: a content card (with its activity or practice task) or a question. Earlier questions on the laptop's
+   *  page show read-only, as answered. */
+  function stepView(s: CardStep, i: number) {
+    const current = i === index
+    if (s.kind === 'content') {
+      const task = s.blocks.find((b) => b.type === 'practice')?.task
+      return (
+        <>
+          {/* key: a new card replays the entrance animation. */}
+          <div key={i} className={`${styles.card} ${contentStyles.content}`}>
+            {s.heading && (
+              <p className={styles.kicker}>
+                {t(s.heading.label)}
+                {lesson.parts > 1 && ` · ${lesson.part}/${lesson.parts}`}
+              </p>
+            )}
+            {s.heading?.html && <div dangerouslySetInnerHTML={safeHtml(t(s.heading.html))} />}
+            <ActivityDoneContext.Provider value={() => setActivitiesDone((d) => ({ ...d, [i]: true }))}>
+              <Blocks blocks={s.blocks} />
+            </ActivityDoneContext.Provider>
+            {/* Whatever room is left under the step, the guide fills it (nothing when the step fills the screen). */}
+            {current && !task && !activityIn(s.blocks) && <SpaceGuide blocks={s.blocks} step={i} />}
+          </div>
+          {wide && task && <PracticeBlock task={task} />}
+        </>
+      )
+    }
+    if (!current) {
+      const a = answers[i]
+      return (
+        <div className={styles.card}>
+          <QuestionCard question={s.question} kicker={tUi('quickCheck')} selected={a?.selected ?? null} checked={!!a?.settled} onSelect={() => {}} />
+        </div>
+      )
+    }
+    return (
+      <div key={i} className={styles.card}>
+        <QuestionCard question={s.question} kicker={tUi('quickCheck')} selected={selected} checked={checked} reveal={!retry} onSelect={setSelected} />
+      </div>
+    )
+  }
+
   const continueLabel = isLast ? tUi('lessonFinish') : tUi('lessonContinue')
 
   return (
     <ModuleQuestionsContext.Provider value={mod.questions}>
-      <div className={styles.lesson}>
-        <LessonTopBar quitTo="/" done={index + (settled ? 1 : 0)} total={steps.length} onBack={index > 0 ? back : undefined} />
+      <div className={`${styles.lesson} ${wide ? styles.reading : ''}`}>
+        {/* On a laptop earlier steps stay on the page above, so there is no back arrow */}
+        <LessonTopBar quitTo="/" done={index + (settled ? 1 : 0)} total={steps.length} onBack={index > 0 && !wide ? back : undefined} />
 
-        {step.kind === 'content' ? (
-          // key: a new card replays the entrance animation.
-          <div key={index} className={`${styles.card} ${contentStyles.content}`}>
-            {step.heading && (
-              <p className={styles.kicker}>
-                {t(step.heading.label)}
-                {lesson.parts > 1 && ` · ${lesson.part}/${lesson.parts}`}
-              </p>
-            )}
-            {step.heading?.html && (
-              <div dangerouslySetInnerHTML={safeHtml(t(step.heading.html))} />
-            )}
-            <ActivityDoneContext.Provider value={() => setActivitiesDone((d) => ({ ...d, [index]: true }))}>
-              <Blocks blocks={step.blocks} />
-            </ActivityDoneContext.Provider>
-            {/* Whatever room is left under the step, the guide fills it (nothing when the step fills the screen). */}
-            {!practiceTask && !activity && <SpaceGuide blocks={step.blocks} step={index} />}
-          </div>
+        {wide ? (
+          // A laptop: the lesson so far as one page, the current step last
+          steps.slice(0, index + 1).map((s, i) => (
+            <section key={i} id={`step-${i}`} tabIndex={-1} className={styles.readStep} aria-current={i === index ? 'step' : undefined}>
+              {stepView(s, i)}
+            </section>
+          ))
         ) : (
-          <div key={index} className={styles.card}>
-            <QuestionCard
-              question={step.question}
-              kicker={tUi('quickCheck')}
-              selected={selected}
-              checked={checked}
-              reveal={!retry}
-              onSelect={setSelected}
-            />
-          </div>
+          <>
+            {stepView(step, index)}
+            {practiceTask && <PracticeBlock task={practiceTask} />}
+          </>
         )}
-
-        {practiceTask && <PracticeBlock task={practiceTask} />}
 
         {question && !checked ? (
           <LessonFooter action={tUi('check')} disabled={selected === null} onAction={check} />
