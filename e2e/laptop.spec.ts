@@ -111,3 +111,72 @@ for (const theme of ['light', 'dark'] as const)
       const serious = violations.filter((v) => v.impact === 'serious' || v.impact === 'critical')
       expect(serious.map((v) => `${v.id}: ${v.nodes[0]?.target}`)).toEqual([])
     })
+
+// Part 3: a lesson reads as one page on a laptop
+const current = (page: Page) => page.locator('section[aria-current="step"]')
+const nextBtn = (page: Page) => page.getByRole('button', { name: 'Next', exact: true })
+
+/** Answer the activity on the current step, if any (first option; sort: everything in the first bucket). */
+async function answerHere(page: Page) {
+  const here = current(page)
+  const sortItems = here.locator('section[aria-label="Sort it"] li button')
+  if (await sortItems.count()) {
+    for (let i = 0; i < 12 && (await sortItems.count()); i++) await sortItems.first().click()
+    return
+  }
+  const option = here.locator('section[aria-label] [role="group"] button').first()
+  if ((await option.count()) && (await option.isEnabled())) await option.click()
+}
+
+test('a lesson reads as one page: activities still wait, earlier steps stay, and scoring is the same as on a phone', async ({ page }) => {
+  await start(page)
+  await page.goto('course/investing/basics/learn/why')
+  // The hook and its guess come first, and Next waits for the guess
+  await expect(current(page).getByRole('region', { name: 'Guess first' })).toBeVisible()
+  await expect(nextBtn(page)).toBeDisabled()
+  await answerHere(page)
+  await nextBtn(page).click()
+  // The page grew: the first step is still there, and more steps follow it
+  await expect(page.locator('#step-0')).toBeAttached()
+  expect(await page.locator('section[id^="step-"]').count()).toBeGreaterThan(1)
+  await expect(page.getByRole('button', { name: 'Previous step' })).toHaveCount(0)
+  // Read on to the first quick check
+  for (let i = 0; i < 10 && !(await current(page).getByRole('radiogroup').count()); i++) {
+    await answerHere(page)
+    await nextBtn(page).click()
+  }
+  await expect(current(page).getByRole('heading', { name: /purchasing power/ })).toBeVisible()
+  // A wrong first try, then the right one: it does not pay
+  await current(page).getByRole('radio', { name: 'It grows by 1% a year' }).click()
+  await page.getByRole('button', { name: 'Check answer' }).click()
+  await page.getByRole('button', { name: 'Try again' }).click()
+  await current(page).getByRole('radio', { name: 'It shrinks' }).click()
+  await page.getByRole('button', { name: 'Check answer' }).click()
+  await page.getByRole('button', { name: 'Continue' }).click()
+  // The answered check stays above, read-only; the next one is right first time: it pays
+  await expect(page.getByRole('radio', { name: 'It shrinks' })).toBeDisabled()
+  await current(page).getByRole('radio', { name: 'An emergency fund you might need next month' }).click()
+  await page.getByRole('button', { name: 'Check answer' }).click()
+  await page.getByRole('button', { name: 'Finish' }).click()
+  await expect(page.getByRole('button', { name: 'Next lesson' })).toBeVisible()
+  const saved = JSON.parse((await page.evaluate(() => localStorage.getItem('progress:v2')))!)
+  expect(saved.lessonsDone).toContain('investing/basics/why')
+  expect(saved.bank).toBe(1010) // one right first try, $10
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
+})
+
+test('a half-read lesson resumes with its earlier steps on the page, and passes axe', async ({ page }) => {
+  await start(page)
+  await page.goto('course/investing/basics/learn/why')
+  await expect(current(page).getByRole('region', { name: 'Guess first' })).toBeVisible()
+  await answerHere(page)
+  await nextBtn(page).click()
+  await expect(page.locator('#step-1')).toBeAttached()
+  const shown = await page.locator('section[id^="step-"]').count()
+  await page.reload()
+  await expect(page.locator('section[id^="step-"]')).toHaveCount(shown)
+  await page.waitForTimeout(500) // the cards' entrance animation (a half-faded card fails contrast)
+  const { violations } = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze()
+  const serious = violations.filter((v) => v.impact === 'serious' || v.impact === 'critical')
+  expect(serious.map((v) => `${v.id}: ${v.nodes[0]?.target}`)).toEqual([])
+})

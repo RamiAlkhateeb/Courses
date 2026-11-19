@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { courses } from '../src/content/courses'
 import type { Module } from '../src/content/types'
-import { lessonsFor, MAX_CARDS } from '../src/domain/lessons'
+import { lessonsFor, MAX_CARDS, readTo, type CardStep } from '../src/domain/lessons'
 
 async function allModules() {
   const mods: Module[] = []
@@ -137,5 +137,24 @@ describe('fixed lesson ids', () => {
   it('keep the ids when the text grows (no split, no reset)', () => {
     expect(lessonsFor(mod(['only'])).map((l) => l.id)).toEqual(['only'])
     expect(lessonsFor(mod()).map((l) => l.id)).toEqual(['s'])
+  })
+})
+
+describe('readTo (a lesson read as one page on a laptop)', () => {
+  const text = (): CardStep => ({ kind: 'content', sectionId: 's', blocks: [{ type: 'html', html: { en: '<p>x</p>', ar: '<p>x</p>' } }] })
+  const act = (): CardStep => ({ kind: 'content', sectionId: 's', blocks: [{ type: 'myth', statement: { en: 'm', ar: 'm' }, fact: false, explain: { en: 'e', ar: 'e' } }] })
+  const ask = (): CardStep => ({ kind: 'question', sectionId: 's', question: { id: 'x-q001', moduleId: 'm', topic: 't', prompt: { en: 'p', ar: 'p' }, options: [], answer: 0 } })
+
+  it('reads on through plain text and stops on the step before a question', () => {
+    expect(readTo([text(), text(), text(), ask(), ask()], 0)).toBe(2)
+  })
+  it('stops at an activity, which is shown and then waits', () => {
+    expect(readTo([text(), act(), text(), ask()], 0)).toBe(1)
+    expect(readTo([text(), act(), text(), ask()], 2)).toBe(2)
+  })
+  it('stays on a question, and never runs past the last step', () => {
+    expect(readTo([text(), ask(), ask()], 1)).toBe(1)
+    expect(readTo([text(), text()], 0)).toBe(1)
+    expect(readTo([text()], 5)).toBe(0)
   })
 })
