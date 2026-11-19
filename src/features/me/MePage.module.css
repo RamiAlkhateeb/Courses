@@ -294,3 +294,24 @@
   font-size: 0.875rem;
   color: var(--on-indigo-dim);
 }
+
+/* Laptop: two columns. On a phone the wrappers are invisible, so the page reads as before. */
+.cols,
+.col {
+  display: contents;
+}
+@media (min-width: 1024px) {
+  .cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+  }
+  .col {
+    display: block;
+    min-inline-size: 0;
+  }
+  .col > :first-child {
+    margin-block-start: 0;
+  }
+}

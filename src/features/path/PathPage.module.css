@@ -456,3 +456,17 @@
   background: var(--streak);
   flex-shrink: 0;
 }
+
+/* Laptop (useWide): Up next and the units beside a rail of today's cards */
+.dash {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 24px;
+  align-items: start;
+}
+.main,
+.rail {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}

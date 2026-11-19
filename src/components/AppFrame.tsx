@@ -31,6 +31,8 @@ export function AppFrame() {
   const wide = useWide()
   if (!onboarded && !pathname.startsWith('/welcome') && !FIRST_TIMER_OK.test(pathname)) return <Navigate to="/welcome" replace />
   const withSidebar = wide && onboarded && !pathname.startsWith('/welcome')
+  // Learn, Me and the portfolio use more of a laptop's width (two columns); other pages keep a reading width
+  const roomy = pathname === '/' || pathname === '/me' || pathname === '/portfolio'
   if (!withSidebar)
     return (
       <div className={styles.frame}>
@@ -38,7 +40,7 @@ export function AppFrame() {
       </div>
     )
   return (
-    <div className={styles.wide}>
+    <div className={`${styles.wide} ${roomy ? styles.roomy : ''}`}>
       <Suspense fallback={<div />}>
         <Sidebar />
       </Suspense>

@@ -108,6 +108,10 @@ export function MePage() {
       </header>
       <CourseSwitcher className={styles.switcher} />
 
+      {/* Two columns on a laptop (your numbers and this week; the garden, level and badges); one on a phone */}
+      <div className={styles.cols}>
+      <div className={styles.col}>
+
       {firstTime && (
         <Card tone="indigo" className={styles.first}>
           <h2>{t('me_first_title')}</h2>
@@ -179,6 +183,8 @@ export function MePage() {
       </Card>
       )}
 
+      </div>
+      <div className={styles.col}>
       <h2 className={styles.kicker}>{t('yourGarden')}</h2>
       <Card tone="mint" className={styles.garden}>
         <ol className={styles.stages}>
@@ -232,6 +238,8 @@ export function MePage() {
           </li>
         ))}
       </ul>
+      </div>
+      </div>
     </div>
   )
 }

@@ -28,7 +28,7 @@ offline. Optional accounts (Supabase) sync everything; without them the app is c
 ## Next
 - **Laptop layout** (from 1024px; phones unchanged):
   - [x] The course sidebar: main pages and the course outline beside a wider page; the old `/course/:id` page removed
-  - [ ] A dashboard Learn (Up next and the units, beside a rail with Today, the streak, the portfolio and review),
+  - [x] A dashboard Learn (Up next and the units, beside a rail with Today, the streak, the portfolio and review),
     two-column Me, a wider portfolio
   - [ ] Long-form reading: a lesson as one page to scroll, its activities and checks inline, same scoring
 - **Personal Finance** (in progress, hidden until all five modules are written; `DRAFT_COURSE_IDS`): the same Noor and
