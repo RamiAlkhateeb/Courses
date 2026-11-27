@@ -60,7 +60,7 @@ test('the course certificate shows the day the last lesson was first finished', 
   for (const course of appCourses)
     for (const load of Object.values(course.loaders)) {
       const mod = await load()
-      for (const lesson of lessonsFor(mod)) keys.push(lessonKey(course.id, mod.id, lesson.id))
+      for (const lesson of lessonsFor(mod, { practice: true })) keys.push(lessonKey(course.id, mod.id, lesson.id))
     }
   const completed = Object.fromEntries(keys.map((k, i) => [k, i === 3 ? '2026-10-20' : '2026-10-01']))
   await onboarded(page, { bank: 1000, lessonsDone: keys, completed })

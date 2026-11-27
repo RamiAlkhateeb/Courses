@@ -8,6 +8,7 @@ import { signOut, useAuth } from '../../state/auth'
 import { playSound } from '../../state/sound'
 import { useSettings } from '../../state/useSettings'
 import { alertSupport, setNewsAlerts, useNewsAlerts } from '../../state/newsAlerts'
+import { SIMULATOR_ON } from '../../content/features'
 import { installApp, useCanInstall } from '../../state/install'
 import { setReminderHour, setReminderOn, useReminder } from '../../state/reminder'
 import { REMINDER_HOURS } from '../../domain/reminder'
@@ -73,6 +74,7 @@ export function SettingsPage() {
           }}
         />
         {/* A local notification when Playground news lands; with no backend, only while the app is open. */}
+        {SIMULATOR_ON && (
         <ListSwitch
           icon="megaphone"
           label={t('set_news_alerts')}
@@ -84,6 +86,7 @@ export function SettingsPage() {
             setSupport(alertSupport())
           }}
         />
+        )}
         {/* The daily study reminder: a local notification at the chosen time if no lesson was done that day */}
         <ListSwitch
           icon="bell"

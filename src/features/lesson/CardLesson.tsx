@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Blocks } from '../../components/content/Blocks'
 import contentStyles from '../../components/content/content.module.css'
 import { coursePath, getCourse } from '../../content/courses'
+import { SIMULATOR_ON } from '../../content/features'
 import { safeHtml } from '../../components/content/safeHtml'
 import type { Module } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
@@ -253,13 +254,14 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
   if (done) {
     return (
       <LessonSummary
-        subtitle={tUi('lessonSummaryBank', { title: t(lesson.title), money: moneyText(shownWallet) })}
-        double={double && paid > 0}
+        subtitle={SIMULATOR_ON ? tUi('lessonSummaryBank', { title: t(lesson.title), money: moneyText(shownWallet) }) : t(lesson.title)}
+        double={SIMULATOR_ON && double && paid > 0}
         levelUp={levelReached}
         badges={badgesEarned}
         ending={ending}
         seconds={seconds}
-        payout={pays ? paid : undefined}
+        // With the wallet hidden, nothing about money shows (0: no payout line, no "practice pays nothing")
+        payout={!SIMULATOR_ON ? 0 : pays ? paid : undefined}
         correct={correctCount}
         total={total}
         freezeEarned={freezeEarned}
@@ -342,10 +344,10 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
         ) : (
           <LessonFooter
             tone={question ? (isCorrect ? 'right' : 'wrong') : undefined}
-            paid={!!question && isCorrect && pays && !!answers[index]?.first}
+            paid={SIMULATOR_ON && !!question && isCorrect && pays && !!answers[index]?.first}
             feedback={
               question && (
-                <AnswerFeedback question={question} correct={isCorrect} pays={pays && !!answers[index]?.first} firstTry={retry} rate={rate} combo={isCorrect && answers[index]?.first ? combo : 0} />
+                <AnswerFeedback question={question} correct={isCorrect} pays={SIMULATOR_ON && pays && !!answers[index]?.first} firstTry={retry} rate={rate} combo={isCorrect && answers[index]?.first ? combo : 0} />
               )
             }
             action={question ? (retry ? tUi('tryAgain') : continueLabel) : tUi('nextBtn')}

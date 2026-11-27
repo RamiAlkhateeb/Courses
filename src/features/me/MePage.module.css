@@ -39,7 +39,8 @@
 }
 .stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column; /* two or three stats, as many as are shown */
   gap: 10px;
   margin-block: 20px 14px;
 }

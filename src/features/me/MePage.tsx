@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Logo } from '../../components/Logo'
 import { CourseSwitcher } from '../../components/CourseSwitcher'
 import { Money } from '../../components/Money'
+import { SIMULATOR_ON } from '../../content/features'
 import { Bush, Mound, Sprout, Tree } from '../../components/GardenArt'
 import type { ParseKeys } from 'i18next'
 import { Button, Card, Coin, Icon, ProgressBar, TextField, buttonClass, type IconName } from '../../components/ui'
@@ -62,7 +63,7 @@ export function MePage() {
 
   const stats: { icon?: IconName; value: ReactNode; label: string }[] = [
     { icon: 'flame', value: String(streak), label: t('dayStreak') },
-    { value: <Money amount={wallet} />, label: t('playMoneyShort') },
+    ...(SIMULATOR_ON ? [{ value: <Money amount={wallet} />, label: t('playMoneyShort') }] : []),
     // Lessons done in the active course (the garden counts the same ones)
     { icon: 'check', value: String(doneLessons), label: t('lessonsDoneShort') },
   ]
@@ -168,13 +169,15 @@ export function MePage() {
           <li>
             <strong>{week.days}</strong> {t('recap_days', { count: week.days })}
           </li>
-          <li>
-            <strong>
-              <Money amount={week.earned} sign={week.earned > 0} />
-            </strong>{' '}
-            {t('recap_earned')}
-          </li>
-          {pgMove !== null && (
+          {SIMULATOR_ON && (
+            <li>
+              <strong>
+                <Money amount={week.earned} sign={week.earned > 0} />
+              </strong>{' '}
+              {t('recap_earned')}
+            </li>
+          )}
+          {SIMULATOR_ON && pgMove !== null && (
             <li>
               <Change amount={pgMove} /> {t('recap_portfolio')}
             </li>

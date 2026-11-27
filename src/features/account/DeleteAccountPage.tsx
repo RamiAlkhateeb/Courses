@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Money } from '../../components/Money'
+import { SIMULATOR_ON } from '../../content/features'
 import { Button, TextField } from '../../components/ui'
 import { currentStreak, localDay } from '../../domain/progress'
 import { DELETE_WORD, deleteConfirmed } from '../../domain/auth'
@@ -57,7 +58,13 @@ export function DeleteAccountPage() {
     >
       <p className={styles.lose}>
         <strong>{t('acc_del_lose')}</strong>
-        {t('streakDays', { count: streak })} · {t('nLessons', { count: progress.lessonsDone.length })} · <Money amount={wallet} /> {t('playMoneyShort')} · {t('acc_del_history')}
+        {t('streakDays', { count: streak })} · {t('nLessons', { count: progress.lessonsDone.length })} ·{' '}
+        {SIMULATOR_ON && (
+          <>
+            <Money amount={wallet} /> {t('playMoneyShort')} ·{' '}
+          </>
+        )}
+        {t('acc_del_history')}
       </p>
       <TextField
         label={t('acc_del_type', { word: DELETE_WORD })}

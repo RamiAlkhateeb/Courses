@@ -4,6 +4,7 @@ import { Button, Coin, Icon, ProgressBar } from '../../components/ui'
 import { localDay, studiedToday } from '../../domain/progress'
 import { questsToday } from '../../domain/quests'
 import { moneyText } from '../../i18n'
+import { SIMULATOR_ON } from '../../content/features'
 import { useProfile } from '../../state/profile'
 import { useProgress } from '../../state/useProgress'
 import styles from './PathPage.module.css'
@@ -39,7 +40,8 @@ export function TodayCard({ portfolio }: { portfolio: boolean }) {
           </li>
         ))}
       </ul>
-      {chestReady ? (
+      {/* The chest pays play money, so it goes with the wallet (src/content/features.ts) */}
+      {!SIMULATOR_ON ? null : chestReady ? (
         <Button size="sm" onClick={() => claimChest(ctx)}>
           <Coin size={18} /> {t('chest_open')}
         </Button>

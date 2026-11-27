@@ -11,7 +11,7 @@ const start = (page: Page, items: Record<string, string> = {}) =>
     for (const [k, v] of Object.entries(items)) if (!localStorage.getItem(k)) localStorage.setItem(k, v)
   }, items)
 
-const outline = (page: Page) => page.getByRole('navigation', { name: 'Course outline' })
+const outline = (page: Page) => page.getByRole('navigation', { name: 'Courses' })
 
 test('Learn shows the sidebar, its outline marks finished lessons, and the tab bar is gone', async ({ page }) => {
   await start(page, { 'progress:v2': JSON.stringify({ bank: 1000, lessonsDone: ['investing/basics/why'] }) })
@@ -35,10 +35,28 @@ test('Learn shows the sidebar, its outline marks finished lessons, and the tab b
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
 })
 
+test('each course in the sidebar opens and closes; coming-soon courses are listed as Soon', async ({ page }) => {
+  await start(page)
+  await page.goto('course/investing')
+  const row = outline(page).getByRole('button', { name: /Investing/ })
+  // The active course starts open
+  await expect(row).toHaveAttribute('aria-expanded', 'true')
+  await expect(outline(page).getByRole('region', { name: /How investing works/ })).toBeVisible()
+  await row.click()
+  await expect(row).toHaveAttribute('aria-expanded', 'false')
+  await expect(outline(page).getByRole('region', { name: /How investing works/ })).toHaveCount(0)
+  await row.click()
+  await expect(outline(page).getByRole('region', { name: /How investing works/ })).toBeVisible()
+  // The course dropdown is gone from the sidebar; other courses show as "Soon"
+  await expect(page.locator('aside').getByRole('button', { name: 'Switch course' })).toHaveCount(0)
+  await expect(outline(page).getByText('Introduction to Economics')).toBeVisible()
+  await expect(outline(page).getByText('Soon').first()).toBeVisible()
+})
+
 test('in Arabic the sidebar sits on the right', async ({ page }) => {
   await start(page, { lang: 'ar' })
   await page.goto('course/investing')
-  await expect(page.getByRole('navigation', { name: 'مخطط الدورة' })).toBeVisible()
+  await expect(page.getByRole('navigation', { name: 'الدورات' })).toBeVisible()
   const side = await page.locator('aside').filter({ has: page.getByRole('navigation') }).boundingBox()
   expect(side!.x).toBeGreaterThan(1440 / 2)
 })

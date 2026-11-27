@@ -7,6 +7,10 @@ Zubda (زبدة) offers one course, **Investing Fundamentals** (six units, 39 le
 simulator that runs on the real clock (one real week = one simulated year). Light and dark themes, installable and
 offline. Optional accounts (Supabase) sync everything; without them the app is complete for guests.
 
+**The wallet and the simulator are hidden for now** (`SIMULATOR_ON`, `src/content/features.ts`; a build with
+`VITE_SIMULATOR=1` brings them back, practice lessons included). The app ships as lessons, streaks, badges and
+certificates. On a laptop, the sidebar lists every course, each opening to its units and lessons.
+
 ### Built
 - **The garden design** (`design/`): Welcome, Language, Daily goal; Learn (Up next, the path of units and lessons); card
   lessons with quick checks; Lesson complete; Me; Settings; certificates; the courses page.

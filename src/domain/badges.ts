@@ -2,6 +2,7 @@
 // (`badges` in progress), so a broken streak never takes one away. Pure rules; the facts come from progress, the
 // course's units (src/state/useTrail.ts) and the simulator (src/domain/playground/). Never about returns or rankings.
 import type { Progress } from './progress'
+import { SIMULATOR_ON } from '../content/features'
 import type { PlaygroundState } from './playground/engine'
 import { goalStatus } from './playground/insights'
 import { challengeMet } from './playground/challenges'
@@ -77,11 +78,15 @@ export function awardBadges<P extends Pick<Progress, 'badges'>>(p: P, f: BadgeFa
   return { ...p, badges: { ...p.badges, ...Object.fromEntries(fresh.map((id) => [id, today])) } }
 }
 
+/** Badges that come from the wallet or the simulator: left off the shelf while it is hidden (src/content/features.ts). */
+export const WALLET_BADGES = new Set(['first-buy', 'chest', 'first-payout', 'season', 'goal-met', 'challenge'])
+
 /** Me's badge shelf: the earned ones (with their day), then the next `upNext` still locked. */
-export function badgeShelf(p: Pick<Progress, 'badges'>, upNext = 3) {
-  const earned = BADGES.filter((b) => p.badges[b.id]).map((b) => ({ ...b, day: p.badges[b.id] }))
-  const locked = BADGES.filter((b) => !p.badges[b.id]).slice(0, upNext)
-  return { earned, locked, total: BADGES.length }
+export function badgeShelf(p: Pick<Progress, 'badges'>, upNext = 3, simulator = SIMULATOR_ON) {
+  const shown = simulator ? BADGES : BADGES.filter((b) => !WALLET_BADGES.has(b.id))
+  const earned = shown.filter((b) => p.badges[b.id]).map((b) => ({ ...b, day: p.badges[b.id] }))
+  const locked = shown.filter((b) => !p.badges[b.id]).slice(0, upNext)
+  return { earned, locked, total: shown.length }
 }
 
 /** Units finished and whether the whole course is: `units` holds each unit's lesson keys. */

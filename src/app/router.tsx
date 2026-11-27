@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { RouteError } from './RouteError'
 import { AppFrame, TabsLayout } from '../components/AppFrame'
 import { CoursesPage } from '../features/courses/CoursesPage'
+import { SIMULATOR_ON } from '../content/features'
 
 /** A route whose screen is a named export of a feature module, loaded on first visit. */
 const page = <K extends string>(load: () => Promise<Record<K, ComponentType>>, name: K): Pick<RouteObject, 'lazy'> => ({
@@ -36,9 +37,14 @@ export const router = createBrowserRouter(
         },
         // The simulator: introduced by the practice lessons, then on its own screen (the shortcut on Learn). Old links and
         // a tapped news alert go there; before the first practice lesson it opens that lesson instead.
-        { path: 'portfolio', ...page(() => import('../features/playground/PortfolioPage'), 'PortfolioPage') },
-        { path: 'playground', element: <Navigate to="/portfolio" replace /> },
-        { path: 'playground/summary', ...page(() => import('../features/playground/SummaryPage'), 'SummaryPage') },
+        // While the simulator is hidden (src/content/features.ts) its pages open Home instead
+        ...(SIMULATOR_ON
+          ? [
+              { path: 'portfolio', ...page(() => import('../features/playground/PortfolioPage'), 'PortfolioPage') },
+              { path: 'playground', element: <Navigate to="/portfolio" replace /> },
+              { path: 'playground/summary', ...page(() => import('../features/playground/SummaryPage'), 'SummaryPage') },
+            ]
+          : ['portfolio', 'playground', 'playground/summary'].map((path) => ({ path, element: <Navigate to="/" replace /> }))),
         // Settings (from the gear on Me) and the legal pages it links to work with or without accounts.
         { path: 'settings', ...page(() => import('../features/settings/SettingsPage'), 'SettingsPage') },
         // The old courses page: the course list is Home now

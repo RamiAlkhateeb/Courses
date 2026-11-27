@@ -59,9 +59,101 @@
   margin-inline: -16px;
   padding-inline: 16px;
 }
-.course {
-  font-size: 0.9375rem;
+.coursesTitle {
+  margin: 0 0 6px;
   padding-inline: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.courses {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+.courseRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  inline-size: 100%;
+  min-block-size: 44px;
+  padding: 8px;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  text-align: start;
+  color: var(--indigo);
+  cursor: pointer;
+}
+.courseRow:hover {
+  background: var(--chip-bg);
+}
+.activeCourse .courseName {
+  color: var(--blue-text);
+}
+.chev {
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  transform: rotate(-90deg);
+}
+html[dir='rtl'] .chev {
+  transform: rotate(90deg);
+}
+.chev.chevOpen,
+html[dir='rtl'] .chev.chevOpen {
+  transform: none;
+}
+.courseName {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  line-height: 1.3;
+}
+.courseCount {
+  flex: 0 0 auto;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  direction: ltr;
+}
+.coursePanel {
+  padding-inline-start: 8px;
+  padding-block-end: 8px;
+}
+.openCourse {
+  display: inline-block;
+  margin-block: 2px 4px;
+  padding-inline: 8px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--blue-text);
+}
+.soonRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-block-size: 44px;
+  padding: 8px;
+  padding-inline-start: 32px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+.soonChip {
+  flex: 0 0 auto;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--chip-bg);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--muted);
 }
 .unit {
   margin-block-start: 12px;

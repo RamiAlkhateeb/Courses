@@ -4,6 +4,7 @@ import { Guide, buttonClass, Icon, StatPill } from '../../components/ui'
 import { MoneyChip } from '../../components/MoneyChip'
 import { CourseSwitcher } from '../../components/CourseSwitcher'
 import { ENABLED_COURSE_IDS, getCourse, practiceHref } from '../../content/courses'
+import { SIMULATOR_ON } from '../../content/features'
 import { useLocalized } from '../../content/useLocalized'
 import { currentStreak, doubleToday, dueQuestions, localDay, streakAtRisk } from '../../domain/progress'
 import { TodayCard } from './TodayCard'
@@ -70,7 +71,8 @@ function CoursePath({ courseId }: { courseId: string }) {
   const gated = (moduleId: string, lessonId: string) => !canOpenLesson(order, moduleId, lessonId, guest)
   const nextGated = !!next && gated(next.mod.id, next.lesson.id)
   const pg = useStore(playgroundStore)
-  const showPortfolio = portfolioOpen(pg, progress.lessonsDone)
+  // The portfolio row, the away card and the portfolio quest only exist with the simulator (src/content/features.ts)
+  const showPortfolio = SIMULATOR_ON && portfolioOpen(pg, progress.lessonsDone)
   // Unread news or a yearly recap waiting on the portfolio: the row gets a dot
   const newThere = somethingNew(pg, pendingRecap(pg) !== null)
   // The first look at a running season starts the "while you were away" clock
@@ -131,7 +133,7 @@ function CoursePath({ courseId }: { courseId: string }) {
             <p className={styles.upKicker}>{t('learn_up_next', { n: nextIndex + 1, total: nextChapter.lessons.length })}</p>
             <h2 className={styles.upTitle}>{tc(next.lesson.title)}</h2>
             <p className={styles.upMeta}>{t('learn_about_min', { count: lessonMinutes(next.lesson) })}</p>
-            {doubleToday(progress, today) && (
+            {SIMULATOR_ON && doubleToday(progress, today) && (
               <p className={styles.upDouble}>
                 <Icon name="flame" size={16} /> {t('double_title')}
               </p>
@@ -241,7 +243,7 @@ function CoursePath({ courseId }: { courseId: string }) {
             <span aria-hidden>{streak}</span>
             <span className="visually-hidden">{t('learn_days', { count: streak })}</span>
           </StatPill>
-          <MoneyChip amount={wallet} compact />
+          {SIMULATOR_ON && <MoneyChip amount={wallet} compact />}
         </div>
       </header>
       {/* Accounts are optional and only exist when Supabase is configured; the Log in screen links on to Create an account. */}

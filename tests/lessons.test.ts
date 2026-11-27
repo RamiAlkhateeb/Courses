@@ -13,7 +13,7 @@ describe('roadmap lessons (every module)', () => {
   it('asks every question exactly once, after content of the same lesson', async () => {
     for (const mod of await allModules()) {
       const asked: string[] = []
-      for (const lesson of lessonsFor(mod)) {
+      for (const lesson of lessonsFor(mod, { practice: true })) {
         let shown = 0
         for (const step of lesson.steps) {
           if (step.kind === 'content') shown++
@@ -29,7 +29,7 @@ describe('roadmap lessons (every module)', () => {
 
   it('keeps lessons short, with unique ids, one per section part', async () => {
     for (const mod of await allModules()) {
-      const lessons = lessonsFor(mod)
+      const lessons = lessonsFor(mod, { practice: true })
       const ids = lessons.map((l) => l.id)
       expect(new Set(ids).size, `${mod.id}: duplicate lesson ids`).toBe(ids.length)
       for (const lesson of lessons) {
@@ -44,7 +44,7 @@ describe('roadmap lessons (every module)', () => {
 
   it('opens each section with its heading, and later parts with its label', async () => {
     for (const mod of await allModules()) {
-      for (const lesson of lessonsFor(mod)) {
+      for (const lesson of lessonsFor(mod, { practice: true })) {
         const section = mod.sections.find((s) => s.id === lesson.sectionId)!
         const first = lesson.steps[0]
         expect(first.kind).toBe('content')
@@ -57,7 +57,7 @@ describe('roadmap lessons (every module)', () => {
 
   it('cuts content into cards without losing Arabic', async () => {
     for (const mod of await allModules()) {
-      for (const lesson of lessonsFor(mod)) {
+      for (const lesson of lessonsFor(mod, { practice: true })) {
         for (const step of lesson.steps) {
           if (step.kind !== 'content') continue
           for (const b of step.blocks) if (b.type === 'html') expect(b.html.ar, `${mod.id}/${lesson.id}`).toBeTruthy()
@@ -71,7 +71,7 @@ describe('lesson time, recap and next lesson', () => {
   it('estimates at least a minute per lesson, more for longer ones', async () => {
     const { lessonMinutes } = await import('../src/domain/lessons')
     for (const mod of await allModules()) {
-      for (const lesson of lessonsFor(mod)) expect(lessonMinutes(lesson), `${mod.id}/${lesson.id}`).toBeGreaterThanOrEqual(1)
+      for (const lesson of lessonsFor(mod, { practice: true })) expect(lessonMinutes(lesson), `${mod.id}/${lesson.id}`).toBeGreaterThanOrEqual(1)
     }
     const short = { id: 'a', sectionId: 's', part: 1, parts: 1, title: { en: '' }, steps: [{ kind: 'content' as const, sectionId: 's', blocks: [{ type: 'html' as const, html: { en: 'word '.repeat(150) } }] }] }
     const long = { ...short, steps: [{ ...short.steps[0], blocks: [{ type: 'html' as const, html: { en: 'word '.repeat(900) } }] }] }

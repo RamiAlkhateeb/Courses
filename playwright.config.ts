@@ -3,6 +3,7 @@ import { defineConfig } from '@playwright/test'
 // The smoke suite runs against a production build served by `vite preview` under the same base path GitHub Pages
 // uses (/Courses/), so a hard-coded "/" or a broken asset path fails here and not after deploy.
 const PORT = 4173
+const PLAIN_PORT = 4174
 
 export default defineConfig({
   testDir: 'e2e',
@@ -16,13 +17,39 @@ export default defineConfig({
     trace: 'retain-on-failure',
     // Locally the browser is preinstalled (PLAYWRIGHT_BROWSERS_PATH); CI runs `npx playwright install chromium`.
   },
-  webServer: {
-    command: `npm run build && npx vite preview --port ${PORT} --strictPort`,
-    // The accounts tests run against fake Supabase answers (e2e/account.spec.ts), so the build has accounts switched on
-    // with a made-up project: nothing here can reach a real database.
-    env: { GITHUB_PAGES: 'true', GITHUB_REPOSITORY: 'owner/Courses', VITE_SUPABASE_URL: 'https://fake-project.supabase.co', VITE_SUPABASE_ANON_KEY: 'fake-anon-key-for-tests-only-0000' },
-    url: `http://localhost:${PORT}/Courses/`,
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
-  },
+  // Most specs drive the play-money wallet and the simulator, so their build switches it on (VITE_SIMULATOR=1); the
+  // shipped app hides it, and `wallet-off.spec.ts` checks that against a second build without the switch.
+  projects: [
+    { name: 'app', testIgnore: /wallet-off\.spec\.ts/ },
+    {
+      name: 'wallet-off',
+      testMatch: /wallet-off\.spec\.ts/,
+      use: { baseURL: `http://localhost:${PLAIN_PORT}/Courses/` },
+    },
+  ],
+  webServer: [
+    {
+      command: `npm run build && npx vite preview --port ${PORT} --strictPort`,
+      // The accounts tests run against fake Supabase answers (e2e/account.spec.ts), so the build has accounts switched on
+      // with a made-up project: nothing here can reach a real database.
+      env: {
+        GITHUB_PAGES: 'true',
+        GITHUB_REPOSITORY: 'owner/Courses',
+        VITE_SUPABASE_URL: 'https://fake-project.supabase.co',
+        VITE_SUPABASE_ANON_KEY: 'fake-anon-key-for-tests-only-0000',
+        VITE_SIMULATOR: '1',
+      },
+      url: `http://localhost:${PORT}/Courses/`,
+      reuseExistingServer: !process.env.CI,
+      timeout: 120_000,
+    },
+    {
+      // The shipped app: no simulator, no accounts. Built into its own folder so the two builds never share one.
+      command: `npx vite build --outDir dist-plain && npx vite preview --outDir dist-plain --port ${PLAIN_PORT} --strictPort`,
+      env: { GITHUB_PAGES: 'true', GITHUB_REPOSITORY: 'owner/Courses' },
+      url: `http://localhost:${PLAIN_PORT}/Courses/`,
+      reuseExistingServer: !process.env.CI,
+      timeout: 180_000,
+    },
+  ],
 })

@@ -11,7 +11,7 @@ describe('lesson ids', () => {
     const ids: Record<string, string[]> = {}
     for (const course of courses) {
       for (const [id, load] of Object.entries(course.loaders)) {
-        ids[`${course.id}/${id}`] = lessonsFor(await load()).map((l) => l.id)
+        ids[`${course.id}/${id}`] = lessonsFor(await load(), { practice: true }).map((l) => l.id)
       }
     }
     expect(ids).toMatchSnapshot()
@@ -30,7 +30,7 @@ describe('lesson ids', () => {
           all.push(...section.lessonIds!)
         }
         expect(new Set(all).size, `${course.id}/${id}: duplicate lesson ids`).toBe(all.length)
-        expect(lessonsFor(mod).map((l) => l.id)).toEqual(all)
+        expect(lessonsFor(mod, { practice: true }).map((l) => l.id)).toEqual(all)
       }
     }
   })

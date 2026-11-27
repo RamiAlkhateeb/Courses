@@ -6,6 +6,7 @@ import { showNewsAlert } from '../state/newsAlerts'
 import { useStudyReminder } from '../state/reminder'
 import { usePlaygroundClock } from '../state/usePlayground'
 import { useWide } from '../state/useWide'
+import { SIMULATOR_ON } from '../content/features'
 import { useTrailId } from '../state/useTrail'
 import { coursePath } from '../content/courses'
 import { TabBar } from './ui'
@@ -29,7 +30,9 @@ export function AppFrame() {
     title: t('reminder_title'),
     body: streak > 0 ? t('reminder_body_streak', { count: streak }) : t('reminder_body'),
   }))
-  usePlaygroundClock((ids) => ids.forEach((id) => showNewsAlert(t('pg_alert_title', { title: t(`pg_event_${id}_title`) }), t(`pg_event_${id}_body`))))
+  usePlaygroundClock((ids) =>
+    // News alerts only while the simulator is shown (src/content/features.ts)
+    SIMULATOR_ON && ids.forEach((id) => showNewsAlert(t('pg_alert_title', { title: t(`pg_event_${id}_title`) }), t(`pg_event_${id}_body`))))
   const wide = useWide()
   if (!onboarded && !pathname.startsWith('/welcome') && !FIRST_TIMER_OK.test(pathname)) return <Navigate to="/welcome" replace />
   const withSidebar = wide && onboarded && !pathname.startsWith('/welcome')

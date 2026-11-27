@@ -1,4 +1,5 @@
 import type { Block, Localized, Question, Module } from '../content/types'
+import { SIMULATOR_ON } from '../content/features'
 import { activityIn } from './activities'
 import { blockWords, stripTags, toCards, wordCount } from './chunks'
 
@@ -27,10 +28,12 @@ export interface Lesson {
   steps: CardStep[]
 }
 
-/** Every lesson of a module, in reading order. */
-export function lessonsFor(mod: Module): Lesson[] {
+/** Every lesson of a module, in reading order. Practice lessons (a section with a simulator task) are left out while
+ *  the simulator is hidden (`SIMULATOR_ON`); `practice: true` keeps them, e.g. for the lesson-id snapshot. */
+export function lessonsFor(mod: Module, { practice = SIMULATOR_ON }: { practice?: boolean } = {}): Lesson[] {
   const lessons: Lesson[] = []
   for (const section of mod.sections) {
+    if (!practice && section.blocks.some((b) => b.type === 'practice')) continue
     const { cards, exercises } = toCards(section.blocks)
     if (cards.length === 0) cards.push([]) // heading-only section: still one card to show the heading
     const fixed = section.lessonIds
