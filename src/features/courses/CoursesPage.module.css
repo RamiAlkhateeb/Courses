@@ -109,3 +109,25 @@
   border: 1px dashed var(--locked);
   color: var(--muted);
 }
+/* The course as a book (signed-in members) */
+.book {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  margin-block-start: 12px;
+  padding-block-start: 12px;
+  border-block-start: 1px solid var(--line);
+}
+.bookNote {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+.bookError {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--oops);
+}

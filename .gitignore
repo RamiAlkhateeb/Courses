@@ -34,3 +34,7 @@ playwright-report/
 
 # Social exports (scripts/social/export-post.mjs)
 social/out/
+
+# Course books (scripts/book/build-pdf.mjs): the book build and its PDFs, uploaded to private storage, never committed
+dist-book/
+book-out/

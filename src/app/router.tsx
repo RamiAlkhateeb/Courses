@@ -93,6 +93,11 @@ export const router = createBrowserRouter(
       errorElement: <RouteError />,
       ...page(() => import('./SharePage'), 'SharePage'),
     },
+    // A course's book for print: only in book builds (VITE_BOOK=1, scripts/book/build-pdf.mjs), so the deployed app
+    // contains neither this route nor the book's text (members download the PDF from private storage)
+    ...(import.meta.env.VITE_BOOK === '1'
+      ? [{ path: '/book/:courseId', errorElement: <RouteError />, ...page(() => import('./BookPage'), 'BookPage') }]
+      : []),
     {
       // Studio (hidden: linked from nowhere, noindex): preview a lesson's carousel slides and download them as PNGs
       path: '/studio',

@@ -727,4 +727,10 @@ export const en = {
   "learn_rail": "Your day",
   "home_lessons_done": "{{done}} of {{total}} lessons done",
   "tabHome": "Home",
+  "book_download": "Download the book (PDF)",
+  "book_signup": "Sign up to download the book",
+  "book_preparing": "Preparing the book…",
+  "book_missing": "The book is not ready yet. Try again soon.",
+  "book_error": "The book could not be downloaded. Check your connection and try again.",
+  "book_note": "The whole course as a book, in more depth, for members.",
 }
