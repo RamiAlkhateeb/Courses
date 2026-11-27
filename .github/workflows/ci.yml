@@ -45,6 +45,9 @@ jobs:
           cache: npm
 
       - run: npm ci
+      # The runner's Microsoft apt source (packages.microsoft.com) answers 403, which stops apt and so Playwright's
+      # system dependencies; nothing here needs it, so it goes first
+      - run: sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list /etc/apt/sources.list.d/microsoft-prod.sources
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
 
