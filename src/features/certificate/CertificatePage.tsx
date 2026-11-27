@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { ListScreen } from '../../components/SettingsList'
 import { LOGO_PATHS, LOGO_RADIUS } from '../../components/logoPaths'
 import { Button, buttonClass, Guide } from '../../components/ui'
-import { getCourse } from '../../content/courses'
+import { coursePath, getCourse } from '../../content/courses'
 import { useLocalized } from '../../content/useLocalized'
 import { useAuth } from '../../state/auth'
 import { useTrail } from '../../state/useTrail'
@@ -50,11 +50,11 @@ function Certificate({ courseId, moduleId }: { courseId: string; moduleId: strin
   const subtitle = whole ? t('cert_course_line', { units: chapters.length, lessons: keys.length }) : tc(course.title)
   if (!done) {
     return (
-      <ListScreen title={t('cert_title')} back="/">
+      <ListScreen title={t('cert_title')} back={coursePath(courseId)}>
         <div className={styles.locked}>
           <Guide pose="point" height={160} />
           <p>{t('cert_locked', { unit: title })}</p>
-          <Link to="/" className={buttonClass()}>
+          <Link to={coursePath(courseId)} className={buttonClass()}>
             {t('backToLearning')}
           </Link>
         </div>
@@ -105,7 +105,7 @@ function Certificate({ courseId, moduleId }: { courseId: string; moduleId: strin
   const canShare = typeof navigator !== 'undefined' && 'canShare' in navigator && navigator.canShare({ files: [new File([''], 'x.png', { type: 'image/png' })] })
 
   return (
-    <ListScreen title={whole ? t('cert_course_title') : t('cert_title')} back="/">
+    <ListScreen title={whole ? t('cert_course_title') : t('cert_title')} back={coursePath(courseId)}>
       <svg ref={svg} data-theme="light" viewBox={`0 0 ${W} ${H}`} className={styles.cert} role="img" aria-label={t('cert_alt', { name, unit: title, course: subtitle, date })} direction={rtl ? 'rtl' : 'ltr'} xmlns="http://www.w3.org/2000/svg">
         <rect x="1" y="1" width={W - 2} height={H - 2} rx="24" fill="var(--white)" stroke="var(--line)" strokeWidth="2" />
         <rect x="16" y="16" width={W - 32} height={H - 32} rx="16" fill="none" stroke="var(--sky)" strokeWidth="2" />

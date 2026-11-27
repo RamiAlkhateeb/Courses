@@ -19,8 +19,45 @@
   color: var(--indigo);
   text-align: start;
 }
-button.card {
-  cursor: pointer;
+/* Home: the logo and the title, then the course cards */
+.page {
+  display: grid;
+  gap: 16px;
+  padding: 28px 16px 24px;
+}
+.head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.title {
+  margin: 0;
+  font-size: var(--title-page);
+  line-height: 1.1;
+  color: var(--indigo);
+}
+/* An offered course: the text opens its Learn path; progress and Continue sit under it */
+.open {
+  display: grid;
+  gap: 4px;
+  color: inherit;
+  text-decoration: none;
+}
+.progress {
+  display: grid;
+  gap: 6px;
+  margin-block-start: 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+.go {
+  justify-self: start;
+  margin-block-start: 10px;
+  max-inline-size: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .active {
   border: 2px solid var(--blue);

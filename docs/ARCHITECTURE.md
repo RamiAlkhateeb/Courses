@@ -119,7 +119,7 @@ Routes live in `src/app/router.tsx`. Every route except the shells and Learn is 
 
 | Path | Screen |
 | --- | --- |
-| `/` | Learn (`src/features/path/PathPage.tsx`), inside `TabsLayout` with the tab bar |
+| `/` | Home: the courses (`src/features/courses/CoursesPage.tsx`), inside `TabsLayout` with the tab bar (Home · Learn · Me) |
 | `/me` | Me, inside `TabsLayout` |
 | `/course/:courseId/:moduleId/learn/:lessonId` | A roadmap lesson (`LessonRoute` in `src/features/lesson/CardLesson.tsx`) |
 | `/course/:courseId/review` | Daily review of questions last answered wrong |
@@ -129,7 +129,7 @@ Routes live in `src/app/router.tsx`. Every route except the shells and Learn is 
 | `/welcome`, `/welcome/:step` | Onboarding |
 | `/settings`, `/courses`, `/certificate/:courseId/:moduleId`, `/legal/:page` | Other mobile screens |
 | `/signup`, `/login`, `/account`, … | Account screens, behind `AccountGate` |
-| `/course/:id` | Makes that course active and opens Learn |
+| `/course/:id` | A course's Learn path (`PathPage`); `/` is Home, the course list |
 
 `AppFrame` (`src/components/AppFrame.tsx`) wraps the app's screens: a phone column, or on a laptop (≥1024px) the course `Sidebar` beside a wider page. It sends first-time visitors to `/welcome`
 (account and legal pages excepted), and it runs the Playground clock for the whole app (section 5).

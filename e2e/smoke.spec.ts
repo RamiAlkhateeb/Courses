@@ -55,7 +55,7 @@ for (const [lang, other, foreign] of [
       expect((await textOutside(page, other)).match(foreign) ?? [], route).toEqual([])
     }
     await onboarded(page, { lang, 'progress:v2': withPractice() })
-    for (const route of ['./', 'me', 'settings', PRACTICE]) {
+    for (const route of ['./', 'course/investing', 'me', 'settings', PRACTICE]) {
       await page.goto(route)
       await page.waitForTimeout(400)
       expect((await textOutside(page, other)).match(foreign) ?? [], route).toEqual([])
@@ -63,17 +63,20 @@ for (const [lang, other, foreign] of [
   })
 }
 
-test('only the Investing course is offered; the courses page teases three more as coming soon', async ({ page }) => {
+test('Home lists the courses: Investing opens, three more are coming soon', async ({ page }) => {
   await onboarded(page)
   await page.goto('')
-  // Learn's title is the course: its name opens the course dropdown
+  await expect(page.getByRole('heading', { name: 'Courses', level: 1 })).toBeVisible()
+  await expect(page.getByText('Coming soon', { exact: true })).toHaveCount(3)
+  // Opening the course shows its Learn path, whose title is the course dropdown
+  await page.getByRole('link', { name: /Investing Fundamentals/ }).click()
+  await expect(page).toHaveURL(/\/course\/investing$/)
   await page.getByRole('heading', { level: 1 }).getByRole('button', { name: /Investing Fundamentals/ }).click()
   await expect(page.getByRole('option', { name: /Investing Fundamentals/ })).toHaveAttribute('aria-selected', 'true')
   await page.getByRole('link', { name: 'All courses' }).click()
-  await expect(page).toHaveURL(/\/courses$/)
-  await expect(page.getByRole('heading', { name: 'Courses', level: 1 })).toBeVisible()
-  await expect(page.getByText('Coming soon', { exact: true })).toHaveCount(3)
-  await page.getByRole('button', { name: /Investing Fundamentals/ }).click()
+  await expect(page).toHaveURL(/\/Courses\/$/)
+  // The old courses page is Home now
+  await page.goto('courses')
   await expect(page).toHaveURL(/\/Courses\/$/)
   await page.goto('course/tech-interview')
   await expect(page.getByText('Page not found', { exact: false }).or(page.getByText("doesn't exist", { exact: false }))).toBeVisible()
@@ -108,7 +111,7 @@ test('finishing a lesson with the keyboard saves progress and pays the bank', as
 test('Arabic is right-to-left and uses its own font', async ({ page }) => {
   const errors = watchErrors(page)
   await onboarded(page, { lang: 'ar' })
-  await page.goto('./')
+  await page.goto('course/investing')
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
   await expect(page.locator('html')).toHaveAttribute('lang', 'ar')
   expect(await page.evaluate(() => getComputedStyle(document.body).fontFamily)).toContain('IBM Plex Sans Arabic')
@@ -124,14 +127,13 @@ test('a deep link under the base path loads (assets resolve, no error screen)', 
   await page.goto('course/investing/basics/learn/why')
   await expect(page.getByRole('heading', { name: 'The money in the drawer' })).toBeVisible()
   await expect(page.getByRole('alert')).toHaveCount(0)
-  // The old course page opens Learn, with that course active
+  // A course's page is its Learn path
   await page.goto('course/investing')
-  await expect(page).toHaveURL(/\/Courses\/$/)
   await expect(page.getByRole('heading', { name: /Investing Fundamentals/ })).toBeVisible()
   expect(errors).toEqual([])
 })
 
-for (const route of ['./', 'me', PRACTICE]) {
+for (const route of ['./', 'course/investing', 'me', PRACTICE]) {
   test(`no serious accessibility violations on /${route === './' ? '' : route}`, async ({ page }) => {
     await onboarded(page, { 'progress:v2': withPractice() })
     await page.goto(route)
@@ -197,7 +199,7 @@ for (const lang of ['en', 'ar']) {
   test(`no sideways scroll at 320px in ${lang}`, async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 700 })
     await onboarded(page, { lang, 'progress:v2': withPractice({ bank: 1240 }) })
-    for (const route of ['./', PRACTICE, 'me', 'settings', 'course/investing/basics/learn/risk-return']) {
+    for (const route of ['./', 'course/investing', PRACTICE, 'me', 'settings', 'course/investing/basics/learn/risk-return']) {
       await page.goto(route)
       await page.waitForTimeout(400)
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), route).toBe(true)

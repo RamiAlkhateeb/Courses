@@ -17,7 +17,7 @@ test('a day after a buy, Learn says what happened while you were away; opening t
   await page.getByRole('button', { name: /^Buy .*100/ }).click()
   await expect(page.getByRole('button', { name: 'Buy or sell' })).toBeVisible()
 
-  await page.goto('./')
+  await page.goto('course/investing')
   const away = page.getByRole('region', { name: 'While you were away' })
   await expect(page.getByRole('link', { name: /Your portfolio/ })).toBeVisible()
   await expect(away).toHaveCount(0) // just looked: nothing to say yet
@@ -32,14 +32,14 @@ test('a day after a buy, Learn says what happened while you were away; opening t
   await expect(page.getByText("This week's challenge")).toBeVisible()
   await expect(page.getByText(/Year 1 of the season · ends in about \d+ days/)).toBeVisible()
 
-  await page.goto('./')
+  await page.goto('course/investing')
   await expect(page.getByRole('link', { name: /Your portfolio/ })).toBeVisible()
   await expect(away).toHaveCount(0)
 })
 
 test('between seasons the portfolio row shows the play money waiting, not $0', async ({ page }) => {
   await onboarded(page, withPractice({ bank: 1240 }))
-  await page.goto('./')
+  await page.goto('course/investing')
   const row = page.getByRole('link', { name: /Your portfolio/ })
   await expect(row).toContainText('$1,240')
 })

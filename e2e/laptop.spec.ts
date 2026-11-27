@@ -15,11 +15,11 @@ const outline = (page: Page) => page.getByRole('navigation', { name: 'Course out
 
 test('Learn shows the sidebar, its outline marks finished lessons, and the tab bar is gone', async ({ page }) => {
   await start(page, { 'progress:v2': JSON.stringify({ bank: 1000, lessonsDone: ['investing/basics/why'] }) })
-  await page.goto('./')
+  await page.goto('course/investing')
   await expect(outline(page)).toBeVisible()
   // The tab bar's links now live in the sidebar
   await expect(page.getByRole('navigation', { name: 'Zubda' })).toHaveCount(1)
-  await expect(page.getByRole('navigation', { name: 'Zubda' }).getByRole('link', { name: 'Me' })).toBeVisible()
+  await expect(page.getByRole('navigation', { name: 'Zubda' }).getByRole('link', { name: 'Me', exact: true })).toBeVisible()
   // The first lesson is done, the second is next and opens, the third is locked
   const unit = outline(page).getByRole('region', { name: /How investing works/ })
   await expect(unit.getByRole('link', { name: 'Saving vs investing Completed' })).toBeVisible()
@@ -37,16 +37,16 @@ test('Learn shows the sidebar, its outline marks finished lessons, and the tab b
 
 test('in Arabic the sidebar sits on the right', async ({ page }) => {
   await start(page, { lang: 'ar' })
-  await page.goto('./')
+  await page.goto('course/investing')
   await expect(page.getByRole('navigation', { name: 'مخطط الدورة' })).toBeVisible()
   const side = await page.locator('aside').filter({ has: page.getByRole('navigation') }).boundingBox()
   expect(side!.x).toBeGreaterThan(1440 / 2)
 })
 
-test('the old course page opens Learn; Welcome keeps its own column without the sidebar', async ({ page }) => {
+test('Home lists the courses beside the sidebar; Welcome keeps its own column without the sidebar', async ({ page }) => {
   await start(page)
-  await page.goto('course/investing')
-  await expect(page).toHaveURL(/\/Courses\/$/)
+  await page.goto('./')
+  await expect(page.getByRole('heading', { name: 'Courses', level: 1 })).toBeVisible()
   await expect(outline(page)).toBeVisible()
   await page.goto('welcome')
   await expect(page.locator('aside')).toHaveCount(0)
@@ -55,7 +55,7 @@ test('the old course page opens Learn; Welcome keeps its own column without the 
 for (const theme of ['light', 'dark'] as const)
   test(`no serious accessibility violations with the sidebar (${theme})`, async ({ page }) => {
     await start(page, { 'theme:v1': theme })
-    await page.goto('./')
+    await page.goto('course/investing')
     await expect(outline(page)).toBeVisible()
     await page.waitForTimeout(300)
     const { violations } = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze()
@@ -69,7 +69,7 @@ const box = async (locator: ReturnType<Page['locator']>) => (await locator.bound
 for (const lang of ['en', 'ar'] as const)
   test(`Learn is a dashboard: the Today card sits beside Up next (${lang})`, async ({ page }) => {
     await start(page, { lang })
-    await page.goto('./')
+    await page.goto('course/investing')
     const upNext = await box(page.getByRole('region', { name: lang === 'en' ? /Up next/ : /التالي/ }).first())
     const rail = page.getByRole('complementary', { name: lang === 'en' ? 'Your day' : 'يومك' })
     const today = await box(rail.getByRole('region').filter({ has: page.locator('#today-title') }))

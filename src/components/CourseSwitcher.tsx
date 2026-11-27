@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { appCourses, getCourse } from '../content/courses'
+import { appCourses, coursePath, getCourse } from '../content/courses'
 import { useLocalized } from '../content/useLocalized'
 import { updateProfile } from '../state/profile'
 import { useTrailId } from '../state/useTrail'
@@ -38,11 +38,11 @@ export function CourseSwitcher({ className, variant = 'inline' }: { className?: 
             onSelect: () => {
               updateProfile({ trail: c.id })
               setOpen(false)
-              navigate('/')
+              navigate(coursePath(c.id))
             },
           }))}
           footer={
-            <Link to="/courses" className={styles.all} onClick={() => setOpen(false)}>
+            <Link to="/" className={styles.all} onClick={() => setOpen(false)}>
               {t('courses_all')} <Icon name="chevron" size={18} className={styles.chev} />
             </Link>
           }

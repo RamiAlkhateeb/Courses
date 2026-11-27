@@ -118,14 +118,15 @@ export function StatPill({ children, className, title, compact }: { children: Re
   )
 }
 
-const TABS: { to: string; icon: IconName; key: ParseKeys; end?: boolean }[] = [
-  { to: '/', icon: 'sprout', key: 'tabLearn', end: true },
-  { to: '/me', icon: 'me', key: 'tabMe' },
-]
-
-/** The tab bar (Learn · Me; the simulator lives in the practice lessons); the active one is an indigo pill with white text. The order mirrors in RTL. */
-export function TabBar() {
+/** The tab bar (Home · Learn · Me; the simulator lives in the practice lessons); the active one is a chip-coloured
+ *  rectangle. Home lists the courses, Learn opens the active course's path. The order mirrors in RTL. */
+export function TabBar({ learnTo }: { learnTo: string }) {
   const { t } = useTranslation()
+  const TABS: { to: string; icon: IconName; key: ParseKeys; end?: boolean }[] = [
+    { to: '/', icon: 'book', key: 'tabHome', end: true },
+    { to: learnTo, icon: 'sprout', key: 'tabLearn' },
+    { to: '/me', icon: 'me', key: 'tabMe' },
+  ]
   return (
     <nav className={styles.tabbar} aria-label={t('appName')}>
       {TABS.map((tab) => (

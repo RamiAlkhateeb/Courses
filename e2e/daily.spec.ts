@@ -17,7 +17,7 @@ test('Today: the goal and quests count, and finishing them opens a chest of play
   await onboarded(page, {
     'progress:v2': JSON.stringify({ bank: 1000, lessonsDone: ['investing/basics/why', 'investing/basics/compounding'], time: { [DAY]: 400 }, daily }),
   })
-  await page.goto('./')
+  await page.goto('course/investing')
   const today = page.getByRole('region', { name: 'Today' })
   await expect(today).toContainText("Today's goal met: 5 min")
   await expect(today.getByRole('listitem')).toHaveCount(3)
@@ -35,7 +35,7 @@ test('Today: the goal and quests count, and finishing them opens a chest of play
 test('Today: a fresh day starts with the goal at zero and the chest closed', async ({ page }) => {
   await page.clock.setFixedTime(new Date(`${DAY}T10:00:00`))
   await onboarded(page)
-  await page.goto('./')
+  await page.goto('course/investing')
   const today = page.getByRole('region', { name: 'Today' })
   await expect(today).toContainText('0 of 5 min today')
   await expect(today).toContainText('Finish all three')
@@ -44,7 +44,7 @@ test('Today: a fresh day starts with the goal at zero and the chest closed', asy
 test('in the evening, a streak with no lesson today shows a card to keep it', async ({ page }) => {
   await page.clock.setFixedTime(new Date(`${DAY}T19:30:00`))
   await onboarded(page, { 'progress:v2': JSON.stringify({ bank: 1000, streak: { count: 4, lastDay: '2026-11-10' } }) })
-  await page.goto('./')
+  await page.goto('course/investing')
   const card = page.getByRole('link', { name: /Keep your 4-day streak/ })
   await expect(card).toBeVisible()
   await card.click()
@@ -54,7 +54,7 @@ test('in the evening, a streak with no lesson today shows a card to keep it', as
 test('no at-risk card in the morning, or once a lesson is done today', async ({ page }) => {
   await page.clock.setFixedTime(new Date(`${DAY}T09:00:00`))
   await onboarded(page, { 'progress:v2': JSON.stringify({ bank: 1000, streak: { count: 4, lastDay: '2026-11-10' } }) })
-  await page.goto('./')
+  await page.goto('course/investing')
   await expect(page.getByText('Up next')).toBeVisible()
   await expect(page.getByRole('link', { name: /Keep your/ })).toHaveCount(0)
 })
@@ -70,7 +70,7 @@ test('leaving a lesson and coming back carries on from the same step', async ({ 
   await page.keyboard.press('Enter')
   await expect(bar).not.toHaveAttribute('aria-valuenow', '0')
   const step = await bar.getAttribute('aria-valuenow')
-  await page.goto('./')
+  await page.goto('course/investing')
   await page.goto('course/investing/basics/learn/why')
   await expect(bar).toHaveAttribute('aria-valuenow', step!)
 })

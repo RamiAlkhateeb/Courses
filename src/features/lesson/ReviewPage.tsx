@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { buttonClass } from '../../components/ui'
 import { useTranslation } from 'react-i18next'
-import { flatNav, getCourse, hasModule, type Course } from '../../content/courses'
+import { coursePath, flatNav, getCourse, hasModule, type Course } from '../../content/courses'
 import type { Question, Module } from '../../content/types'
 import { useModules } from '../../content/useModule'
 import { dueQuestions, localDay } from '../../domain/progress'
@@ -28,10 +28,10 @@ function Review({ course }: { course: Course }) {
   const mods: Record<string, Module> = useModules(course.id, ids)
   const loaded = ids.every((id) => mods[id])
   if (!loaded) return <p>{t('loading')}</p>
-  return <ReviewRunner questions={ids.flatMap((id) => mods[id].questions)} />
+  return <ReviewRunner questions={ids.flatMap((id) => mods[id].questions)} back={coursePath(course.id)} />
 }
 
-function ReviewRunner({ questions }: { questions: Question[] }) {
+function ReviewRunner({ questions, back }: { questions: Question[]; back: string }) {
   const { t } = useTranslation()
   const { progress } = useProgress()
   const pickWrong = () => {
@@ -51,7 +51,7 @@ function ReviewRunner({ questions }: { questions: Question[] }) {
         <h1>{t('noMistakes')}</h1>
         <p className={styles.emptyNote}>{t('noMistakesNote')}</p>
         <div className={styles.actions}>
-          <Link className={buttonClass()} to="/">
+          <Link className={buttonClass()} to={back}>
             {t('backToLearning')}
           </Link>
         </div>
@@ -62,7 +62,7 @@ function ReviewRunner({ questions }: { questions: Question[] }) {
     <QuizLesson
       key={round}
       kicker={t('reviewKicker')}
-      quitTo="/"
+      quitTo={back}
       questions={picks}
       againLabel={t('reviewAgain')}
       onRestart={() => {
