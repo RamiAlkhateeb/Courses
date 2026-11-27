@@ -725,4 +725,6 @@ export const en = {
   "side_portfolio": "Portfolio",
   "side_unit": "Unit {{n}}",
   "learn_rail": "Your day",
+  "home_lessons_done": "{{done}} of {{total}} lessons done",
+  "tabHome": "Home",
 }

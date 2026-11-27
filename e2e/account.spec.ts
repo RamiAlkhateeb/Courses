@@ -30,7 +30,7 @@ const GOOD = { bank: 1180, lessonsDone: ['investing/basics/why'] }
 test('Learn shows a Log in button while signed out, and it goes away once signed in', async ({ page }) => {
   await fakeSupabase(page)
   await onboarded(page)
-  await page.goto('./')
+  await page.goto('course/investing')
   const cta = page.getByRole('link', { name: 'Log in' })
   await expect(cta).toBeVisible()
   await cta.click()
@@ -43,7 +43,7 @@ test('Learn shows a Log in button while signed out, and it goes away once signed
 test('guests get the first five lessons, up to the first buy; the rest and the unit reviews ask for an account', async ({ page }) => {
   await fakeSupabase(page)
   await onboarded(page)
-  await page.goto('./')
+  await page.goto('course/investing')
   await expect(page.getByRole('link', { name: /Sign up to unlock/ }).first()).toBeVisible()
   await page.goto('course/investing/basics/learn/why')
   await expect(page.getByRole('heading', { name: 'Create a free account to keep learning' })).toHaveCount(0)
@@ -65,6 +65,8 @@ test('signed in, every lesson opens', async ({ page }) => {
   await page.goto('login')
   await logIn(page, 'learner@example.com', 'right-password')
   await expect(page).toHaveURL(/\/Courses\/$/)
+  await page.goto('course/investing')
+  await expect(page.getByRole('heading', { name: /Investing Fundamentals/ })).toBeVisible()
   await expect(page.getByRole('link', { name: /Sign up to unlock/ })).toHaveCount(0)
   await page.goto('course/investing/asset-classes/learn/stocks')
   await expect(page.getByRole('heading', { name: 'Create a free account to keep learning' })).toHaveCount(0)
@@ -301,7 +303,7 @@ for (const lang of ['en', 'ar'] as const) {
   test(`account screens have no serious accessibility violations (${lang})`, async ({ page }) => {
     await fakeSupabase(page)
     await onboarded(page, GOOD, lang)
-    const routes = ['./', 'me', 'settings', 'signup', 'login', 'forgot-password', 'legal/terms', 'legal/privacy', 'legal/help']
+    const routes = ['./', 'course/investing', 'me', 'settings', 'signup', 'login', 'forgot-password', 'legal/terms', 'legal/privacy', 'legal/help']
     for (const route of routes) {
       await page.goto(route)
       await page.waitForTimeout(300)

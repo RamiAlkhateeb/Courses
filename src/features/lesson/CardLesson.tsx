@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Blocks } from '../../components/content/Blocks'
 import contentStyles from '../../components/content/content.module.css'
-import { getCourse } from '../../content/courses'
+import { coursePath, getCourse } from '../../content/courses'
 import { safeHtml } from '../../components/content/safeHtml'
 import type { Module } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
@@ -266,9 +266,9 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
         streakHit={streakHit}
         // Straight into the next lesson; Learn is one tap away
         action={next ? tUi('lessonNext') : tUi('lessonContinue')}
-        onAction={() => navigate(next ? learnHref(mod.courseId, next.mod.id, next.lesson.id) : '/')}
+        onAction={() => navigate(next ? learnHref(mod.courseId, next.mod.id, next.lesson.id) : coursePath(mod.courseId))}
         secondary={next ? tUi('backToLearning') : undefined}
-        onSecondary={() => navigate('/')}
+        onSecondary={() => navigate(coursePath(mod.courseId))}
       />
     )
   }
@@ -321,7 +321,7 @@ function CardRun({ mod, lesson }: { mod: Module; lesson: Lesson }) {
     <ModuleQuestionsContext.Provider value={mod.questions}>
       <div className={`${styles.lesson} ${wide ? styles.reading : ''}`}>
         {/* On a laptop earlier steps stay on the page above, so there is no back arrow */}
-        <LessonTopBar quitTo="/" done={index + (settled ? 1 : 0)} total={steps.length} onBack={index > 0 && !wide ? back : undefined} />
+        <LessonTopBar quitTo={coursePath(mod.courseId)} done={index + (settled ? 1 : 0)} total={steps.length} onBack={index > 0 && !wide ? back : undefined} />
 
         {wide ? (
           // A laptop: the lesson so far as one page, the current step last

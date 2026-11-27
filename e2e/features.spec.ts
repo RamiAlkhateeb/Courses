@@ -12,7 +12,7 @@ const basicsDone = ['why', 'compounding', 'risk-return', 'ready', 'practice-firs
 
 test('Daily review: a missed question shows a card on Learn that opens the review', async ({ page }) => {
   await onboarded(page, { 'progress:v2': JSON.stringify({ bank: 1000, answers: { 'invb-q001': { selected: 1, correct: false } } }) })
-  await page.goto('./')
+  await page.goto('course/investing')
   const card = page.getByRole('link', { name: /Daily review/ })
   await expect(card).toContainText('1 question due today')
   await card.click()
@@ -22,7 +22,7 @@ test('Daily review: a missed question shows a card on Learn that opens the revie
 
 test('a finished unit has a certificate that can be saved as an image', async ({ page }) => {
   await onboarded(page, { 'progress:v2': JSON.stringify({ bank: 1000, lessonsDone: basicsDone }) })
-  await page.goto('./')
+  await page.goto('course/investing')
   await page.getByRole('link', { name: 'Certificate' }).first().click()
   await expect(page).toHaveURL(/\/certificate\/investing\/basics$/)
   await expect(page.getByRole('img', { name: /finished every lesson of How investing works/ })).toBeVisible()
@@ -84,7 +84,7 @@ test('simulator: a season goal, the yearly recap, and rebalancing to an example 
 
 test('installable and offline: the service worker keeps lessons available without a network', async ({ page, context }) => {
   await onboarded(page)
-  await page.goto('./')
+  await page.goto('course/investing')
   await page.evaluate(async () => {
     await navigator.serviceWorker.ready
   })
@@ -99,7 +99,7 @@ test('installable and offline: the service worker keeps lessons available withou
 
 test('portfolio shortcut: after the first practice lesson, Learn links to the simulator on its own screen', async ({ page }) => {
   await onboarded(page, { 'progress:v2': withPractice() })
-  await page.goto('./')
+  await page.goto('course/investing')
   await page.getByRole('link', { name: /Your portfolio/ }).click()
   await expect(page).toHaveURL(/\/portfolio$/)
   await expect(page.getByRole('heading', { name: 'Your portfolio', level: 1 })).toBeVisible()
@@ -188,7 +188,7 @@ test('a lesson can go back a step; an answered question stays answered (read-onl
 test('the Learn header keeps the course name, streak and money on one row at 320px', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 700 })
   await onboarded(page, { 'progress:v2': JSON.stringify({ bank: 12_345 }) })
-  await page.goto('./')
+  await page.goto('course/investing')
   const title = await page.getByRole('heading', { level: 1 }).boundingBox()
   const pills = await page.getByText('$12.3K').boundingBox()
   expect(title && pills).toBeTruthy()
@@ -209,7 +209,7 @@ for (const lang of ['en', 'ar']) {
   test(`the course list opens right under the course name (${lang}, 320px)`, async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 640 })
     await onboarded(page, { lang })
-    await page.goto('')
+    await page.goto('course/investing')
     const name = page.getByRole('heading', { level: 1 }).getByRole('button')
     await name.click()
     const list = page.getByRole('listbox')

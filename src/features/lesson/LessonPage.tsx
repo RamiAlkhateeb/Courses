@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { getCourse } from '../../content/courses'
+import { coursePath, getCourse } from '../../content/courses'
 import type { Question, Module } from '../../content/types'
 import { useLocalized } from '../../content/useLocalized'
 import { useModule } from '../../content/useModule'
@@ -49,7 +49,7 @@ function LessonRunner({ mod }: { mod: Module }) {
     <QuizLesson
       key={round}
       kicker={t(mod.cover.kicker)}
-      quitTo="/"
+      quitTo={coursePath(mod.courseId)}
       questions={picks}
       onRestart={() => {
         setPicks(pick(mod, progress.boxes))
@@ -138,7 +138,7 @@ export function QuizLesson({
         total={questions.length}
         seconds={Math.round((Date.now() - startedAt.current) / 1000)}
         action={tUi('lessonContinue')}
-        onAction={() => navigate('/')}
+        onAction={() => navigate(quitTo)}
         secondary={againLabel ?? tUi('lessonAgain')}
         onSecondary={onRestart}
       />

@@ -86,6 +86,8 @@ export const findableCourses = import.meta.env?.DEV ? checkedCourses : appCourse
  *  "not found" like any unknown id. */
 export const getCourse = (id: string | undefined) => findableCourses.find((c) => c.id === id)
 
+/** A course's Learn path (its units and lessons). Home (`/`) lists the courses. */
+export const coursePath = (courseId: string) => `/course/${courseId}`
 export const moduleHref = (courseId: string, moduleId: string) => `/course/${courseId}/${moduleId}`
 export const practiceHref = (courseId: string, moduleId: string) => `${moduleHref(courseId, moduleId)}/lesson`
 

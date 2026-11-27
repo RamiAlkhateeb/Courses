@@ -47,7 +47,7 @@ test('share slides of a locked lesson stay behind the guest gate, and slides are
 
 test('guide pictures are light WebPs with their size reserved', async ({ page }) => {
   await onboarded(page)
-  await page.goto('./?guide=sara')
+  await page.goto('course/investing?guide=sara')
   const guide = page.locator('img[src*="/guides/"]').first()
   await expect(guide).toHaveAttribute('src', /sara-[a-z]+\.webp$/)
   const w = await guide.getAttribute('width')
