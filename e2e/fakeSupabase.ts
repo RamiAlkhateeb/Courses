@@ -21,6 +21,8 @@ export interface Fake {
   calls: string[]
   /** The last body sent to each auth call */
   bodies: Record<string, unknown>
+  /** No book PDF in storage yet */
+  bookMissing?: boolean
 }
 
 export async function fakeSupabase(page: Page, opts: Partial<Fake> = {}) {
@@ -66,6 +68,14 @@ export async function fakeSupabase(page: Page, opts: Partial<Fake> = {}) {
         return json(route, 201, out)
       }
     }
+    // Course books (private storage): a short-lived signed link, then the PDF itself
+    const sign = url.pathname.match(/\/storage\/v1\/object\/sign\/books\/(.+)$/)
+    if (sign && req.method() === 'POST') {
+      fake.calls.push(`POST storage sign ${sign[1]}`)
+      return fake.bookMissing ? json(route, 400, { statusCode: '404', error: 'not_found', message: 'Object not found' }) : json(route, 200, { signedURL: `/object/sign/books/${sign[1]}?token=fake` })
+    }
+    if (sign && req.method() === 'GET')
+      return route.fulfill({ status: 200, contentType: 'application/pdf', headers: { 'content-disposition': `attachment; filename="${url.searchParams.get('download') || sign[1]}"` }, body: '%PDF-1.4 fake' })
     return json(route, 404, { message: 'not faked: ' + url.pathname })
   })
   return fake

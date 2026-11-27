@@ -1,10 +1,15 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { appCourses, COMING_SOON_IDS, coursePath, courses, flatNav, hasModule, type Course } from '../../content/courses'
 import { useLocalized } from '../../content/useLocalized'
 import { learnHref } from '../../domain/lessons'
+import { BOOK_COURSE_IDS } from '../../content/book'
+import { useAuth } from '../../state/auth'
+import { downloadBook, type BookDownload } from '../../state/books'
+import { accountsEnabled } from '../../state/supabase'
 import { Logo } from '../../components/Logo'
-import { buttonClass, Icon, ProgressBar } from '../../components/ui'
+import { Button, buttonClass, Icon, ProgressBar } from '../../components/ui'
 import { useTrail, useTrailId } from '../../state/useTrail'
 import styles from './CoursesPage.module.css'
 
@@ -84,6 +89,45 @@ function OfferedCourse({ course }: { course: Course }) {
         <Link to={learnHref(course.id, next.mod.id, next.lesson.id)} className={buttonClass({ size: 'sm' }, styles.go)}>
           {started ? t('continue') : t('learn_start')} · {tc(next.lesson.title)}
         </Link>
+      )}
+      {accountsEnabled && BOOK_COURSE_IDS.includes(course.id) && <BookLink course={course} />}
+    </div>
+  )
+}
+
+/** The course as a book (PDF), for signed-in members; guests are asked to sign up. */
+function BookLink({ course }: { course: Course }) {
+  const { t, i18n } = useTranslation()
+  const tc = useLocalized()
+  const auth = useAuth()
+  const [state, setState] = useState<BookDownload | 'busy' | null>(null)
+  const lang = i18n.language === 'ar' ? 'ar' : 'en'
+  return (
+    <div className={styles.book}>
+      <span className={styles.bookNote}>
+        <Icon name="book" size={18} /> {t('book_note')}
+      </span>
+      {auth.status === 'signedIn' ? (
+        <Button
+          size="sm"
+          variant="secondary"
+          disabled={state === 'busy'}
+          onClick={async () => {
+            setState('busy')
+            setState(await downloadBook(course.id, lang, `Zubda - ${tc(course.title)}.pdf`))
+          }}
+        >
+          {state === 'busy' ? t('book_preparing') : t('book_download')}
+        </Button>
+      ) : (
+        <Link to="/signup" className={buttonClass({ variant: 'secondary', size: 'sm' })}>
+          {t('book_signup')}
+        </Link>
+      )}
+      {(state === 'missing' || state === 'error') && (
+        <p className={styles.bookError} role="alert">
+          {state === 'missing' ? t('book_missing') : t('book_error')}
+        </p>
       )}
     </div>
   )
