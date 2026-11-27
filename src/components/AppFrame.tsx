@@ -6,6 +6,8 @@ import { showNewsAlert } from '../state/newsAlerts'
 import { useStudyReminder } from '../state/reminder'
 import { usePlaygroundClock } from '../state/usePlayground'
 import { useWide } from '../state/useWide'
+import { useTrailId } from '../state/useTrail'
+import { coursePath } from '../content/courses'
 import { TabBar } from './ui'
 import styles from './AppFrame.module.css'
 
@@ -32,7 +34,7 @@ export function AppFrame() {
   if (!onboarded && !pathname.startsWith('/welcome') && !FIRST_TIMER_OK.test(pathname)) return <Navigate to="/welcome" replace />
   const withSidebar = wide && onboarded && !pathname.startsWith('/welcome')
   // Learn, Me and the portfolio use more of a laptop's width (two columns); other pages keep a reading width
-  const roomy = pathname === '/' || pathname === '/me' || pathname === '/portfolio'
+  const roomy = pathname === '/' || /^\/course\/[^/]+\/?$/.test(pathname) || pathname === '/me' || pathname === '/portfolio'
   if (!withSidebar)
     return (
       <div className={styles.frame}>
@@ -55,10 +57,11 @@ export function AppFrame() {
 export function TabsLayout() {
   // On a laptop the sidebar holds the same links, so the tab bar goes
   const wide = useWide()
+  const trail = useTrailId()
   return (
     <div className={wide ? undefined : styles.tabs}>
       <Outlet />
-      {!wide && <TabBar />}
+      {!wide && <TabBar learnTo={coursePath(trail)} />}
     </div>
   )
 }

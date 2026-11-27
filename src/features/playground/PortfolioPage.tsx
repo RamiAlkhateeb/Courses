@@ -10,6 +10,8 @@ import { useProgress } from '../../state/useProgress'
 import { useStore } from '../../state/useStore'
 import { useAwardBadges } from '../../state/useBadges'
 import { lookedAtPortfolio } from '../../state/away'
+import { useTrailId } from '../../state/useTrail'
+import { coursePath } from '../../content/courses'
 
 /** Route `/portfolio`: the simulator on its own screen, the shortcut from Learn once the first practice lesson is done.
  *  Before that, it opens that lesson (which introduces the simulator). */
@@ -17,6 +19,7 @@ export function PortfolioPage() {
   const { t } = useTranslation()
   const { progress, visitPortfolio } = useProgress()
   const state = useStore(playgroundStore)
+  const trail = useTrailId()
   const open = portfolioOpen(state, progress.lessonsDone)
   // Looking at the portfolio is one of the daily quests
   useEffect(() => {
@@ -29,7 +32,7 @@ export function PortfolioPage() {
   useAwardBadges()
   if (!open) return <Navigate to={firstPracticeHref} replace />
   return (
-    <ListScreen title={t('portfolio_title')} back="/">
+    <ListScreen title={t('portfolio_title')} back={coursePath(trail)}>
       <ChallengeCard state={state} />
       <PlaygroundPanel />
     </ListScreen>

@@ -18,13 +18,20 @@ async function signIn(page: Page) {
   await expect(page).toHaveURL(/\/Courses\/$/)
 }
 
-test('two tabs (Learn, Me); old Playground links open the first practice lesson', async ({ page }) => {
+test('three tabs (Home, Learn, Me); old Playground links open the first practice lesson', async ({ page }) => {
   await onboarded(page)
-  await page.goto('./')
+  await page.goto('course/investing')
   const tabs = page.getByRole('navigation').getByRole('link')
-  await expect(tabs).toHaveCount(2)
-  await expect(tabs.nth(0)).toHaveText(/Learn/)
-  await expect(tabs.nth(1)).toHaveText(/Me/)
+  await expect(tabs).toHaveCount(3)
+  await expect(tabs.nth(0)).toHaveText(/Home/)
+  await expect(tabs.nth(1)).toHaveText(/Learn/)
+  await expect(tabs.nth(1)).toHaveAttribute('aria-current', 'page')
+  await expect(tabs.nth(2)).toHaveText(/Me/)
+  // Home lists the courses; Learn goes back to the one being studied
+  await tabs.nth(0).click()
+  await expect(page.getByRole('heading', { name: 'Courses', level: 1 })).toBeVisible()
+  await tabs.nth(1).click()
+  await expect(page).toHaveURL(/\/course\/investing$/)
   await page.goto('playground')
   await expect(page).toHaveURL(new RegExp(`${PRACTICE}$`))
 })

@@ -14,7 +14,7 @@ is the app's brand name.
 | Screens | Route | Code |
 |---|---|---|
 | Welcome, Language, Daily goal | `/welcome`, `/welcome/language`, `/welcome/time` | `src/features/onboarding` |
-| Learn path (streak and money, unit banner, zigzag nodes, chest) | `/` | `src/features/path` |
+| Learn path (streak and money, unit banner, zigzag nodes, chest) | `/course/:id` (Home, `/`, lists the courses: `src/features/courses`) | `src/features/path` |
 | Lesson card, quiz, Correct, Not quite, Lesson complete | `/course/:id/:module/learn/:lesson` | `src/features/lesson` |
 | Me (stats, this week, Your garden, milestones) | `/me` | `src/features/me` |
 | Playground (empty, running), Buy, Sell, Market news | `/playground` | `src/features/playground` |
@@ -32,6 +32,6 @@ Time paused. They are gone from the code, not hidden.
 
 ## Navigation
 
-Three tabs in a flat bar docked to the bottom: Learn (تعلّم), Playground (التجربة), Me (أنا). The flat update (no 3D edges, gradients, glows or shadows; the Learn list; ring quiz options; the inline result card; the bar-chart logo; Settings and the slimmer Account) is from the PNG export of 38 screens.
+Three tabs in a flat bar docked to the bottom: Home (الرئيسية, the courses), Learn (تعلّم, the active course), Me (أنا); the design had Learn, Playground, Me. The flat update (no 3D edges, gradients, glows or shadows; the Learn list; ring quiz options; the inline result card; the bar-chart logo; Settings and the slimmer Account) is from the PNG export of 38 screens.
 
 The product logic (one wallet of play money, lessons add rewards, the Playground) is in `CLAUDE.md` under "Product rules".

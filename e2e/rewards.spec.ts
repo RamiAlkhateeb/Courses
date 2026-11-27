@@ -16,7 +16,7 @@ const basics = ['why', 'compounding', 'risk-return', 'ready', 'practice-first-bu
 test('a 3-day streak makes the first lesson of the day pay double, and Learn says so', async ({ page }) => {
   await page.clock.install({ time: new Date(`${DAY}T10:00:00`) })
   await onboarded(page, { bank: 1000, streak: { count: 3, lastDay: '2026-11-10' } })
-  await page.goto('./')
+  await page.goto('course/investing')
   await expect(page.getByText('2× play money on your first lesson today')).toBeVisible()
 })
 

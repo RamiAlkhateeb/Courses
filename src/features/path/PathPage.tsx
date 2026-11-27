@@ -1,9 +1,9 @@
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Guide, buttonClass, Icon, StatPill } from '../../components/ui'
 import { MoneyChip } from '../../components/MoneyChip'
 import { CourseSwitcher } from '../../components/CourseSwitcher'
-import { practiceHref } from '../../content/courses'
+import { ENABLED_COURSE_IDS, getCourse, practiceHref } from '../../content/courses'
 import { useLocalized } from '../../content/useLocalized'
 import { currentStreak, doubleToday, dueQuestions, localDay, streakAtRisk } from '../../domain/progress'
 import { TodayCard } from './TodayCard'
@@ -27,17 +27,38 @@ import { useStore } from '../../state/useStore'
 import { accountsEnabled } from '../../state/supabase'
 import { useProgress } from '../../state/useProgress'
 import { useWallet } from '../../state/usePlayground'
-import { useTrail, useTrailId, type Chapter } from '../../state/useTrail'
+import { hasContent, useTrail, type Chapter } from '../../state/useTrail'
+import { updateProfile, useProfile } from '../../state/profile'
 import styles from './PathPage.module.css'
 
 const questionsIn = (l: Lesson) => l.steps.filter((s) => s.kind === 'question').length
 
-/** Learn (the Home tab), flat: the streak in days and the play-money balance, an "Up next" card for the next lesson,
- *  then every unit as a plain list of lessons (done, the next one, locked). */
+/** Route `/course/:courseId`: a course's Learn path. Opening it makes it the active course (the Learn tab returns here).
+ *  A hidden or unknown course is not found. */
 export function PathPage() {
+  const { t } = useTranslation()
+  const { courseId } = useParams()
+  const course = getCourse(courseId)
+  const open = !!course && ENABLED_COURSE_IDS.includes(course.id) && hasContent(course)
+  const { trail } = useProfile()
+  useEffect(() => {
+    if (open && trail !== course.id) updateProfile({ trail: course.id })
+  }, [open, trail, course])
+  if (!open)
+    return (
+      <p className={styles.loading}>
+        {t('pageNotFound')} <Link to="/">{t('home')}</Link>
+      </p>
+    )
+  return <CoursePath courseId={course.id} />
+}
+
+/** Learn, flat: the streak in days and the play-money balance, an "Up next" card for the next lesson, then every unit as
+ *  a plain list of lessons (done, the next one, locked). */
+function CoursePath({ courseId }: { courseId: string }) {
   const { t, i18n } = useTranslation()
   const tc = useLocalized()
-  const { course, chapters, loaded, next } = useTrail(useTrailId())
+  const { course, chapters, loaded, next } = useTrail(courseId)
   const { progress } = useProgress()
   const wallet = useWallet()
   const auth = useAuth()

@@ -830,4 +830,6 @@ export const ar = {
   "side_portfolio": "المحفظة",
   "side_unit": "الوحدة {{n}}",
   "learn_rail": "يومك",
+  "home_lessons_done": "أنجزت {{done}} من {{total}} درسًا",
+  "tabHome": "الرئيسية",
 }

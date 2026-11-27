@@ -1,11 +1,9 @@
-import { useEffect, type ComponentType } from 'react'
-import { Link, Navigate, createBrowserRouter, useParams, type RouteObject } from 'react-router-dom'
+import { type ComponentType } from 'react'
+import { Link, Navigate, createBrowserRouter, type RouteObject } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { getCourse } from '../content/courses'
-import { updateProfile } from '../state/profile'
 import { RouteError } from './RouteError'
 import { AppFrame, TabsLayout } from '../components/AppFrame'
-import { PathPage } from '../features/path/PathPage'
+import { CoursesPage } from '../features/courses/CoursesPage'
 
 /** A route whose screen is a named export of a feature module, loaded on first visit. */
 const page = <K extends string>(load: () => Promise<Record<K, ComponentType>>, name: K): Pick<RouteObject, 'lazy'> => ({
@@ -15,7 +13,7 @@ const page = <K extends string>(load: () => Promise<Record<K, ComponentType>>, n
   },
 })
 
-// Everything except the frame and the Path tab (the entry screen) is code-split: each route's chunk loads on first visit.
+// Everything except the frame and Home (the course list, the entry screen) (the entry screen) is code-split: each route's chunk loads on first visit.
 export const router = createBrowserRouter(
   [
     {
@@ -30,7 +28,9 @@ export const router = createBrowserRouter(
         {
           element: <TabsLayout />,
           children: [
-            { index: true, element: <PathPage /> },
+            // Home: the courses; a course's Learn path is /course/:courseId (the Learn tab opens the active one)
+            { index: true, element: <CoursesPage /> },
+            { path: 'course/:courseId', ...page(() => import('../features/path/PathPage'), 'PathPage') },
             { path: 'me', ...page(() => import('../features/me/MePage'), 'MePage') },
           ],
         },
@@ -41,8 +41,8 @@ export const router = createBrowserRouter(
         { path: 'playground/summary', ...page(() => import('../features/playground/SummaryPage'), 'SummaryPage') },
         // Settings (from the gear on Me) and the legal pages it links to work with or without accounts.
         { path: 'settings', ...page(() => import('../features/settings/SettingsPage'), 'SettingsPage') },
-        // All courses: opened from the course dropdown at the top of Learn and Me
-        { path: 'courses', ...page(() => import('../features/courses/CoursesPage'), 'CoursesPage') },
+        // The old courses page: the course list is Home now
+        { path: 'courses', element: <Navigate to="/" replace /> },
         // A finished unit's certificate (linked from its header on Learn)
         { path: 'certificate/:courseId/:moduleId', ...page(() => import('../features/certificate/CertificatePage'), 'CertificatePage') },
         // The whole course's certificate (linked from Lesson complete when the last lesson is finished)
@@ -83,9 +83,6 @@ export const router = createBrowserRouter(
             return { element: <LessonPage /> }
           },
         },
-        // A course's old page (the catalog, then the desktop course page): makes it the active course and opens Learn,
-        // whose laptop layout has the course outline in its sidebar
-        { path: 'course/:courseId', element: <CourseRedirect /> },
         { path: '*', element: <NotFound /> },
       ],
     },
@@ -106,15 +103,6 @@ export const router = createBrowserRouter(
   // Matches vite.config.ts's `base`: '/' in dev, '/<repo>/' when built for GitHub Pages.
   { basename: import.meta.env.BASE_URL },
 )
-
-function CourseRedirect() {
-  const course = getCourse(useParams().courseId)
-  useEffect(() => {
-    if (course) updateProfile({ trail: course.id })
-  }, [course])
-  // A hidden or unknown course is not found, like any unknown URL
-  return course ? <Navigate to="/" replace /> : <NotFound />
-}
 
 function NotFound() {
   const { t } = useTranslation()

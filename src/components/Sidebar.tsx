@@ -3,6 +3,7 @@
 // download it.
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { coursePath } from '../content/courses'
 import { useLocalized } from '../content/useLocalized'
 import { canOpenLesson, lessonOrder } from '../domain/access'
 import { learnHref } from '../domain/lessons'
@@ -30,7 +31,8 @@ export function Sidebar() {
   const here = pathname.match(/^\/course\/([^/]+)\/([^/]+)\/learn\/([^/]+)/)
 
   const links: { to: string; icon: IconName; label: string; end?: boolean }[] = [
-    { to: '/', icon: 'sprout', label: t('tabLearn'), end: true },
+    { to: '/', icon: 'book', label: t('tabHome'), end: true },
+    { to: coursePath(course.id), icon: 'sprout', label: t('tabLearn') },
     ...(portfolioOpen(pg, progress.lessonsDone) ? [{ to: '/portfolio', icon: 'chart' as const, label: t('side_portfolio') }] : []),
     { to: '/me', icon: 'me', label: t('tabMe') },
     { to: '/settings', icon: 'gear', label: t('settings') },
