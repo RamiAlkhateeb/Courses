@@ -96,6 +96,22 @@ export const ch5: BookChapter = {
       'تختلف حسابات التقاعد وخطط أصحاب العمل والمعاملة الضريبية والمعاشات الحكومية كثيرًا بين البلدان وتتغير مع الوقت. استخدم هذا الفصل لفهم الأفكار، ثم تحقق من القواعد التي تنطبق عليك، ويُفضّل مع مستشار مرخّص.',
     )),
     html(L(
+      '<h2>5.7 The cost of waiting, in monthly terms</h2><p>Section 5.1 showed what an early start adds. The same idea looks sharper the other way round: how much must be saved each month to reach the same target from different starting ages? Take a target of 500,000 by 65, enough for about 20,000 a year under the rule of thumb in section 5.4, and assume 6% a year.</p>',
+      '<h2>5.7 تكلفة الانتظار بالأرقام الشهرية</h2><p>بيّن القسم 5.1 ما يضيفه البدء المبكر. والفكرة نفسها تبدو أوضح من الاتجاه المعاكس: كم يجب ادخاره كل شهر لبلوغ الهدف نفسه من أعمار بدء مختلفة؟ خذ هدفًا قدره 500,000 بحلول سن 65، يكفي لنحو 20,000 سنويًا وفق القاعدة التقريبية في القسم 5.4، وافترض 6% سنويًا.</p>',
+    )),
+    table(
+      [L('Start saving at', 'بدء الادخار في سن'), L('Years to 65', 'السنوات حتى 65'), L('Monthly saving needed', 'الادخار الشهري المطلوب')],
+      [
+        [L('30', '30'), L('35', '35'), L('≈ 351', '≈ 351')],
+        [L('40', '40'), L('25', '25'), L('≈ 722', '≈ 722')],
+        [L('50', '50'), L('15', '15'), L('≈ 1,719', '≈ 1,719')],
+      ],
+    ),
+    box('keypoint', L('Every decade roughly doubles the bill', 'كل عقد يضاعف الفاتورة تقريبًا'), L(
+      'Waiting from 30 to 40 roughly doubles the monthly amount; waiting from 40 to 50 more than doubles it again. Anyone starting late can still reach a goal, but through a larger saving rate, a later retirement date or a smaller target, not through a riskier portfolio. Illustrative figures, before tax and fees.',
+      'الانتظار من 30 إلى 40 يضاعف المبلغ الشهري تقريبًا، والانتظار من 40 إلى 50 يضاعفه مرة أخرى وأكثر. ومن يبدأ متأخرًا يمكنه بلوغ الهدف مع ذلك، لكن بنسبة ادخار أكبر أو موعد تقاعد أبعد أو هدف أصغر، لا بمحفظة أكثر مخاطرة. أرقام توضيحية، قبل الضرائب والرسوم.',
+    )),
+    html(L(
       '<h2>Chapter summary</h2><ul><li>Retirement is the goal where starting early matters most; delay raises the monthly amount needed.</li><li>An employer match is an immediate return; claim all of it where it exists.</li><li>Tax-advantaged accounts let growth compound untaxed; early withdrawals cost far more than the amount taken.</li><li>Around 10% to 15% of income is a common starting saving rate; about 25 times yearly needs is a common target.</li><li>Glide paths and target-date funds reduce risk as the date nears.</li><li>In retirement, inflation and early falls are the main threats; a cash buffer helps with both.</li></ul>',
       '<h2>خلاصة الفصل</h2><ul><li>التقاعد هو الهدف الذي يهم فيه البدء المبكر أكثر من غيره؛ والتأخير يرفع المبلغ الشهري المطلوب.</li><li>مطابقة صاحب العمل عائد فوري؛ طالب بها كاملة حيث توجد.</li><li>الحسابات ذات المزايا الضريبية تترك النمو يتضاعف دون ضريبة؛ والسحب المبكر يكلّف أكثر بكثير من المبلغ المسحوب.</li><li>نحو 10% إلى 15% من الدخل نسبة ادخار ابتدائية شائعة؛ ونحو 25 ضعف الاحتياج السنوي هدف شائع.</li><li>مسارات الانزلاق وصناديق تاريخ الهدف تقلل المخاطرة مع اقتراب الموعد.</li><li>في التقاعد يكون التضخم والهبوطات المبكرة أكبر التهديدات؛ والاحتياطي النقدي يساعد في مواجهتهما.</li></ul>',
     )),

@@ -45,7 +45,8 @@ for (let i = 0; ; i++) {
 }
 
 mkdirSync('book-out', { recursive: true })
-const browser = await chromium.launch()
+// BOOK_CHROMIUM: an existing Chromium to print with, when Playwright's own browser is not installed
+const browser = await chromium.launch(process.env.BOOK_CHROMIUM ? { executablePath: process.env.BOOK_CHROMIUM } : {})
 try {
   for (const lang of langs) {
     const page = await browser.newPage()

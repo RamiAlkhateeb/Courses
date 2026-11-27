@@ -20,6 +20,10 @@ export interface Book {
   /** The book's first page: who it is for and how to read it */
   preface: Localized
   chapters: BookChapter[]
+  /** After the chapters, before the glossary: reference sections (formulas at a glance) */
+  appendix?: { id: string; title: Localized; blocks: Block[] }[]
+  /** Under the title on the cover, e.g. "First edition, November 2026" */
+  edition: Localized
 }
 
 /** Courses whose book can be downloaded (the PDFs are in the private `books` storage bucket). */

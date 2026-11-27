@@ -132,3 +132,8 @@
 .text :global(h2) {
   break-after: avoid;
 }
+
+.edition {
+  font-size: 10pt;
+  color: var(--muted);
+}

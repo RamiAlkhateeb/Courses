@@ -29,6 +29,8 @@ offline. Optional accounts (Supabase) sync everything; without them the app is c
 - **Course book** (Investing; members download a PDF; `CLAUDE.md` "Course books"):
   - [x] The book build, PDF script, private storage and the download button; chapter 1 (How investing works)
   - [x] Chapters 2–6 (asset classes, diversification, valuation, retirement, the plan), English and Arabic
+  - [x] Worked examples in every chapter, a formulas appendix, the edition line (first edition: 51 pages in English, 47 in Arabic)
+  - [ ] A human review of the finance and the Arabic
   - [ ] Run `0004_books.sql`, build the PDFs and upload them (needs the Supabase service-role key, on the owner's machine)
 - **Laptop layout** (from 1024px; phones unchanged):
   - [x] The course sidebar: main pages and the course outline beside a wider page; the old `/course/:id` page removed

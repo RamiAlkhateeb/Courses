@@ -94,6 +94,28 @@ export const ch4: BookChapter = {
       'فهم هذه الأرقام يجعلك مالكًا أكثر اطلاعًا، لكنه لا يجعل التفوق على السوق سهلًا: فآلاف المحترفين يدرسون الأرقام نفسها كل يوم. لهذا تُعد الصناديق الواسعة منخفضة التكلفة التي تملك السوق كله خيارًا شائعًا جدًا لنواة المحفظة.',
     )),
     html(L(
+      '<h2>4.7 Cash flow: profit you can spend</h2><p>Profit is an accounting figure: it includes sales not yet paid for and spreads the cost of big purchases over many years. <strong>Cash flow</strong> is what actually moved through the bank account. <strong>Free cash flow</strong>, the cash from running the business minus what it spends to maintain and grow it, is the money truly available to pay dividends, repay debt or invest. A company that reports profits year after year but never produces free cash flow deserves a closer look; one whose free cash flow steadily matches or exceeds its profit is usually on firmer ground.</p>',
+      '<h2>4.7 التدفق النقدي: الربح الذي يمكن إنفاقه</h2><p>الربح رقم محاسبي: يشمل مبيعات لم تُدفع بعد، ويوزع تكلفة المشتريات الكبيرة على سنوات كثيرة. أما <strong>التدفق النقدي</strong> فهو ما تحرك فعلًا عبر الحساب المصرفي. و<strong>التدفق النقدي الحر</strong>، أي النقد الناتج عن تشغيل الشركة ناقص ما تنفقه للحفاظ عليها وتنميتها، هو المال المتاح حقًا لدفع التوزيعات أو سداد الديون أو الاستثمار. والشركة التي تعلن أرباحًا عامًا بعد عام ولا تنتج تدفقًا نقديًا حرًا أبدًا تستحق نظرة أدق؛ أما التي يساوي تدفقها النقدي الحر ربحها أو يزيد عليه باستمرار فتقف عادةً على أرض أصلب.</p>',
+    )),
+    table(
+      [L('A fictional company, one year', 'شركة خيالية، عام واحد'), L('Figure', 'الرقم'), L('Worked out', 'طريقة الحساب')],
+      [
+        [L('Revenue', 'الإيرادات'), L('2,000', '2,000'), L('Given, in millions', 'معطى، بالملايين')],
+        [L('Costs', 'التكاليف'), L('1,760', '1,760'), L('Given', 'معطى')],
+        [L('Profit', 'الربح'), L('240', '240'), L('2,000 − 1,760', '2,000 − 1,760')],
+        [L('Margin', 'الهامش'), L('12%', '12%'), L('240 ÷ 2,000', '240 ÷ 2,000')],
+        [L('Earnings per share (100 million shares)', 'ربحية السهم (100 مليون سهم)'), L('2.40', '2.40'), L('240 ÷ 100', '240 ÷ 100')],
+        [L('P/E at a price of 36', 'المكرر بسعر 36'), L('15', '15'), L('36 ÷ 2.40', '36 ÷ 2.40')],
+        [L('Dividend yield (0.96 a share)', 'عائد التوزيعات (0.96 للسهم)'), L('≈ 2.7%', '≈ 2.7%'), L('0.96 ÷ 36', '0.96 ÷ 36')],
+        [L('Payout ratio', 'نسبة التوزيع'), L('40%', '40%'), L('0.96 ÷ 2.40', '0.96 ÷ 2.40')],
+        [L('Debt ÷ equity (debt 400, equity 800)', 'الدين ÷ حقوق الملكية (دين 400، حقوق 800)'), L('0.5', '0.5'), L('400 ÷ 800', '400 ÷ 800')],
+      ],
+    ),
+    box('example', L('Reading the worked example', 'قراءة المثال المحلول'), L(
+      'This fictional company keeps 12% of each sale as profit, is priced at 15 years of today\'s profit, pays out 40% of its profit and keeps the rest to grow, and borrows moderately. None of these numbers says "buy" or "sell" on its own; together they describe a business you can compare with others and with its own past. Illustrative figures.',
+      'تحتفظ هذه الشركة الخيالية بـ12% من كل عملية بيع ربحًا، وتُسعّر بما يعادل 15 سنة من ربح اليوم، وتوزع 40% من ربحها وتحتفظ بالباقي للنمو، وتقترض باعتدال. لا يقول أي من هذه الأرقام وحده «اشترِ» أو «بِع»؛ لكنها معًا تصف شركة يمكنك مقارنتها بغيرها وبماضيها. أرقام توضيحية.',
+    )),
+    html(L(
       '<h2>Chapter summary</h2><ul><li>A share is a claim on a company\'s future profits; over time, prices follow profits.</li><li>Revenue minus costs is profit; profit over revenue is the margin.</li><li>The P/E ratio says how many years of profit the price pays for; a high one is a bet on growth.</li><li>Dividend yield rises when prices fall; a very high yield can be a warning.</li><li>Equity is assets minus debts; heavy debt makes bad years dangerous.</li><li>Prices move on surprises against expectations; a great company is not always a great investment.</li></ul>',
       '<h2>خلاصة الفصل</h2><ul><li>السهم حق في أرباح الشركة المستقبلية؛ ومع الوقت تتبع الأسعار الأرباح.</li><li>الإيرادات ناقص التكاليف تساوي الربح؛ والربح مقسومًا على الإيرادات هو الهامش.</li><li>مكرر الربحية يبيّن كم سنة من الربح يدفع السعر ثمنها؛ والمرتفع منه رهان على النمو.</li><li>عائد التوزيعات يرتفع حين تنخفض الأسعار؛ والعائد المرتفع جدًا قد يكون تحذيرًا.</li><li>حقوق الملكية هي الأصول ناقص الديون؛ والدين الثقيل يجعل السنوات السيئة خطيرة.</li><li>تتحرك الأسعار مع المفاجآت مقارنة بالتوقعات؛ والشركة العظيمة ليست دائمًا استثمارًا عظيمًا.</li></ul>',
     )),

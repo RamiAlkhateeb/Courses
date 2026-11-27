@@ -65,6 +65,7 @@ function BookView({ book }: { book: Book }) {
         <h1>{t(book.title)}</h1>
         <p className={styles.subtitle}>{t(book.subtitle)}</p>
         <p className={styles.brand}>{t(TEXT.brand)}</p>
+        <p className={styles.edition}>{t(book.edition)}</p>
       </section>
 
       <section className={styles.front}>
@@ -74,6 +75,11 @@ function BookView({ book }: { book: Book }) {
           {book.chapters.map((c) => (
             <li key={c.id}>
               <a href={`#${c.id}`}>{t(c.title)}</a>
+            </li>
+          ))}
+          {book.appendix?.map((a) => (
+            <li key={a.id} className={styles.tocExtra}>
+              <a href={`#${a.id}`}>{t(a.title)}</a>
             </li>
           ))}
           <li className={styles.tocExtra}>
@@ -89,6 +95,15 @@ function BookView({ book }: { book: Book }) {
           <p className={styles.summary}>{t(c.summary)}</p>
           <div className={`${contentStyles.content} ${styles.text}`}>
             <Blocks blocks={c.blocks} />
+          </div>
+        </section>
+      ))}
+
+      {book.appendix?.map((a) => (
+        <section key={a.id} id={a.id} className={styles.chapter}>
+          <h1>{t(a.title)}</h1>
+          <div className={`${contentStyles.content} ${styles.text}`}>
+            <Blocks blocks={a.blocks} />
           </div>
         </section>
       ))}

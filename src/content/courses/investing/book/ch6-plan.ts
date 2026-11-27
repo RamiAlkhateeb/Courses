@@ -93,6 +93,28 @@ export const ch6: BookChapter = {
       '<h2>6.7 متى تغيّر الخطة</h2><p>يجب أن تتغير الخطة حين تتغير حياتك، لا حين يتغير السوق. وظيفة جديدة، أو طفل، أو انتقال، أو ميراث، أو هدف تحقق أو تُرك: هذه أسباب لمراجعة المواعيد والمبالغ والأمزجة. أما هبوط الأسعار أو عنوان مخيف أو نصيحة رابحة من صديق فليست كذلك. وحين تراجع، غيّر شيئًا واحدًا في كل مرة، واكتب التغيير وسببه. ومع السنين سيساوي هذا السجل من القرارات الهادئة أكثر من أي توقع.</p>',
     )),
     html(L(
+      '<h2>6.8 A sample plan, filled in</h2><p>Here is the template from section 6.6, filled in for an imaginary saver: 30 years old, steady income, essential costs of 1,500 a month, no high-interest debt. The numbers are illustrations of the method, not suggestions for anyone in particular.</p>',
+      '<h2>6.8 خطة نموذجية مكتملة</h2><p>إليك النموذج من القسم 6.6 مملوءًا لمدخر متخيَّل: عمره 30 سنة، ودخله ثابت، وتكاليفه الأساسية 1,500 شهريًا، ولا ديون عليه بفائدة مرتفعة. الأرقام توضيح للطريقة، وليست اقتراحات لأي شخص بعينه.</p>',
+    )),
+    table(
+      [L('Part of the plan', 'جزء الخطة'), L('Filled in', 'مملوء')],
+      [
+        [L('Base', 'الأساس'), L('Emergency fund of 4,500 (3 months), in a separate savings account; complete in 9 months', 'صندوق طوارئ قدره 4,500 (3 أشهر) في حساب توفير منفصل؛ يكتمل خلال 9 أشهر')],
+        [L('Goals', 'الأهداف'), L('Car, 12,000 in 2 years; home deposit, 40,000 in 10 years; retirement at 65', 'سيارة بـ12,000 بعد سنتين؛ ودفعة أولى لمنزل بـ40,000 بعد 10 سنوات؛ والتقاعد في سن 65')],
+        [L('Risk', 'المخاطرة'), L('Could hold through a fall from 10,000 to 7,500; would sell at 6,000', 'يستطيع التمسك خلال هبوط من 10,000 إلى 7,500؛ وسيبيع عند 6,000')],
+        [L('Mix per goal', 'المزيج لكل هدف'), L('Car: all cash. Deposit: 40/50/10. Retirement: 80/15/5, in two broad index funds plus a bond fund', 'السيارة: نقد كامل. الدفعة الأولى: 40/50/10. التقاعد: 80/15/5، في صندوقي مؤشرات واسعين وصندوق سندات')],
+        [L('Automation', 'الأتمتة'), L('On payday: 500 to the car, 250 to the deposit, 400 to retirement; raised with each pay rise', 'يوم الراتب: 500 للسيارة، و250 للدفعة الأولى، و400 للتقاعد؛ ترتفع مع كل زيادة في الأجر')],
+        [L('Costs', 'التكاليف'), L('Under 0.3% a year in total', 'أقل من 0.3% سنويًا إجمالًا')],
+        [L('Rebalancing', 'إعادة التوازن'), L('Every January, or when any part drifts 5 points', 'كل يناير، أو حين ينجرف أي جزء 5 نقاط')],
+        [L('In a crash', 'في الانهيار'), L('Keep the transfers going; rebalance; do not sell', 'مواصلة التحويلات؛ وإعادة التوازن؛ وعدم البيع')],
+        [L('Review', 'المراجعة'), L('Each birthday, and after any job or family change', 'في كل عيد ميلاد، وبعد أي تغير في العمل أو الأسرة')],
+      ],
+    ),
+    html(L(
+      '<h2>6.9 A checklist before you start</h2><ul><li>Emergency fund in place, or being built first.</li><li>High-interest debt paid off, or a date set.</li><li>Every goal has an amount, a date and its own mix.</li><li>You have pictured the worst likely year in money and decided you would hold.</li><li>Investments are broad, low-cost and understood; total yearly cost known.</li><li>Saving is automatic, and the rebalancing rule is written down.</li><li>The plan fits on one page, and you know when you will next review it.</li></ul>',
+      '<h2>6.9 قائمة تحقق قبل أن تبدأ</h2><ul><li>صندوق الطوارئ جاهز، أو يُبنى أولًا.</li><li>الديون ذات الفائدة المرتفعة مسددة، أو حُدد موعد لسدادها.</li><li>لكل هدف مبلغ وموعد ومزيج خاص به.</li><li>تخيلت أسوأ عام محتمل بالمال وقررت أنك ستتمسك.</li><li>الاستثمارات واسعة ومنخفضة التكلفة ومفهومة، والتكلفة السنوية الإجمالية معروفة.</li><li>الادخار تلقائي، وقاعدة إعادة التوازن مكتوبة.</li><li>الخطة تتسع في صفحة واحدة، وتعرف متى ستراجعها المرة القادمة.</li></ul>',
+    )),
+    html(L(
       '<h2>Chapter summary</h2><ul><li>Start from goals with amounts and dates; give each its own pot.</li><li>Plan with the lower of your risk capacity and your risk tolerance; picture falls in money.</li><li>Choose a deliberate mix for each goal, cautious for near dates and growth-minded for far ones.</li><li>Automate saving on payday, and raise it when income rises.</li><li>Rebalance by a rule chosen in calm times.</li><li>Write a one-page plan, and change it when your life changes, not when the market does.</li></ul>',
       '<h2>خلاصة الفصل</h2><ul><li>ابدأ من أهداف لها مبالغ ومواعيد، وامنح كل منها وعاءه الخاص.</li><li>خطط بناءً على الأقل بين قدرتك على تحمّل المخاطر وتحمّلك لها، وتخيّل الهبوطات بالمال.</li><li>اختر مزيجًا مقصودًا لكل هدف، حذرًا للمواعيد القريبة وموجهًا للنمو للبعيدة.</li><li>اجعل الادخار تلقائيًا يوم الراتب، وارفعه حين يرتفع الدخل.</li><li>أعد التوازن وفق قاعدة تختارها في أوقات الهدوء.</li><li>اكتب خطة من صفحة واحدة، وغيّرها حين تتغير حياتك لا حين يتغير السوق.</li></ul>',
     )),
